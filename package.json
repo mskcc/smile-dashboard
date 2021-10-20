@@ -1,0 +1,50 @@
+{
+  "name": "cmo-metadb-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "socket.io-client": "^4.3.2",
+    "tsutils": "^3.21.0",
+    "typescript": "^4.4.4",
+    "web-vitals": "^1.1.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "prettierFixCurrentChanges": "STAGED_AND_CHANGED_FILES=$(git diff HEAD --name-only --cached --diff-filter=d) && ([ -z \"$STAGED_AND_CHANGED_FILES\" ] && echo \"Nothing to prettify\" || (yarn run prettier --write $(echo $STAGED_AND_CHANGED_FILES) && git add -f $(echo $STAGED_AND_CHANGED_FILES)))"
+  },
+  "engines": {
+    "node": "14.18.1",
+    "yarn": "1.22.17"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "prettier": "2.4.1"
+  }
+}
