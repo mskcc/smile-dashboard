@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './App.css';
 /*
 import {
   BrowserRouter as Router,
@@ -10,7 +10,6 @@ import {
 import { makeAutoObservable } from "mobx"
 import { observer } from "mobx-react"
 */
-import './App.css';
 
 function App() {
    return (
