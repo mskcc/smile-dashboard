@@ -1,4 +1,4 @@
-# cmo-metadb-dashboard
+# smile-dashboard
 
 # Getting Started with Create React App
 
