@@ -1,12 +1,16 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
-import RequestView from "./pages/requestView/RequestViewPage";
-import RequestSummary from "./pages/requestView/RequestSummary";
+import RecentDeliveriesPage from "./pages/recentDeliveries/RecentDeliveriesPage";
+import HomePage from "./pages/home/HomePage";
+import {
+  RequestSummary,
+  RequestViewPage
+} from "./pages/requestView/RequestViewPage";
 import reportWebVitals from "./reportWebVitals";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SmileNavBar from "./shared/components/SmileNavBar";
+import Container from "react-bootstrap/Container";
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
@@ -19,13 +23,16 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route path="/requests" element={<RequestView />}>
+      <Container>
+        <SmileNavBar />
+        <Routes>
+          <Route path="/home" element={<HomePage />}></Route>
+          <Route path="/recentDeliveries" element={<RecentDeliveriesPage />} />
+          <Route path="/requests/*" element={<RequestViewPage />}>
             <Route path=":igoRequestId" element={<RequestSummary />} />
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </Container>
     </ApolloProvider>
   </BrowserRouter>
 );
