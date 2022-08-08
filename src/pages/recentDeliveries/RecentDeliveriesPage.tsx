@@ -34,26 +34,14 @@ function RecentDeliveriesPage() {
   const { loading, error, data } = useQuery(ExampleQueryDocument);
 
   function transformAndFilterRequestsByDate(requestsList: Array<Request>) {
-    const referenceDate = new Date();
-    referenceDate.setDate(referenceDate.getDate() - 60);
-    const refDateAsDate = new Date(referenceDate);
-    let month = refDateAsDate.getMonth() + 1;
-    let day = refDateAsDate.getDate();
-
-    const refDateFilter = `${refDateAsDate.getFullYear()}-${
-      month < 10 ? `0${month}` : `${month}`
-    }-${day < 10 ? `0${day}` : `${day}`}`;
     var filteredRequests: RequestWithDate[] = [];
     requestsList.forEach((r: Request) => {
-      let nr = new RequestWithDate(r);
-      if (nr.lastDateUpdated >= refDateFilter) {
-        filteredRequests.push(nr);
-      }
+      filteredRequests.push(new RequestWithDate(r));
     });
     return filteredRequests;
   }
 
-  if (loading) return <p>Loading requests delivered in last 60 days...</p>;
+  if (loading) return <p>Loading requests...</p>;
 
   if (error) return <p>Error : (</p>;
   var filteredRequests: RequestWithDate[] = transformAndFilterRequestsByDate(
@@ -62,7 +50,6 @@ function RecentDeliveriesPage() {
 
   return (
     <Container>
-      Requests updated or delivered in the last 60 days
       <RecentDeliveriesTable data={filteredRequests} />
     </Container>
   );

@@ -5,7 +5,7 @@ import { ArrowDownward } from "@material-ui/icons";
 
 const sortIcon = <ArrowDownward />;
 
-const columns = [
+const RecentDeliveriesColumns = [
   {
     priority: 1,
     selector: (d: RequestWithDate) => d.smileRequest.igoRequestId,
@@ -113,8 +113,9 @@ export default class RecentDeliveriesTable extends React.Component<
       <DataTable
         striped
         responsive
+        pagination
         sortIcon={sortIcon}
-        columns={columns}
+        columns={RecentDeliveriesColumns}
         data={this.props.data}
       />
     );
