@@ -116,23 +116,16 @@ export interface RequestViewTableProps {
   data: RequestSampleWithDate[];
 }
 
-export default class RequestViewTable extends React.Component<
-  RequestViewTableProps,
-  {}
-> {
-  constructor(props: RequestViewTableProps) {
-    super(props);
-  }
+const RequestViewTable: React.FunctionComponent<RequestViewTableProps> = props => {
+  return (
+    <DataTable
+      striped
+      responsive
+      sortIcon={sortIcon}
+      columns={RequestViewColumns}
+      data={props.data}
+    />
+  );
+};
 
-  public render() {
-    return (
-      <DataTable
-        striped
-        responsive
-        sortIcon={sortIcon}
-        columns={RequestViewColumns}
-        data={this.props.data}
-      />
-    );
-  }
-}
+export default RequestViewTable;

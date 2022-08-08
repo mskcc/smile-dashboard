@@ -4,6 +4,19 @@ import RecentDeliveriesTable from "./RecentDeliveriesTable";
 import { Request, ExampleQueryDocument } from "../../generated/graphql";
 import { useQuery } from "@apollo/client";
 
+function resolveAndSortDeliveryDates(request: Request) {
+  var smDataList: string[] = [];
+  for (var i = 0; i < request.hasSampleSamples.length; i++) {
+    var s = request.hasSampleSamples[i];
+    for (var j = 0; j < s.hasMetadataSampleMetadata.length; j++) {
+      var sm = s.hasMetadataSampleMetadata[j];
+      smDataList.push(sm.importDate);
+    }
+  }
+  smDataList.sort();
+  return [smDataList[0], smDataList[smDataList.length - 1]];
+}
+
 export class RequestWithDate {
   smileRequest: Request;
   totalSamples: number;
@@ -12,25 +25,13 @@ export class RequestWithDate {
   constructor(smileRequest: Request) {
     this.smileRequest = smileRequest;
     this.totalSamples = smileRequest.hasSampleSamples.length;
-    let deliveryDates = this.resolveAndSortDeliveryDates(smileRequest);
+    let deliveryDates = resolveAndSortDeliveryDates(smileRequest);
     this.firstDelivered = deliveryDates[0];
     this.lastDateUpdated = deliveryDates[1];
   }
-  private resolveAndSortDeliveryDates(request: Request) {
-    var smDataList: string[] = [];
-    for (var i = 0; i < request.hasSampleSamples.length; i++) {
-      var s = request.hasSampleSamples[i];
-      for (var j = 0; j < s.hasMetadataSampleMetadata.length; j++) {
-        var sm = s.hasMetadataSampleMetadata[j];
-        smDataList.push(sm.importDate);
-      }
-    }
-    smDataList.sort();
-    return [smDataList[0], smDataList[smDataList.length - 1]];
-  }
 }
 
-function RecentDeliveriesPage() {
+export const RecentDeliveriesPage: React.FunctionComponent = props => {
   const { loading, error, data } = useQuery(ExampleQueryDocument);
 
   function transformAndFilterRequestsByDate(requestsList: Array<Request>) {
@@ -53,6 +54,6 @@ function RecentDeliveriesPage() {
       <RecentDeliveriesTable data={filteredRequests} />
     </Container>
   );
-}
+};
 
 export default RecentDeliveriesPage;

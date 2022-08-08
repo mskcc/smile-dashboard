@@ -96,28 +96,21 @@ const RecentDeliveriesColumns = [
   }
 ];
 
-export interface RecentDeliveriesTableProps {
+type RecentDeliveriesTableProps = {
   data: RequestWithDate[];
-}
+};
 
-export default class RecentDeliveriesTable extends React.Component<
-  RecentDeliveriesTableProps,
-  {}
-> {
-  constructor(props: RecentDeliveriesTableProps) {
-    super(props);
-  }
+const RecentDeliveriesTable: React.FunctionComponent<RecentDeliveriesTableProps> = props => {
+  return (
+    <DataTable
+      striped
+      responsive
+      pagination
+      sortIcon={sortIcon}
+      columns={RecentDeliveriesColumns}
+      data={props.data}
+    />
+  );
+};
 
-  public render() {
-    return (
-      <DataTable
-        striped
-        responsive
-        pagination
-        sortIcon={sortIcon}
-        columns={RecentDeliveriesColumns}
-        data={this.props.data}
-      />
-    );
-  }
-}
+export default RecentDeliveriesTable;

@@ -8,6 +8,25 @@ import {
 import RequestViewTable from "./RequestViewTable";
 import { useQuery } from "@apollo/client";
 
+function resolveFirstAndLatestMetadata(sample: Sample) {
+  if (sample.hasMetadataSampleMetadata.length === 1) {
+    return [
+      sample.hasMetadataSampleMetadata[0],
+      sample.hasMetadataSampleMetadata[0]
+    ];
+  }
+
+  var firstDeliv = sample.hasMetadataSampleMetadata[0];
+  var latestDeliv = sample.hasMetadataSampleMetadata[0];
+  for (var i = 1; i < sample.hasMetadataSampleMetadata.length; i++) {
+    var currentSm = sample.hasMetadataSampleMetadata[i];
+    if (currentSm.importDate >= latestDeliv.importDate) {
+      latestDeliv = currentSm;
+    }
+  }
+  return [firstDeliv, latestDeliv];
+}
+
 export class RequestSampleWithDate {
   smileSample: Sample;
   firstDelivered: string;
@@ -15,33 +34,14 @@ export class RequestSampleWithDate {
   latestMetadata: SampleMetadata;
   constructor(sample: Sample) {
     this.smileSample = sample;
-    let smDeliveries = this.resolveFirstAndLatestMetadata(sample);
+    let smDeliveries = resolveFirstAndLatestMetadata(sample);
     this.firstDelivered = smDeliveries[0].importDate;
     this.lastDateUpdated = smDeliveries[1].importDate;
     this.latestMetadata = smDeliveries[1];
   }
-
-  private resolveFirstAndLatestMetadata(sample: Sample) {
-    if (sample.hasMetadataSampleMetadata.length === 1) {
-      return [
-        sample.hasMetadataSampleMetadata[0],
-        sample.hasMetadataSampleMetadata[0]
-      ];
-    }
-
-    var firstDeliv = sample.hasMetadataSampleMetadata[0];
-    var latestDeliv = sample.hasMetadataSampleMetadata[0];
-    for (var i = 1; i < sample.hasMetadataSampleMetadata.length; i++) {
-      var currentSm = sample.hasMetadataSampleMetadata[i];
-      if (currentSm.importDate >= latestDeliv.importDate) {
-        latestDeliv = currentSm;
-      }
-    }
-    return [firstDeliv, latestDeliv];
-  }
 }
 
-export function RequestSummary() {
+const RequestSummary: React.FunctionComponent = props => {
   let params = useParams();
   const { loading, error, data } = useQuery(RequestSummaryQueryDocument, {
     variables: {
@@ -64,9 +64,9 @@ export function RequestSummary() {
       <RequestViewTable data={requestSamples} />
     </Container>
   );
-}
+};
 
-export function RequestViewPage() {
+const RequestViewPage: React.FunctionComponent = props => {
   let params = useParams();
   return (
     <Container>
@@ -75,4 +75,6 @@ export function RequestViewPage() {
       </Routes>
     </Container>
   );
-}
+};
+
+export { RequestSummary, RequestViewPage };
