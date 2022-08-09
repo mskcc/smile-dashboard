@@ -24,7 +24,7 @@ root.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
       <Container>
-        <SmileNavBar requestIdSearch="" />
+        <SmileNavBar />
         <Routes>
           <Route path="/home" element={<HomePage />}></Route>
           <Route path="/recentDeliveries" element={<RecentDeliveriesPage />} />

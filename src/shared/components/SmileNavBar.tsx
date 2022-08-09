@@ -3,11 +3,9 @@ import { Container, Nav, Form, Button, InputGroup } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import logo_with_text from "../../imgs/logo_with_text.png";
 
-type SmileNavBarProps = {
-  requestIdSearch: string;
-};
+const SmileNavBar: React.FunctionComponent = props => {
+  var requestIdSearch = "";
 
-const SmileNavBar: React.FunctionComponent<SmileNavBarProps> = props => {
   return (
     <Navbar bg="light" expand="lg" variant="light" className="gap-3 px-3">
       <Container>
@@ -38,14 +36,13 @@ const SmileNavBar: React.FunctionComponent<SmileNavBarProps> = props => {
                   type="search"
                   placeholder="Search"
                   aria-label="Search"
-                  defaultValue=""
                   onChange={event => {
                     const value = String(
                       ((event.currentTarget as unknown) as HTMLInputElement)
                         .value
                     );
                     if (value !== null) {
-                      props.requestIdSearch = String(value);
+                      requestIdSearch = String(value);
                     }
                   }}
                 />
@@ -53,9 +50,9 @@ const SmileNavBar: React.FunctionComponent<SmileNavBarProps> = props => {
               <Button
                 type="submit"
                 onClick={() => {
-                  if (props.requestIdSearch !== "") {
-                    var url = `/requests/${props.requestIdSearch}`;
-                    window.open(url, "_blank", "noopener,noreferrer");
+                  if (requestIdSearch !== "") {
+                    var url = `/requests/${requestIdSearch}`;
+                    window.open(url);
                   }
                 }}
               >
