@@ -104,10 +104,7 @@ const store = createStore();
 //   }
 // }
 
-
-
 function loadMoreRows({startIndex, stopIndex}, fetchMore: any) {
-
     return fetchMore({
         variables: {
             // where: {
@@ -119,18 +116,6 @@ function loadMoreRows({startIndex, stopIndex}, fetchMore: any) {
             }
         }
     });
-
-    // return new Promise<void>((resolve)=>{
-    //     setTimeout(()=>{
-    //
-    //         for (let i=0; i<10; i++) {
-    //             list.push(i);
-    //         }
-    //
-    //         console.log("promise resolvng");
-    //         return resolve();
-    //     },100);
-    // })
 }
 
 
