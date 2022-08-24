@@ -1,57 +1,16 @@
 import { useQuery } from "@apollo/client";
-// import { Container, Nav, Form, Button, InputGroup } from "react-bootstrap";
 import "./RecentDeliveries.css";
-// import RecentDeliveriesTable from "./RecentDeliveriesTable";
 import {
   Request,
-  RecentDeliveriesQueryDocument,
-  RequestMetadataWhere
+  RecentDeliveriesQueryDocument
 } from "../../generated/graphql";
 import { observer } from "mobx-react";
 import { useEffect, useMemo } from "react";
 import { makeAutoObservable, observable } from "mobx";
-import {
-  InfiniteLoader,
-  Table,
-  Column,
-  AutoSizer,
-  List
-} from "react-virtualized";
+import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
 import { Container, Form, InputGroup } from "react-bootstrap";
-import RecentDeliveriesTable from "./RecentDeliveriesTable";
-import { TableCell, TableRow } from "@material-ui/core";
-import {
-  defaultCellRenderer,
-  defaultHeaderRenderer,
-  defaultHeaderRowRenderer
-} from "react-virtualized/dist/es/Table";
-
-function resolveAndSortDeliveryDates(request: Request) {
-  var smDataList: string[] = [];
-  for (var i = 0; i < request.hasSampleSamples.length; i++) {
-    var s = request.hasSampleSamples[i];
-    for (var j = 0; j < s.hasMetadataSampleMetadata.length; j++) {
-      var sm = s.hasMetadataSampleMetadata[j];
-      smDataList.push(sm.importDate);
-    }
-  }
-  smDataList.sort();
-  return [smDataList[0], smDataList[smDataList.length - 1]];
-}
-
-export class RequestWithDate {
-  smileRequest: Request;
-  totalSamples: number;
-  firstDelivered: string;
-  lastDateUpdated: string;
-  constructor(smileRequest: Request) {
-    this.smileRequest = smileRequest;
-    this.totalSamples = smileRequest.hasSampleSamples.length;
-    let deliveryDates = resolveAndSortDeliveryDates(smileRequest);
-    this.firstDelivered = deliveryDates[0];
-    this.lastDateUpdated = deliveryDates[1];
-  }
-}
+import DataTable from "react-data-table-component";
+import { TableCell } from "@material-ui/core";
 
 export const RecentDeliveriesPage: React.FunctionComponent = props => {
   return (
@@ -89,26 +48,14 @@ const RecentDeliveriesObserverable = observer(() => {
     }
   );
 
-  // function transformAndFilterRequestsByDate(requestsList: Array<Request>) {
-  //   var filteredRequests: RequestWithDate[] = [];
-  //   requestsList.forEach((r: Request) => {
-  //     filteredRequests.push(new RequestWithDate(r));
-  //   });
-  //   return filteredRequests;
-  // }
-
   if (loading) return <p>Loading requests...</p>;
   if (error) return <p>Error :(</p>;
-
-  // var filteredRequests: RequestWithDate[] = transformAndFilterRequestsByDate(
-  //   data.requests
-  // );
 
   function loadMoreRows({ startIndex, stopIndex }, fetchMore: any) {
     return fetchMore({
       variables: {
         // where: {
-        //     igoRequestId_CONTAINS: "00"
+        //   igoRequestId_CONTAINS: store.filter
         // },
         options: {
           offset: startIndex,
@@ -124,50 +71,15 @@ const RecentDeliveriesObserverable = observer(() => {
 
   function rowGetter({ index }) {
     if (!data.requests[index]) {
-      if (index < remoteRowCount) {
-        return "loading";
-      } else {
-        return null;
-      }
-    } else {
-      // const d =  {
-      //   "index": index,
-      //   "igoRequestId": data.requests[index].igoRequestId
-      // };
-      // console.log(d)
-      return data.requests[index];
+      return "";
     }
-  }
-
-  function rowRenderer({ key, index, style }) {
-    if (!data.requests[index]) {
-      if (index < remoteRowCount) {
-        return (
-          <div key={key} style={style}>
-            {index} loading
-          </div>
-        );
-      } else {
-        return null;
-      }
-    }
-    return (
-      <tr key={key}>
-        <td>{data.requests[index].igoRequestId}</td>
-      </tr>
-    );
-  }
-
-  function cellRenderer({ columnIndex, rowIndex }) {
-    console.log("in cell renderer");
-    console.log(data.requests[rowIndex].igoRequestId);
-    return <div>{data.requests[rowIndex].igoRequestId}</div>;
+    return data.requests[index];
   }
 
   const remoteRowCount = data.requestsConnection.totalCount;
+
   return (
     <Container>
-      <Container>Displaying {store.filter}</Container>
       <InputGroup>
         <Form className="d-flex">
           <Form.Group>
@@ -196,13 +108,6 @@ const RecentDeliveriesObserverable = observer(() => {
           </Form.Group>
         </Form>
       </InputGroup>
-      {/* <table className="table table-striped table-fit">
-        <thead>
-          <tr>
-          <th scope="col">Request ID</th>
-          </tr>
-        </thead>
-        <tbody> */}
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={params => {
@@ -211,47 +116,78 @@ const RecentDeliveriesObserverable = observer(() => {
         rowCount={remoteRowCount}
       >
         {({ onRowsRendered, registerChild }) => (
-          <Table
-            style={{ minWidth: 650 }}
-            ref={registerChild}
-            onRowsRendered={onRowsRendered}
-            width={800}
-            height={10000}
-            headerHeight={100}
-            rowHeight={100}
-            rowCount={remoteRowCount}
-            rowGetter={rowGetter}
-          >
-            {columns.map(col => {
-              return (
+          <AutoSizer>
+            {({ width }) => (
+              <Table
+                style={{ display: "inline-block" }}
+                ref={registerChild}
+                width={width}
+                height={270}
+                headerHeight={50}
+                rowHeight={40}
+                rowCount={remoteRowCount}
+                onRowsRendered={onRowsRendered}
+                rowGetter={rowGetter}
+              >
                 <Column
                   headerRenderer={({ dataKey }) => {
                     return (
-                      <TableCell
-                        component="th"
-                        variant="head"
-                        className="d-flex"
-                      >
+                      <TableCell component="div" variant="head" height={50}>
                         {dataKey}
                       </TableCell>
                     );
                   }}
-                  key={col.dataKey}
-                  cellDataGetter={({ rowData }) => rowData[col.dataKey]}
-                  label={col.headerName}
-                  dataKey={col.dataKey}
-                  width={col.width}
-                  cellRenderer={({ cellData }) => (
-                    <TableRow>
-                      <TableCell component="div" variant="body">
-                        {cellData}
+                  cellRenderer={({
+                    cellData,
+                    columnIndex = null,
+                    rowIndex
+                  }) => {
+                    return (
+                      <TableCell component="div" variant="body" height={50}>
+                        {cellData || "loading"}
                       </TableCell>
-                    </TableRow>
-                  )}
+                    );
+                  }}
+                  headerStyle={{ display: "inline-block", fontWeight: 500 }}
+                  style={{ display: "inline-block" }}
+                  label="IGO Request ID"
+                  dataKey="igoRequestId"
+                  width={width / 2}
                 />
-              );
-            })}
-          </Table>
+
+                <Column
+                  headerRenderer={({ dataKey }) => {
+                    return (
+                      <TableCell component="div" variant="head">
+                        {dataKey}
+                      </TableCell>
+                    );
+                  }}
+                  cellRenderer={({
+                    cellData,
+                    columnIndex = null,
+                    rowIndex
+                  }) => {
+                    return (
+                      <TableCell
+                        component="div"
+                        variant="body"
+                        style={{ height: 50 }}
+                        height={50}
+                      >
+                        {cellData || "loading"}
+                      </TableCell>
+                    );
+                  }}
+                  headerStyle={{ display: "inline-block" }}
+                  style={{ display: "inline-block" }}
+                  label="Project Manager Name"
+                  dataKey="projectManagerName"
+                  width={width / 2}
+                />
+              </Table>
+            )}
+          </AutoSizer>
         )}
       </InfiniteLoader>
       {/* </tbody>
@@ -261,14 +197,6 @@ const RecentDeliveriesObserverable = observer(() => {
   );
 });
 
-function headerRenderer({ col }) {
-  return (
-    <TableCell component="th" scope="row">
-      {col.dataKey}
-    </TableCell>
-  );
-}
-
 const columns = [
   {
     selector: (d: Request) => d.igoRequestId,
@@ -276,7 +204,7 @@ const columns = [
     headerName: "IGO RequestID",
     sortable: true,
     filterable: true,
-    width: 400
+    width: 50
   },
   {
     selector: (d: Request) => d.projectManagerName,
@@ -284,18 +212,24 @@ const columns = [
     headerName: "Project Manager Name",
     sortable: true,
     filterable: true,
-    width: 400
+    width: 50
   }
 ];
 
-{
-  /* <List
-                        height={200}
-                        onRowsRendered={onRowsRendered}
-                        ref={registerChild}
-                        rowCount={remoteRowCount}
-                        rowHeight={20}
-                        rowRenderer={rowRenderer}
-                        width={300}
-                    /> */
-}
+const RecentDeliveriesColumns = [
+  {
+    priority: 1,
+    selector: (d: Request) => d.igoRequestId,
+    dataField: "igoRequestId",
+    name: "IGO Request ID",
+    sortable: true,
+    filterable: true
+  },
+  {
+    selector: (d: Request) => d.projectManagerName,
+    dataField: "projectManagerName",
+    name: "Project Manager Name",
+    sortable: true,
+    filterable: true
+  }
+];

@@ -1,7 +1,8 @@
 import * as React from "react";
-import { RequestWithDate } from "./RecentDeliveriesPage";
 import { ArrowDownward } from "@material-ui/icons";
 import DataTable from "react-data-table-component";
+import { Request } from "../../generated/graphql";
+
 const sortIcon = <ArrowDownward />;
 
 const RecentDeliveriesColumns = [
@@ -113,3 +114,30 @@ const RecentDeliveriesTable: React.FunctionComponent<RecentDeliveriesTableProps>
 };
 
 export default RecentDeliveriesTable;
+
+function resolveAndSortDeliveryDates(request: Request) {
+  var smDataList: string[] = [];
+  for (var i = 0; i < request.hasSampleSamples.length; i++) {
+    var s = request.hasSampleSamples[i];
+    for (var j = 0; j < s.hasMetadataSampleMetadata.length; j++) {
+      var sm = s.hasMetadataSampleMetadata[j];
+      smDataList.push(sm.importDate);
+    }
+  }
+  smDataList.sort();
+  return [smDataList[0], smDataList[smDataList.length - 1]];
+}
+
+export class RequestWithDate {
+  smileRequest: Request;
+  totalSamples: number;
+  firstDelivered: string;
+  lastDateUpdated: string;
+  constructor(smileRequest: Request) {
+    this.smileRequest = smileRequest;
+    this.totalSamples = smileRequest.hasSampleSamples.length;
+    let deliveryDates = resolveAndSortDeliveryDates(smileRequest);
+    this.firstDelivered = deliveryDates[0];
+    this.lastDateUpdated = deliveryDates[1];
+  }
+}
