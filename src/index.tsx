@@ -7,11 +7,11 @@ import reportWebVitals from "./reportWebVitals";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RecentDeliveriesPage from "./pages/recentDeliveries/RecentDeliveriesPage";
-import {Container} from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import HomePage from "./pages/home/HomePage";
 import RequestViewPage from "./pages/requestView/RequestViewPage";
 import SmileNavBar from "./shared/components/SmileNavBar";
-import {offsetLimitPagination} from "@apollo/client/utilities";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -21,7 +21,7 @@ const cache = new InMemoryCache({
       }
     }
   }
-})
+});
 
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
@@ -44,10 +44,8 @@ const root = ReactDOM.render(
     </ApolloProvider>
   </BrowserRouter>,
 
-    document.getElementById("root") as HTMLElement
-
-)
-
+  document.getElementById("root") as HTMLElement
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

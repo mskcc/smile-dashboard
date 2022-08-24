@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Container, Nav, Form, Button, InputGroup } from "react-bootstrap";
-import {Navbar} from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 import logo_with_text from "../../imgs/logo_with_text.png";
 
 const SmileNavBar: React.FunctionComponent = props => {

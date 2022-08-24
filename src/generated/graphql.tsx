@@ -4807,7 +4807,11 @@ export type ExampleQueryQuery = {
 };
 
 export const RecentDeliveriesQueryDocument = gql`
-  query RecentDeliveriesQuery($options: RequestOptions, $where: RequestWhere, $requestsConnectionWhere2: RequestWhere) {
+  query RecentDeliveriesQuery(
+    $options: RequestOptions
+    $where: RequestWhere
+    $requestsConnectionWhere2: RequestWhere
+  ) {
     requestsConnection(where: $requestsConnectionWhere2) {
       totalCount
     }
@@ -4864,7 +4868,11 @@ export const RecentDeliveriesQueryDocument = gql`
 `;
 
 export const RequestSummaryQueryDocument = gql`
-  query RequestSummaryQuery($options: RequestOptions, $where: RequestWhere, $requestsConnectionWhere2: RequestWhere) {
+  query RequestSummaryQuery(
+    $options: RequestOptions
+    $where: RequestWhere
+    $requestsConnectionWhere2: RequestWhere
+  ) {
     requestsConnection(where: $requestsConnectionWhere2) {
       totalCount
     }
