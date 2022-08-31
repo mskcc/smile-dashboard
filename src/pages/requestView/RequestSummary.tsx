@@ -1,7 +1,7 @@
 import React from "react";
 import { RequestSummaryQueryDocument } from "../../generated/graphql";
 import { useQuery } from "@apollo/client";
-import { InfiniteLoader, Table, Column } from "react-virtualized";
+import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
 import { Row } from "react-bootstrap";
 import { observer } from "mobx-react";
 import { makeAutoObservable } from "mobx";
@@ -86,7 +86,7 @@ const RequestSummaryObservable = observer(({ props }) => {
     return <Row />;
   }
   return (
-    <Row style={{ marginTop: "20px" }}>
+    <Row id="requestDetailsRow" style={{ marginTop: "100px" }}>
       <div>
         <h3>Displaying Request: {props.selectedRequest}</h3>
       </div>
@@ -98,38 +98,42 @@ const RequestSummaryObservable = observer(({ props }) => {
         rowCount={remoteRowCount}
       >
         {({ onRowsRendered, registerChild }) => (
-          <Table
-            className="table"
-            style={{}}
-            ref={registerChild}
-            width={1100}
-            height={270}
-            headerHeight={50}
-            rowHeight={40}
-            rowCount={remoteRowCount}
-            onRowsRendered={onRowsRendered}
-            rowGetter={rowGetter}
-          >
-            {SampleDetailsColumns.map(col => {
-              return (
-                <Column
-                  headerRenderer={headerRenderer}
-                  cellRenderer={({
-                    cellData,
-                    columnIndex = null,
-                    rowIndex
-                  }) => {
-                    return cellRenderer({ cellData });
-                  }}
-                  headerStyle={{ display: "inline-block" }}
-                  style={{ display: "inline-block" }}
-                  label={col.label}
-                  dataKey={`${col.dataKey}`}
-                  width={1100 / 8}
-                />
-              );
-            })}
-          </Table>
+          <AutoSizer>
+            {({ width }) => (
+              <Table
+                className="table"
+                style={{}}
+                ref={registerChild}
+                width={width}
+                height={270}
+                headerHeight={50}
+                rowHeight={40}
+                rowCount={remoteRowCount}
+                onRowsRendered={onRowsRendered}
+                rowGetter={rowGetter}
+              >
+                {SampleDetailsColumns.map(col => {
+                  return (
+                    <Column
+                      headerRenderer={headerRenderer}
+                      cellRenderer={({
+                        cellData,
+                        columnIndex = null,
+                        rowIndex
+                      }) => {
+                        return cellRenderer({ cellData });
+                      }}
+                      headerStyle={{ display: "inline-block" }}
+                      style={{ display: "inline-block" }}
+                      label={col.label}
+                      dataKey={`${col.dataKey}`}
+                      width={width / 8}
+                    />
+                  );
+                })}
+              </Table>
+            )}
+          </AutoSizer>
         )}
       </InfiniteLoader>
     </Row>

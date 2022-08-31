@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client";
+import { Edit } from "@material-ui/icons";
 import "./RecentDeliveries.css";
 import {
   Request,
@@ -6,12 +7,12 @@ import {
 } from "../../generated/graphql";
 import { observer } from "mobx-react";
 import { makeAutoObservable } from "mobx";
-import { InfiniteLoader, Table, Column } from "react-virtualized";
-import { Button, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
+import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { TableCell } from "@material-ui/core";
 import { RequestSummaryObservable } from "../requestView/RequestSummary";
-import 'react-virtualized/styles.css';
-import {useState} from "react";
+import "react-virtualized/styles.css";
+import { useState } from "react";
 
 function createStore() {
   return makeAutoObservable({
@@ -24,10 +25,7 @@ function createStore() {
 const store = createStore();
 
 export const RecentDeliveriesPage: React.FunctionComponent = props => {
-  
-
   function requestDetailsComponent() {
-    console.log("selectedRequest=", store.selectedRequest);
     if (store.showRequestDetails) {
       return (
         <Row style={{ flexDirection: "column", display: "flex" }}>
@@ -38,9 +36,15 @@ export const RecentDeliveriesPage: React.FunctionComponent = props => {
       return <RequestSummaryObservable props={store} />;
     }
   }
-  console.log(store);
+
   return (
-    <Container style={{ marginBottom: "80px", marginTop: "80px" }}>
+    <Container
+      style={{
+        flexDirection: "column",
+        marginBottom: "20px",
+        marginTop: "20px"
+      }}
+    >
       <RecentDeliveriesObserverable />
       <hr />
       {requestDetailsComponent()}
@@ -70,7 +74,6 @@ const RecentDeliveriesObserverable = () => {
 
   if (loading) return <p>Loading requests...</p>;
   if (error) return <p>Error :(</p>;
-  
 
   function loadMoreRows({ startIndex, stopIndex }, fetchMore: any) {
     return fetchMore({
@@ -117,13 +120,17 @@ const RecentDeliveriesObserverable = () => {
   }
 
   const remoteRowCount = data.requestsConnection.totalCount;
-  
+
   return (
-    <Row style={{}}>
+    <Row
+      id="recentDeliveriesRow"
+      style={{ flexDirection: "column", display: "flex" }}
+    >
       <InputGroup>
-        <Form className="d-flex">
-          <Form.Group>
+        <Form>
+          <Form.Group as={Col}>
             <Form.Control
+              style={{ height: "40px", width: "300px" }}
               type="search"
               placeholder="Search"
               aria-label="Search"
@@ -133,12 +140,16 @@ const RecentDeliveriesObserverable = () => {
                   ((event.currentTarget as unknown) as HTMLInputElement).value
                 );
                 if (value !== null) {
-                  setVal(value);  
+                  setVal(value);
                 }
               }}
             />
           </Form.Group>
-          <Button 
+        </Form>
+        <Button
+          style={{ height: "40px", width: "80px" }}
+          variant="primary"
+          size="sm"
           onClick={() => {
             refetch({
               where: {
@@ -149,11 +160,12 @@ const RecentDeliveriesObserverable = () => {
               },
               options: { limit: 20, offset: 0 }
             });
-          }}>
-          </Button>
-        </Form>
-
+          }}
+        >
+          Filter
+        </Button>
       </InputGroup>
+      <hr />
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={params => {
@@ -162,37 +174,38 @@ const RecentDeliveriesObserverable = () => {
         rowCount={remoteRowCount}
       >
         {({ onRowsRendered, registerChild }) => (
-          <Table
-            className="table"
-            style={{}}
-            ref={registerChild}
-            width={1100}
-            height={270}
-            headerHeight={50}
-            rowHeight={40}
-            rowCount={remoteRowCount}
-            onRowsRendered={onRowsRendered}
-            rowGetter={rowGetter}
-            onRowClick={onRowClick}
-            onRowDoubleClick={info => {
-              store.showRequestDetails = false;
-            }}
-          >
-            {RecentDeliveriesColumns.map(col => {
-              return (
-                <Column
-                  headerRenderer={headerRenderer}
-                  headerStyle={{ display: "inline-block" }}
-                  style={{ display: "inline-block" }}
-                  label={col.label}
-                  dataKey={`${col.dataKey}`} 
-                  cellRenderer={col.cellRenderer}
-                  width={1100 / 8}
-                />
-              );
-            })}
-            
-          </Table>
+          <AutoSizer>
+            {({ width }) => (
+              <Table
+                className="table"
+                style={{}}
+                ref={registerChild}
+                width={width}
+                height={540}
+                headerHeight={60}
+                rowHeight={40}
+                rowCount={remoteRowCount}
+                onRowsRendered={onRowsRendered}
+                rowGetter={rowGetter}
+                onRowClick={onRowClick}
+                onRowDoubleClick={info => {
+                  store.showRequestDetails = false;
+                }}
+              >
+                {RecentDeliveriesColumns.map(col => {
+                  return (
+                    <Column
+                      headerRenderer={col.headerRender}
+                      label={col.label}
+                      dataKey={`${col.dataKey}`}
+                      cellRenderer={col.cellRenderer}
+                      width={width / 8}
+                    />
+                  );
+                })}
+              </Table>
+            )}
+          </AutoSizer>
         )}
       </InfiniteLoader>
     </Row>
@@ -203,21 +216,33 @@ const RecentDeliveriesObserverable = () => {
 // cellrenderer gets rowData (sample properties)
 const RecentDeliveriesColumns = [
   {
-    label: "Edit",
-    cellRenderer: (arg)=>{console.log(arg); return (<Button onClick={()=>{
-      // call setState --> puts us in editing mode
-      // introducing a new state property (state = editingSampleId)
-      // if "editingSampleId" defined then render the form for editing (app re-renders, shows form)
-      // if "editingSampleId" undefined then app knows not to show the other stuff, maybe shows in modal 
-      // for now let's put form at the bottom 
-      alert(arg.rowData.igoRequestId)
-    }}>edit</Button>)}
+    headerRender: () => {
+      return <Edit />;
+    },
+    cellRenderer: arg => {
+      return (
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => {
+            // call setState --> puts us in editing mode
+            // introducing a new state property (state = editingSampleId)
+            // if "editingSampleId" defined then render the form for editing (app re-renders, shows form)
+            // if "editingSampleId" undefined then app knows not to show the other stuff, maybe shows in modal
+            // for now let's put form at the bottom
+            alert(arg.rowData.igoRequestId);
+          }}
+        >
+          Edit
+        </Button>
+      );
+    }
   },
   {
     dataKey: "igoRequestId",
     label: "IGO Request ID",
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     dataKey: "igoProjectId",
