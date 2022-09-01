@@ -1,18 +1,15 @@
 import { useQuery } from "@apollo/client";
 import { Edit } from "@material-ui/icons";
 import "./RecentDeliveries.css";
-import {
-  Request,
-  RecentDeliveriesQueryDocument
-} from "../../generated/graphql";
+import { RecentDeliveriesQueryDocument } from "../../generated/graphql";
 import { observer } from "mobx-react";
 import { makeAutoObservable } from "mobx";
 import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
-import { TableCell } from "@material-ui/core";
-import { RequestSummaryObservable } from "../requestView/RequestSummary";
+import { RequestSummary } from "../requestView/RequestSummary";
 import "react-virtualized/styles.css";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 function createStore() {
   return makeAutoObservable({
@@ -25,29 +22,14 @@ function createStore() {
 const store = createStore();
 
 export const RecentDeliveriesPage: React.FunctionComponent = props => {
-  function requestDetailsComponent() {
-    if (store.showRequestDetails) {
-      return (
-        <Row style={{ flexDirection: "column", display: "flex" }}>
-          select request to render component
-        </Row>
-      );
-    } else {
-      return <RequestSummaryObservable props={store} />;
-    }
-  }
-
   return (
     <Container
       style={{
-        flexDirection: "column",
         marginBottom: "20px",
         marginTop: "20px"
       }}
     >
       <RecentDeliveriesObserverable />
-      <hr />
-      {requestDetailsComponent()}
     </Container>
   );
 };
@@ -56,6 +38,8 @@ export default RecentDeliveriesPage;
 
 const RecentDeliveriesObserverable = () => {
   const [val, setVal] = useState("");
+  const navigate = useNavigate();
+  const params = useParams();
 
   const { loading, error, data, refetch, fetchMore } = useQuery(
     RecentDeliveriesQueryDocument,
@@ -100,19 +84,6 @@ const RecentDeliveriesObserverable = () => {
     return data.requests[index];
   }
 
-  function headerRenderer({ dataKey }) {
-    // edit this to use actual col labels
-    return <TableCell>{dataKey}</TableCell>;
-  }
-
-  function cellRenderer({ cellData }) {
-    return (
-      <TableCell align="right" padding="normal">
-        {cellData || " "}
-      </TableCell>
-    );
-  }
-
   function onRowClick(info) {
     console.log(info.rowData.igoRequestId);
     store.selectedRequest = info.rowData.igoRequestId;
@@ -120,6 +91,86 @@ const RecentDeliveriesObserverable = () => {
   }
 
   const remoteRowCount = data.requestsConnection.totalCount;
+  // notes: cellrenderer gets rowData (sample properties)
+  // todo: add prop that we can call setState for to put us in "editing mode"
+  const RecentDeliveriesColumns = [
+    {
+      headerRender: () => {
+        return <Edit />;
+      },
+      cellRenderer: arg => {
+        return (
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              navigate("./" + arg.rowData.igoRequestId);
+            }}
+          >
+            Edit
+          </Button>
+        );
+      }
+    },
+    {
+      dataKey: "igoRequestId",
+      label: "IGO Request ID",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "igoProjectId",
+      label: "IGO Project ID",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "projectManagerName",
+      label: "Project Manager Name",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "investigatorName",
+      label: "Investigator Name",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "investigatorEmail",
+      label: "Investigator Email",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "dataAnalystName",
+      label: "Data Analyst Name",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "dataAnalystEmail",
+      label: "Data Analyst Email",
+      sortable: true,
+      filterable: true
+    },
+    {
+      dataKey: "genePanel",
+      label: "Gene Panel",
+      sortable: true,
+      filterable: true
+    }
+  ];
+
+  // this is control logic
+  if (params.requestId) {
+    return <RequestSummary props={params} />;
+  }
+
+  // notes:
+  // form can go in another component
+  // def put the table in another component (from infinite loader --> through table)
+  // todo: sample-level detail editing mode (<path>/sampleId/edit <-- edit would indicate mode we're in)
 
   return (
     <Row
@@ -210,79 +261,3 @@ const RecentDeliveriesObserverable = () => {
     </Row>
   );
 };
-// on "edit button click" enter editing mode
-// make "edit button" cli
-// cellrenderer gets rowData (sample properties)
-const RecentDeliveriesColumns = [
-  {
-    headerRender: () => {
-      return <Edit />;
-    },
-    cellRenderer: arg => {
-      return (
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => {
-            // call setState --> puts us in editing mode
-            // introducing a new state property (state = editingSampleId)
-            // if "editingSampleId" defined then render the form for editing (app re-renders, shows form)
-            // if "editingSampleId" undefined then app knows not to show the other stuff, maybe shows in modal
-            // for now let's put form at the bottom
-            alert(arg.rowData.igoRequestId);
-          }}
-        >
-          Edit
-        </Button>
-      );
-    }
-  },
-  {
-    dataKey: "igoRequestId",
-    label: "IGO Request ID",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "igoProjectId",
-    label: "IGO Project ID",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "projectManagerName",
-    label: "Project Manager Name",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "investigatorName",
-    label: "Investigator Name",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "investigatorEmail",
-    label: "Investigator Email",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "dataAnalystName",
-    label: "Data Analyst Name",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "dataAnalystEmail",
-    label: "Data Analyst Email",
-    sortable: true,
-    filterable: true
-  },
-  {
-    dataKey: "genePanel",
-    label: "Gene Panel",
-    sortable: true,
-    filterable: true
-  }
-];

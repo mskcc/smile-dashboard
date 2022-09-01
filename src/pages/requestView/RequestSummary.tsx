@@ -2,31 +2,17 @@ import React from "react";
 import { RequestSummaryQueryDocument } from "../../generated/graphql";
 import { useQuery } from "@apollo/client";
 import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
-import { Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import { observer } from "mobx-react";
-import { makeAutoObservable } from "mobx";
-import { TableCell } from "@material-ui/core";
 import "react-virtualized/styles.css";
 
-function createStore() {
-  return makeAutoObservable({
-    selectedRequest: ""
-  });
-}
-
-const store = createStore();
-
-export const RequestSummary: React.FunctionComponent = props => {
-  return <RequestSummaryObservable props={props} />;
-};
-
-const RequestSummaryObservable = observer(({ props }) => {
-  const { loading, error, data, fetchMore, refetch } = useQuery(
+const RequestSummary = observer(({ props }) => {
+  const { loading, error, data, fetchMore } = useQuery(
     RequestSummaryQueryDocument,
     {
       variables: {
         where: {
-          igoRequestId_CONTAINS: props.selectedRequest
+          igoRequestId_CONTAINS: props.requestId
         },
         options: {
           offset: 0,
@@ -45,6 +31,7 @@ const RequestSummaryObservable = observer(({ props }) => {
   );
 
   if (loading) return <Row />;
+  if (error) return <Row>Error loading request details / request samples</Row>;
 
   function loadMoreRows({ startIndex, stopIndex }, fetchMore: any) {
     return fetchMore({
@@ -69,36 +56,10 @@ const RequestSummaryObservable = observer(({ props }) => {
       .hasMetadataSampleMetadata[0];
   }
 
-  function headerRenderer({ dataKey }) {
-    return <TableCell>{dataKey}</TableCell>;
-  }
-
-  function cellRenderer({ cellData }) {
-    return (
-      <TableCell align="right" padding="normal">
-        {cellData || ""}
-      </TableCell>
-    );
-  }
-
   const remoteRowCount = data.requests[0].hasSampleSamplesConnection.totalCount;
 
-  if (!props.selectedRequest) {
-    return <Row />;
-  }
   return (
-    <Row
-      id="requestDetailsRow"
-      style={{
-        flexDirection: "column",
-        display: "flex",
-        position: "relative",
-        marginTop: "600px" // i know this isn't the right way to do this so this is just temporary
-      }}
-    >
-      <div>
-        <h3>Displaying Request: {props.selectedRequest}</h3>
-      </div>
+    <Container>
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={params => {
@@ -134,11 +95,11 @@ const RequestSummaryObservable = observer(({ props }) => {
           </AutoSizer>
         )}
       </InfiniteLoader>
-    </Row>
+    </Container>
   );
 });
 
-export { RequestSummaryObservable };
+export { RequestSummary };
 
 const SampleDetailsColumns = [
   {
