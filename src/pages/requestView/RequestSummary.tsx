@@ -6,6 +6,7 @@ import { Row } from "react-bootstrap";
 import { observer } from "mobx-react";
 import { makeAutoObservable } from "mobx";
 import { TableCell } from "@material-ui/core";
+import "react-virtualized/styles.css";
 
 function createStore() {
   return makeAutoObservable({
@@ -86,7 +87,15 @@ const RequestSummaryObservable = observer(({ props }) => {
     return <Row />;
   }
   return (
-    <Row id="requestDetailsRow" style={{ marginTop: "100px" }}>
+    <Row
+      id="requestDetailsRow"
+      style={{
+        flexDirection: "column",
+        display: "flex",
+        position: "relative",
+        marginTop: "600px" // i know this isn't the right way to do this so this is just temporary
+      }}
+    >
       <div>
         <h3>Displaying Request: {props.selectedRequest}</h3>
       </div>
@@ -102,10 +111,9 @@ const RequestSummaryObservable = observer(({ props }) => {
             {({ width }) => (
               <Table
                 className="table"
-                style={{}}
                 ref={registerChild}
                 width={width}
-                height={270}
+                height={450}
                 headerHeight={50}
                 rowHeight={40}
                 rowCount={remoteRowCount}
@@ -115,19 +123,9 @@ const RequestSummaryObservable = observer(({ props }) => {
                 {SampleDetailsColumns.map(col => {
                   return (
                     <Column
-                      headerRenderer={headerRenderer}
-                      cellRenderer={({
-                        cellData,
-                        columnIndex = null,
-                        rowIndex
-                      }) => {
-                        return cellRenderer({ cellData });
-                      }}
-                      headerStyle={{ display: "inline-block" }}
-                      style={{ display: "inline-block" }}
                       label={col.label}
                       dataKey={`${col.dataKey}`}
-                      width={width / 8}
+                      width={width / SampleDetailsColumns.length}
                     />
                   );
                 })}

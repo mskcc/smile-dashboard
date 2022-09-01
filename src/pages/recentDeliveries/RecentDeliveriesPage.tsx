@@ -178,7 +178,6 @@ const RecentDeliveriesObserverable = () => {
             {({ width }) => (
               <Table
                 className="table"
-                style={{}}
                 ref={registerChild}
                 width={width}
                 height={540}
@@ -199,7 +198,7 @@ const RecentDeliveriesObserverable = () => {
                       label={col.label}
                       dataKey={`${col.dataKey}`}
                       cellRenderer={col.cellRenderer}
-                      width={width / 8}
+                      width={width / RecentDeliveriesColumns.length}
                     />
                   );
                 })}
