@@ -10,6 +10,7 @@ import { RequestSummary } from "../requestView/RequestSummary";
 import "react-virtualized/styles.css";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import _ from "lodash";
 
 function createStore() {
   return makeAutoObservable({
@@ -36,20 +37,26 @@ export const RecentDeliveriesPage: React.FunctionComponent = props => {
 
 export default RecentDeliveriesPage;
 
+
+let timeout: any = null;
+let prom: Promise<any> = Promise.resolve();
+
 const RecentDeliveriesObserverable = () => {
   const [val, setVal] = useState("");
   const navigate = useNavigate();
   const params = useParams();
+
+  const filterField = "investigatorName_CONTAINS";
 
   const { loading, error, data, refetch, fetchMore } = useQuery(
     RecentDeliveriesQueryDocument,
     {
       variables: {
         where: {
-          requestJson_CONTAINS: store.filter
+          [filterField]: store.filter
         },
         requestsConnectionWhere2: {
-          requestJson_CONTAINS: store.filter
+          [filterField]: store.filter
         },
         options: { limit: 20, offset: 0 }
       }
@@ -62,9 +69,6 @@ const RecentDeliveriesObserverable = () => {
   function loadMoreRows({ startIndex, stopIndex }, fetchMore: any) {
     return fetchMore({
       variables: {
-        // where: {
-        //   igoRequestId_CONTAINS: store.filter
-        // },
         options: {
           offset: startIndex,
           limit: stopIndex
@@ -193,6 +197,28 @@ const RecentDeliveriesObserverable = () => {
                 if (value !== null) {
                   setVal(value);
                 }
+
+                if (timeout) {
+                  clearTimeout((timeout))
+                }
+
+                // there will always be a promise so
+                // wait until it's resolved
+                prom.then(()=>{
+                  timeout = setTimeout(()=>{
+                    prom = refetch({
+                      where: {
+                        [filterField]: value
+                      },
+                      requestsConnectionWhere2: {
+                        [filterField]: value
+                      },
+                      options: { limit: 20, offset: 0 }
+                    });
+                  },500)
+
+                });
+
               }}
             />
           </Form.Group>
@@ -204,10 +230,10 @@ const RecentDeliveriesObserverable = () => {
           onClick={() => {
             refetch({
               where: {
-                requestJson_CONTAINS: val
+                [filterField]: val
               },
               requestsConnectionWhere2: {
-                requestJson_CONTAINS: val
+                [filterField]: val
               },
               options: { limit: 20, offset: 0 }
             });
