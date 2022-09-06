@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { Edit } from "@material-ui/icons";
 import "./RecentDeliveries.css";
 import { RecentDeliveriesQueryDocument } from "../../generated/graphql";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 import { makeAutoObservable } from "mobx";
 import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
 import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
@@ -37,12 +37,14 @@ export const RecentDeliveriesPage: React.FunctionComponent = props => {
 
 export default RecentDeliveriesPage;
 
-
-let timeout: any = null;
-let prom: Promise<any> = Promise.resolve();
-
 const RecentDeliveriesObserverable = () => {
+
   const [val, setVal] = useState("");
+
+  const [timeO, setTime0] = useState<any>(null);
+
+  const [prom, setProm] = useState<any>(Promise.resolve());
+
   const navigate = useNavigate();
   const params = useParams();
 
@@ -198,15 +200,15 @@ const RecentDeliveriesObserverable = () => {
                   setVal(value);
                 }
 
-                if (timeout) {
-                  clearTimeout((timeout))
+                if (timeO) {
+                  clearTimeout(timeO)
                 }
 
                 // there will always be a promise so
                 // wait until it's resolved
                 prom.then(()=>{
-                  timeout = setTimeout(()=>{
-                    prom = refetch({
+                  const to = setTimeout(()=>{
+                    const rf = refetch({
                       where: {
                         [filterField]: value
                       },
@@ -215,34 +217,18 @@ const RecentDeliveriesObserverable = () => {
                       },
                       options: { limit: 20, offset: 0 }
                     });
-                  },500)
-
+                    setProm(rf);
+                  },500);
+                  setTime0(to);
                 });
 
               }}
             />
           </Form.Group>
         </Form>
-        <Button
-          style={{ height: "40px", width: "80px" }}
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            refetch({
-              where: {
-                [filterField]: val
-              },
-              requestsConnectionWhere2: {
-                [filterField]: val
-              },
-              options: { limit: 20, offset: 0 }
-            });
-          }}
-        >
-          Filter
-        </Button>
       </InputGroup>
       <hr />
+      <div>Results: {remoteRowCount}</div>
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={params => {
