@@ -4,6 +4,7 @@ import "./RecentDeliveries.css";
 import { RecentDeliveriesQueryDocument } from "../../generated/graphql";
 import { observer } from "mobx-react-lite";
 import { makeAutoObservable } from "mobx";
+import jsdownload from "js-file-download";
 import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
 import {
   Badge,
@@ -182,6 +183,12 @@ const RecentDeliveriesObserverable = () => {
           />
         </Col>
         <Col className={"text-start"}>{data.requestsConnection.totalCount} matching requests</Col>
+
+        <Col>
+          <Button onClick={()=>{
+            jsdownload(data.requests,"blah.txt");
+          }}>Export</Button>
+        </Col>
       </Row>
 
       <Row className={classNames({ "d-none": params.requestId })}>
