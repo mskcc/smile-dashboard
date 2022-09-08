@@ -20,6 +20,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import classNames from "classnames";
+import {buildRequestTableColumns} from "./helpers";
 
 function createStore() {
   return makeAutoObservable({
@@ -38,14 +39,14 @@ export const RecentDeliveriesPage: React.FunctionComponent = props => {
 export default RecentDeliveriesPage;
 
 const RecentDeliveriesObserverable = () => {
+
   const [val, setVal] = useState("");
-
-  const [timeO, setTime0] = useState<any>(null);
-
+  const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
-
   const navigate = useNavigate();
   const params = useParams();
+
+  const RequestTableColumns = buildRequestTableColumns(navigate);
 
   const filterField = "requestJson_CONTAINS";
 
@@ -65,6 +66,7 @@ const RecentDeliveriesObserverable = () => {
   );
 
   if (loading) return <p>Loading requests...</p>;
+
   if (error) return <p>Error :(</p>;
 
   function loadMoreRows({ startIndex, stopIndex }, fetchMore: any) {
@@ -94,93 +96,22 @@ const RecentDeliveriesObserverable = () => {
     store.showRequestDetails = true;
   }
 
-  const remoteRowCount = data.requestsConnection.totalCount;
   // notes: cellrenderer gets rowData (sample properties)
   // todo: add prop that we can call setState for to put us in "editing mode"
-  const RecentDeliveriesColumns = [
-    {
-      headerRender: () => {
-        return <Edit />;
-      },
-      cellRenderer: arg => {
-        return (
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => {
-              navigate("./" + arg.rowData.igoRequestId);
-            }}
-          >
-            Edit
-          </Button>
-        );
-      }
-    },
-    {
-      dataKey: "igoRequestId",
-      label: "IGO Request ID",
-      sortable: true,
-      filterable: true
-    },
-    {
-      dataKey: "igoProjectId",
-      label: "IGO Project ID",
-      sortable: true,
-      filterable: true
-    },
-    {
-      dataKey: "projectManagerName",
-      label: "Project Manager Name",
-      sortable: true,
-      filterable: true,
-      width: 200
-    },
-    {
-      dataKey: "investigatorName",
-      label: "Investigator Name",
-      sortable: true,
-      filterable: true,
-      width: 200
-    },
-    {
-      dataKey: "investigatorEmail",
-      label: "Investigator Email",
-      sortable: true,
-      filterable: true,
-      width: 200
-    },
-    {
-      dataKey: "dataAnalystName",
-      label: "Data Analyst Name",
-      sortable: true,
-      filterable: true,
-      width: 200
-    },
-    {
-      dataKey: "dataAnalystEmail",
-      label: "Data Analyst Email",
-      sortable: true,
-      filterable: true,
-      width: 200
-    },
-    {
-      dataKey: "genePanel",
-      label: "Gene Panel",
-      sortable: true,
-      filterable: true
-    }
-  ];
 
   // notes:
   // form can go in another component
   // def put the table in another component (from infinite loader --> through table)
   // todo: sample-level detail editing mode (<path>/sampleId/edit <-- edit would indicate mode we're in)
 
+  const title = params.requestId ?
+      `Viewing Request ${params.requestId}` :
+      "Requests";
+
   return (
     <Container fluid>
       <Row className="pagetitle">
         <Col>
-          <h1>Requests</h1>
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
@@ -194,6 +125,7 @@ const RecentDeliveriesObserverable = () => {
               )}
             </ol>
           </nav>
+          <h1>{title}</h1>
         </Col>
       </Row>
 
@@ -205,27 +137,28 @@ const RecentDeliveriesObserverable = () => {
 
       <Row
         className={classNames(
-          "d-flex justify-content-between align-items-center",
+          "d-flex justify-content-center align-items-center",
           { "d-none": params.requestId }
         )}
       >
-        <Col>
+        <Col className={"text-end"}>
           <Form.Control
-            style={{ width: "300px" }}
+              className={"d-inline-block"}
+            style={{ width: "300px"}}
             type="search"
             placeholder="Search Requests"
             aria-label="Search"
             value={val}
             onInput={event => {
-              const value = String(
-                ((event.currentTarget as unknown) as HTMLInputElement).value
-              );
+
+              const value = event.currentTarget.value;
+
               if (value !== null) {
                 setVal(value);
               }
 
-              if (timeO) {
-                clearTimeout(timeO);
+              if (typingTimeout) {
+                clearTimeout(typingTimeout);
               }
 
               // there will always be a promise so
@@ -243,21 +176,21 @@ const RecentDeliveriesObserverable = () => {
                   });
                   setProm(rf);
                 }, 500);
-                setTime0(to);
+                setTypingTimeout(to);
               });
             }}
           />
         </Col>
-        <Col className={"text-center"}>{remoteRowCount} matching requests</Col>
-        <Col className={"text-end"}></Col>
+        <Col className={"text-start"}>{data.requestsConnection.totalCount} matching requests</Col>
       </Row>
+
       <Row className={classNames({ "d-none": params.requestId })}>
         <InfiniteLoader
           isRowLoaded={isRowLoaded}
           loadMoreRows={params => {
             return loadMoreRows(params, fetchMore);
           }}
-          rowCount={remoteRowCount}
+          rowCount={data.requestsConnection.totalCount}
         >
           {({ onRowsRendered, registerChild }) => (
             <AutoSizer>
@@ -269,7 +202,7 @@ const RecentDeliveriesObserverable = () => {
                   height={540}
                   headerHeight={60}
                   rowHeight={40}
-                  rowCount={remoteRowCount}
+                  rowCount={data.requestsConnection.totalCount}
                   onRowsRendered={onRowsRendered}
                   rowGetter={rowGetter}
                   onRowClick={onRowClick}
@@ -277,7 +210,7 @@ const RecentDeliveriesObserverable = () => {
                     store.showRequestDetails = false;
                   }}
                 >
-                  {RecentDeliveriesColumns.map(col => {
+                  {RequestTableColumns.map(col => {
                     return (
                       <Column
                         headerRenderer={col.headerRender}
