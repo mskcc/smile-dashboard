@@ -66,6 +66,47 @@ const RecentDeliveriesObserverable = () => {
     }
   );
 
+
+
+  // const test = () => {
+  //   let x=data.requests
+  //   return x
+  // }
+
+  if (data) {
+    let x=data.requests[1]
+    let y=data.requests
+    let zarray=Object.entries(y)
+    // console.log(typeof(x))
+    // console.log(Object.entries(x))
+    // console.log(typeof(y))
+    // console.log(Object.entries(y))
+    console.log(zarray)
+
+
+    const csvString = [
+
+      
+    [  "IGO Request ID",
+    "IGO Project ID"],
+
+    ...zarray.map(item => [
+      item[1]
+    ]
+      
+      )
+
+    ]
+
+    console.log(csvString)
+
+      }
+
+
+
+
+
+
   if (loading) return <p>Loading requests...</p>;
 
   if (error) return <p>Error :(</p>;
@@ -186,8 +227,9 @@ const RecentDeliveriesObserverable = () => {
 
         <Col>
           <Button onClick={()=>{
-            jsdownload(data.requests,"blah.txt");
-          }}>Export</Button>
+            jsdownload(data.requests[1].genePanel,"blah.txt");
+          //  # jsdownload(data.requests,"blah.txt");
+          }}>Generate Report</Button>
         </Col>
       </Row>
 
