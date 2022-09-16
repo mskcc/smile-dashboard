@@ -68,39 +68,55 @@ const RecentDeliveriesObserverable = () => {
 
 
 
-  // const test = () => {
-  //   let x=data.requests
-  //   return x
-  // }
 
-  if (data) {
-    let x=data.requests[1]
-    let y=data.requests
-    let zarray=Object.entries(y)
-    // console.log(typeof(x))
-    // console.log(Object.entries(x))
-    // console.log(typeof(y))
-    // console.log(Object.entries(y))
-    console.log(zarray)
+    const CSVGenerate = () => {
+        let y=data.requests
+        // let zarray=Object.entries(y)
+        // console.log(typeof(x))
+        // console.log(Object.entries(x))
+        // console.log(typeof(y))
+        // console.log(Object.entries(y))
+        // console.log(zarray)
 
 
-    const csvString = [
+        const csvString = [
 
-      
-    [  "IGO Request ID",
-    "IGO Project ID"],
+          
+        [  "IGO Request ID",
+        "IGO Project ID",
+        "Project Manager Name",
+        "Investigator Name",
+        "Investigator Email",
+        "Data Analyst Name",
+        "Data Analyst Email",
+        "Gene Panel"
 
-    ...zarray.map(item => [
-      item[1]
-    ]
-      
-      )
+      ],
 
-    ]
+        ...y.map(item => [
+          item.igoRequestId,
+          item.igoProjectId,
+          item.projectManagerName,
+          item.investigatorName,
+          item.investigatorEmail,
+          item.dataAnalystName,
+          item.dataAnalystEmail,
+          item.genePanel
 
-    console.log(csvString)
+        ]
+          
+          )
 
-      }
+        ]
+
+        .map(e => e.join(",")) 
+        .join("\n");
+
+        console.log(csvString)
+
+        jsdownload(csvString,"report.csv");
+
+       }
 
 
 
@@ -225,11 +241,18 @@ const RecentDeliveriesObserverable = () => {
         </Col>
         <Col className={"text-start"}>{data.requestsConnection.totalCount} matching requests</Col>
 
-        <Col>
+        {/* <Col>
           <Button onClick={()=>{
-            jsdownload(data.requests[1].genePanel,"blah.txt");
+            {CSVGenerate}
+            // jsdownload({CSVGenerate},"report.csv");
           //  # jsdownload(data.requests,"blah.txt");
           }}>Generate Report</Button>
+        </Col>
+      </Row> */}
+
+
+              <Col>
+          <Button onClick={CSVGenerate}>Generate Report</Button>
         </Col>
       </Row>
 
