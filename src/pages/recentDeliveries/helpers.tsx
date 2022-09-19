@@ -3,13 +3,13 @@ import {Button} from "react-bootstrap";
 import React from "react";
 
 type ColumnDefinition = {
-    dataKey:String,
-    label:String,
-    sortable:Boolean,
-    filterable:Boolean,
-    width?:Number,
-    headerRender:()=>any,
-    cellRenderer:()=>any
+    dataKey?:string,
+    label?:string,
+    sortable?:Boolean,
+    filterable?:Boolean,
+    width?:number,
+    headerRender?:(arg:any)=> any,
+    cellRenderer?:(arg:any)=> any
 }
 
 export const StaticTableColumns:ColumnDefinition[] = [

@@ -13,6 +13,8 @@ import {
   Container,
   Form,
   InputGroup,
+  Modal,
+  ModalDialog,
   Row
 } from "react-bootstrap";
 import { RequestSummary } from "../requestView/RequestSummary";
@@ -21,7 +23,10 @@ import React, { useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import classNames from "classnames";
-import {buildRequestTableColumns} from "./helpers";
+import {buildRequestTableColumns, StaticTableColumns} from "./helpers";
+import { CSVGenerate } from "./csvExport";
+
+
 
 function createStore() {
   return makeAutoObservable({
@@ -32,6 +37,8 @@ function createStore() {
 }
 
 const store = createStore();
+
+const filterField = "requestJson_CONTAINS";
 
 export const RecentDeliveriesPage: React.FunctionComponent = props => {
   return <RecentDeliveriesObserverable />;
@@ -49,7 +56,7 @@ const RecentDeliveriesObserverable = () => {
 
   const RequestTableColumns = buildRequestTableColumns(navigate);
 
-  const filterField = "requestJson_CONTAINS";
+  
 
   const { loading, error, data, refetch, fetchMore } = useQuery(
     RecentDeliveriesQueryDocument,
@@ -67,56 +74,6 @@ const RecentDeliveriesObserverable = () => {
   );
 
 
-
-
-    const CSVGenerate = () => {
-        let y=data.requests
-        // let zarray=Object.entries(y)
-        // console.log(typeof(x))
-        // console.log(Object.entries(x))
-        // console.log(typeof(y))
-        // console.log(Object.entries(y))
-        // console.log(zarray)
-
-
-        const csvString = [
-
-          
-        [  "IGO Request ID",
-        "IGO Project ID",
-        "Project Manager Name",
-        "Investigator Name",
-        "Investigator Email",
-        "Data Analyst Name",
-        "Data Analyst Email",
-        "Gene Panel"
-
-      ],
-
-        ...y.map(item => [
-          item.igoRequestId,
-          item.igoProjectId,
-          item.projectManagerName,
-          item.investigatorName,
-          item.investigatorEmail,
-          item.dataAnalystName,
-          item.dataAnalystEmail,
-          item.genePanel
-
-        ]
-          
-          )
-
-        ]
-
-        .map(e => e.join(",")) 
-        .join("\n");
-
-        console.log(csvString)
-
-        jsdownload(csvString,"report.csv");
-
-       }
 
 
 
@@ -168,6 +125,7 @@ const RecentDeliveriesObserverable = () => {
 
   return (
     <Container fluid>
+      <Modal.Dialog show={true}><DownloadModal/></Modal.Dialog>
       <Row className="pagetitle">
         <Col>
           <nav>
@@ -252,7 +210,10 @@ const RecentDeliveriesObserverable = () => {
 
 
               <Col>
-          <Button onClick={CSVGenerate}>Generate Report</Button>
+          {/* <Button onClick={CSVGenerate}>Generate Report</Button> */}
+          <Button onClick={()=>{
+      
+          }}>Generate Report</Button>
         </Col>
       </Row>
 
@@ -302,3 +263,32 @@ const RecentDeliveriesObserverable = () => {
     </Container>
   );
 };
+
+
+
+const DownloadModal = () => {
+
+  const { loading, error, data, refetch, fetchMore } = useQuery(
+    RecentDeliveriesQueryDocument,
+    {
+      variables: {
+        where: {
+          [filterField]: store.filter
+        },
+        requestsConnectionWhere2: {
+          [filterField]: store.filter
+        },
+        options: { limit: 100 }
+      }
+    }
+  )
+
+  if (loading === false){
+    console.log(data)
+  }
+  return (
+    <div>{loading}</div>
+    )
+
+
+}
