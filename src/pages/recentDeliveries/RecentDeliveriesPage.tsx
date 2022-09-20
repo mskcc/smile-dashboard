@@ -146,9 +146,13 @@ const RecentDeliveriesObserverable = () => {
       </Row>
 
       {params.requestId && (
-        <Row>
-          <RequestSummary props={params} />
-        </Row>
+        <Modal show={true}
+               dialogClassName="modal-90w"
+        >
+          <Modal.Body>
+              <RequestSummary props={params} />
+          </Modal.Body>
+        </Modal>
       )}
 
       <Row
