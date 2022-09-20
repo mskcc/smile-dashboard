@@ -4,8 +4,6 @@ import logo_with_text from "../../imgs/logo_with_text.png";
 const SmileNavBar: React.FunctionComponent = props => {
   var requestIdSearch = "";
 
-  const moo = { hello: 1, goodby: 2, true: 4, snood: 5 };
-
   return (
     <header id="header" className="header fixed-top d-flex align-items-center">
       <div className="d-flex align-items-center justify-content-between">

@@ -287,34 +287,11 @@ const DownloadModal: FunctionComponent<{
   onComplete: () => void;
   filter: string;
 }> = ({ loader, onComplete, filter }) => {
-  console.log("filter", filter);
-
-  // const { loading, error, data } = useQuery(
-  //   RecentDeliveriesQueryDocument,
-  //     {
-  //       variables: {
-  //         where: {
-  //           [filterField]: filter
-  //         },
-  //         requestsConnectionWhere2: {
-  //           [filterField]: filter
-  //         },
-  //         fetchPolicy: 'network-only',
-  //         options: { limit: 5000, offset: 0 }
-  //       }
-  //     }
-  // )
-
-  //if (data) {
   loader().then(({ data }) => {
-    console.log("downloaded", data.requests.length);
+    console.log("exporting", data.requests.length);
+    CSVGenerate(data.requests);
     onComplete();
   });
-
-  //console.log(`exporting for filter ${filter} `, data.requests.length);
-  //CSVGenerate(data.requests);
-  //onComplete();
-  //}
 
   return (
     <Modal show={true}>
