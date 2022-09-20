@@ -73,13 +73,6 @@ const RecentDeliveriesObserverable = () => {
     }
   );
 
-
-
-
-
-
-
-
   if (loading) return <p>Loading requests...</p>;
 
   if (error) return <p>Error :(</p>;
@@ -202,15 +195,6 @@ const RecentDeliveriesObserverable = () => {
           />
         </Col>
         <Col className={"text-start"}>{data.requestsConnection.totalCount} matching requests</Col>
-
-        {/* <Col>
-          <Button onClick={()=>{
-            {CSVGenerate}
-            // jsdownload({CSVGenerate},"report.csv");
-          //  # jsdownload(data.requests,"blah.txt");
-          }}>Generate Report</Button>
-        </Col>
-      </Row> */}
 
 
               <Col>

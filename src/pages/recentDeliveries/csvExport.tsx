@@ -3,13 +3,6 @@ import {buildRequestTableColumns, StaticTableColumns} from "./helpers";
 import jsdownload from "js-file-download";
 
    export function CSVGenerate(requests) {
-        // let =requests
-        // let zarray=Object.entries(y)
-        // console.log(typeof(x))
-        // console.log(Object.entries(x))
-        // console.log(typeof(y))
-        // console.log(Object.entries(y))
-        // console.log(zarray)
 
         const csvString=[
 
@@ -65,7 +58,6 @@ import jsdownload from "js-file-download";
         // .map(e => e.join(",")) 
         // .join("\n");
 
-        // console.log(csvString)
 
         // 
 
