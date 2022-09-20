@@ -26,8 +26,6 @@ import jsdownload from "js-file-download";
         .map(e => e.join("\t")) 
         .join("\n");
 
-        console.log(csvString)
-
         jsdownload(csvString,"report.csv");
         
 

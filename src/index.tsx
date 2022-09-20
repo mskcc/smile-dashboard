@@ -10,6 +10,7 @@ import SmileNavBar from "./shared/components/SmileNavBar";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import { RequestSummary } from "./pages/requestView/RequestSummary";
 
+
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -34,7 +35,7 @@ const root = ReactDOM.render(
         <main id="main" className="main">
           <section className="section dashboard">
             <Routes>
-              <Route path="/home" element={<HomePage />}></Route>
+              <Route path="/" element={<HomePage />}></Route>
               <Route
                 path="/recentDeliveries/"
                 element={<RecentDeliveriesPage />}

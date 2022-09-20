@@ -13,13 +13,14 @@ import {
   Container,
   Form,
   InputGroup,
-  Modal,
-  ModalDialog,
   Row
 } from "react-bootstrap";
+
+import Modal from 'react-bootstrap/Modal';
+
 import { RequestSummary } from "../requestView/RequestSummary";
 import "react-virtualized/styles.css";
-import React, { useState } from "react";
+import React, {FunctionComponent, useState} from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import classNames from "classnames";
@@ -32,11 +33,14 @@ function createStore() {
   return makeAutoObservable({
     filter: "",
     selectedRequest: "",
-    showRequestDetails: false
+    showRequestDetails: false,
+    showDownload:false
   });
 }
 
 const store = createStore();
+
+
 
 const filterField = "requestJson_CONTAINS";
 
@@ -54,6 +58,8 @@ const RecentDeliveriesObserverable = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const [showDownload, setShowDownload] = useState(false);
+
   const RequestTableColumns = buildRequestTableColumns(navigate);
 
   
@@ -63,22 +69,15 @@ const RecentDeliveriesObserverable = () => {
     {
       variables: {
         where: {
-          [filterField]: store.filter
+          [filterField]: ""
         },
         requestsConnectionWhere2: {
-          [filterField]: store.filter
+          [filterField]: ""
         },
-        options: { limit: 20, offset: 0 }
+        options: { limit: 0, offset: 0 }
       }
     }
   );
-
-
-
-
-
-
-
 
   if (loading) return <p>Loading requests...</p>;
 
@@ -93,6 +92,22 @@ const RecentDeliveriesObserverable = () => {
         }
       }
     });
+  }
+
+  function loadAllRows(fetchMore: any, filter:string) {
+    return ()=>{
+      return fetchMore({
+        variables: {
+          where: {
+            [filterField]: filter
+          },
+          options: {
+            offset: 0,
+            limit: undefined
+          }
+        }
+      });
+    }
   }
 
   function isRowLoaded({ index }) {
@@ -125,7 +140,10 @@ const RecentDeliveriesObserverable = () => {
 
   return (
     <Container fluid>
-      <Modal.Dialog show={true}><DownloadModal/></Modal.Dialog>
+
+      {
+       showDownload && <DownloadModal filter={val} loader={loadAllRows(fetchMore, val)} onComplete={()=>setShowDownload(false)} />
+      }
       <Row className="pagetitle">
         <Col>
           <nav>
@@ -212,7 +230,7 @@ const RecentDeliveriesObserverable = () => {
               <Col>
           {/* <Button onClick={CSVGenerate}>Generate Report</Button> */}
           <Button onClick={()=>{
-      
+              setShowDownload(true)
           }}>Generate Report</Button>
         </Col>
       </Row>
@@ -266,28 +284,44 @@ const RecentDeliveriesObserverable = () => {
 
 
 
-const DownloadModal = () => {
+const DownloadModal: FunctionComponent<{ loader:()=>Promise<any>, onComplete:()=>void, filter:string }> = ({ loader, onComplete, filter }) => {
 
-  const { loading, error, data, refetch, fetchMore } = useQuery(
-    RecentDeliveriesQueryDocument,
-    {
-      variables: {
-        where: {
-          [filterField]: store.filter
-        },
-        requestsConnectionWhere2: {
-          [filterField]: store.filter
-        },
-        options: { limit: 100 }
-      }
-    }
-  )
+  console.log("filter", filter);
 
-  if (loading === false){
-    console.log(data)
-  }
+  // const { loading, error, data } = useQuery(
+  //   RecentDeliveriesQueryDocument,
+  //     {
+  //       variables: {
+  //         where: {
+  //           [filterField]: filter
+  //         },
+  //         requestsConnectionWhere2: {
+  //           [filterField]: filter
+  //         },
+  //         fetchPolicy: 'network-only',
+  //         options: { limit: 5000, offset: 0 }
+  //       }
+  //     }
+  // )
+
+  //if (data) {
+    loader().then(({ data })=>{
+      console.log("downloaded", data.requests.length);
+      onComplete();
+    });
+
+  //console.log(`exporting for filter ${filter} `, data.requests.length);
+    //CSVGenerate(data.requests);
+    //onComplete();
+  //}
+
   return (
-    <div>{loading}</div>
+      <Modal show={true}>
+        <Modal.Body>
+          <div>Downloading data</div>
+        </Modal.Body>
+      </Modal>
+
     )
 
 
