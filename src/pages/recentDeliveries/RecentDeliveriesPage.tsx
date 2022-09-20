@@ -16,31 +16,27 @@ import {
   Row
 } from "react-bootstrap";
 
-import Modal from 'react-bootstrap/Modal';
+import Modal from "react-bootstrap/Modal";
 
 import { RequestSummary } from "../requestView/RequestSummary";
 import "react-virtualized/styles.css";
-import React, {FunctionComponent, useState} from "react";
+import React, { FunctionComponent, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import classNames from "classnames";
-import {buildRequestTableColumns, StaticTableColumns} from "./helpers";
+import { buildRequestTableColumns, StaticTableColumns } from "./helpers";
 import { CSVGenerate } from "./csvExport";
-
-
 
 function createStore() {
   return makeAutoObservable({
     filter: "",
     selectedRequest: "",
     showRequestDetails: false,
-    showDownload:false
+    showDownload: false
   });
 }
 
 const store = createStore();
-
-
 
 const filterField = "requestJson_CONTAINS";
 
@@ -51,7 +47,6 @@ export const RecentDeliveriesPage: React.FunctionComponent = props => {
 export default RecentDeliveriesPage;
 
 const RecentDeliveriesObserverable = () => {
-
   const [val, setVal] = useState("");
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
@@ -61,8 +56,6 @@ const RecentDeliveriesObserverable = () => {
   const [showDownload, setShowDownload] = useState(false);
 
   const RequestTableColumns = buildRequestTableColumns(navigate);
-
-  
 
   const { loading, error, data, refetch, fetchMore } = useQuery(
     RecentDeliveriesQueryDocument,
@@ -94,8 +87,8 @@ const RecentDeliveriesObserverable = () => {
     });
   }
 
-  function loadAllRows(fetchMore: any, filter:string) {
-    return ()=>{
+  function loadAllRows(fetchMore: any, filter: string) {
+    return () => {
       return fetchMore({
         variables: {
           where: {
@@ -107,7 +100,7 @@ const RecentDeliveriesObserverable = () => {
           }
         }
       });
-    }
+    };
   }
 
   function isRowLoaded({ index }) {
@@ -134,16 +127,19 @@ const RecentDeliveriesObserverable = () => {
   // def put the table in another component (from infinite loader --> through table)
   // todo: sample-level detail editing mode (<path>/sampleId/edit <-- edit would indicate mode we're in)
 
-  const title = params.requestId ?
-      `Viewing Request ${params.requestId}` :
-      "Requests";
+  const title = params.requestId
+    ? `Viewing Request ${params.requestId}`
+    : "Requests";
 
   return (
     <Container fluid>
-
-      {
-       showDownload && <DownloadModal filter={val} loader={loadAllRows(fetchMore, val)} onComplete={()=>setShowDownload(false)} />
-      }
+      {showDownload && (
+        <DownloadModal
+          filter={val}
+          loader={loadAllRows(fetchMore, val)}
+          onComplete={() => setShowDownload(false)}
+        />
+      )}
       <Row className="pagetitle">
         <Col>
           <nav>
@@ -177,14 +173,13 @@ const RecentDeliveriesObserverable = () => {
       >
         <Col className={"text-end"}>
           <Form.Control
-              className={"d-inline-block"}
-            style={{ width: "300px"}}
+            className={"d-inline-block"}
+            style={{ width: "300px" }}
             type="search"
             placeholder="Search Requests"
             aria-label="Search"
             value={val}
             onInput={event => {
-
               const value = event.currentTarget.value;
 
               if (value !== null) {
@@ -215,7 +210,9 @@ const RecentDeliveriesObserverable = () => {
             }}
           />
         </Col>
-        <Col className={"text-start"}>{data.requestsConnection.totalCount} matching requests</Col>
+        <Col className={"text-start"}>
+          {data.requestsConnection.totalCount} matching requests
+        </Col>
 
         {/* <Col>
           <Button onClick={()=>{
@@ -226,12 +223,15 @@ const RecentDeliveriesObserverable = () => {
         </Col>
       </Row> */}
 
-
-              <Col>
+        <Col>
           {/* <Button onClick={CSVGenerate}>Generate Report</Button> */}
-          <Button onClick={()=>{
-              setShowDownload(true)
-          }}>Generate Report</Button>
+          <Button
+            onClick={() => {
+              setShowDownload(true);
+            }}
+          >
+            Generate Report
+          </Button>
         </Col>
       </Row>
 
@@ -282,10 +282,11 @@ const RecentDeliveriesObserverable = () => {
   );
 };
 
-
-
-const DownloadModal: FunctionComponent<{ loader:()=>Promise<any>, onComplete:()=>void, filter:string }> = ({ loader, onComplete, filter }) => {
-
+const DownloadModal: FunctionComponent<{
+  loader: () => Promise<any>;
+  onComplete: () => void;
+  filter: string;
+}> = ({ loader, onComplete, filter }) => {
   console.log("filter", filter);
 
   // const { loading, error, data } = useQuery(
@@ -305,24 +306,21 @@ const DownloadModal: FunctionComponent<{ loader:()=>Promise<any>, onComplete:()=
   // )
 
   //if (data) {
-    loader().then(({ data })=>{
-      console.log("downloaded", data.requests.length);
-      onComplete();
-    });
+  loader().then(({ data }) => {
+    console.log("downloaded", data.requests.length);
+    onComplete();
+  });
 
   //console.log(`exporting for filter ${filter} `, data.requests.length);
-    //CSVGenerate(data.requests);
-    //onComplete();
+  //CSVGenerate(data.requests);
+  //onComplete();
   //}
 
   return (
-      <Modal show={true}>
-        <Modal.Body>
-          <div>Downloading data</div>
-        </Modal.Body>
-      </Modal>
-
-    )
-
-
-}
+    <Modal show={true}>
+      <Modal.Body>
+        <div>Downloading data</div>
+      </Modal.Body>
+    </Modal>
+  );
+};

@@ -10,7 +10,6 @@ import SmileNavBar from "./shared/components/SmileNavBar";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import { RequestSummary } from "./pages/requestView/RequestSummary";
 
-
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
