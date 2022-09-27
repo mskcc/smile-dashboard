@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Edit } from "@material-ui/icons";
 import "./RecentDeliveries.css";
-import { RecentDeliveriesQueryDocument } from "../../generated/graphql";
+import { useRecentDeliveriesQuery } from "../../generated/graphql";
 import { observer } from "mobx-react-lite";
 import { makeAutoObservable } from "mobx";
 import jsdownload from "js-file-download";
@@ -13,19 +13,18 @@ import {
   Container,
   Form,
   InputGroup,
-  Row
+  Row,
+  Modal,
+  ModalBody
 } from "react-bootstrap";
-
-import Modal from "react-bootstrap/Modal";
-
-import { RequestSummary } from "../requestView/RequestSummary";
 import "react-virtualized/styles.css";
 import React, { FunctionComponent, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import classNames from "classnames";
-import { buildRequestTableColumns, StaticTableColumns } from "./helpers";
-import { CSVGenerate } from "./csvExport";
+import { buildRequestTableColumns } from "./helpers";
+import { RequestSummary } from "../requestView/RequestSummary";
+import { DownloadModal } from "../../components/DownloadModal";
 
 function createStore() {
   return makeAutoObservable({
@@ -48,17 +47,17 @@ export default RecentDeliveriesPage;
 
 const RecentDeliveriesObserverable = () => {
   const [val, setVal] = useState("");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
   const navigate = useNavigate();
   const params = useParams();
 
-  const [showDownload, setShowDownload] = useState(false);
-
   const RequestTableColumns = buildRequestTableColumns(navigate);
 
-  const { loading, error, data, refetch, fetchMore } = useQuery(
-    RecentDeliveriesQueryDocument,
+  const filterField = "requestJson_CONTAINS";
+
+  const { loading, error, data, refetch, fetchMore } = useRecentDeliveriesQuery(
     {
       variables: {
         where: {
@@ -104,14 +103,14 @@ const RecentDeliveriesObserverable = () => {
   }
 
   function isRowLoaded({ index }) {
-    return index < data.requests.length;
+    return index < data!.requests.length;
   }
 
   function rowGetter({ index }) {
-    if (!data.requests[index]) {
+    if (!data!.requests[index]) {
       return "";
     }
-    return data.requests[index];
+    return data!.requests[index];
   }
 
   function onRowClick(info) {
@@ -131,21 +130,24 @@ const RecentDeliveriesObserverable = () => {
     ? `Viewing Request ${params.requestId}`
     : "Requests";
 
+  const remoteCount = data!.requestsConnection.totalCount;
+
   return (
     <Container fluid>
-      {showDownload && (
+      {showDownloadModal && (
         <DownloadModal
           filter={val}
           loader={loadAllRows(fetchMore, val)}
-          onComplete={() => setShowDownload(false)}
+          onComplete={() => setShowDownloadModal(false)}
         />
       )}
+
       <Row className="pagetitle">
         <Col>
           <nav>
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
               </li>
               <li className="breadcrumb-item active">
                 <NavLink to={"/recentDeliveries"}>Requests</NavLink>
@@ -159,11 +161,7 @@ const RecentDeliveriesObserverable = () => {
         </Col>
       </Row>
 
-      {params.requestId && (
-        <Row>
-          <RequestSummary props={params} />
-        </Row>
-      )}
+      {params.requestId && <RequestSummary props={params} />}
 
       <Row
         className={classNames(
