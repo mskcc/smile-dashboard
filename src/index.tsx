@@ -33,7 +33,7 @@ const root = ReactDOM.render(
         <main id="main" className="main">
           <section className="section dashboard">
             <Routes>
-              <Route path="/home" element={<HomePage />}></Route>
+              <Route path="/" element={<HomePage />}></Route>
               <Route
                 path="/recentDeliveries/"
                 element={<RecentDeliveriesPage />}

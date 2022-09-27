@@ -17,9 +17,8 @@ import {
   Modal,
   ModalBody
 } from "react-bootstrap";
-//import { RequestSummary } from "../requestView/RequestSummary";
 import "react-virtualized/styles.css";
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import classNames from "classnames";
@@ -31,11 +30,14 @@ function createStore() {
   return makeAutoObservable({
     filter: "",
     selectedRequest: "",
-    showRequestDetails: false
+    showRequestDetails: false,
+    showDownload: false
   });
 }
 
 const store = createStore();
+
+const filterField = "requestJson_CONTAINS";
 
 export const RecentDeliveriesPage: React.FunctionComponent = props => {
   return <RecentDeliveriesObserverable />;
@@ -59,12 +61,12 @@ const RecentDeliveriesObserverable = () => {
     {
       variables: {
         where: {
-          [filterField]: store.filter
+          [filterField]: ""
         },
         requestsConnectionWhere2: {
-          [filterField]: store.filter
+          [filterField]: ""
         },
-        options: { limit: 20, offset: 0 }
+        options: { limit: 0, offset: 0 }
       }
     }
   );
@@ -206,12 +208,24 @@ const RecentDeliveriesObserverable = () => {
             }}
           />
         </Col>
-        <Col className={"text-start"}>{remoteCount} matching requests</Col>
+        <Col className={"text-start"}>
+          {data.requestsConnection.totalCount} matching requests
+        </Col>
+
+        {/* <Col>
+          <Button onClick={()=>{
+            {CSVGenerate}
+            // jsdownload({CSVGenerate},"report.csv");
+          //  # jsdownload(data.requests,"blah.txt");
+          }}>Generate Report</Button>
+        </Col>
+      </Row> */}
 
         <Col>
+          {/* <Button onClick={CSVGenerate}>Generate Report</Button> */}
           <Button
             onClick={() => {
-              setShowDownloadModal(true);
+              setShowDownload(true);
             }}
           >
             Generate Report
@@ -225,7 +239,7 @@ const RecentDeliveriesObserverable = () => {
           loadMoreRows={params => {
             return loadMoreRows(params, fetchMore);
           }}
-          rowCount={remoteCount}
+          rowCount={data.requestsConnection.totalCount}
         >
           {({ onRowsRendered, registerChild }) => (
             <AutoSizer>
@@ -237,7 +251,7 @@ const RecentDeliveriesObserverable = () => {
                   height={540}
                   headerHeight={60}
                   rowHeight={40}
-                  rowCount={remoteCount}
+                  rowCount={data.requestsConnection.totalCount}
                   onRowsRendered={onRowsRendered}
                   rowGetter={rowGetter}
                   onRowClick={onRowClick}
@@ -263,5 +277,25 @@ const RecentDeliveriesObserverable = () => {
         </InfiniteLoader>
       </Row>
     </Container>
+  );
+};
+
+const DownloadModal: FunctionComponent<{
+  loader: () => Promise<any>;
+  onComplete: () => void;
+  filter: string;
+}> = ({ loader, onComplete, filter }) => {
+  loader().then(({ data }) => {
+    console.log("exporting", data.requests.length);
+    CSVGenerate(data.requests);
+    onComplete();
+  });
+
+  return (
+    <Modal show={true}>
+      <Modal.Body>
+        <div>Downloading data</div>
+      </Modal.Body>
+    </Modal>
   );
 };
