@@ -1,6 +1,6 @@
 import { useRequestWithSamplesQuery } from "../../generated/graphql";
 import { AutoSizer, Column, InfiniteLoader, Table } from "react-virtualized";
-import { Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { observer } from "mobx-react";
 import "react-virtualized/styles.css";
 import _ from "lodash";
@@ -10,7 +10,13 @@ import { CSVFormulate } from "../../lib/CSVExport";
 import { SampleDetailsColumns } from "./helpers";
 
 const RequestSummary = observer(({ props }) => {
-  const { loading, error, data, fetchMore } = useRequestWithSamplesQuery({
+  const {
+    loading,
+    error,
+    data,
+    refetch,
+    fetchMore
+  } = useRequestWithSamplesQuery({
     variables: {
       where: {
         igoRequestId: props.requestId
@@ -22,10 +28,29 @@ const RequestSummary = observer(({ props }) => {
     }
   });
 
+  const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState<any>(null);
+  const [prom, setProm] = useState<any>(Promise.resolve());
 
   if (loading) return <Row />;
   if (error) return <Row>Error loading request details / request samples</Row>;
+
+  function requestSamplesQueryVariables(value: string) {
+    const gq = {
+      where: {
+        igoRequestId: props.requestId
+      },
+      options: {
+        offset: 0,
+        limit: undefined
+      }
+    };
+    if (!_.isEmpty(value)) {
+      gq["hasSampleSamplesWhere2"] = { sampleClass: value };
+    }
+    return gq;
+  }
 
   const request = data!.requests[0];
   const samples = request.hasSampleSamples;
@@ -34,6 +59,8 @@ const RequestSummary = observer(({ props }) => {
   function rowGetter({ index }) {
     return request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
   }
+
+  console.log(samples);
 
   const sampleTable = (
     <AutoSizer>
@@ -103,6 +130,37 @@ const RequestSummary = observer(({ props }) => {
           exportFilename={"request_" + data?.requests[0].igoRequestId + ".tsv"}
         />
       )}
+
+      <Col className={"text-end"}>
+        <Form.Control
+          className={"d-inline-block"}
+          style={{ width: "300px" }}
+          type="search"
+          placeholder="Search Samples"
+          aria-label="Search"
+          value={val}
+          onInput={event => {
+            const value = event.currentTarget.value;
+
+            if (value !== null) {
+              setVal(value);
+            }
+
+            if (typingTimeout) {
+              clearTimeout(typingTimeout);
+            }
+
+            prom.then(() => {
+              const to = setTimeout(() => {
+                const rf = refetch(requestSamplesQueryVariables(value));
+                console.log(requestSamplesQueryVariables(value));
+                setProm(rf);
+              }, 500);
+              setTypingTimeout(to);
+            });
+          }}
+        />
+      </Col>
 
       <Col className={"text-end"}>
         <Button
