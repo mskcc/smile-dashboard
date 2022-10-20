@@ -37,19 +37,16 @@ const RequestSummary = observer(({ props }) => {
   if (error) return <Row>Error loading request details / request samples</Row>;
 
   function requestSamplesQueryVariables(value: string) {
-    const gq = {
-      where: {
-        igoRequestId: props.requestId
-      },
-      options: {
-        offset: 0,
-        limit: undefined
-      }
+    return {
+      // where: {
+      //   igoRequestId: props.requestId
+      // },
+      hasSampleSamplesWhere2: _.isEmpty(value) ? null : { sampleClass: value }
+      // options: {
+      //   offset: 0,
+      //   limit: undefined
+      // }
     };
-    if (!_.isEmpty(value)) {
-      gq["hasSampleSamplesWhere2"] = { sampleClass: value };
-    }
-    return gq;
   }
 
   const request = data!.requests[0];
@@ -152,8 +149,18 @@ const RequestSummary = observer(({ props }) => {
 
             prom.then(() => {
               const to = setTimeout(() => {
-                const rf = refetch(requestSamplesQueryVariables(value));
-                console.log(requestSamplesQueryVariables(value));
+                const rf = refetch({
+                  // where: {
+                  //   igoRequestId: props.requestId
+                  // },
+                  hasSampleSamplesWhere2: {
+                    sampleClass: _.isEmpty(value) ? undefined : value
+                  }
+                  // options: {
+                  //   offset: 0,
+                  //   limit: undefined
+                  // }
+                });
                 setProm(rf);
               }, 500);
               setTypingTimeout(to);
