@@ -1,4 +1,9 @@
-export function CSVFormulate(requests, columnDefinitions) {
+import { ColumnDefinition } from "../pages/requests/helpers";
+
+export function CSVFormulate(
+  requests: any[],
+  columnDefinitions: ColumnDefinition[]
+) {
   const csvString = [
     columnDefinitions.map(item => item.label).join("\t"),
     ...requests
