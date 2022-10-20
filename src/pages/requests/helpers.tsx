@@ -1,7 +1,7 @@
 import { Edit } from "@material-ui/icons";
 import { Button } from "react-bootstrap";
 
-type ColumnDefinition = {
+export type ColumnDefinition = {
   dataKey?: string;
   label?: string;
   sortable?: Boolean;
