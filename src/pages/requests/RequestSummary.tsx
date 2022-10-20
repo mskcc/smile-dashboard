@@ -57,6 +57,22 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
 
   if (error) return <Row>Error loading request details / request samples</Row>;
 
+  function requestSamplesQueryVariables(value: string) {
+    const gq = {
+      where: {
+        igoRequestId: props.requestId
+      },
+      options: {
+        offset: 0,
+        limit: undefined
+      }
+    };
+    if (!_.isEmpty(value)) {
+      gq["hasSampleSamplesWhere2"] = { sampleClass: value };
+    }
+    return gq;
+  }
+
   const request = data!.requests[0];
   const samples = request.hasSampleSamples;
   const metadataList = samples.map(item => item.hasMetadataSampleMetadata[0]);

@@ -19,240 +19,6 @@ export type Scalars = {
   Float: number;
 };
 
-export type CreateInfo = {
-  __typename?: "CreateInfo";
-  bookmark?: Maybe<Scalars["String"]>;
-  nodesCreated: Scalars["Int"];
-  relationshipsCreated: Scalars["Int"];
-};
-
-export type CreatePatientAliasesMutationResponse = {
-  __typename?: "CreatePatientAliasesMutationResponse";
-  info: CreateInfo;
-  patientAliases: Array<PatientAlias>;
-};
-
-export type CreatePatientsMutationResponse = {
-  __typename?: "CreatePatientsMutationResponse";
-  info: CreateInfo;
-  patients: Array<Patient>;
-};
-
-export type CreateProjectsMutationResponse = {
-  __typename?: "CreateProjectsMutationResponse";
-  info: CreateInfo;
-  projects: Array<Project>;
-};
-
-export type CreateRequestMetadataMutationResponse = {
-  __typename?: "CreateRequestMetadataMutationResponse";
-  info: CreateInfo;
-  requestMetadata: Array<RequestMetadata>;
-};
-
-export type CreateRequestsMutationResponse = {
-  __typename?: "CreateRequestsMutationResponse";
-  info: CreateInfo;
-  requests: Array<Request>;
-};
-
-export type CreateSampleAliasesMutationResponse = {
-  __typename?: "CreateSampleAliasesMutationResponse";
-  info: CreateInfo;
-  sampleAliases: Array<SampleAlias>;
-};
-
-export type CreateSampleMetadataMutationResponse = {
-  __typename?: "CreateSampleMetadataMutationResponse";
-  info: CreateInfo;
-  sampleMetadata: Array<SampleMetadata>;
-};
-
-export type CreateSamplesMutationResponse = {
-  __typename?: "CreateSamplesMutationResponse";
-  info: CreateInfo;
-  samples: Array<Sample>;
-};
-
-export type DeleteInfo = {
-  __typename?: "DeleteInfo";
-  bookmark?: Maybe<Scalars["String"]>;
-  nodesDeleted: Scalars["Int"];
-  relationshipsDeleted: Scalars["Int"];
-};
-
-export type Mutation = {
-  __typename?: "Mutation";
-  createPatientAliases: CreatePatientAliasesMutationResponse;
-  createPatients: CreatePatientsMutationResponse;
-  createProjects: CreateProjectsMutationResponse;
-  createRequestMetadata: CreateRequestMetadataMutationResponse;
-  createRequests: CreateRequestsMutationResponse;
-  createSampleAliases: CreateSampleAliasesMutationResponse;
-  createSampleMetadata: CreateSampleMetadataMutationResponse;
-  createSamples: CreateSamplesMutationResponse;
-  deletePatientAliases: DeleteInfo;
-  deletePatients: DeleteInfo;
-  deleteProjects: DeleteInfo;
-  deleteRequestMetadata: DeleteInfo;
-  deleteRequests: DeleteInfo;
-  deleteSampleAliases: DeleteInfo;
-  deleteSampleMetadata: DeleteInfo;
-  deleteSamples: DeleteInfo;
-  updatePatientAliases: UpdatePatientAliasesMutationResponse;
-  updatePatients: UpdatePatientsMutationResponse;
-  updateProjects: UpdateProjectsMutationResponse;
-  updateRequestMetadata: UpdateRequestMetadataMutationResponse;
-  updateRequests: UpdateRequestsMutationResponse;
-  updateSampleAliases: UpdateSampleAliasesMutationResponse;
-  updateSampleMetadata: UpdateSampleMetadataMutationResponse;
-  updateSamples: UpdateSamplesMutationResponse;
-};
-
-export type MutationCreatePatientAliasesArgs = {
-  input: Array<PatientAliasCreateInput>;
-};
-
-export type MutationCreatePatientsArgs = {
-  input: Array<PatientCreateInput>;
-};
-
-export type MutationCreateProjectsArgs = {
-  input: Array<ProjectCreateInput>;
-};
-
-export type MutationCreateRequestMetadataArgs = {
-  input: Array<RequestMetadataCreateInput>;
-};
-
-export type MutationCreateRequestsArgs = {
-  input: Array<RequestCreateInput>;
-};
-
-export type MutationCreateSampleAliasesArgs = {
-  input: Array<SampleAliasCreateInput>;
-};
-
-export type MutationCreateSampleMetadataArgs = {
-  input: Array<SampleMetadataCreateInput>;
-};
-
-export type MutationCreateSamplesArgs = {
-  input: Array<SampleCreateInput>;
-};
-
-export type MutationDeletePatientAliasesArgs = {
-  delete?: InputMaybe<PatientAliasDeleteInput>;
-  where?: InputMaybe<PatientAliasWhere>;
-};
-
-export type MutationDeletePatientsArgs = {
-  delete?: InputMaybe<PatientDeleteInput>;
-  where?: InputMaybe<PatientWhere>;
-};
-
-export type MutationDeleteProjectsArgs = {
-  delete?: InputMaybe<ProjectDeleteInput>;
-  where?: InputMaybe<ProjectWhere>;
-};
-
-export type MutationDeleteRequestMetadataArgs = {
-  delete?: InputMaybe<RequestMetadataDeleteInput>;
-  where?: InputMaybe<RequestMetadataWhere>;
-};
-
-export type MutationDeleteRequestsArgs = {
-  delete?: InputMaybe<RequestDeleteInput>;
-  where?: InputMaybe<RequestWhere>;
-};
-
-export type MutationDeleteSampleAliasesArgs = {
-  delete?: InputMaybe<SampleAliasDeleteInput>;
-  where?: InputMaybe<SampleAliasWhere>;
-};
-
-export type MutationDeleteSampleMetadataArgs = {
-  delete?: InputMaybe<SampleMetadataDeleteInput>;
-  where?: InputMaybe<SampleMetadataWhere>;
-};
-
-export type MutationDeleteSamplesArgs = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<SampleWhere>;
-};
-
-export type MutationUpdatePatientAliasesArgs = {
-  connect?: InputMaybe<PatientAliasConnectInput>;
-  create?: InputMaybe<PatientAliasRelationInput>;
-  delete?: InputMaybe<PatientAliasDeleteInput>;
-  disconnect?: InputMaybe<PatientAliasDisconnectInput>;
-  update?: InputMaybe<PatientAliasUpdateInput>;
-  where?: InputMaybe<PatientAliasWhere>;
-};
-
-export type MutationUpdatePatientsArgs = {
-  connect?: InputMaybe<PatientConnectInput>;
-  create?: InputMaybe<PatientRelationInput>;
-  delete?: InputMaybe<PatientDeleteInput>;
-  disconnect?: InputMaybe<PatientDisconnectInput>;
-  update?: InputMaybe<PatientUpdateInput>;
-  where?: InputMaybe<PatientWhere>;
-};
-
-export type MutationUpdateProjectsArgs = {
-  connect?: InputMaybe<ProjectConnectInput>;
-  create?: InputMaybe<ProjectRelationInput>;
-  delete?: InputMaybe<ProjectDeleteInput>;
-  disconnect?: InputMaybe<ProjectDisconnectInput>;
-  update?: InputMaybe<ProjectUpdateInput>;
-  where?: InputMaybe<ProjectWhere>;
-};
-
-export type MutationUpdateRequestMetadataArgs = {
-  connect?: InputMaybe<RequestMetadataConnectInput>;
-  create?: InputMaybe<RequestMetadataRelationInput>;
-  delete?: InputMaybe<RequestMetadataDeleteInput>;
-  disconnect?: InputMaybe<RequestMetadataDisconnectInput>;
-  update?: InputMaybe<RequestMetadataUpdateInput>;
-  where?: InputMaybe<RequestMetadataWhere>;
-};
-
-export type MutationUpdateRequestsArgs = {
-  connect?: InputMaybe<RequestConnectInput>;
-  create?: InputMaybe<RequestRelationInput>;
-  delete?: InputMaybe<RequestDeleteInput>;
-  disconnect?: InputMaybe<RequestDisconnectInput>;
-  update?: InputMaybe<RequestUpdateInput>;
-  where?: InputMaybe<RequestWhere>;
-};
-
-export type MutationUpdateSampleAliasesArgs = {
-  connect?: InputMaybe<SampleAliasConnectInput>;
-  create?: InputMaybe<SampleAliasRelationInput>;
-  delete?: InputMaybe<SampleAliasDeleteInput>;
-  disconnect?: InputMaybe<SampleAliasDisconnectInput>;
-  update?: InputMaybe<SampleAliasUpdateInput>;
-  where?: InputMaybe<SampleAliasWhere>;
-};
-
-export type MutationUpdateSampleMetadataArgs = {
-  connect?: InputMaybe<SampleMetadataConnectInput>;
-  create?: InputMaybe<SampleMetadataRelationInput>;
-  delete?: InputMaybe<SampleMetadataDeleteInput>;
-  disconnect?: InputMaybe<SampleMetadataDisconnectInput>;
-  update?: InputMaybe<SampleMetadataUpdateInput>;
-  where?: InputMaybe<SampleMetadataWhere>;
-};
-
-export type MutationUpdateSamplesArgs = {
-  connect?: InputMaybe<SampleConnectInput>;
-  create?: InputMaybe<SampleRelationInput>;
-  delete?: InputMaybe<SampleDeleteInput>;
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  update?: InputMaybe<SampleUpdateInput>;
-  where?: InputMaybe<SampleWhere>;
-};
-
 /** Pagination information (Relay) */
 export type PageInfo = {
   __typename?: "PageInfo";
@@ -358,34 +124,6 @@ export type PatientAliasAggregateSelection = {
   value: StringAggregateSelectionNullable;
 };
 
-export type PatientAliasConnectInput = {
-  isAliasPatients?: InputMaybe<
-    Array<PatientAliasIsAliasPatientsConnectFieldInput>
-  >;
-};
-
-export type PatientAliasConnectWhere = {
-  node: PatientAliasWhere;
-};
-
-export type PatientAliasCreateInput = {
-  isAliasPatients?: InputMaybe<PatientAliasIsAliasPatientsFieldInput>;
-  namespace: Scalars["String"];
-  value?: InputMaybe<Scalars["String"]>;
-};
-
-export type PatientAliasDeleteInput = {
-  isAliasPatients?: InputMaybe<
-    Array<PatientAliasIsAliasPatientsDeleteFieldInput>
-  >;
-};
-
-export type PatientAliasDisconnectInput = {
-  isAliasPatients?: InputMaybe<
-    Array<PatientAliasIsAliasPatientsDisconnectFieldInput>
-  >;
-};
-
 export type PatientAliasEdge = {
   __typename?: "PatientAliasEdge";
   cursor: Scalars["String"];
@@ -401,11 +139,6 @@ export type PatientAliasIsAliasPatientsAggregateInput = {
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
   node?: InputMaybe<PatientAliasIsAliasPatientsNodeAggregationWhereInput>;
-};
-
-export type PatientAliasIsAliasPatientsConnectFieldInput = {
-  connect?: InputMaybe<Array<PatientConnectInput>>;
-  where?: InputMaybe<PatientConnectWhere>;
 };
 
 export type PatientAliasIsAliasPatientsConnection = {
@@ -424,25 +157,6 @@ export type PatientAliasIsAliasPatientsConnectionWhere = {
   OR?: InputMaybe<Array<PatientAliasIsAliasPatientsConnectionWhere>>;
   node?: InputMaybe<PatientWhere>;
   node_NOT?: InputMaybe<PatientWhere>;
-};
-
-export type PatientAliasIsAliasPatientsCreateFieldInput = {
-  node: PatientCreateInput;
-};
-
-export type PatientAliasIsAliasPatientsDeleteFieldInput = {
-  delete?: InputMaybe<PatientDeleteInput>;
-  where?: InputMaybe<PatientAliasIsAliasPatientsConnectionWhere>;
-};
-
-export type PatientAliasIsAliasPatientsDisconnectFieldInput = {
-  disconnect?: InputMaybe<PatientDisconnectInput>;
-  where?: InputMaybe<PatientAliasIsAliasPatientsConnectionWhere>;
-};
-
-export type PatientAliasIsAliasPatientsFieldInput = {
-  connect?: InputMaybe<Array<PatientAliasIsAliasPatientsConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientAliasIsAliasPatientsCreateFieldInput>>;
 };
 
 export type PatientAliasIsAliasPatientsNodeAggregationWhereInput = {
@@ -476,21 +190,6 @@ export type PatientAliasIsAliasPatientsRelationship = {
   node: Patient;
 };
 
-export type PatientAliasIsAliasPatientsUpdateConnectionInput = {
-  node?: InputMaybe<PatientUpdateInput>;
-};
-
-export type PatientAliasIsAliasPatientsUpdateFieldInput = {
-  connect?: InputMaybe<Array<PatientAliasIsAliasPatientsConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientAliasIsAliasPatientsCreateFieldInput>>;
-  delete?: InputMaybe<Array<PatientAliasIsAliasPatientsDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<PatientAliasIsAliasPatientsDisconnectFieldInput>
-  >;
-  update?: InputMaybe<PatientAliasIsAliasPatientsUpdateConnectionInput>;
-  where?: InputMaybe<PatientAliasIsAliasPatientsConnectionWhere>;
-};
-
 export type PatientAliasOptions = {
   limit?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
@@ -509,24 +208,10 @@ export type PatientAliasPatientIsAliasPatientsNodeAggregateSelection = {
   smilePatientId: StringAggregateSelectionNonNullable;
 };
 
-export type PatientAliasRelationInput = {
-  isAliasPatients?: InputMaybe<
-    Array<PatientAliasIsAliasPatientsCreateFieldInput>
-  >;
-};
-
 /** Fields to sort PatientAliases by. The order in which sorts are applied is not guaranteed when specifying many fields in one PatientAliasSort object. */
 export type PatientAliasSort = {
   namespace?: InputMaybe<SortDirection>;
   value?: InputMaybe<SortDirection>;
-};
-
-export type PatientAliasUpdateInput = {
-  isAliasPatients?: InputMaybe<
-    Array<PatientAliasIsAliasPatientsUpdateFieldInput>
-  >;
-  namespace?: InputMaybe<Scalars["String"]>;
-  value?: InputMaybe<Scalars["String"]>;
 };
 
 export type PatientAliasWhere = {
@@ -584,41 +269,6 @@ export type PatientAliasesConnection = {
   totalCount: Scalars["Int"];
 };
 
-export type PatientConnectInput = {
-  hasSampleSamples?: InputMaybe<
-    Array<PatientHasSampleSamplesConnectFieldInput>
-  >;
-  patientAliasesIsAlias?: InputMaybe<
-    Array<PatientPatientAliasesIsAliasConnectFieldInput>
-  >;
-};
-
-export type PatientConnectWhere = {
-  node: PatientWhere;
-};
-
-export type PatientCreateInput = {
-  hasSampleSamples?: InputMaybe<PatientHasSampleSamplesFieldInput>;
-  patientAliasesIsAlias?: InputMaybe<PatientPatientAliasesIsAliasFieldInput>;
-  smilePatientId: Scalars["String"];
-};
-
-export type PatientDeleteInput = {
-  hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesDeleteFieldInput>>;
-  patientAliasesIsAlias?: InputMaybe<
-    Array<PatientPatientAliasesIsAliasDeleteFieldInput>
-  >;
-};
-
-export type PatientDisconnectInput = {
-  hasSampleSamples?: InputMaybe<
-    Array<PatientHasSampleSamplesDisconnectFieldInput>
-  >;
-  patientAliasesIsAlias?: InputMaybe<
-    Array<PatientPatientAliasesIsAliasDisconnectFieldInput>
-  >;
-};
-
 export type PatientEdge = {
   __typename?: "PatientEdge";
   cursor: Scalars["String"];
@@ -634,11 +284,6 @@ export type PatientHasSampleSamplesAggregateInput = {
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
   node?: InputMaybe<PatientHasSampleSamplesNodeAggregationWhereInput>;
-};
-
-export type PatientHasSampleSamplesConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleConnectInput>>;
-  where?: InputMaybe<SampleConnectWhere>;
 };
 
 export type PatientHasSampleSamplesConnection = {
@@ -657,25 +302,6 @@ export type PatientHasSampleSamplesConnectionWhere = {
   OR?: InputMaybe<Array<PatientHasSampleSamplesConnectionWhere>>;
   node?: InputMaybe<SampleWhere>;
   node_NOT?: InputMaybe<SampleWhere>;
-};
-
-export type PatientHasSampleSamplesCreateFieldInput = {
-  node: SampleCreateInput;
-};
-
-export type PatientHasSampleSamplesDeleteFieldInput = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<PatientHasSampleSamplesConnectionWhere>;
-};
-
-export type PatientHasSampleSamplesDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  where?: InputMaybe<PatientHasSampleSamplesConnectionWhere>;
-};
-
-export type PatientHasSampleSamplesFieldInput = {
-  connect?: InputMaybe<Array<PatientHasSampleSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientHasSampleSamplesCreateFieldInput>>;
 };
 
 export type PatientHasSampleSamplesNodeAggregationWhereInput = {
@@ -769,19 +395,6 @@ export type PatientHasSampleSamplesRelationship = {
   node: Sample;
 };
 
-export type PatientHasSampleSamplesUpdateConnectionInput = {
-  node?: InputMaybe<SampleUpdateInput>;
-};
-
-export type PatientHasSampleSamplesUpdateFieldInput = {
-  connect?: InputMaybe<Array<PatientHasSampleSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientHasSampleSamplesCreateFieldInput>>;
-  delete?: InputMaybe<Array<PatientHasSampleSamplesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<PatientHasSampleSamplesDisconnectFieldInput>>;
-  update?: InputMaybe<PatientHasSampleSamplesUpdateConnectionInput>;
-  where?: InputMaybe<PatientHasSampleSamplesConnectionWhere>;
-};
-
 export type PatientOptions = {
   limit?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
@@ -812,11 +425,6 @@ export type PatientPatientAliasesIsAliasAggregateInput = {
   node?: InputMaybe<PatientPatientAliasesIsAliasNodeAggregationWhereInput>;
 };
 
-export type PatientPatientAliasesIsAliasConnectFieldInput = {
-  connect?: InputMaybe<Array<PatientAliasConnectInput>>;
-  where?: InputMaybe<PatientAliasConnectWhere>;
-};
-
 export type PatientPatientAliasesIsAliasConnection = {
   __typename?: "PatientPatientAliasesIsAliasConnection";
   edges: Array<PatientPatientAliasesIsAliasRelationship>;
@@ -833,25 +441,6 @@ export type PatientPatientAliasesIsAliasConnectionWhere = {
   OR?: InputMaybe<Array<PatientPatientAliasesIsAliasConnectionWhere>>;
   node?: InputMaybe<PatientAliasWhere>;
   node_NOT?: InputMaybe<PatientAliasWhere>;
-};
-
-export type PatientPatientAliasesIsAliasCreateFieldInput = {
-  node: PatientAliasCreateInput;
-};
-
-export type PatientPatientAliasesIsAliasDeleteFieldInput = {
-  delete?: InputMaybe<PatientAliasDeleteInput>;
-  where?: InputMaybe<PatientPatientAliasesIsAliasConnectionWhere>;
-};
-
-export type PatientPatientAliasesIsAliasDisconnectFieldInput = {
-  disconnect?: InputMaybe<PatientAliasDisconnectInput>;
-  where?: InputMaybe<PatientPatientAliasesIsAliasConnectionWhere>;
-};
-
-export type PatientPatientAliasesIsAliasFieldInput = {
-  connect?: InputMaybe<Array<PatientPatientAliasesIsAliasConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientPatientAliasesIsAliasCreateFieldInput>>;
 };
 
 export type PatientPatientAliasesIsAliasNodeAggregationWhereInput = {
@@ -907,28 +496,6 @@ export type PatientPatientAliasesIsAliasRelationship = {
   node: PatientAlias;
 };
 
-export type PatientPatientAliasesIsAliasUpdateConnectionInput = {
-  node?: InputMaybe<PatientAliasUpdateInput>;
-};
-
-export type PatientPatientAliasesIsAliasUpdateFieldInput = {
-  connect?: InputMaybe<Array<PatientPatientAliasesIsAliasConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientPatientAliasesIsAliasCreateFieldInput>>;
-  delete?: InputMaybe<Array<PatientPatientAliasesIsAliasDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<PatientPatientAliasesIsAliasDisconnectFieldInput>
-  >;
-  update?: InputMaybe<PatientPatientAliasesIsAliasUpdateConnectionInput>;
-  where?: InputMaybe<PatientPatientAliasesIsAliasConnectionWhere>;
-};
-
-export type PatientRelationInput = {
-  hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesCreateFieldInput>>;
-  patientAliasesIsAlias?: InputMaybe<
-    Array<PatientPatientAliasesIsAliasCreateFieldInput>
-  >;
-};
-
 export type PatientSampleHasSampleSamplesAggregationSelection = {
   __typename?: "PatientSampleHasSampleSamplesAggregationSelection";
   count: Scalars["Int"];
@@ -946,14 +513,6 @@ export type PatientSampleHasSampleSamplesNodeAggregateSelection = {
 /** Fields to sort Patients by. The order in which sorts are applied is not guaranteed when specifying many fields in one PatientSort object. */
 export type PatientSort = {
   smilePatientId?: InputMaybe<SortDirection>;
-};
-
-export type PatientUpdateInput = {
-  hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesUpdateFieldInput>>;
-  patientAliasesIsAlias?: InputMaybe<
-    Array<PatientPatientAliasesIsAliasUpdateFieldInput>
-  >;
-  smilePatientId?: InputMaybe<Scalars["String"]>;
 };
 
 export type PatientWhere = {
@@ -1059,34 +618,6 @@ export type ProjectAggregateSelection = {
   namespace: StringAggregateSelectionNonNullable;
 };
 
-export type ProjectConnectInput = {
-  hasRequestRequests?: InputMaybe<
-    Array<ProjectHasRequestRequestsConnectFieldInput>
-  >;
-};
-
-export type ProjectConnectWhere = {
-  node: ProjectWhere;
-};
-
-export type ProjectCreateInput = {
-  hasRequestRequests?: InputMaybe<ProjectHasRequestRequestsFieldInput>;
-  igoProjectId: Scalars["String"];
-  namespace: Scalars["String"];
-};
-
-export type ProjectDeleteInput = {
-  hasRequestRequests?: InputMaybe<
-    Array<ProjectHasRequestRequestsDeleteFieldInput>
-  >;
-};
-
-export type ProjectDisconnectInput = {
-  hasRequestRequests?: InputMaybe<
-    Array<ProjectHasRequestRequestsDisconnectFieldInput>
-  >;
-};
-
 export type ProjectEdge = {
   __typename?: "ProjectEdge";
   cursor: Scalars["String"];
@@ -1102,11 +633,6 @@ export type ProjectHasRequestRequestsAggregateInput = {
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
   node?: InputMaybe<ProjectHasRequestRequestsNodeAggregationWhereInput>;
-};
-
-export type ProjectHasRequestRequestsConnectFieldInput = {
-  connect?: InputMaybe<Array<RequestConnectInput>>;
-  where?: InputMaybe<RequestConnectWhere>;
 };
 
 export type ProjectHasRequestRequestsConnection = {
@@ -1125,25 +651,6 @@ export type ProjectHasRequestRequestsConnectionWhere = {
   OR?: InputMaybe<Array<ProjectHasRequestRequestsConnectionWhere>>;
   node?: InputMaybe<RequestWhere>;
   node_NOT?: InputMaybe<RequestWhere>;
-};
-
-export type ProjectHasRequestRequestsCreateFieldInput = {
-  node: RequestCreateInput;
-};
-
-export type ProjectHasRequestRequestsDeleteFieldInput = {
-  delete?: InputMaybe<RequestDeleteInput>;
-  where?: InputMaybe<ProjectHasRequestRequestsConnectionWhere>;
-};
-
-export type ProjectHasRequestRequestsDisconnectFieldInput = {
-  disconnect?: InputMaybe<RequestDisconnectInput>;
-  where?: InputMaybe<ProjectHasRequestRequestsConnectionWhere>;
-};
-
-export type ProjectHasRequestRequestsFieldInput = {
-  connect?: InputMaybe<Array<ProjectHasRequestRequestsConnectFieldInput>>;
-  create?: InputMaybe<Array<ProjectHasRequestRequestsCreateFieldInput>>;
 };
 
 export type ProjectHasRequestRequestsNodeAggregationWhereInput = {
@@ -1537,30 +1044,11 @@ export type ProjectHasRequestRequestsRelationship = {
   node: Request;
 };
 
-export type ProjectHasRequestRequestsUpdateConnectionInput = {
-  node?: InputMaybe<RequestUpdateInput>;
-};
-
-export type ProjectHasRequestRequestsUpdateFieldInput = {
-  connect?: InputMaybe<Array<ProjectHasRequestRequestsConnectFieldInput>>;
-  create?: InputMaybe<Array<ProjectHasRequestRequestsCreateFieldInput>>;
-  delete?: InputMaybe<Array<ProjectHasRequestRequestsDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<ProjectHasRequestRequestsDisconnectFieldInput>>;
-  update?: InputMaybe<ProjectHasRequestRequestsUpdateConnectionInput>;
-  where?: InputMaybe<ProjectHasRequestRequestsConnectionWhere>;
-};
-
 export type ProjectOptions = {
   limit?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
   /** Specify one or more ProjectSort objects to sort Projects by. The sorts will be applied in the order in which they are arranged in the array. */
   sort?: InputMaybe<Array<ProjectSort>>;
-};
-
-export type ProjectRelationInput = {
-  hasRequestRequests?: InputMaybe<
-    Array<ProjectHasRequestRequestsCreateFieldInput>
-  >;
 };
 
 export type ProjectRequestHasRequestRequestsAggregationSelection = {
@@ -1596,14 +1084,6 @@ export type ProjectRequestHasRequestRequestsNodeAggregateSelection = {
 export type ProjectSort = {
   igoProjectId?: InputMaybe<SortDirection>;
   namespace?: InputMaybe<SortDirection>;
-};
-
-export type ProjectUpdateInput = {
-  hasRequestRequests?: InputMaybe<
-    Array<ProjectHasRequestRequestsUpdateFieldInput>
-  >;
-  igoProjectId?: InputMaybe<Scalars["String"]>;
-  namespace?: InputMaybe<Scalars["String"]>;
 };
 
 export type ProjectWhere = {
@@ -2024,11 +1504,6 @@ export type RequestHasMetadataRequestMetadataAggregateInput = {
   node?: InputMaybe<RequestHasMetadataRequestMetadataNodeAggregationWhereInput>;
 };
 
-export type RequestHasMetadataRequestMetadataConnectFieldInput = {
-  connect?: InputMaybe<Array<RequestMetadataConnectInput>>;
-  where?: InputMaybe<RequestMetadataConnectWhere>;
-};
-
 export type RequestHasMetadataRequestMetadataConnection = {
   __typename?: "RequestHasMetadataRequestMetadataConnection";
   edges: Array<RequestHasMetadataRequestMetadataRelationship>;
@@ -2045,27 +1520,6 @@ export type RequestHasMetadataRequestMetadataConnectionWhere = {
   OR?: InputMaybe<Array<RequestHasMetadataRequestMetadataConnectionWhere>>;
   node?: InputMaybe<RequestMetadataWhere>;
   node_NOT?: InputMaybe<RequestMetadataWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataCreateFieldInput = {
-  node: RequestMetadataCreateInput;
-};
-
-export type RequestHasMetadataRequestMetadataDeleteFieldInput = {
-  delete?: InputMaybe<RequestMetadataDeleteInput>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataDisconnectFieldInput = {
-  disconnect?: InputMaybe<RequestMetadataDisconnectInput>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<RequestHasMetadataRequestMetadataCreateFieldInput>>;
 };
 
 export type RequestHasMetadataRequestMetadataNodeAggregationWhereInput = {
@@ -2143,23 +1597,6 @@ export type RequestHasMetadataRequestMetadataRelationship = {
   node: RequestMetadata;
 };
 
-export type RequestHasMetadataRequestMetadataUpdateConnectionInput = {
-  node?: InputMaybe<RequestMetadataUpdateInput>;
-};
-
-export type RequestHasMetadataRequestMetadataUpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<RequestHasMetadataRequestMetadataCreateFieldInput>>;
-  delete?: InputMaybe<Array<RequestHasMetadataRequestMetadataDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataDisconnectFieldInput>
-  >;
-  update?: InputMaybe<RequestHasMetadataRequestMetadataUpdateConnectionInput>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-};
-
 export type RequestHasSampleSamplesAggregateInput = {
   AND?: InputMaybe<Array<RequestHasSampleSamplesAggregateInput>>;
   OR?: InputMaybe<Array<RequestHasSampleSamplesAggregateInput>>;
@@ -2169,11 +1606,6 @@ export type RequestHasSampleSamplesAggregateInput = {
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
   node?: InputMaybe<RequestHasSampleSamplesNodeAggregationWhereInput>;
-};
-
-export type RequestHasSampleSamplesConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleConnectInput>>;
-  where?: InputMaybe<SampleConnectWhere>;
 };
 
 export type RequestHasSampleSamplesConnection = {
@@ -2192,25 +1624,6 @@ export type RequestHasSampleSamplesConnectionWhere = {
   OR?: InputMaybe<Array<RequestHasSampleSamplesConnectionWhere>>;
   node?: InputMaybe<SampleWhere>;
   node_NOT?: InputMaybe<SampleWhere>;
-};
-
-export type RequestHasSampleSamplesCreateFieldInput = {
-  node: SampleCreateInput;
-};
-
-export type RequestHasSampleSamplesDeleteFieldInput = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<RequestHasSampleSamplesConnectionWhere>;
-};
-
-export type RequestHasSampleSamplesDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  where?: InputMaybe<RequestHasSampleSamplesConnectionWhere>;
-};
-
-export type RequestHasSampleSamplesFieldInput = {
-  connect?: InputMaybe<Array<RequestHasSampleSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<RequestHasSampleSamplesCreateFieldInput>>;
 };
 
 export type RequestHasSampleSamplesNodeAggregationWhereInput = {
@@ -2304,19 +1717,6 @@ export type RequestHasSampleSamplesRelationship = {
   node: Sample;
 };
 
-export type RequestHasSampleSamplesUpdateConnectionInput = {
-  node?: InputMaybe<SampleUpdateInput>;
-};
-
-export type RequestHasSampleSamplesUpdateFieldInput = {
-  connect?: InputMaybe<Array<RequestHasSampleSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<RequestHasSampleSamplesCreateFieldInput>>;
-  delete?: InputMaybe<Array<RequestHasSampleSamplesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<RequestHasSampleSamplesDisconnectFieldInput>>;
-  update?: InputMaybe<RequestHasSampleSamplesUpdateConnectionInput>;
-  where?: InputMaybe<RequestHasSampleSamplesConnectionWhere>;
-};
-
 export type RequestMetadata = {
   __typename?: "RequestMetadata";
   igoRequestId: Scalars["String"];
@@ -2356,42 +1756,11 @@ export type RequestMetadataAggregateSelection = {
   requestMetadataJson: StringAggregateSelectionNonNullable;
 };
 
-export type RequestMetadataConnectInput = {
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
-  >;
-};
-
-export type RequestMetadataConnectWhere = {
-  node: RequestMetadataWhere;
-};
-
 export type RequestMetadataConnection = {
   __typename?: "RequestMetadataConnection";
   edges: Array<RequestMetadataEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"];
-};
-
-export type RequestMetadataCreateInput = {
-  igoRequestId: Scalars["String"];
-  importDate: Scalars["String"];
-  requestMetadataJson: Scalars["String"];
-  requestsHasMetadata?: InputMaybe<
-    RequestMetadataRequestsHasMetadataFieldInput
-  >;
-};
-
-export type RequestMetadataDeleteInput = {
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDeleteFieldInput>
-  >;
-};
-
-export type RequestMetadataDisconnectInput = {
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDisconnectFieldInput>
-  >;
 };
 
 export type RequestMetadataEdge = {
@@ -2405,12 +1774,6 @@ export type RequestMetadataOptions = {
   offset?: InputMaybe<Scalars["Int"]>;
   /** Specify one or more RequestMetadataSort objects to sort RequestMetadata by. The sorts will be applied in the order in which they are arranged in the array. */
   sort?: InputMaybe<Array<RequestMetadataSort>>;
-};
-
-export type RequestMetadataRelationInput = {
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
-  >;
 };
 
 export type RequestMetadataRequestRequestsHasMetadataAggregationSelection = {
@@ -2455,11 +1818,6 @@ export type RequestMetadataRequestsHasMetadataAggregateInput = {
   >;
 };
 
-export type RequestMetadataRequestsHasMetadataConnectFieldInput = {
-  connect?: InputMaybe<Array<RequestConnectInput>>;
-  where?: InputMaybe<RequestConnectWhere>;
-};
-
 export type RequestMetadataRequestsHasMetadataConnection = {
   __typename?: "RequestMetadataRequestsHasMetadataConnection";
   edges: Array<RequestMetadataRequestsHasMetadataRelationship>;
@@ -2476,29 +1834,6 @@ export type RequestMetadataRequestsHasMetadataConnectionWhere = {
   OR?: InputMaybe<Array<RequestMetadataRequestsHasMetadataConnectionWhere>>;
   node?: InputMaybe<RequestWhere>;
   node_NOT?: InputMaybe<RequestWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataCreateFieldInput = {
-  node: RequestCreateInput;
-};
-
-export type RequestMetadataRequestsHasMetadataDeleteFieldInput = {
-  delete?: InputMaybe<RequestDeleteInput>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataDisconnectFieldInput = {
-  disconnect?: InputMaybe<RequestDisconnectInput>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
-  >;
 };
 
 export type RequestMetadataRequestsHasMetadataNodeAggregationWhereInput = {
@@ -2896,41 +2231,11 @@ export type RequestMetadataRequestsHasMetadataRelationship = {
   node: Request;
 };
 
-export type RequestMetadataRequestsHasMetadataUpdateConnectionInput = {
-  node?: InputMaybe<RequestUpdateInput>;
-};
-
-export type RequestMetadataRequestsHasMetadataUpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
-  >;
-  delete?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDeleteFieldInput>
-  >;
-  disconnect?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDisconnectFieldInput>
-  >;
-  update?: InputMaybe<RequestMetadataRequestsHasMetadataUpdateConnectionInput>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-};
-
 /** Fields to sort RequestMetadata by. The order in which sorts are applied is not guaranteed when specifying many fields in one RequestMetadataSort object. */
 export type RequestMetadataSort = {
   igoRequestId?: InputMaybe<SortDirection>;
   importDate?: InputMaybe<SortDirection>;
   requestMetadataJson?: InputMaybe<SortDirection>;
-};
-
-export type RequestMetadataUpdateInput = {
-  igoRequestId?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
-  requestMetadataJson?: InputMaybe<Scalars["String"]>;
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataUpdateFieldInput>
-  >;
 };
 
 export type RequestMetadataWhere = {
@@ -3021,11 +2326,6 @@ export type RequestProjectsHasRequestAggregateInput = {
   node?: InputMaybe<RequestProjectsHasRequestNodeAggregationWhereInput>;
 };
 
-export type RequestProjectsHasRequestConnectFieldInput = {
-  connect?: InputMaybe<Array<ProjectConnectInput>>;
-  where?: InputMaybe<ProjectConnectWhere>;
-};
-
 export type RequestProjectsHasRequestConnection = {
   __typename?: "RequestProjectsHasRequestConnection";
   edges: Array<RequestProjectsHasRequestRelationship>;
@@ -3042,25 +2342,6 @@ export type RequestProjectsHasRequestConnectionWhere = {
   OR?: InputMaybe<Array<RequestProjectsHasRequestConnectionWhere>>;
   node?: InputMaybe<ProjectWhere>;
   node_NOT?: InputMaybe<ProjectWhere>;
-};
-
-export type RequestProjectsHasRequestCreateFieldInput = {
-  node: ProjectCreateInput;
-};
-
-export type RequestProjectsHasRequestDeleteFieldInput = {
-  delete?: InputMaybe<ProjectDeleteInput>;
-  where?: InputMaybe<RequestProjectsHasRequestConnectionWhere>;
-};
-
-export type RequestProjectsHasRequestDisconnectFieldInput = {
-  disconnect?: InputMaybe<ProjectDisconnectInput>;
-  where?: InputMaybe<RequestProjectsHasRequestConnectionWhere>;
-};
-
-export type RequestProjectsHasRequestFieldInput = {
-  connect?: InputMaybe<Array<RequestProjectsHasRequestConnectFieldInput>>;
-  create?: InputMaybe<Array<RequestProjectsHasRequestCreateFieldInput>>;
 };
 
 export type RequestProjectsHasRequestNodeAggregationWhereInput = {
@@ -3112,29 +2393,6 @@ export type RequestProjectsHasRequestRelationship = {
   __typename?: "RequestProjectsHasRequestRelationship";
   cursor: Scalars["String"];
   node: Project;
-};
-
-export type RequestProjectsHasRequestUpdateConnectionInput = {
-  node?: InputMaybe<ProjectUpdateInput>;
-};
-
-export type RequestProjectsHasRequestUpdateFieldInput = {
-  connect?: InputMaybe<Array<RequestProjectsHasRequestConnectFieldInput>>;
-  create?: InputMaybe<Array<RequestProjectsHasRequestCreateFieldInput>>;
-  delete?: InputMaybe<Array<RequestProjectsHasRequestDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<RequestProjectsHasRequestDisconnectFieldInput>>;
-  update?: InputMaybe<RequestProjectsHasRequestUpdateConnectionInput>;
-  where?: InputMaybe<RequestProjectsHasRequestConnectionWhere>;
-};
-
-export type RequestRelationInput = {
-  hasMetadataRequestMetadata?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataCreateFieldInput>
-  >;
-  hasSampleSamples?: InputMaybe<Array<RequestHasSampleSamplesCreateFieldInput>>;
-  projectsHasRequest?: InputMaybe<
-    Array<RequestProjectsHasRequestCreateFieldInput>
-  >;
 };
 
 export type RequestRequestMetadataHasMetadataRequestMetadataAggregationSelection = {
@@ -3652,32 +2910,6 @@ export type SampleAliasAggregateSelection = {
   value: StringAggregateSelectionNonNullable;
 };
 
-export type SampleAliasConnectInput = {
-  isAliasSamples?: InputMaybe<
-    Array<SampleAliasIsAliasSamplesConnectFieldInput>
-  >;
-};
-
-export type SampleAliasConnectWhere = {
-  node: SampleAliasWhere;
-};
-
-export type SampleAliasCreateInput = {
-  isAliasSamples?: InputMaybe<SampleAliasIsAliasSamplesFieldInput>;
-  namespace: Scalars["String"];
-  value: Scalars["String"];
-};
-
-export type SampleAliasDeleteInput = {
-  isAliasSamples?: InputMaybe<Array<SampleAliasIsAliasSamplesDeleteFieldInput>>;
-};
-
-export type SampleAliasDisconnectInput = {
-  isAliasSamples?: InputMaybe<
-    Array<SampleAliasIsAliasSamplesDisconnectFieldInput>
-  >;
-};
-
 export type SampleAliasEdge = {
   __typename?: "SampleAliasEdge";
   cursor: Scalars["String"];
@@ -3693,11 +2925,6 @@ export type SampleAliasIsAliasSamplesAggregateInput = {
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
   node?: InputMaybe<SampleAliasIsAliasSamplesNodeAggregationWhereInput>;
-};
-
-export type SampleAliasIsAliasSamplesConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleConnectInput>>;
-  where?: InputMaybe<SampleConnectWhere>;
 };
 
 export type SampleAliasIsAliasSamplesConnection = {
@@ -3716,25 +2943,6 @@ export type SampleAliasIsAliasSamplesConnectionWhere = {
   OR?: InputMaybe<Array<SampleAliasIsAliasSamplesConnectionWhere>>;
   node?: InputMaybe<SampleWhere>;
   node_NOT?: InputMaybe<SampleWhere>;
-};
-
-export type SampleAliasIsAliasSamplesCreateFieldInput = {
-  node: SampleCreateInput;
-};
-
-export type SampleAliasIsAliasSamplesDeleteFieldInput = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<SampleAliasIsAliasSamplesConnectionWhere>;
-};
-
-export type SampleAliasIsAliasSamplesDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  where?: InputMaybe<SampleAliasIsAliasSamplesConnectionWhere>;
-};
-
-export type SampleAliasIsAliasSamplesFieldInput = {
-  connect?: InputMaybe<Array<SampleAliasIsAliasSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleAliasIsAliasSamplesCreateFieldInput>>;
 };
 
 export type SampleAliasIsAliasSamplesNodeAggregationWhereInput = {
@@ -3828,28 +3036,11 @@ export type SampleAliasIsAliasSamplesRelationship = {
   node: Sample;
 };
 
-export type SampleAliasIsAliasSamplesUpdateConnectionInput = {
-  node?: InputMaybe<SampleUpdateInput>;
-};
-
-export type SampleAliasIsAliasSamplesUpdateFieldInput = {
-  connect?: InputMaybe<Array<SampleAliasIsAliasSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleAliasIsAliasSamplesCreateFieldInput>>;
-  delete?: InputMaybe<Array<SampleAliasIsAliasSamplesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<SampleAliasIsAliasSamplesDisconnectFieldInput>>;
-  update?: InputMaybe<SampleAliasIsAliasSamplesUpdateConnectionInput>;
-  where?: InputMaybe<SampleAliasIsAliasSamplesConnectionWhere>;
-};
-
 export type SampleAliasOptions = {
   limit?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
   /** Specify one or more SampleAliasSort objects to sort SampleAliases by. The sorts will be applied in the order in which they are arranged in the array. */
   sort?: InputMaybe<Array<SampleAliasSort>>;
-};
-
-export type SampleAliasRelationInput = {
-  isAliasSamples?: InputMaybe<Array<SampleAliasIsAliasSamplesCreateFieldInput>>;
 };
 
 export type SampleAliasSampleIsAliasSamplesAggregationSelection = {
@@ -3870,12 +3061,6 @@ export type SampleAliasSampleIsAliasSamplesNodeAggregateSelection = {
 export type SampleAliasSort = {
   namespace?: InputMaybe<SortDirection>;
   value?: InputMaybe<SortDirection>;
-};
-
-export type SampleAliasUpdateInput = {
-  isAliasSamples?: InputMaybe<Array<SampleAliasIsAliasSamplesUpdateFieldInput>>;
-  namespace?: InputMaybe<Scalars["String"]>;
-  value?: InputMaybe<Scalars["String"]>;
 };
 
 export type SampleAliasWhere = {
@@ -3931,68 +3116,6 @@ export type SampleAliasesConnection = {
   totalCount: Scalars["Int"];
 };
 
-export type SampleConnectInput = {
-  hasMetadataSampleMetadata?: InputMaybe<
-    Array<SampleHasMetadataSampleMetadataConnectFieldInput>
-  >;
-  patientsHasSample?: InputMaybe<
-    Array<SamplePatientsHasSampleConnectFieldInput>
-  >;
-  requestsHasSample?: InputMaybe<
-    Array<SampleRequestsHasSampleConnectFieldInput>
-  >;
-  sampleAliasesIsAlias?: InputMaybe<
-    Array<SampleSampleAliasesIsAliasConnectFieldInput>
-  >;
-};
-
-export type SampleConnectWhere = {
-  node: SampleWhere;
-};
-
-export type SampleCreateInput = {
-  datasource: Scalars["String"];
-  hasMetadataSampleMetadata?: InputMaybe<
-    SampleHasMetadataSampleMetadataFieldInput
-  >;
-  patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
-  requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
-  sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
-  sampleCategory: Scalars["String"];
-  sampleClass: Scalars["String"];
-  smileSampleId: Scalars["String"];
-};
-
-export type SampleDeleteInput = {
-  hasMetadataSampleMetadata?: InputMaybe<
-    Array<SampleHasMetadataSampleMetadataDeleteFieldInput>
-  >;
-  patientsHasSample?: InputMaybe<
-    Array<SamplePatientsHasSampleDeleteFieldInput>
-  >;
-  requestsHasSample?: InputMaybe<
-    Array<SampleRequestsHasSampleDeleteFieldInput>
-  >;
-  sampleAliasesIsAlias?: InputMaybe<
-    Array<SampleSampleAliasesIsAliasDeleteFieldInput>
-  >;
-};
-
-export type SampleDisconnectInput = {
-  hasMetadataSampleMetadata?: InputMaybe<
-    Array<SampleHasMetadataSampleMetadataDisconnectFieldInput>
-  >;
-  patientsHasSample?: InputMaybe<
-    Array<SamplePatientsHasSampleDisconnectFieldInput>
-  >;
-  requestsHasSample?: InputMaybe<
-    Array<SampleRequestsHasSampleDisconnectFieldInput>
-  >;
-  sampleAliasesIsAlias?: InputMaybe<
-    Array<SampleSampleAliasesIsAliasDisconnectFieldInput>
-  >;
-};
-
 export type SampleEdge = {
   __typename?: "SampleEdge";
   cursor: Scalars["String"];
@@ -4008,11 +3131,6 @@ export type SampleHasMetadataSampleMetadataAggregateInput = {
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
   node?: InputMaybe<SampleHasMetadataSampleMetadataNodeAggregationWhereInput>;
-};
-
-export type SampleHasMetadataSampleMetadataConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleMetadataConnectInput>>;
-  where?: InputMaybe<SampleMetadataConnectWhere>;
 };
 
 export type SampleHasMetadataSampleMetadataConnection = {
@@ -4031,25 +3149,6 @@ export type SampleHasMetadataSampleMetadataConnectionWhere = {
   OR?: InputMaybe<Array<SampleHasMetadataSampleMetadataConnectionWhere>>;
   node?: InputMaybe<SampleMetadataWhere>;
   node_NOT?: InputMaybe<SampleMetadataWhere>;
-};
-
-export type SampleHasMetadataSampleMetadataCreateFieldInput = {
-  node: SampleMetadataCreateInput;
-};
-
-export type SampleHasMetadataSampleMetadataDeleteFieldInput = {
-  delete?: InputMaybe<SampleMetadataDeleteInput>;
-  where?: InputMaybe<SampleHasMetadataSampleMetadataConnectionWhere>;
-};
-
-export type SampleHasMetadataSampleMetadataDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleMetadataDisconnectInput>;
-  where?: InputMaybe<SampleHasMetadataSampleMetadataConnectionWhere>;
-};
-
-export type SampleHasMetadataSampleMetadataFieldInput = {
-  connect?: InputMaybe<Array<SampleHasMetadataSampleMetadataConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleHasMetadataSampleMetadataCreateFieldInput>>;
 };
 
 export type SampleHasMetadataSampleMetadataNodeAggregationWhereInput = {
@@ -4587,21 +3686,6 @@ export type SampleHasMetadataSampleMetadataRelationship = {
   node: SampleMetadata;
 };
 
-export type SampleHasMetadataSampleMetadataUpdateConnectionInput = {
-  node?: InputMaybe<SampleMetadataUpdateInput>;
-};
-
-export type SampleHasMetadataSampleMetadataUpdateFieldInput = {
-  connect?: InputMaybe<Array<SampleHasMetadataSampleMetadataConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleHasMetadataSampleMetadataCreateFieldInput>>;
-  delete?: InputMaybe<Array<SampleHasMetadataSampleMetadataDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<SampleHasMetadataSampleMetadataDisconnectFieldInput>
-  >;
-  update?: InputMaybe<SampleHasMetadataSampleMetadataUpdateConnectionInput>;
-  where?: InputMaybe<SampleHasMetadataSampleMetadataConnectionWhere>;
-};
-
 export type SampleMetadata = {
   __typename?: "SampleMetadata";
   additionalProperties: Scalars["String"];
@@ -4688,64 +3772,11 @@ export type SampleMetadataAggregateSelection = {
   tumorOrNormal: StringAggregateSelectionNonNullable;
 };
 
-export type SampleMetadataConnectInput = {
-  samplesHasMetadata?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataConnectFieldInput>
-  >;
-};
-
-export type SampleMetadataConnectWhere = {
-  node: SampleMetadataWhere;
-};
-
 export type SampleMetadataConnection = {
   __typename?: "SampleMetadataConnection";
   edges: Array<SampleMetadataEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"];
-};
-
-export type SampleMetadataCreateInput = {
-  additionalProperties: Scalars["String"];
-  baitSet?: InputMaybe<Scalars["String"]>;
-  cfDNA2dBarcode?: InputMaybe<Scalars["String"]>;
-  cmoInfoIgoId?: InputMaybe<Scalars["String"]>;
-  cmoPatientId?: InputMaybe<Scalars["String"]>;
-  cmoSampleIdFields: Scalars["String"];
-  cmoSampleName?: InputMaybe<Scalars["String"]>;
-  collectionYear: Scalars["String"];
-  genePanel: Scalars["String"];
-  igoComplete?: InputMaybe<Scalars["Boolean"]>;
-  igoRequestId?: InputMaybe<Scalars["String"]>;
-  importDate: Scalars["String"];
-  investigatorSampleId?: InputMaybe<Scalars["String"]>;
-  libraries: Scalars["String"];
-  oncotreeCode?: InputMaybe<Scalars["String"]>;
-  preservation?: InputMaybe<Scalars["String"]>;
-  primaryId: Scalars["String"];
-  qcReports: Scalars["String"];
-  sampleClass: Scalars["String"];
-  sampleName?: InputMaybe<Scalars["String"]>;
-  sampleOrigin?: InputMaybe<Scalars["String"]>;
-  sampleType: Scalars["String"];
-  samplesHasMetadata?: InputMaybe<SampleMetadataSamplesHasMetadataFieldInput>;
-  sex: Scalars["String"];
-  species: Scalars["String"];
-  tissueLocation?: InputMaybe<Scalars["String"]>;
-  tubeId?: InputMaybe<Scalars["String"]>;
-  tumorOrNormal: Scalars["String"];
-};
-
-export type SampleMetadataDeleteInput = {
-  samplesHasMetadata?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataDeleteFieldInput>
-  >;
-};
-
-export type SampleMetadataDisconnectInput = {
-  samplesHasMetadata?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataDisconnectFieldInput>
-  >;
 };
 
 export type SampleMetadataEdge = {
@@ -4759,12 +3790,6 @@ export type SampleMetadataOptions = {
   offset?: InputMaybe<Scalars["Int"]>;
   /** Specify one or more SampleMetadataSort objects to sort SampleMetadata by. The sorts will be applied in the order in which they are arranged in the array. */
   sort?: InputMaybe<Array<SampleMetadataSort>>;
-};
-
-export type SampleMetadataRelationInput = {
-  samplesHasMetadata?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataCreateFieldInput>
-  >;
 };
 
 export type SampleMetadataSampleSamplesHasMetadataAggregationSelection = {
@@ -4792,11 +3817,6 @@ export type SampleMetadataSamplesHasMetadataAggregateInput = {
   node?: InputMaybe<SampleMetadataSamplesHasMetadataNodeAggregationWhereInput>;
 };
 
-export type SampleMetadataSamplesHasMetadataConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleConnectInput>>;
-  where?: InputMaybe<SampleConnectWhere>;
-};
-
 export type SampleMetadataSamplesHasMetadataConnection = {
   __typename?: "SampleMetadataSamplesHasMetadataConnection";
   edges: Array<SampleMetadataSamplesHasMetadataRelationship>;
@@ -4813,27 +3833,6 @@ export type SampleMetadataSamplesHasMetadataConnectionWhere = {
   OR?: InputMaybe<Array<SampleMetadataSamplesHasMetadataConnectionWhere>>;
   node?: InputMaybe<SampleWhere>;
   node_NOT?: InputMaybe<SampleWhere>;
-};
-
-export type SampleMetadataSamplesHasMetadataCreateFieldInput = {
-  node: SampleCreateInput;
-};
-
-export type SampleMetadataSamplesHasMetadataDeleteFieldInput = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<SampleMetadataSamplesHasMetadataConnectionWhere>;
-};
-
-export type SampleMetadataSamplesHasMetadataDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  where?: InputMaybe<SampleMetadataSamplesHasMetadataConnectionWhere>;
-};
-
-export type SampleMetadataSamplesHasMetadataFieldInput = {
-  connect?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<SampleMetadataSamplesHasMetadataCreateFieldInput>>;
 };
 
 export type SampleMetadataSamplesHasMetadataNodeAggregationWhereInput = {
@@ -4931,23 +3930,6 @@ export type SampleMetadataSamplesHasMetadataRelationship = {
   node: Sample;
 };
 
-export type SampleMetadataSamplesHasMetadataUpdateConnectionInput = {
-  node?: InputMaybe<SampleUpdateInput>;
-};
-
-export type SampleMetadataSamplesHasMetadataUpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<SampleMetadataSamplesHasMetadataCreateFieldInput>>;
-  delete?: InputMaybe<Array<SampleMetadataSamplesHasMetadataDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataDisconnectFieldInput>
-  >;
-  update?: InputMaybe<SampleMetadataSamplesHasMetadataUpdateConnectionInput>;
-  where?: InputMaybe<SampleMetadataSamplesHasMetadataConnectionWhere>;
-};
-
 /** Fields to sort SampleMetadata by. The order in which sorts are applied is not guaranteed when specifying many fields in one SampleMetadataSort object. */
 export type SampleMetadataSort = {
   additionalProperties?: InputMaybe<SortDirection>;
@@ -4977,39 +3959,6 @@ export type SampleMetadataSort = {
   tissueLocation?: InputMaybe<SortDirection>;
   tubeId?: InputMaybe<SortDirection>;
   tumorOrNormal?: InputMaybe<SortDirection>;
-};
-
-export type SampleMetadataUpdateInput = {
-  additionalProperties?: InputMaybe<Scalars["String"]>;
-  baitSet?: InputMaybe<Scalars["String"]>;
-  cfDNA2dBarcode?: InputMaybe<Scalars["String"]>;
-  cmoInfoIgoId?: InputMaybe<Scalars["String"]>;
-  cmoPatientId?: InputMaybe<Scalars["String"]>;
-  cmoSampleIdFields?: InputMaybe<Scalars["String"]>;
-  cmoSampleName?: InputMaybe<Scalars["String"]>;
-  collectionYear?: InputMaybe<Scalars["String"]>;
-  genePanel?: InputMaybe<Scalars["String"]>;
-  igoComplete?: InputMaybe<Scalars["Boolean"]>;
-  igoRequestId?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
-  investigatorSampleId?: InputMaybe<Scalars["String"]>;
-  libraries?: InputMaybe<Scalars["String"]>;
-  oncotreeCode?: InputMaybe<Scalars["String"]>;
-  preservation?: InputMaybe<Scalars["String"]>;
-  primaryId?: InputMaybe<Scalars["String"]>;
-  qcReports?: InputMaybe<Scalars["String"]>;
-  sampleClass?: InputMaybe<Scalars["String"]>;
-  sampleName?: InputMaybe<Scalars["String"]>;
-  sampleOrigin?: InputMaybe<Scalars["String"]>;
-  sampleType?: InputMaybe<Scalars["String"]>;
-  samplesHasMetadata?: InputMaybe<
-    Array<SampleMetadataSamplesHasMetadataUpdateFieldInput>
-  >;
-  sex?: InputMaybe<Scalars["String"]>;
-  species?: InputMaybe<Scalars["String"]>;
-  tissueLocation?: InputMaybe<Scalars["String"]>;
-  tubeId?: InputMaybe<Scalars["String"]>;
-  tumorOrNormal?: InputMaybe<Scalars["String"]>;
 };
 
 export type SampleMetadataWhere = {
@@ -5333,11 +4282,6 @@ export type SamplePatientsHasSampleAggregateInput = {
   node?: InputMaybe<SamplePatientsHasSampleNodeAggregationWhereInput>;
 };
 
-export type SamplePatientsHasSampleConnectFieldInput = {
-  connect?: InputMaybe<Array<PatientConnectInput>>;
-  where?: InputMaybe<PatientConnectWhere>;
-};
-
 export type SamplePatientsHasSampleConnection = {
   __typename?: "SamplePatientsHasSampleConnection";
   edges: Array<SamplePatientsHasSampleRelationship>;
@@ -5354,25 +4298,6 @@ export type SamplePatientsHasSampleConnectionWhere = {
   OR?: InputMaybe<Array<SamplePatientsHasSampleConnectionWhere>>;
   node?: InputMaybe<PatientWhere>;
   node_NOT?: InputMaybe<PatientWhere>;
-};
-
-export type SamplePatientsHasSampleCreateFieldInput = {
-  node: PatientCreateInput;
-};
-
-export type SamplePatientsHasSampleDeleteFieldInput = {
-  delete?: InputMaybe<PatientDeleteInput>;
-  where?: InputMaybe<SamplePatientsHasSampleConnectionWhere>;
-};
-
-export type SamplePatientsHasSampleDisconnectFieldInput = {
-  disconnect?: InputMaybe<PatientDisconnectInput>;
-  where?: InputMaybe<SamplePatientsHasSampleConnectionWhere>;
-};
-
-export type SamplePatientsHasSampleFieldInput = {
-  connect?: InputMaybe<Array<SamplePatientsHasSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<SamplePatientsHasSampleCreateFieldInput>>;
 };
 
 export type SamplePatientsHasSampleNodeAggregationWhereInput = {
@@ -5404,34 +4329,6 @@ export type SamplePatientsHasSampleRelationship = {
   __typename?: "SamplePatientsHasSampleRelationship";
   cursor: Scalars["String"];
   node: Patient;
-};
-
-export type SamplePatientsHasSampleUpdateConnectionInput = {
-  node?: InputMaybe<PatientUpdateInput>;
-};
-
-export type SamplePatientsHasSampleUpdateFieldInput = {
-  connect?: InputMaybe<Array<SamplePatientsHasSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<SamplePatientsHasSampleCreateFieldInput>>;
-  delete?: InputMaybe<Array<SamplePatientsHasSampleDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<SamplePatientsHasSampleDisconnectFieldInput>>;
-  update?: InputMaybe<SamplePatientsHasSampleUpdateConnectionInput>;
-  where?: InputMaybe<SamplePatientsHasSampleConnectionWhere>;
-};
-
-export type SampleRelationInput = {
-  hasMetadataSampleMetadata?: InputMaybe<
-    Array<SampleHasMetadataSampleMetadataCreateFieldInput>
-  >;
-  patientsHasSample?: InputMaybe<
-    Array<SamplePatientsHasSampleCreateFieldInput>
-  >;
-  requestsHasSample?: InputMaybe<
-    Array<SampleRequestsHasSampleCreateFieldInput>
-  >;
-  sampleAliasesIsAlias?: InputMaybe<
-    Array<SampleSampleAliasesIsAliasCreateFieldInput>
-  >;
 };
 
 export type SampleRequestRequestsHasSampleAggregationSelection = {
@@ -5474,11 +4371,6 @@ export type SampleRequestsHasSampleAggregateInput = {
   node?: InputMaybe<SampleRequestsHasSampleNodeAggregationWhereInput>;
 };
 
-export type SampleRequestsHasSampleConnectFieldInput = {
-  connect?: InputMaybe<Array<RequestConnectInput>>;
-  where?: InputMaybe<RequestConnectWhere>;
-};
-
 export type SampleRequestsHasSampleConnection = {
   __typename?: "SampleRequestsHasSampleConnection";
   edges: Array<SampleRequestsHasSampleRelationship>;
@@ -5495,25 +4387,6 @@ export type SampleRequestsHasSampleConnectionWhere = {
   OR?: InputMaybe<Array<SampleRequestsHasSampleConnectionWhere>>;
   node?: InputMaybe<RequestWhere>;
   node_NOT?: InputMaybe<RequestWhere>;
-};
-
-export type SampleRequestsHasSampleCreateFieldInput = {
-  node: RequestCreateInput;
-};
-
-export type SampleRequestsHasSampleDeleteFieldInput = {
-  delete?: InputMaybe<RequestDeleteInput>;
-  where?: InputMaybe<SampleRequestsHasSampleConnectionWhere>;
-};
-
-export type SampleRequestsHasSampleDisconnectFieldInput = {
-  disconnect?: InputMaybe<RequestDisconnectInput>;
-  where?: InputMaybe<SampleRequestsHasSampleConnectionWhere>;
-};
-
-export type SampleRequestsHasSampleFieldInput = {
-  connect?: InputMaybe<Array<SampleRequestsHasSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleRequestsHasSampleCreateFieldInput>>;
 };
 
 export type SampleRequestsHasSampleNodeAggregationWhereInput = {
@@ -5907,19 +4780,6 @@ export type SampleRequestsHasSampleRelationship = {
   node: Request;
 };
 
-export type SampleRequestsHasSampleUpdateConnectionInput = {
-  node?: InputMaybe<RequestUpdateInput>;
-};
-
-export type SampleRequestsHasSampleUpdateFieldInput = {
-  connect?: InputMaybe<Array<SampleRequestsHasSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleRequestsHasSampleCreateFieldInput>>;
-  delete?: InputMaybe<Array<SampleRequestsHasSampleDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<SampleRequestsHasSampleDisconnectFieldInput>>;
-  update?: InputMaybe<SampleRequestsHasSampleUpdateConnectionInput>;
-  where?: InputMaybe<SampleRequestsHasSampleConnectionWhere>;
-};
-
 export type SampleSampleAliasSampleAliasesIsAliasAggregationSelection = {
   __typename?: "SampleSampleAliasSampleAliasesIsAliasAggregationSelection";
   count: Scalars["Int"];
@@ -5943,11 +4803,6 @@ export type SampleSampleAliasesIsAliasAggregateInput = {
   node?: InputMaybe<SampleSampleAliasesIsAliasNodeAggregationWhereInput>;
 };
 
-export type SampleSampleAliasesIsAliasConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleAliasConnectInput>>;
-  where?: InputMaybe<SampleAliasConnectWhere>;
-};
-
 export type SampleSampleAliasesIsAliasConnection = {
   __typename?: "SampleSampleAliasesIsAliasConnection";
   edges: Array<SampleSampleAliasesIsAliasRelationship>;
@@ -5964,25 +4819,6 @@ export type SampleSampleAliasesIsAliasConnectionWhere = {
   OR?: InputMaybe<Array<SampleSampleAliasesIsAliasConnectionWhere>>;
   node?: InputMaybe<SampleAliasWhere>;
   node_NOT?: InputMaybe<SampleAliasWhere>;
-};
-
-export type SampleSampleAliasesIsAliasCreateFieldInput = {
-  node: SampleAliasCreateInput;
-};
-
-export type SampleSampleAliasesIsAliasDeleteFieldInput = {
-  delete?: InputMaybe<SampleAliasDeleteInput>;
-  where?: InputMaybe<SampleSampleAliasesIsAliasConnectionWhere>;
-};
-
-export type SampleSampleAliasesIsAliasDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleAliasDisconnectInput>;
-  where?: InputMaybe<SampleSampleAliasesIsAliasConnectionWhere>;
-};
-
-export type SampleSampleAliasesIsAliasFieldInput = {
-  connect?: InputMaybe<Array<SampleSampleAliasesIsAliasConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleSampleAliasesIsAliasCreateFieldInput>>;
 };
 
 export type SampleSampleAliasesIsAliasNodeAggregationWhereInput = {
@@ -6036,21 +4872,6 @@ export type SampleSampleAliasesIsAliasRelationship = {
   node: SampleAlias;
 };
 
-export type SampleSampleAliasesIsAliasUpdateConnectionInput = {
-  node?: InputMaybe<SampleAliasUpdateInput>;
-};
-
-export type SampleSampleAliasesIsAliasUpdateFieldInput = {
-  connect?: InputMaybe<Array<SampleSampleAliasesIsAliasConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleSampleAliasesIsAliasCreateFieldInput>>;
-  delete?: InputMaybe<Array<SampleSampleAliasesIsAliasDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<SampleSampleAliasesIsAliasDisconnectFieldInput>
-  >;
-  update?: InputMaybe<SampleSampleAliasesIsAliasUpdateConnectionInput>;
-  where?: InputMaybe<SampleSampleAliasesIsAliasConnectionWhere>;
-};
-
 export type SampleSampleMetadataHasMetadataSampleMetadataAggregationSelection = {
   __typename?: "SampleSampleMetadataHasMetadataSampleMetadataAggregationSelection";
   count: Scalars["Int"];
@@ -6095,25 +4916,6 @@ export type SampleSort = {
   sampleCategory?: InputMaybe<SortDirection>;
   sampleClass?: InputMaybe<SortDirection>;
   smileSampleId?: InputMaybe<SortDirection>;
-};
-
-export type SampleUpdateInput = {
-  datasource?: InputMaybe<Scalars["String"]>;
-  hasMetadataSampleMetadata?: InputMaybe<
-    Array<SampleHasMetadataSampleMetadataUpdateFieldInput>
-  >;
-  patientsHasSample?: InputMaybe<
-    Array<SamplePatientsHasSampleUpdateFieldInput>
-  >;
-  requestsHasSample?: InputMaybe<
-    Array<SampleRequestsHasSampleUpdateFieldInput>
-  >;
-  sampleAliasesIsAlias?: InputMaybe<
-    Array<SampleSampleAliasesIsAliasUpdateFieldInput>
-  >;
-  sampleCategory?: InputMaybe<Scalars["String"]>;
-  sampleClass?: InputMaybe<Scalars["String"]>;
-  smileSampleId?: InputMaybe<Scalars["String"]>;
 };
 
 export type SampleWhere = {
@@ -6277,63 +5079,6 @@ export type StringAggregateSelectionNullable = {
   __typename?: "StringAggregateSelectionNullable";
   longest?: Maybe<Scalars["String"]>;
   shortest?: Maybe<Scalars["String"]>;
-};
-
-export type UpdateInfo = {
-  __typename?: "UpdateInfo";
-  bookmark?: Maybe<Scalars["String"]>;
-  nodesCreated: Scalars["Int"];
-  nodesDeleted: Scalars["Int"];
-  relationshipsCreated: Scalars["Int"];
-  relationshipsDeleted: Scalars["Int"];
-};
-
-export type UpdatePatientAliasesMutationResponse = {
-  __typename?: "UpdatePatientAliasesMutationResponse";
-  info: UpdateInfo;
-  patientAliases: Array<PatientAlias>;
-};
-
-export type UpdatePatientsMutationResponse = {
-  __typename?: "UpdatePatientsMutationResponse";
-  info: UpdateInfo;
-  patients: Array<Patient>;
-};
-
-export type UpdateProjectsMutationResponse = {
-  __typename?: "UpdateProjectsMutationResponse";
-  info: UpdateInfo;
-  projects: Array<Project>;
-};
-
-export type UpdateRequestMetadataMutationResponse = {
-  __typename?: "UpdateRequestMetadataMutationResponse";
-  info: UpdateInfo;
-  requestMetadata: Array<RequestMetadata>;
-};
-
-export type UpdateRequestsMutationResponse = {
-  __typename?: "UpdateRequestsMutationResponse";
-  info: UpdateInfo;
-  requests: Array<Request>;
-};
-
-export type UpdateSampleAliasesMutationResponse = {
-  __typename?: "UpdateSampleAliasesMutationResponse";
-  info: UpdateInfo;
-  sampleAliases: Array<SampleAlias>;
-};
-
-export type UpdateSampleMetadataMutationResponse = {
-  __typename?: "UpdateSampleMetadataMutationResponse";
-  info: UpdateInfo;
-  sampleMetadata: Array<SampleMetadata>;
-};
-
-export type UpdateSamplesMutationResponse = {
-  __typename?: "UpdateSamplesMutationResponse";
-  info: UpdateInfo;
-  samples: Array<Sample>;
 };
 
 export type RequestsListQueryVariables = Exact<{
