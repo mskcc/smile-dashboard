@@ -8,6 +8,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@types/jest": "^27.5.2",
+    "@types/lodash": "^4.14.186",
     "@types/node": "^16.11.43",
     "@types/react": "17.0.39",
     "@types/react-bootstrap": "^0.32.30",
