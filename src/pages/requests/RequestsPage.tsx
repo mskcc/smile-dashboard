@@ -11,7 +11,7 @@ import {
 } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import "react-virtualized/styles.css";
-import React, { useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
 import { buildRequestTableColumns, StaticTableColumns } from "./helpers";
@@ -36,7 +36,7 @@ export const RequestsPage: React.FunctionComponent = props => {
 
 export default RequestsPage;
 
-const Requests = () => {
+const Requests: FunctionComponent = () => {
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
