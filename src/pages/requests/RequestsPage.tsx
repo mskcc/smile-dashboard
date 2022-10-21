@@ -1,12 +1,18 @@
 import "./requests.scss";
 import { useRequestsListQuery } from "../../generated/graphql";
 import { makeAutoObservable } from "mobx";
-import { InfiniteLoader, Table, Column, AutoSizer } from "react-virtualized";
+import {
+  InfiniteLoader,
+  Table,
+  Column,
+  AutoSizer,
+  IndexRange,
+  Index
+} from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import "react-virtualized/styles.css";
 import React, { useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import _ from "lodash";
 import classNames from "classnames";
 import { buildRequestTableColumns, StaticTableColumns } from "./helpers";
 import { RequestSummary } from "./RequestSummary";
@@ -82,7 +88,10 @@ const Requests = () => {
     ];
   }
 
-  function loadMoreRows({ startIndex, stopIndex }, fetchMore: any) {
+  function loadMoreRows(
+    { startIndex, stopIndex }: IndexRange,
+    fetchMore: (props: any) => Promise<any>
+  ) {
     return fetchMore({
       variables: {
         options: {
@@ -109,20 +118,15 @@ const Requests = () => {
     };
   }
 
-  function isRowLoaded({ index }) {
+  function isRowLoaded({ index }: Index) {
     return index < data!.requests.length;
   }
 
-  function rowGetter({ index }) {
+  function rowGetter({ index }: Index) {
     if (!data!.requests[index]) {
       return "";
     }
     return data!.requests[index];
-  }
-
-  function onRowClick(info) {
-    store.selectedRequest = info.rowData.igoRequestId;
-    store.showRequestDetails = true;
   }
 
   const title = params.requestId
@@ -136,7 +140,17 @@ const Requests = () => {
       {showDownloadModal && (
         <DownloadModal
           loader={() => {
-            return loadAllRows(fetchMore, val)().then(({ data }) => {
+            return fetchMore({
+              variables: {
+                where: {
+                  OR: requestFilterWhereVariables(val)
+                },
+                options: {
+                  offset: 0,
+                  limit: undefined
+                }
+              }
+            }).then(({ data }) => {
               return CSVFormulate(data.requests, StaticTableColumns);
             });
           }}
@@ -175,7 +189,7 @@ const Requests = () => {
           </Modal.Header>
           <Modal.Body>
             <div>
-              <RequestSummary props={params} />
+              <RequestSummary params={params} />
             </div>
           </Modal.Body>
         </Modal>
@@ -259,7 +273,10 @@ const Requests = () => {
                   rowCount={remoteCount}
                   onRowsRendered={onRowsRendered}
                   rowGetter={rowGetter}
-                  onRowClick={onRowClick}
+                  onRowClick={info => {
+                    store.selectedRequest = info.rowData.igoRequestId;
+                    store.showRequestDetails = true;
+                  }}
                   onRowDoubleClick={info => {
                     store.showRequestDetails = false;
                   }}
