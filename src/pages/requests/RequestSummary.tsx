@@ -153,31 +153,7 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
           />
         </Col>
 
-<<<<<<< HEAD
         <Col className={"text-start"}>{remoteCount} matching requests</Col>
-=======
-            prom.then(() => {
-              const to = setTimeout(() => {
-                const rf = refetch({
-                  // where: {
-                  //   igoRequestId: props.requestId
-                  // },
-                  hasSampleSamplesWhere2: {
-                    sampleClass: _.isEmpty(value) ? undefined : value
-                  }
-                  // options: {
-                  //   offset: 0,
-                  //   limit: undefined
-                  // }
-                });
-                setProm(rf);
-              }, 500);
-              setTypingTimeout(to);
-            });
-          }}
-        />
-      </Col>
->>>>>>> 40fe448 (Working filtering of samples)
 
         <Col className={"text-end"}>
           <Button
