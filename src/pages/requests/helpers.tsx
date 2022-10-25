@@ -20,6 +20,14 @@ export const StaticTableColumns: ColumnDefinition[] = [
     width: 200
   },
   {
+    dataKey: "hasSampleSamplesConnection",
+    label: "Sample Count",
+    sortable: true,
+    cellRenderer: arg => {
+      return arg?.cellData?.totalCount || "";
+    }
+  },
+  {
     dataKey: "igoProjectId",
     label: "IGO Project ID",
     sortable: true,
