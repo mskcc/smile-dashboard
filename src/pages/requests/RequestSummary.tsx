@@ -1,4 +1,8 @@
-import { useRequestWithSamplesQuery } from "../../generated/graphql";
+import {
+  RequestWithSamplesDocument,
+  useRequestWithSamplesQuery,
+  useSamplesQuery
+} from "../../generated/graphql";
 import {
   AutoSizer,
   Column,
