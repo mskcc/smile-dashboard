@@ -3,7 +3,13 @@ import {
   useRequestWithSamplesQuery,
   useSamplesQuery
 } from "../../generated/graphql";
-import { AutoSizer, Column, InfiniteLoader, Table } from "react-virtualized";
+import {
+  AutoSizer,
+  Column,
+  Index,
+  InfiniteLoader,
+  Table
+} from "react-virtualized";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { observer } from "mobx-react";
 import "react-virtualized/styles.css";
