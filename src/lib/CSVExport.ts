@@ -9,7 +9,6 @@ export function CSVFormulate(
     ...requests
       .map(req =>
         columnDefinitions.map(col => {
-          debugger;
           if (col.cellDataGetter) {
             return col.cellDataGetter({
               dataKey: col.dataKey,
