@@ -8,6 +8,9 @@ query RequestsList(
   }
   requests(where: $where, options: $options) {
     ...RequestParts
+    hasSampleSamplesConnection {
+      totalCount
+    }
   }
 }
 

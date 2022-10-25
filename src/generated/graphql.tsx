@@ -5008,6 +5008,10 @@ export type RequestsListQuery = {
     projectManagerName: string;
     qcAccessEmails: string;
     smileRequestId: string;
+    hasSampleSamplesConnection: {
+      __typename?: "RequestHasSampleSamplesConnection";
+      totalCount: number;
+    };
   }>;
 };
 
@@ -5148,6 +5152,9 @@ export const RequestsListDocument = gql`
     }
     requests(where: $where, options: $options) {
       ...RequestParts
+      hasSampleSamplesConnection {
+        totalCount
+      }
     }
   }
   ${RequestPartsFragmentDoc}
