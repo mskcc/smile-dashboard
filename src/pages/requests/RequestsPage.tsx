@@ -288,6 +288,7 @@ const Requests: FunctionComponent = () => {
                         label={col.label}
                         dataKey={`${col.dataKey}`}
                         cellRenderer={col.cellRenderer}
+                        cellDataGetter={col.cellDataGetter}
                         width={col.width || 100}
                       />
                     );
