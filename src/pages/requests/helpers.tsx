@@ -9,6 +9,7 @@ export type ColumnDefinition = {
   width?: number;
   headerRender?: (arg: any) => any;
   cellRenderer?: (arg: any) => any;
+  cellDataGetter?: (arg: any) => any;
 };
 
 export const StaticTableColumns: ColumnDefinition[] = [
@@ -23,10 +24,13 @@ export const StaticTableColumns: ColumnDefinition[] = [
     dataKey: "hasSampleSamplesConnection",
     label: "Sample Count",
     sortable: true,
-    cellRenderer: arg => {
-      return arg?.cellData?.totalCount || "";
+    cellDataGetter: function({ dataKey, rowData }) {
+      // console.log(rowData[dataKey].totalCount);
+
+      return rowData[dataKey]?.totalCount;
     }
   },
+
   {
     dataKey: "igoProjectId",
     label: "IGO Project ID",
