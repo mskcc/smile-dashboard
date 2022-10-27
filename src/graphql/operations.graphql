@@ -18,6 +18,7 @@ query RequestWithSamples(
   $options: RequestOptions
   $where: RequestWhere
   $hasSampleSamplesWhere2: SampleWhere
+  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
 ) {
   requests(where: $where, options: $options) {
     ...RequestParts
@@ -26,7 +27,7 @@ query RequestWithSamples(
       sampleCategory
       sampleClass
       datasource
-      hasMetadataSampleMetadata {
+      hasMetadataSampleMetadata(where: $hasMetadataSampleMetadataWhere2) {
         cmoSampleName
         igoComplete
         importDate
@@ -43,6 +44,7 @@ query RequestWithSamples(
         sampleOrigin
         tissueLocation
         sex
+        libraries
       }
       patientsHasSample {
         smilePatientId
