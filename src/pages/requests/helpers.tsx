@@ -12,7 +12,7 @@ export type ColumnDefinition = {
   cellDataGetter?: (arg: any) => any;
 };
 
-export const StaticTableColumns: ColumnDefinition[] = [
+export const RequestsListColumns: ColumnDefinition[] = [
   {
     dataKey: "igoRequestId",
     label: "IGO Request ID",
@@ -21,22 +21,19 @@ export const StaticTableColumns: ColumnDefinition[] = [
     width: 200
   },
   {
-    dataKey: "hasSampleSamplesConnection",
-    label: "Sample Count",
-    sortable: true,
-    cellDataGetter: function({ dataKey, rowData }) {
-      // console.log(rowData[dataKey].totalCount);
-
-      return rowData[dataKey]?.totalCount;
-    }
-  },
-
-  {
     dataKey: "igoProjectId",
     label: "IGO Project ID",
     sortable: true,
     filterable: true,
     width: 175
+  },
+  {
+    dataKey: "hasSampleSamplesConnection",
+    label: "# Samples",
+    sortable: true,
+    cellDataGetter: function({ dataKey, rowData }) {
+      return rowData[dataKey]?.totalCount;
+    }
   },
   {
     dataKey: "projectManagerName",
@@ -159,7 +156,7 @@ export function buildRequestTableColumns(navigate: any): ColumnDefinition[] {
       }
     },
 
-    ...StaticTableColumns
+    ...RequestsListColumns
   ];
 }
 
