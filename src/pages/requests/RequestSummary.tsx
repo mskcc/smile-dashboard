@@ -14,6 +14,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { observer } from "mobx-react";
 import "react-virtualized/styles.css";
 import _ from "lodash";
+import classNames from "classnames";
 import React, { FunctionComponent, useState } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
@@ -66,7 +67,14 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   const metadataList = samples.map(item => item.hasMetadataSampleMetadata[0]);
 
   function rowGetter({ index }: Index) {
-    return request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
+    const s = request.hasSampleSamples[index];
+    const sm = request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
+    console.log(s.smileSampleId, sm);
+    if (
+      request.hasSampleSamples[index].hasMetadataSampleMetadata[0] !== undefined
+    ) {
+      return request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
+    }
   }
 
   const sampleTable = (
@@ -123,51 +131,57 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
           exportFilename={"request_" + data?.requests[0].igoRequestId + ".tsv"}
         />
       )}
+      <Row
+        className={classNames(
+          "d-flex justify-content-between align-items-center"
+        )}
+      >
+        <Col></Col>
+        <Col className={"text-end"}>
+          <Form.Control
+            className={"d-inline-block"}
+            style={{ width: "300px" }}
+            type="search"
+            placeholder="Search Samples"
+            aria-label="Search"
+            value={val}
+            onInput={event => {
+              const value = event.currentTarget.value;
 
-      <Col className={"text-end"}>
-        <Form.Control
-          className={"d-inline-block"}
-          style={{ width: "300px" }}
-          type="search"
-          placeholder="Search Samples"
-          aria-label="Search"
-          value={val}
-          onInput={event => {
-            const value = event.currentTarget.value;
+              if (value !== null) {
+                setVal(value);
+              }
 
-            if (value !== null) {
-              setVal(value);
-            }
+              if (typingTimeout) {
+                clearTimeout(typingTimeout);
+              }
 
-            if (typingTimeout) {
-              clearTimeout(typingTimeout);
-            }
+              prom.then(() => {
+                const to = setTimeout(() => {
+                  const rf = refetch({
+                    hasMetadataSampleMetadataWhere2: {
+                      sampleClass_CONTAINS: value
+                    }
+                  });
+                  setProm(rf);
+                }, 500);
+                setTypingTimeout(to);
+              });
+            }}
+          />
+        </Col>
+        {/* <Col className={"text-start"}>{remoteCount} matching requests</Col> */}
 
-            prom.then(() => {
-              const to = setTimeout(() => {
-                const rf = refetch({
-                  hasSampleSamplesWhere2: {
-                    sampleClass: _.isEmpty(value) ? undefined : value
-                  }
-                });
-                setProm(rf);
-              }, 500);
-              setTypingTimeout(to);
-            });
-          }}
-        />
-      </Col>
-
-      <Col className={"text-end"}>
-        <Button
-          onClick={() => {
-            setShowDownloadModal(true);
-          }}
-        >
-          Generate Sample Report
-        </Button>
-      </Col>
-
+        <Col className={"text-end"}>
+          <Button
+            onClick={() => {
+              setShowDownloadModal(true);
+            }}
+          >
+            Generate Sample Report
+          </Button>
+        </Col>
+      </Row>
       <div style={{ height: 540 }}>{sampleTable}</div>
     </>
   );

@@ -14,7 +14,7 @@ import "react-virtualized/styles.css";
 import React, { FunctionComponent, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { buildRequestTableColumns, StaticTableColumns } from "./helpers";
+import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
 import { RequestSummary } from "./RequestSummary";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
@@ -151,7 +151,7 @@ const Requests: FunctionComponent = () => {
                 }
               }
             }).then(({ data }) => {
-              return CSVFormulate(data.requests, StaticTableColumns);
+              return CSVFormulate(data.requests, RequestsListColumns);
             });
           }}
           onComplete={() => setShowDownloadModal(false)}
