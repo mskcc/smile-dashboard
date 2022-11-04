@@ -70,11 +70,14 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     const s = request.hasSampleSamples[index];
     const sm = request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
     console.log(s.smileSampleId, sm);
-    if (
-      request.hasSampleSamples[index].hasMetadataSampleMetadata[0] !== undefined
-    ) {
-      return request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
-    }
+
+    return sm || {};
+
+    // if (
+    //   request.hasSampleSamples?.[index]?.hasMetadataSampleMetadata?.[0] !== undefined
+    // ) {
+    //   return request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
+    // }
   }
 
   const sampleTable = (
@@ -159,8 +162,11 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
               prom.then(() => {
                 const to = setTimeout(() => {
                   const rf = refetch({
-                    hasMetadataSampleMetadataWhere2: {
+                    hasSampleSamplesWhere2: {
                       sampleClass_CONTAINS: value
+                    },
+                    hasSamplesConnectionWhere2: {
+                      node: { sampleClass_CONTAINS: value }
                     }
                   });
                   setProm(rf);
