@@ -18,7 +18,7 @@ query RequestWithSamples(
   $options: RequestOptions
   $where: RequestWhere
   $hasSampleSamplesWhere2: SampleWhere
-  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+  $hasSamplesConnectionWhere2: RequestHasSampleSamplesConnectionWhere
 ) {
   requests(where: $where, options: $options) {
     ...RequestParts
@@ -27,7 +27,7 @@ query RequestWithSamples(
       sampleCategory
       sampleClass
       datasource
-      hasMetadataSampleMetadata(where: $hasMetadataSampleMetadataWhere2) {
+      hasMetadataSampleMetadata {
         cmoSampleName
         igoComplete
         importDate
