@@ -1209,26 +1209,6 @@ export type ProjectHasRequestRequestsNodeAggregationWhereInput = {
   dataAnalystName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
   dataAnalystName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
   dataAnalystName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  dataStatus_EQUAL?: InputMaybe<Scalars["String"]>;
-  dataStatus_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
   genePanel_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   genePanel_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
   genePanel_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
@@ -1594,7 +1574,6 @@ export type ProjectRequestHasRequestRequestsNodeAggregateSelection = {
   dataAccessEmails: StringAggregateSelectionNonNullable;
   dataAnalystEmail: StringAggregateSelectionNonNullable;
   dataAnalystName: StringAggregateSelectionNonNullable;
-  dataStatus: StringAggregateSelectionNonNullable;
   genePanel: StringAggregateSelectionNonNullable;
   igoProjectId: StringAggregateSelectionNonNullable;
   igoRequestId: StringAggregateSelectionNonNullable;
@@ -1844,7 +1823,6 @@ export type Request = {
   dataAccessEmails: Scalars["String"];
   dataAnalystEmail: Scalars["String"];
   dataAnalystName: Scalars["String"];
-  dataStatus: Scalars["String"];
   genePanel: Scalars["String"];
   hasMetadataRequestMetadata: Array<RequestMetadata>;
   hasMetadataRequestMetadataAggregate?: Maybe<
@@ -1943,7 +1921,6 @@ export type RequestAggregateSelection = {
   dataAccessEmails: StringAggregateSelectionNonNullable;
   dataAnalystEmail: StringAggregateSelectionNonNullable;
   dataAnalystName: StringAggregateSelectionNonNullable;
-  dataStatus: StringAggregateSelectionNonNullable;
   genePanel: StringAggregateSelectionNonNullable;
   igoProjectId: StringAggregateSelectionNonNullable;
   igoRequestId: StringAggregateSelectionNonNullable;
@@ -1983,7 +1960,6 @@ export type RequestCreateInput = {
   dataAccessEmails: Scalars["String"];
   dataAnalystEmail: Scalars["String"];
   dataAnalystName: Scalars["String"];
-  dataStatus: Scalars["String"];
   genePanel: Scalars["String"];
   hasMetadataRequestMetadata?: InputMaybe<
     RequestHasMetadataRequestMetadataFieldInput
@@ -2448,7 +2424,6 @@ export type RequestMetadataRequestRequestsHasMetadataNodeAggregateSelection = {
   dataAccessEmails: StringAggregateSelectionNonNullable;
   dataAnalystEmail: StringAggregateSelectionNonNullable;
   dataAnalystName: StringAggregateSelectionNonNullable;
-  dataStatus: StringAggregateSelectionNonNullable;
   genePanel: StringAggregateSelectionNonNullable;
   igoProjectId: StringAggregateSelectionNonNullable;
   igoRequestId: StringAggregateSelectionNonNullable;
@@ -2593,26 +2568,6 @@ export type RequestMetadataRequestsHasMetadataNodeAggregationWhereInput = {
   dataAnalystName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
   dataAnalystName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
   dataAnalystName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  dataStatus_EQUAL?: InputMaybe<Scalars["String"]>;
-  dataStatus_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
   genePanel_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   genePanel_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
   genePanel_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
@@ -3217,7 +3172,6 @@ export type RequestSort = {
   dataAccessEmails?: InputMaybe<SortDirection>;
   dataAnalystEmail?: InputMaybe<SortDirection>;
   dataAnalystName?: InputMaybe<SortDirection>;
-  dataStatus?: InputMaybe<SortDirection>;
   genePanel?: InputMaybe<SortDirection>;
   igoProjectId?: InputMaybe<SortDirection>;
   igoRequestId?: InputMaybe<SortDirection>;
@@ -3242,7 +3196,6 @@ export type RequestUpdateInput = {
   dataAccessEmails?: InputMaybe<Scalars["String"]>;
   dataAnalystEmail?: InputMaybe<Scalars["String"]>;
   dataAnalystName?: InputMaybe<Scalars["String"]>;
-  dataStatus?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
   hasMetadataRequestMetadata?: InputMaybe<
     Array<RequestHasMetadataRequestMetadataUpdateFieldInput>
@@ -3307,16 +3260,6 @@ export type RequestWhere = {
   dataAnalystName_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   dataAnalystName_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   dataAnalystName_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  dataStatus?: InputMaybe<Scalars["String"]>;
-  dataStatus_CONTAINS?: InputMaybe<Scalars["String"]>;
-  dataStatus_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  dataStatus_IN?: InputMaybe<Array<Scalars["String"]>>;
-  dataStatus_NOT?: InputMaybe<Scalars["String"]>;
-  dataStatus_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
-  dataStatus_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  dataStatus_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
-  dataStatus_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  dataStatus_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
   genePanel_CONTAINS?: InputMaybe<Scalars["String"]>;
   genePanel_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -5502,7 +5445,6 @@ export type SampleRequestRequestsHasSampleNodeAggregateSelection = {
   dataAccessEmails: StringAggregateSelectionNonNullable;
   dataAnalystEmail: StringAggregateSelectionNonNullable;
   dataAnalystName: StringAggregateSelectionNonNullable;
-  dataStatus: StringAggregateSelectionNonNullable;
   genePanel: StringAggregateSelectionNonNullable;
   igoProjectId: StringAggregateSelectionNonNullable;
   igoRequestId: StringAggregateSelectionNonNullable;
@@ -5637,26 +5579,6 @@ export type SampleRequestsHasSampleNodeAggregationWhereInput = {
   dataAnalystName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
   dataAnalystName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
   dataAnalystName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  dataStatus_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  dataStatus_EQUAL?: InputMaybe<Scalars["String"]>;
-  dataStatus_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_LTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataStatus_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
   genePanel_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   genePanel_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
   genePanel_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
@@ -6454,7 +6376,9 @@ export type RequestWithSamplesQueryVariables = Exact<{
   options?: InputMaybe<RequestOptions>;
   where?: InputMaybe<RequestWhere>;
   hasSampleSamplesWhere2?: InputMaybe<SampleWhere>;
-  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
+  hasSamplesConnectionWhere2?: InputMaybe<
+    RequestHasSampleSamplesConnectionWhere
+  >;
 }>;
 
 export type RequestWithSamplesQuery = {
@@ -6654,7 +6578,7 @@ export const RequestWithSamplesDocument = gql`
     $options: RequestOptions
     $where: RequestWhere
     $hasSampleSamplesWhere2: SampleWhere
-    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+    $hasSamplesConnectionWhere2: RequestHasSampleSamplesConnectionWhere
   ) {
     requests(where: $where, options: $options) {
       ...RequestParts
@@ -6663,7 +6587,7 @@ export const RequestWithSamplesDocument = gql`
         sampleCategory
         sampleClass
         datasource
-        hasMetadataSampleMetadata(where: $hasMetadataSampleMetadataWhere2) {
+        hasMetadataSampleMetadata {
           cmoSampleName
           igoComplete
           importDate
@@ -6690,7 +6614,7 @@ export const RequestWithSamplesDocument = gql`
           }
         }
       }
-      hasSampleSamplesConnection {
+      hasSampleSamplesConnection(where: $hasSamplesConnectionWhere2) {
         totalCount
       }
     }
@@ -6713,7 +6637,7 @@ export const RequestWithSamplesDocument = gql`
  *      options: // value for 'options'
  *      where: // value for 'where'
  *      hasSampleSamplesWhere2: // value for 'hasSampleSamplesWhere2'
- *      hasMetadataSampleMetadataWhere2: // value for 'hasMetadataSampleMetadataWhere2'
+ *      hasSamplesConnectionWhere2: // value for 'hasSamplesConnectionWhere2'
  *   },
  * });
  */
