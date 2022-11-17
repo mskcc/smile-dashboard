@@ -12,15 +12,25 @@ import {
 } from "react-virtualized";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { observer } from "mobx-react";
-import "react-virtualized/styles.css";
-import _ from "lodash";
+// import "react-virtualized/styles.css";
+import _, { sample } from "lodash";
 import classNames from "classnames";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
-import { SampleDetailsColumns } from "./helpers";
+import {
+  ColumnDefinition,
+  RequestsListColumns,
+  SampleDetailsColumns
+} from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
+import { AgGridReact } from "ag-grid-react";
+import { useState, useEffect } from "react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
+import { Edit } from "@material-ui/icons";
 
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
@@ -47,6 +57,80 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     },
     fetchPolicy: "no-cache"
   });
+
+  const [rowData, setRowData] = useState([
+    { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" },
+    { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" }
+  ]);
+
+  const [columnDefs, setColumnDefs] = useState([
+    {
+      headerName: "CMO Sample Name",
+      field: "cmoSampleName",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "CMO Patient ID",
+      field: "cmoPatientId",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Investigator Sample ID",
+      field: "investigatorSampleId",
+      sortable: true
+    },
+    {
+      headerName: "Primary ID",
+      field: "primaryId",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Preservation",
+      field: "preservation",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Tumor Or Normal",
+      field: "tumorOrNormal",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Sample Class",
+      field: "sampleClass",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Oncotree Code",
+      field: "oncotreeCode",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Collection Year",
+      field: "collectionYear",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Sample Origin",
+      field: "sampleOrigin",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Tissue Location",
+      field: "tissueLocation",
+      sortable: true,
+      filterable: true
+    },
+    { headerName: "Sex", field: "sex", sortable: true, filterable: true }
+  ]);
 
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -80,32 +164,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     // }
   }
 
-  const sampleTable = (
-    <AutoSizer>
-      {({ width }) => (
-        <Table
-          className="table"
-          width={width}
-          height={450}
-          headerHeight={50}
-          rowHeight={40}
-          rowCount={request.hasSampleSamples.length}
-          rowGetter={rowGetter}
-        >
-          {SampleDetailsColumns.map(col => {
-            return (
-              <Column
-                label={col.label}
-                dataKey={`${col.dataKey}`}
-                width={width / SampleDetailsColumns.length}
-              />
-            );
-          })}
-        </Table>
-      )}
-    </AutoSizer>
-  );
-
   const stringFields: any[] = [];
 
   _.forEach(request, (val: any, key: string) => {
@@ -118,6 +176,8 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
       );
     }
   });
+
+  const remoteCount = request.hasSampleSamples.length;
 
   return (
     <>
@@ -176,7 +236,8 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
             }}
           />
         </Col>
-        {/* <Col className={"text-start"}>{remoteCount} matching requests</Col> */}
+
+        <Col className={"text-start"}>{remoteCount} matching requests</Col>
 
         <Col className={"text-end"}>
           <Button
@@ -188,7 +249,10 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
           </Button>
         </Col>
       </Row>
-      <div style={{ height: 540 }}>{sampleTable}</div>
+      {/* <div style={{ height: 540 }}>{sampleTable}</div> */}
+      <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
+        <AgGridReact columnDefs={columnDefs} rowData={metadataList} />
+      </div>
     </>
   );
 };

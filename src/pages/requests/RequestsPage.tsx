@@ -11,14 +11,23 @@ import {
 } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import "react-virtualized/styles.css";
-import React, { FunctionComponent, useState } from "react";
+import React, { Component, FunctionComponent } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
+import {
+  buildRequestTableColumns,
+  RequestsListColumns,
+  newColumns
+} from "./helpers";
 import { RequestSummary } from "./RequestSummary";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
+import { AgGridReact } from "ag-grid-react";
+import { useState, useEffect } from "react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
 
 function createStore() {
   return makeAutoObservable({
@@ -46,6 +55,9 @@ const Requests: FunctionComponent = () => {
 
   const RequestTableColumns = buildRequestTableColumns(navigate);
 
+  // const datasource = new ServerSideDatasource(gridOptions);
+  // gridOptions.api.setServerSideDatasource(datasource);
+
   const { loading, error, data, refetch, fetchMore } = useRequestsListQuery({
     variables: {
       where: {
@@ -57,6 +69,15 @@ const Requests: FunctionComponent = () => {
       options: { limit: 20, offset: 0 }
     }
   });
+
+  const [rowData, setRowData] = useState([
+    {
+      igoRequestId: "1100",
+      igoProjectId: "2332",
+      hasSampleSamplesConnection: 2
+    },
+    { igoRequestId: "100", igoProjectId: "232", hasSampleSamplesConnection: 4 }
+  ]);
 
   if (loading)
     return (
@@ -252,53 +273,12 @@ const Requests: FunctionComponent = () => {
         </Col>
       </Row>
 
-      <Row>
-        <InfiniteLoader
-          isRowLoaded={isRowLoaded}
-          loadMoreRows={params => {
-            return loadMoreRows(params, fetchMore);
-          }}
-          rowCount={remoteCount}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            <AutoSizer>
-              {({ width }) => (
-                <Table
-                  className="table"
-                  ref={registerChild}
-                  width={width}
-                  height={540}
-                  headerHeight={60}
-                  rowHeight={40}
-                  rowCount={remoteCount}
-                  onRowsRendered={onRowsRendered}
-                  rowGetter={rowGetter}
-                  onRowClick={info => {
-                    store.selectedRequest = info.rowData.igoRequestId;
-                    store.showRequestDetails = true;
-                  }}
-                  onRowDoubleClick={info => {
-                    store.showRequestDetails = false;
-                  }}
-                >
-                  {RequestTableColumns.map(col => {
-                    return (
-                      <Column
-                        headerRenderer={col.headerRender}
-                        label={col.label}
-                        dataKey={`${col.dataKey}`}
-                        cellRenderer={col.cellRenderer}
-                        cellDataGetter={col.cellDataGetter}
-                        width={col.width || 100}
-                      />
-                    );
-                  })}
-                </Table>
-              )}
-            </AutoSizer>
-          )}
-        </InfiniteLoader>
-      </Row>
+      <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
+        <AgGridReact
+          columnDefs={buildRequestTableColumns(navigate)}
+          rowData={data!.requests}
+        />
+      </div>
     </Container>
   );
 };
