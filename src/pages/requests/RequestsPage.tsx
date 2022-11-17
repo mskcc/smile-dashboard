@@ -10,7 +10,10 @@ import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import React, { FunctionComponent, useEffect, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
+import {
+  buildRequestTableColumns,
+  RequestsListColumns,
+} from "./helpers";
 import { RequestSummary } from "./RequestSummary";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";

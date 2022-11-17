@@ -6,7 +6,11 @@ import classNames from "classnames";
 import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
-import { SampleDetailsColumns } from "./helpers";
+import {
+  ColumnDefinition,
+  RequestsListColumns,
+  SampleDetailsColumns
+} from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
@@ -42,6 +46,80 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     },
     fetchPolicy: "no-cache"
   });
+
+  const [rowData, setRowData] = useState([
+    { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" },
+    { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" }
+  ]);
+
+  const [columnDefs, setColumnDefs] = useState([
+    {
+      headerName: "CMO Sample Name",
+      field: "cmoSampleName",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "CMO Patient ID",
+      field: "cmoPatientId",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Investigator Sample ID",
+      field: "investigatorSampleId",
+      sortable: true
+    },
+    {
+      headerName: "Primary ID",
+      field: "primaryId",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Preservation",
+      field: "preservation",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Tumor Or Normal",
+      field: "tumorOrNormal",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Sample Class",
+      field: "sampleClass",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Oncotree Code",
+      field: "oncotreeCode",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Collection Year",
+      field: "collectionYear",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Sample Origin",
+      field: "sampleOrigin",
+      sortable: true,
+      filterable: true
+    },
+    {
+      headerName: "Tissue Location",
+      field: "tissueLocation",
+      sortable: true,
+      filterable: true
+    },
+    { headerName: "Sex", field: "sex", sortable: true, filterable: true }
+  ]);
 
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
