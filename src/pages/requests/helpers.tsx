@@ -1,4 +1,6 @@
 import { Edit } from "@material-ui/icons";
+import { ColDef } from "ag-grid-community";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
 
 export type ColumnDefinition = {
@@ -135,7 +137,7 @@ export const RequestsListColumns: ColumnDefinition[] = [
   }
 ];
 
-export function buildRequestTableColumns(navigate: any): ColumnDefinition[] {
+export function oldBuildRequestTableColumns(navigate: any): ColumnDefinition[] {
   return [
     {
       headerRender: () => {
@@ -159,6 +161,139 @@ export function buildRequestTableColumns(navigate: any): ColumnDefinition[] {
     ...RequestsListColumns
   ];
 }
+
+export function buildRequestTableColumns(navigate: any): ColDef[] {
+  return [
+    {
+      headerName: "Button",
+      cellRenderer: (data: any) => {
+        console.log(data.igoRequestId);
+        return (
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={(function(...args) {
+              return function() {
+                console.log(args);
+              };
+            })(data.igoRequestId)}
+          >
+            View
+          </Button>
+        );
+      }
+    },
+    ...newColumns
+  ];
+}
+
+export const newColumns: ColDef[] = [
+  {
+    field: "igoRequestId",
+    headerName: "IGO Request ID",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "igoProjectId",
+    headerName: "IGO Project ID",
+    sortable: true,
+    width: 175
+  },
+  {
+    field: "hasSampleSamplesConnection",
+    headerName: "# Samples",
+    sortable: true,
+    valueGetter: function({ data }) {
+      console.log(data);
+      return data["hasSampleSamplesConnection"]?.totalCount;
+    }
+  },
+  {
+    field: "projectManagerName",
+    headerName: "Project Manager Name",
+    sortable: true,
+    width: 175
+  },
+  {
+    field: "investigatorName",
+    headerName: "Investigator Name",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "investigatorEmail",
+    headerName: "Investigator Email",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "piEmail",
+    headerName: "PI Email",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "dataAnalystName",
+    headerName: "Data Analyst Name",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "dataAnalystEmail",
+    headerName: "Data Analyst Email",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "genePanel",
+    headerName: "Gene Panel",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "labHeadName",
+    headerName: "Lab Head Name",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "labHeadEmail",
+    headerName: "Lab Head Email",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "qcAccessEmails",
+    headerName: "QC Access Emails",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "dataAccessEmails",
+    headerName: "Data Access Emails",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "bicAnalysis",
+    headerName: "BIC Analysis",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "isCmoRequest",
+    headerName: "CMO Request?",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "otherContactEmails",
+    headerName: "Other Contact Emails",
+    sortable: true,
+    width: 200
+  }
+];
 
 export const SampleDetailsColumns: ColumnDefinition[] = [
   {

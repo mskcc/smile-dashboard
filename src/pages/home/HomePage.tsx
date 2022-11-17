@@ -5,6 +5,7 @@ export const HomePage: React.FunctionComponent = props => {
   return (
     <Container style={{ textAlign: "center" }}>
       <div>
+        {/* <AgGridReact/> */}
         Home page content.
         <br /> TODO: add info/sections on this page describing the following:
         <br />
