@@ -8,6 +8,7 @@ import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
 import {
   ColumnDefinition,
+  oldSampleDetailsColumns,
   RequestsListColumns,
   SampleDetailsColumns
 } from "./helpers";
@@ -179,7 +180,7 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
         <DownloadModal
           loader={() => {
             return Promise.resolve(
-              CSVFormulate(metadataList, SampleDetailsColumns)
+              CSVFormulate(metadataList, oldSampleDetailsColumns)
             );
           }}
           onComplete={() => {
