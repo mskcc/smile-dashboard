@@ -1,5 +1,6 @@
 import { Edit } from "@material-ui/icons";
 import { ColDef } from "ag-grid-community";
+import { request } from "http";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 
@@ -167,16 +168,15 @@ export function buildRequestTableColumns(navigate: any): ColDef[] {
     {
       headerName: "Button",
       cellRenderer: (data: any) => {
-        console.log(data.igoRequestId);
         return (
           <Button
             variant="outline-secondary"
             size="sm"
             onClick={(function(...args) {
               return function() {
-                console.log(args);
+                // console.log(data.hasSampleSamplesConnection);
               };
-            })(data.igoRequestId)}
+            })()}
           >
             View
           </Button>
@@ -186,7 +186,7 @@ export function buildRequestTableColumns(navigate: any): ColDef[] {
     ...newColumns
   ];
 }
-
+// data.igoRequestId
 export const newColumns: ColDef[] = [
   {
     field: "igoRequestId",
@@ -295,7 +295,7 @@ export const newColumns: ColDef[] = [
   }
 ];
 
-export const SampleDetailsColumns: ColumnDefinition[] = [
+export const oldSampleDetailsColumns: ColumnDefinition[] = [
   {
     dataKey: "cmoSampleName",
     label: "CMO Sample Name",
@@ -378,6 +378,81 @@ export const SampleDetailsColumns: ColumnDefinition[] = [
     label: "Sex",
     sortable: true,
     filterable: true,
+    width: 200
+  }
+];
+
+export const SampleDetailsColumns: ColDef[] = [
+  {
+    field: "cmoSampleName",
+    headerName: "CMO Sample Name",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "cmoPatientId",
+    headerName: "CMO Patient ID",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "investigatorSampleId",
+    headerName: "Investigator Sample ID",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "primaryId",
+    headerName: "Primary ID",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "preservation",
+    headerName: "Preservation",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "tumorOrNormal",
+    headerName: "Tumor Or Normal",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "sampleClass",
+    headerName: "Sample Class",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "oncotreeCode",
+    headerName: "Oncotree Code",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "collectionYear",
+    headerName: "Collection Year",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "sampleOrigin",
+    headerName: "Sample Origin",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "tissueLocation",
+    headerName: "Tissue Location",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "sex",
+    headerName: "Sex",
+    sortable: true,
     width: 200
   }
 ];
