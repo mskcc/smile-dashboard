@@ -47,6 +47,11 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     fetchPolicy: "no-cache"
   });
 
+  const [val, setVal] = useState("");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState<any>(null);
+  const [prom, setProm] = useState<any>(Promise.resolve());
+
   const [rowData, setRowData] = useState([
     { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" },
     { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" }
@@ -120,11 +125,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     },
     { headerName: "Sex", field: "sex", sortable: true, filterable: true }
   ]);
-
-  const [val, setVal] = useState("");
-  const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState<any>(null);
-  const [prom, setProm] = useState<any>(Promise.resolve());
 
   if (loading)
     return (
