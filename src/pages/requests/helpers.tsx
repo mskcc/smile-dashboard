@@ -1,7 +1,5 @@
 import { Edit } from "@material-ui/icons";
 import { ColDef } from "ag-grid-community";
-import { request } from "http";
-import { useState } from "react";
 import { Button } from "react-bootstrap";
 
 export type ColumnDefinition = {
@@ -186,7 +184,7 @@ export function buildRequestTableColumns(navigate: any): ColDef[] {
     ...newColumns
   ];
 }
-// data.igoRequestId
+
 export const newColumns: ColDef[] = [
   {
     field: "igoRequestId",

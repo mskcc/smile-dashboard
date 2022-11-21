@@ -1,36 +1,19 @@
-import {
-  RequestWithSamplesDocument,
-  useRequestWithSamplesQuery,
-  useSamplesQuery
-} from "../../generated/graphql";
-import {
-  AutoSizer,
-  Column,
-  Index,
-  InfiniteLoader,
-  Table
-} from "react-virtualized";
+import { useRequestWithSamplesQuery } from "../../generated/graphql";
+import { Index } from "react-virtualized";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { observer } from "mobx-react";
-// import "react-virtualized/styles.css";
 import _, { sample } from "lodash";
 import classNames from "classnames";
-import React, { FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
-import {
-  ColumnDefinition,
-  RequestsListColumns,
-  SampleDetailsColumns
-} from "./helpers";
+import { SampleDetailsColumns } from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import { Edit } from "@material-ui/icons";
 
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
@@ -63,75 +46,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
 
-  const [columnDefs, setColumnDefs] = useState([
-    {
-      headerName: "CMO Sample Name",
-      field: "cmoSampleName",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "CMO Patient ID",
-      field: "cmoPatientId",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Investigator Sample ID",
-      field: "investigatorSampleId",
-      sortable: true
-    },
-    {
-      headerName: "Primary ID",
-      field: "primaryId",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Preservation",
-      field: "preservation",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Tumor Or Normal",
-      field: "tumorOrNormal",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Sample Class",
-      field: "sampleClass",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Oncotree Code",
-      field: "oncotreeCode",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Collection Year",
-      field: "collectionYear",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Sample Origin",
-      field: "sampleOrigin",
-      sortable: true,
-      filterable: true
-    },
-    {
-      headerName: "Tissue Location",
-      field: "tissueLocation",
-      sortable: true,
-      filterable: true
-    },
-    { headerName: "Sex", field: "sex", sortable: true, filterable: true }
-  ]);
-
   if (loading)
     return (
       <div className={"centralSpinner"}>
@@ -149,7 +63,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     const s = request.hasSampleSamples[index];
     const sm = request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
     console.log(s.smileSampleId, sm);
-
     return sm || {};
   }
 
@@ -238,9 +151,8 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
           </Button>
         </Col>
       </Row>
-      {/* <div style={{ height: 540 }}>{sampleTable}</div> */}
       <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
-        <AgGridReact columnDefs={columnDefs} rowData={metadataList} />
+        <AgGridReact columnDefs={SampleDetailsColumns} rowData={metadataList} />
       </div>
     </>
   );

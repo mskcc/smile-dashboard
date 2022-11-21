@@ -1,30 +1,18 @@
 import "./requests.scss";
 import { useRequestsListQuery } from "../../generated/graphql";
 import { makeAutoObservable } from "mobx";
-import {
-  InfiniteLoader,
-  Table,
-  Column,
-  AutoSizer,
-  IndexRange,
-  Index
-} from "react-virtualized";
+import { IndexRange, Index } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
-import "react-virtualized/styles.css";
-import React, { Component, FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import {
-  buildRequestTableColumns,
-  RequestsListColumns,
-  newColumns
-} from "./helpers";
+import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
 import { RequestSummary } from "./RequestSummary";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { AgGridReact } from "ag-grid-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
