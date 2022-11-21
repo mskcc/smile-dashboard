@@ -70,15 +70,6 @@ const Requests: FunctionComponent = () => {
     }
   });
 
-  const [rowData, setRowData] = useState([
-    {
-      igoRequestId: "1100",
-      igoProjectId: "2332",
-      hasSampleSamplesConnection: 2
-    },
-    { igoRequestId: "100", igoProjectId: "232", hasSampleSamplesConnection: 4 }
-  ]);
-
   if (loading)
     return (
       <div className={"centralSpinner"}>
@@ -88,7 +79,6 @@ const Requests: FunctionComponent = () => {
 
   if (error) return <p>Error :(</p>;
 
-  // returns variables to filter requests by in where clauses
   function requestFilterWhereVariables(value: string) {
     return [
       { igoProjectId_CONTAINS: value },
