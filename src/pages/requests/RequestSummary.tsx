@@ -8,7 +8,6 @@ import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
 import {
   ColumnDefinition,
-  oldSampleDetailsColumns,
   RequestsListColumns,
   SampleDetailsColumns
 } from "./helpers";
@@ -52,11 +51,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
-
-  const [rowData, setRowData] = useState([
-    { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" },
-    { cmoSampleName: "", cmoPatientId: "", investigatorSampleId: "" }
-  ]);
 
   const [columnDefs, setColumnDefs] = useState([
     {
@@ -180,7 +174,7 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
         <DownloadModal
           loader={() => {
             return Promise.resolve(
-              CSVFormulate(metadataList, oldSampleDetailsColumns)
+              CSVFormulate(metadataList, SampleDetailsColumns)
             );
           }}
           onComplete={() => {
