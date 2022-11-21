@@ -1,26 +1,19 @@
-import {
-  RequestWithSamplesDocument,
-  useRequestWithSamplesQuery,
-  useSamplesQuery
-} from "../../generated/graphql";
-import {
-  AutoSizer,
-  Column,
-  Index,
-  InfiniteLoader,
-  Table
-} from "react-virtualized";
+import { useRequestWithSamplesQuery } from "../../generated/graphql";
+import { Index } from "react-virtualized";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import { observer } from "mobx-react";
-import "react-virtualized/styles.css";
-import _ from "lodash";
+import _, { sample } from "lodash";
 import classNames from "classnames";
-import React, { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { SampleDetailsColumns } from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
+import { AgGridReact } from "ag-grid-react";
+import { useState } from "react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
 
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
@@ -70,41 +63,8 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     const s = request.hasSampleSamples[index];
     const sm = request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
     console.log(s.smileSampleId, sm);
-
     return sm || {};
-
-    // if (
-    //   request.hasSampleSamples?.[index]?.hasMetadataSampleMetadata?.[0] !== undefined
-    // ) {
-    //   return request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
-    // }
   }
-
-  const sampleTable = (
-    <AutoSizer>
-      {({ width }) => (
-        <Table
-          className="table"
-          width={width}
-          height={450}
-          headerHeight={50}
-          rowHeight={40}
-          rowCount={request.hasSampleSamples.length}
-          rowGetter={rowGetter}
-        >
-          {SampleDetailsColumns.map(col => {
-            return (
-              <Column
-                label={col.label}
-                dataKey={`${col.dataKey}`}
-                width={width / SampleDetailsColumns.length}
-              />
-            );
-          })}
-        </Table>
-      )}
-    </AutoSizer>
-  );
 
   const stringFields: any[] = [];
 
@@ -118,6 +78,8 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
       );
     }
   });
+
+  const remoteCount = request.hasSampleSamples.length;
 
   return (
     <>
@@ -176,7 +138,8 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
             }}
           />
         </Col>
-        {/* <Col className={"text-start"}>{remoteCount} matching requests</Col> */}
+
+        <Col className={"text-start"}>{remoteCount} matching requests</Col>
 
         <Col className={"text-end"}>
           <Button
@@ -188,7 +151,9 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
           </Button>
         </Col>
       </Row>
-      <div style={{ height: 540 }}>{sampleTable}</div>
+      <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
+        <AgGridReact columnDefs={SampleDetailsColumns} rowData={metadataList} />
+      </div>
     </>
   );
 };

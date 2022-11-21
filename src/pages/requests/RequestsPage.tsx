@@ -1,17 +1,9 @@
 import "./requests.scss";
 import { useRequestsListQuery } from "../../generated/graphql";
 import { makeAutoObservable } from "mobx";
-import {
-  InfiniteLoader,
-  Table,
-  Column,
-  AutoSizer,
-  IndexRange,
-  Index
-} from "react-virtualized";
+import { IndexRange, Index } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
-import "react-virtualized/styles.css";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
 import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
@@ -19,6 +11,11 @@ import { RequestSummary } from "./RequestSummary";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
+import { AgGridReact } from "ag-grid-react";
+import { useState } from "react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
 
 function createStore() {
   return makeAutoObservable({
@@ -67,7 +64,6 @@ const Requests: FunctionComponent = () => {
 
   if (error) return <p>Error :(</p>;
 
-  // returns variables to filter requests by in where clauses
   function requestFilterWhereVariables(value: string) {
     return [
       { igoProjectId_CONTAINS: value },
@@ -252,53 +248,12 @@ const Requests: FunctionComponent = () => {
         </Col>
       </Row>
 
-      <Row>
-        <InfiniteLoader
-          isRowLoaded={isRowLoaded}
-          loadMoreRows={params => {
-            return loadMoreRows(params, fetchMore);
-          }}
-          rowCount={remoteCount}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            <AutoSizer>
-              {({ width }) => (
-                <Table
-                  className="table"
-                  ref={registerChild}
-                  width={width}
-                  height={540}
-                  headerHeight={60}
-                  rowHeight={40}
-                  rowCount={remoteCount}
-                  onRowsRendered={onRowsRendered}
-                  rowGetter={rowGetter}
-                  onRowClick={info => {
-                    store.selectedRequest = info.rowData.igoRequestId;
-                    store.showRequestDetails = true;
-                  }}
-                  onRowDoubleClick={info => {
-                    store.showRequestDetails = false;
-                  }}
-                >
-                  {RequestTableColumns.map(col => {
-                    return (
-                      <Column
-                        headerRenderer={col.headerRender}
-                        label={col.label}
-                        dataKey={`${col.dataKey}`}
-                        cellRenderer={col.cellRenderer}
-                        cellDataGetter={col.cellDataGetter}
-                        width={col.width || 100}
-                      />
-                    );
-                  })}
-                </Table>
-              )}
-            </AutoSizer>
-          )}
-        </InfiniteLoader>
-      </Row>
+      <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
+        <AgGridReact
+          columnDefs={buildRequestTableColumns(navigate)}
+          rowData={data!.requests}
+        />
+      </div>
     </Container>
   );
 };

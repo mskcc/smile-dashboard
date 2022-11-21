@@ -6382,6 +6382,7 @@ export type RequestWithSamplesQueryVariables = Exact<{
 }>;
 
 export type RequestWithSamplesQuery = {
+  hasSampleSamples: any[] | null | undefined;
   __typename?: "Query";
   requests: Array<{
     __typename?: "Request";
