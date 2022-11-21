@@ -43,9 +43,6 @@ const Requests: FunctionComponent = () => {
 
   const RequestTableColumns = buildRequestTableColumns(navigate);
 
-  // const datasource = new ServerSideDatasource(gridOptions);
-  // gridOptions.api.setServerSideDatasource(datasource);
-
   const { loading, error, data, refetch, fetchMore } = useRequestsListQuery({
     variables: {
       where: {
