@@ -3,7 +3,7 @@ import { useRequestsListQuery } from "../../generated/graphql";
 import { makeAutoObservable } from "mobx";
 import { IndexRange, Index } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
 import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
@@ -33,6 +33,45 @@ export const RequestsPage: React.FunctionComponent = props => {
 
 export default RequestsPage;
 
+const createDatasource = (fetchMore: any) => {
+  return {
+    // called by the grid when more rows are required
+    getRows: (params: any) => {
+      //console.log("params",params);
+
+      return fetchMore({
+        variables: {
+          options: {
+            offset: params.request.startRow,
+            limit: params.request.endRow
+          }
+        }
+      }).then((d: any) => {
+        console.log(d.data.requests);
+        params.success({
+          rowData: d.data.requests,
+          rowCount: 1000
+        });
+      });
+
+      // get data for request from server
+      // params.success({
+      //   rowData: data!.requests,
+      //   rowCount: 1000
+      // });
+      // if (response.success) {
+      //   // supply rows for requested block to grid
+      //   params.success({
+      //     rowData: response.rows
+      //   });
+      // } else {
+      //   // inform grid request failed
+      //   params.fail();
+      // }
+    }
+  };
+};
+
 const Requests: FunctionComponent = () => {
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -52,6 +91,8 @@ const Requests: FunctionComponent = () => {
       options: { limit: 20, offset: 0 }
     }
   });
+
+  const datasource = useMemo(() => createDatasource(fetchMore), []);
 
   if (loading)
     return (
@@ -248,8 +289,11 @@ const Requests: FunctionComponent = () => {
 
       <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
         <AgGridReact
+          rowModelType={"serverSide"}
           columnDefs={buildRequestTableColumns(navigate)}
-          rowData={data!.requests}
+          serverSideDatasource={datasource}
+          serverSideInfiniteScroll={true}
+          cacheBlockSize={20}
         />
       </div>
     </Container>
