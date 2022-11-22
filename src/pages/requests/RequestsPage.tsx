@@ -41,8 +41,6 @@ const Requests: FunctionComponent = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const RequestTableColumns = buildRequestTableColumns(navigate);
-
   const { loading, error, data, refetch, fetchMore } = useRequestsListQuery({
     variables: {
       where: {

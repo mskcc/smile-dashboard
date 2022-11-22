@@ -15,17 +15,17 @@ export type ColumnDefinition = {
 export function buildRequestTableColumns(navigate: any): ColDef[] {
   return [
     {
-      headerName: "Button",
+      headerName: "View",
       cellRenderer: (data: any) => {
         return (
           <Button
             variant="outline-secondary"
             size="sm"
-            onClick={(function(...args) {
-              return function() {
-                // TO DO: navigate to RequestSummary Page
-              };
-            })()}
+            onClick={() => {
+              if (data.data.igoRequestId !== undefined) {
+                navigate(`/${data.data.igoRequestId}`);
+              }
+            }}
           >
             View
           </Button>
@@ -54,7 +54,6 @@ export const RequestsListColumns: ColDef[] = [
     headerName: "# Samples",
     sortable: true,
     valueGetter: function({ data }) {
-      console.log(data);
       return data["hasSampleSamplesConnection"]?.totalCount;
     }
   },
