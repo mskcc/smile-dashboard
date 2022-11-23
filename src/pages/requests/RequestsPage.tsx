@@ -1,7 +1,7 @@
 import "./requests.scss";
 import { useRequestsListQuery } from "../../generated/graphql";
 import { makeAutoObservable } from "mobx";
-import { IndexRange, Index } from "react-virtualized";
+import { IndexRange, Index, AutoSizer } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import React, { FunctionComponent, useEffect, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -37,8 +37,6 @@ const createDatasource = (fetchMore: any) => {
   return {
     // called by the grid when more rows are required
     getRows: (params: any) => {
-      //console.log("params",params);
-
       return fetchMore({
         variables: {
           options: {
@@ -47,7 +45,6 @@ const createDatasource = (fetchMore: any) => {
           }
         }
       }).then((d: any) => {
-        console.log(d.data.requests);
         params.success({
           rowData: d.data.requests,
           rowCount: 1000
@@ -214,20 +211,24 @@ const Requests: FunctionComponent = () => {
       </Row>
 
       {params.requestId && (
-        <Modal
-          show={true}
-          dialogClassName="modal-90w"
-          onHide={() => navigate("/requests")}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Viewing {params.requestId}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div>
-              <RequestSummary params={params} />
-            </div>
-          </Modal.Body>
-        </Modal>
+        <AutoSizer>
+          {({ height, width }) => (
+            <Modal
+              show={true}
+              dialogClassName="modal-90w"
+              onHide={() => navigate("/requests")}
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Viewing {params.requestId}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div style={{ height: height * 4 }}>
+                  <RequestSummary height={height * 4 - 50} params={params} />
+                </div>
+              </Modal.Body>
+            </Modal>
+          )}
+        </AutoSizer>
       )}
 
       <Row
@@ -286,16 +287,22 @@ const Requests: FunctionComponent = () => {
           </Button>
         </Col>
       </Row>
-
-      <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
-        <AgGridReact
-          rowModelType={"serverSide"}
-          columnDefs={buildRequestTableColumns(navigate)}
-          serverSideDatasource={datasource}
-          serverSideInfiniteScroll={true}
-          cacheBlockSize={20}
-        />
-      </div>
+      <AutoSizer>
+        {({ width }) => (
+          <div
+            className="ag-theme-alpine"
+            style={{ height: 540, width: width }}
+          >
+            <AgGridReact
+              rowModelType={"serverSide"}
+              columnDefs={buildRequestTableColumns(navigate)}
+              serverSideDatasource={datasource}
+              serverSideInfiniteScroll={true}
+              cacheBlockSize={20}
+            />
+          </div>
+        )}
+      </AutoSizer>
     </Container>
   );
 };

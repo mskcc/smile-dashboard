@@ -1,5 +1,5 @@
 import { useRequestWithSamplesQuery } from "../../generated/graphql";
-import { Index } from "react-virtualized";
+import { AutoSizer, Index } from "react-virtualized";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import _, { sample } from "lodash";
 import classNames from "classnames";
@@ -17,10 +17,12 @@ import "ag-grid-enterprise";
 
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
+  height: number;
 }
 
 const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
-  params
+  params,
+  height
 }) => {
   const {
     loading,
@@ -62,7 +64,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   function rowGetter({ index }: Index) {
     const s = request.hasSampleSamples[index];
     const sm = request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
-    console.log(s.smileSampleId, sm);
     return sm || {};
   }
 
@@ -151,9 +152,19 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
           </Button>
         </Col>
       </Row>
-      <div className="ag-theme-alpine" style={{ height: 540, width: 1000 }}>
-        <AgGridReact columnDefs={SampleDetailsColumns} rowData={metadataList} />
-      </div>
+      <AutoSizer>
+        {({ width }) => (
+          <div
+            className="ag-theme-alpine"
+            style={{ height: height, width: width }}
+          >
+            <AgGridReact
+              columnDefs={SampleDetailsColumns}
+              rowData={metadataList}
+            />
+          </div>
+        )}
+      </AutoSizer>
     </>
   );
 };
