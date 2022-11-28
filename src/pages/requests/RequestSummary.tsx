@@ -3,7 +3,7 @@ import { AutoSizer, Index } from "react-virtualized";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import _, { sample } from "lodash";
 import classNames from "classnames";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useMemo } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { SampleDetailsColumns } from "./helpers";
@@ -19,6 +19,33 @@ interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
   height: number;
 }
+
+const createDatasource = (fetchMore: any) => {
+  return {
+    // called by the grid when more rows are required
+    getRows: (params: any) => {
+      console.log("params", params);
+
+      return fetchMore({
+        variables: {
+          options: {
+            offset: params.request.startRow,
+            limit: params.request.endRow
+          }
+        }
+      }).then((d: any) => {
+        const samples = d.data.requests[0].hasSampleSamples.map(
+          (r: any) => r.hasMetadataSampleMetadata[0]
+        );
+
+        params.success({
+          rowData: samples,
+          rowCount: 1000
+        });
+      });
+    }
+  };
+};
 
 const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   params,
@@ -47,6 +74,7 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
+  const datasource = useMemo(() => createDatasource(fetchMore), []);
 
   if (loading)
     return (
