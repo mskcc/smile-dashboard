@@ -61,6 +61,7 @@ const createDatasource = (refetch: any, fetchMore: any, val: string) => {
   return {
     // called by the grid when more rows are required
     getRows: (params: any) => {
+      console.log(params);
       // if this is NOT first call, use refetch
       if (params.request.startRow > 0) {
         return fetchMore({
@@ -73,7 +74,8 @@ const createDatasource = (refetch: any, fetchMore: any, val: string) => {
             },
             options: {
               offset: params.request.startRow,
-              limit: params.request.endRow
+              limit: params.request.endRow,
+              sort: [{ projectManagerName: "DESC" }]
             }
           }
         }).then((d: any) => {
@@ -92,7 +94,10 @@ const createDatasource = (refetch: any, fetchMore: any, val: string) => {
           },
           options: {
             offset: params.request.startRow,
-            limit: params.request.endRow
+            limit: params.request.endRow,
+            sort: params.request.sortModel.map((sortModel: any) => {
+              return { [sortModel.colId]: sortModel.sort?.toUpperCase() };
+            })
           }
         }).then((d: any) => {
           params.success({
@@ -242,6 +247,7 @@ const Requests: FunctionComponent = () => {
             onClick={() => {
               setShowDownloadModal(true);
             }}
+            size={"sm"}
           >
             Generate Report
           </Button>
