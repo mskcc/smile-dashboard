@@ -249,17 +249,18 @@ const Requests: FunctionComponent = () => {
       </Row>
       <AutoSizer>
         {({ width }) => (
-          <div className="ag-theme-alpine"
+          <div
+            className="ag-theme-alpine"
             style={{ height: 540, width: width, marginTop: 10 }}
           >
-          <AgGridReact
-            rowModelType={"serverSide"}
-            columnDefs={buildRequestTableColumns(navigate)}
-            serverSideDatasource={datasource}
-            serverSideInfiniteScroll={true}
-            cacheBlockSize={20}
-            debug={true}
-          />
+            <AgGridReact
+              rowModelType={"serverSide"}
+              columnDefs={buildRequestTableColumns(navigate)}
+              serverSideDatasource={datasource}
+              serverSideInfiniteScroll={true}
+              cacheBlockSize={20}
+              debug={true}
+            />
           </div>
         )}
       </AutoSizer>
