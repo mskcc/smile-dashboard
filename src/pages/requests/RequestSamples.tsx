@@ -1,5 +1,5 @@
 import { useRequestWithSamplesQuery } from "../../generated/graphql";
-import { AutoSizer, Index } from "react-virtualized";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import _, { sample } from "lodash";
 import classNames from "classnames";
@@ -20,17 +20,11 @@ interface IRequestSummaryProps {
   height: number;
 }
 
-const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
+export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   params,
   height
 }) => {
-  const {
-    loading,
-    error,
-    data,
-    refetch,
-    fetchMore
-  } = useRequestWithSamplesQuery({
+  const { loading, error, data, refetch } = useRequestWithSamplesQuery({
     variables: {
       where: {
         igoRequestId: params.requestId
@@ -60,12 +54,6 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
   const request = data!.requests[0];
   const samples = request.hasSampleSamples;
   const metadataList = samples.map(item => item.hasMetadataSampleMetadata[0]);
-
-  function rowGetter({ index }: Index) {
-    const s = request.hasSampleSamples[index];
-    const sm = request.hasSampleSamples[index].hasMetadataSampleMetadata[0];
-    return sm || {};
-  }
 
   const stringFields: any[] = [];
 
@@ -99,7 +87,7 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
       )}
       <Row
         className={classNames(
-          "d-flex justify-content-between align-items-center"
+          "d-flex justify-content-between align-items-center tableControlsRow"
         )}
       >
         <Col></Col>
@@ -147,6 +135,7 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
             onClick={() => {
               setShowDownloadModal(true);
             }}
+            size={"sm"}
           >
             Generate Sample Report
           </Button>
@@ -168,5 +157,3 @@ const RequestSummary: FunctionComponent<IRequestSummaryProps> = ({
     </>
   );
 };
-
-export { RequestSummary };

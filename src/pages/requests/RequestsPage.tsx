@@ -1,17 +1,13 @@
 import "./requests.scss";
-import {
-  RequestsListQueryVariables,
-  useRequestsListLazyQuery,
-  useRequestsListQuery
-} from "../../generated/graphql";
+import { useRequestsListLazyQuery } from "../../generated/graphql";
 import { makeAutoObservable } from "mobx";
-import { IndexRange, Index, AutoSizer } from "react-virtualized";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import React, { FunctionComponent, useEffect, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
 import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
-import { RequestSummary } from "./RequestSummary";
+import { RequestSamples } from "./RequestSamples";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
@@ -20,6 +16,7 @@ import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
+import { IServerSideGetRowsParams } from "ag-grid-community";
 
 function requestFilterWhereVariables(value: string) {
   return [
@@ -60,52 +57,44 @@ export default RequestsPage;
 const createDatasource = (refetch: any, fetchMore: any, val: string) => {
   return {
     // called by the grid when more rows are required
-    getRows: (params: any) => {
-      console.log(params);
+
+    getRows: (params: IServerSideGetRowsParams) => {
+      const fetchInput = {
+        where: {
+          OR: requestFilterWhereVariables(val)
+        },
+        requestsConnectionWhere2: {
+          OR: requestFilterWhereVariables(val)
+        },
+        options: {
+          offset: params.request.startRow,
+          limit: params.request.endRow,
+          sort: params.request.sortModel.map((sortModel: any) => {
+            return { [sortModel.colId]: sortModel.sort?.toUpperCase() };
+          })
+        }
+      };
+
       // if this is NOT first call, use refetch
-      if (params.request.startRow > 0) {
-        return fetchMore({
-          variables: {
-            where: {
-              OR: requestFilterWhereVariables(val)
-            },
-            requestsConnectionWhere2: {
-              OR: requestFilterWhereVariables(val)
-            },
-            options: {
-              offset: params.request.startRow,
-              limit: params.request.endRow,
-              sort: [{ projectManagerName: "DESC" }]
-            }
-          }
-        }).then((d: any) => {
-          params.success({
-            rowData: d.data.requests,
-            rowCount: d.data.requestsConnection.totalCount
-          });
-        });
-      } else {
-        return refetch({
-          where: {
-            OR: requestFilterWhereVariables(val)
-          },
-          requestsConnectionWhere2: {
-            OR: requestFilterWhereVariables(val)
-          },
-          options: {
-            offset: params.request.startRow,
-            limit: params.request.endRow,
-            sort: params.request.sortModel.map((sortModel: any) => {
-              return { [sortModel.colId]: sortModel.sort?.toUpperCase() };
+      // (which is analogous in this case to the original fetch
+      const thisFetch =
+        params.request.startRow! === 0
+          ? refetch(fetchInput).then((d: any) => {
+              params.success({
+                rowData: d.data.requests,
+                rowCount: d.data.requestsConnection.totalCount
+              });
             })
-          }
-        }).then((d: any) => {
-          params.success({
-            rowData: d.data.requests,
-            rowCount: d.data.requestsConnection.totalCount
-          });
+          : fetchMore({
+              variables: fetchInput
+            });
+
+      return thisFetch.then((d: any) => {
+        params.success({
+          rowData: d.data.requests,
+          rowCount: d.data.requestsConnection.totalCount
         });
-      }
+      });
     }
   };
 };
@@ -203,7 +192,7 @@ const Requests: FunctionComponent = () => {
               </Modal.Header>
               <Modal.Body>
                 <div style={{ height: height * 4 }}>
-                  <RequestSummary height={height * 4 - 50} params={params} />
+                  <RequestSamples height={height * 4 - 50} params={params} />
                 </div>
               </Modal.Body>
             </Modal>
@@ -213,7 +202,8 @@ const Requests: FunctionComponent = () => {
 
       <Row
         className={classNames(
-          "d-flex justify-content-between align-items-center"
+          "d-flex justify-content-between align-items-center",
+          "tableControlsRow"
         )}
       >
         <Col></Col>
@@ -257,7 +247,7 @@ const Requests: FunctionComponent = () => {
         {({ width }) => (
           <div
             className="ag-theme-alpine"
-            style={{ height: 540, width: width, marginTop: 10 }}
+            style={{ height: 540, width: width }}
           >
             <AgGridReact
               rowModelType={"serverSide"}
