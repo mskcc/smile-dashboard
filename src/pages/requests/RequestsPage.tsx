@@ -10,10 +10,7 @@ import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import React, { FunctionComponent, useEffect, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import {
-  buildRequestTableColumns,
-  RequestsListColumns,
-} from "./helpers";
+import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
 import { RequestSummary } from "./RequestSummary";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
@@ -23,6 +20,7 @@ import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
+import {} from "ag-grid-react";
 
 function requestFilterWhereVariables(value: string) {
   return [
@@ -215,6 +213,20 @@ const Requests: FunctionComponent = () => {
         )}
       >
         <Col></Col>
+
+        <Col className={"text-end"}>
+          <div>
+            <button
+              className="d-flex justify-content-between align-items-center"
+              onClick={() => {
+                console.log("hello");
+              }}
+            >
+              Add Request
+            </button>
+          </div>
+        </Col>
+
         <Col className={"text-end"}>
           <Form.Control
             className={"d-inline-block"}
