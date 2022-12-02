@@ -1,4 +1,7 @@
-import { useRequestWithSamplesQuery } from "../../generated/graphql";
+import {
+  useRequestWithSamplesQuery,
+  SortDirection
+} from "../../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import _, { sample } from "lodash";
@@ -20,6 +23,27 @@ interface IRequestSummaryProps {
   height: number;
 }
 
+function sampleFilterWhereVariables(value: string) {
+  return [
+    { cmoSampleName_CONTAINS: value },
+    { importDate_CONTAINS: value },
+    { investigatorSampleId_CONTAINS: value },
+    { primaryId_CONTAINS: value },
+    { sampleClass_CONTAINS: value },
+    { cmoPatientId_CONTAINS: value },
+    { cmoSampleIdFields_CONTAINS: value },
+    { sampleName_CONTAINS: value },
+    { preservation_CONTAINS: value },
+    { tumorOrNormal_CONTAINS: value },
+    { oncotreeCode_CONTAINS: value },
+    { collectionYear_CONTAINS: value },
+    { sampleOrigin_CONTAINS: value },
+    { tissueLocation_CONTAINS: value },
+    { sex_CONTAINS: value },
+    { libraries_CONTAINS: value }
+  ];
+}
+
 export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   params,
   height
@@ -32,6 +56,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       options: {
         offset: 0,
         limit: undefined
+      },
+      hasMetadataSampleMetadataOptions2: {
+        sort: [{ importDate: SortDirection.Desc }],
+        limit: 1
       }
     },
     fetchPolicy: "no-cache"
@@ -51,24 +79,13 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
   if (error) return <Row>Error loading request details / request samples</Row>;
 
-  const request = data!.requests[0];
-  const samples = request.hasSampleSamples;
-  const metadataList = samples.map(item => item.hasMetadataSampleMetadata[0]);
+  function getSampleMetadata() {
+    return data!.requests[0].hasSampleSamples.map((s: any) => {
+      return s.hasMetadataSampleMetadata[0];
+    });
+  }
 
-  const stringFields: any[] = [];
-
-  _.forEach(request, (val: any, key: string) => {
-    if (typeof val === "string") {
-      stringFields.push(
-        <tr>
-          <td>{key}</td>
-          <td>{val}</td>
-        </tr>
-      );
-    }
-  });
-
-  const remoteCount = request.hasSampleSamples.length;
+  const remoteCount = data!.requests[0].hasSampleSamples.length;
 
   return (
     <>
@@ -76,7 +93,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
         <DownloadModal
           loader={() => {
             return Promise.resolve(
-              CSVFormulate(metadataList, SampleDetailsColumns)
+              CSVFormulate(getSampleMetadata(), SampleDetailsColumns)
             );
           }}
           onComplete={() => {
@@ -114,10 +131,16 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
                 const to = setTimeout(() => {
                   const rf = refetch({
                     hasSampleSamplesWhere2: {
-                      sampleClass_CONTAINS: value
+                      hasMetadataSampleMetadata_SOME: {
+                        OR: sampleFilterWhereVariables(value)
+                      }
                     },
-                    hasSamplesConnectionWhere2: {
-                      node: { sampleClass_CONTAINS: value }
+                    hasSampleSamplesConnectionWhere2: {
+                      node: {
+                        hasMetadataSampleMetadata_SOME: {
+                          OR: sampleFilterWhereVariables(value)
+                        }
+                      }
                     }
                   });
                   setProm(rf);
@@ -128,7 +151,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
           />
         </Col>
 
-        <Col className={"text-start"}>{remoteCount} matching requests</Col>
+        <Col className={"text-start"}>{remoteCount} matching samples</Col>
 
         <Col className={"text-end"}>
           <Button
@@ -149,7 +172,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
           >
             <AgGridReact
               columnDefs={SampleDetailsColumns}
-              rowData={metadataList}
+              rowData={getSampleMetadata()}
             />
           </div>
         )}

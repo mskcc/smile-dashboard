@@ -6376,13 +6376,14 @@ export type RequestWithSamplesQueryVariables = Exact<{
   options?: InputMaybe<RequestOptions>;
   where?: InputMaybe<RequestWhere>;
   hasSampleSamplesWhere2?: InputMaybe<SampleWhere>;
-  hasSamplesConnectionWhere2?: InputMaybe<
+  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
+  hasSampleSamplesConnectionWhere2?: InputMaybe<
     RequestHasSampleSamplesConnectionWhere
   >;
+  hasMetadataSampleMetadataOptions2?: InputMaybe<SampleMetadataOptions>;
 }>;
 
 export type RequestWithSamplesQuery = {
-  hasSampleSamples: any[] | null | undefined;
   __typename?: "Query";
   requests: Array<{
     __typename?: "Request";
@@ -6579,7 +6580,9 @@ export const RequestWithSamplesDocument = gql`
     $options: RequestOptions
     $where: RequestWhere
     $hasSampleSamplesWhere2: SampleWhere
-    $hasSamplesConnectionWhere2: RequestHasSampleSamplesConnectionWhere
+    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+    $hasSampleSamplesConnectionWhere2: RequestHasSampleSamplesConnectionWhere
+    $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
   ) {
     requests(where: $where, options: $options) {
       ...RequestParts
@@ -6588,7 +6591,10 @@ export const RequestWithSamplesDocument = gql`
         sampleCategory
         sampleClass
         datasource
-        hasMetadataSampleMetadata {
+        hasMetadataSampleMetadata(
+          where: $hasMetadataSampleMetadataWhere2
+          options: $hasMetadataSampleMetadataOptions2
+        ) {
           cmoSampleName
           igoComplete
           importDate
@@ -6615,7 +6621,7 @@ export const RequestWithSamplesDocument = gql`
           }
         }
       }
-      hasSampleSamplesConnection(where: $hasSamplesConnectionWhere2) {
+      hasSampleSamplesConnection(where: $hasSampleSamplesConnectionWhere2) {
         totalCount
       }
     }
@@ -6638,7 +6644,9 @@ export const RequestWithSamplesDocument = gql`
  *      options: // value for 'options'
  *      where: // value for 'where'
  *      hasSampleSamplesWhere2: // value for 'hasSampleSamplesWhere2'
- *      hasSamplesConnectionWhere2: // value for 'hasSamplesConnectionWhere2'
+ *      hasMetadataSampleMetadataWhere2: // value for 'hasMetadataSampleMetadataWhere2'
+ *      hasSampleSamplesConnectionWhere2: // value for 'hasSampleSamplesConnectionWhere2'
+ *      hasMetadataSampleMetadataOptions2: // value for 'hasMetadataSampleMetadataOptions2'
  *   },
  * });
  */

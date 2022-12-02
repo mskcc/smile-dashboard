@@ -19,6 +19,8 @@ query RequestWithSamples(
   $where: RequestWhere
   $hasSampleSamplesWhere2: SampleWhere
   $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+  $hasSampleSamplesConnectionWhere2: RequestHasSampleSamplesConnectionWhere
+  $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
 ) {
   requests(where: $where, options: $options) {
     ...RequestParts
@@ -27,7 +29,10 @@ query RequestWithSamples(
       sampleCategory
       sampleClass
       datasource
-      hasMetadataSampleMetadata(where: $hasMetadataSampleMetadataWhere2) {
+      hasMetadataSampleMetadata(
+        where: $hasMetadataSampleMetadataWhere2
+        options: $hasMetadataSampleMetadataOptions2
+      ) {
         cmoSampleName
         igoComplete
         importDate
@@ -53,9 +58,6 @@ query RequestWithSamples(
           value
         }
       }
-    }
-    requestsConnection(where: $requestsConnectionWhere2) {
-      totalCount
     }
     hasSampleSamplesConnection(where: $hasSampleSamplesConnectionWhere2) {
       totalCount

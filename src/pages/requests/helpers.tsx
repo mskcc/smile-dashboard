@@ -145,8 +145,20 @@ export const RequestsListColumns: ColDef[] = [
 
 export const SampleDetailsColumns: ColDef[] = [
   {
+    field: "primaryId",
+    headerName: "Primary ID",
+    sortable: true,
+    width: 200
+  },
+  {
     field: "cmoSampleName",
     headerName: "CMO Sample Name",
+    sortable: true,
+    width: 200
+  },
+  {
+    field: "importDate",
+    headerName: "Last Updated",
     sortable: true,
     width: 200
   },
@@ -162,12 +174,7 @@ export const SampleDetailsColumns: ColDef[] = [
     sortable: true,
     width: 200
   },
-  {
-    field: "primaryId",
-    headerName: "Primary ID",
-    sortable: true,
-    width: 200
-  },
+
   {
     field: "preservation",
     headerName: "Preservation",
