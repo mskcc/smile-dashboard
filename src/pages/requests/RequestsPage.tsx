@@ -4,6 +4,7 @@ import {
   useRequestsListLazyQuery,
   useRequestsListQuery
 } from "../../generated/graphql";
+import TestForm from "./requestForm";
 import { makeAutoObservable } from "mobx";
 import { IndexRange, Index, AutoSizer } from "react-virtualized";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
@@ -16,11 +17,11 @@ import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { AgGridReact } from "ag-grid-react";
-import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import {} from "ag-grid-react";
+import { useState } from "react";
 
 function requestFilterWhereVariables(value: string) {
   return [
@@ -186,6 +187,8 @@ const Requests: FunctionComponent = () => {
         </Col>
       </Row>
 
+      <form />
+
       {params.requestId && (
         <AutoSizer>
           {({ height, width }) => (
@@ -207,6 +210,8 @@ const Requests: FunctionComponent = () => {
         </AutoSizer>
       )}
 
+      <TestForm />
+
       <Row
         className={classNames(
           "d-flex justify-content-between align-items-center"
@@ -216,16 +221,18 @@ const Requests: FunctionComponent = () => {
 
         <Col className={"text-end"}>
           <div>
-            <button
+            {/* <button
               className="d-flex justify-content-between align-items-center"
               onClick={() => {
                 console.log("hello");
-              }}
-            >
+                <TestForm/>
+            }}>
               Add Request
-            </button>
+            </button> */}
           </div>
         </Col>
+
+        {/* <TestForm/> */}
 
         <Col className={"text-end"}>
           <Form.Control

@@ -1,0 +1,20 @@
+.data-form {
+  margin: 0 auto;
+  max-width: 400px;
+  max-height: 400px;
+}
+input {
+  border: 1px solid rgb(56, 54, 54);
+  width: 100%;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+label {
+  font-weight: bold;
+}
+
+button {
+  color: red;
+}
