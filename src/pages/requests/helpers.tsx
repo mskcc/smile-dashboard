@@ -217,4 +217,3 @@ export const SampleDetailsColumns: ColDef[] = [
     width: 200
   }
 ];
-
