@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RequestsPage from "./pages/requests/RequestsPage";
 import SmileNavBar from "./shared/components/SmileNavBar";
 import { offsetLimitPagination } from "@apollo/client/utilities";
+import HomePage from "./pages/home/HomePage";
+import { Container } from "react-bootstrap";
+import AdvancedSearchPage from "./pages/advancedSearch/AdvancedSearchPage";
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -29,22 +32,16 @@ const client = new ApolloClient({
 const root = ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
-      <div>
+      <Container fluid>
         <SmileNavBar />
-
-        <main id="main" className="main">
-          <section className="section dashboard">
-            <Routes>
-              <Route path="/" element={<RequestsPage />}>
-                <Route path=":requestId" />
-              </Route>
-              <Route path="/requests/" element={<RequestsPage />}>
-                <Route path=":requestId" />
-              </Route>
-            </Routes>
-          </section>
-        </main>
-      </div>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/requests/" element={<RequestsPage />}>
+            <Route path=":requestId" />
+          </Route>
+          <Route path="/advanced" element={<AdvancedSearchPage />} />
+        </Routes>
+      </Container>
     </ApolloProvider>
   </BrowserRouter>,
   document.getElementById("root") as HTMLElement
