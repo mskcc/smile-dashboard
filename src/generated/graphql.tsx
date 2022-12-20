@@ -74,6 +74,12 @@ export type CreateSamplesMutationResponse = {
   samples: Array<Sample>;
 };
 
+export type CreateStatusesMutationResponse = {
+  __typename?: "CreateStatusesMutationResponse";
+  info: CreateInfo;
+  statuses: Array<Status>;
+};
+
 export type DeleteInfo = {
   __typename?: "DeleteInfo";
   bookmark?: Maybe<Scalars["String"]>;
@@ -91,6 +97,7 @@ export type Mutation = {
   createSampleAliases: CreateSampleAliasesMutationResponse;
   createSampleMetadata: CreateSampleMetadataMutationResponse;
   createSamples: CreateSamplesMutationResponse;
+  createStatuses: CreateStatusesMutationResponse;
   deletePatientAliases: DeleteInfo;
   deletePatients: DeleteInfo;
   deleteProjects: DeleteInfo;
@@ -99,6 +106,7 @@ export type Mutation = {
   deleteSampleAliases: DeleteInfo;
   deleteSampleMetadata: DeleteInfo;
   deleteSamples: DeleteInfo;
+  deleteStatuses: DeleteInfo;
   updatePatientAliases: UpdatePatientAliasesMutationResponse;
   updatePatients: UpdatePatientsMutationResponse;
   updateProjects: UpdateProjectsMutationResponse;
@@ -107,6 +115,7 @@ export type Mutation = {
   updateSampleAliases: UpdateSampleAliasesMutationResponse;
   updateSampleMetadata: UpdateSampleMetadataMutationResponse;
   updateSamples: UpdateSamplesMutationResponse;
+  updateStatuses: UpdateStatusesMutationResponse;
 };
 
 export type MutationCreatePatientAliasesArgs = {
@@ -139,6 +148,10 @@ export type MutationCreateSampleMetadataArgs = {
 
 export type MutationCreateSamplesArgs = {
   input: Array<SampleCreateInput>;
+};
+
+export type MutationCreateStatusesArgs = {
+  input: Array<StatusCreateInput>;
 };
 
 export type MutationDeletePatientAliasesArgs = {
@@ -179,6 +192,11 @@ export type MutationDeleteSampleMetadataArgs = {
 export type MutationDeleteSamplesArgs = {
   delete?: InputMaybe<SampleDeleteInput>;
   where?: InputMaybe<SampleWhere>;
+};
+
+export type MutationDeleteStatusesArgs = {
+  delete?: InputMaybe<StatusDeleteInput>;
+  where?: InputMaybe<StatusWhere>;
 };
 
 export type MutationUpdatePatientAliasesArgs = {
@@ -251,6 +269,15 @@ export type MutationUpdateSamplesArgs = {
   disconnect?: InputMaybe<SampleDisconnectInput>;
   update?: InputMaybe<SampleUpdateInput>;
   where?: InputMaybe<SampleWhere>;
+};
+
+export type MutationUpdateStatusesArgs = {
+  connect?: InputMaybe<StatusConnectInput>;
+  create?: InputMaybe<StatusRelationInput>;
+  delete?: InputMaybe<StatusDeleteInput>;
+  disconnect?: InputMaybe<StatusDisconnectInput>;
+  update?: InputMaybe<StatusUpdateInput>;
+  where?: InputMaybe<StatusWhere>;
 };
 
 /** Pagination information (Relay) */
@@ -1687,6 +1714,9 @@ export type Query = {
   samples: Array<Sample>;
   samplesAggregate: SampleAggregateSelection;
   samplesConnection: SamplesConnection;
+  statuses: Array<Status>;
+  statusesAggregate: StatusAggregateSelection;
+  statusesConnection: StatusesConnection;
 };
 
 export type QueryPatientAliasesArgs = {
@@ -1817,6 +1847,22 @@ export type QuerySamplesConnectionArgs = {
   where?: InputMaybe<SampleWhere>;
 };
 
+export type QueryStatusesArgs = {
+  options?: InputMaybe<StatusOptions>;
+  where?: InputMaybe<StatusWhere>;
+};
+
+export type QueryStatusesAggregateArgs = {
+  where?: InputMaybe<StatusWhere>;
+};
+
+export type QueryStatusesConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<InputMaybe<StatusSort>>>;
+  where?: InputMaybe<StatusWhere>;
+};
+
 export type Request = {
   __typename?: "Request";
   bicAnalysis: Scalars["Boolean"];
@@ -1854,6 +1900,7 @@ export type Request = {
   projectsHasRequestConnection: RequestProjectsHasRequestConnection;
   qcAccessEmails: Scalars["String"];
   requestJson: Scalars["String"];
+  revisable: Scalars["Boolean"];
   smileRequestId: Scalars["String"];
   strand?: Maybe<Scalars["String"]>;
 };
@@ -1981,6 +2028,7 @@ export type RequestCreateInput = {
   projectsHasRequest?: InputMaybe<RequestProjectsHasRequestFieldInput>;
   qcAccessEmails: Scalars["String"];
   requestJson: Scalars["String"];
+  revisable: Scalars["Boolean"];
   smileRequestId: Scalars["String"];
   strand?: InputMaybe<Scalars["String"]>;
 };
@@ -2319,6 +2367,11 @@ export type RequestHasSampleSamplesUpdateFieldInput = {
 
 export type RequestMetadata = {
   __typename?: "RequestMetadata";
+  hasStatusStatuses: Array<Status>;
+  hasStatusStatusesAggregate?: Maybe<
+    RequestMetadataStatusHasStatusStatusesAggregationSelection
+  >;
+  hasStatusStatusesConnection: RequestMetadataHasStatusStatusesConnection;
   igoRequestId: Scalars["String"];
   importDate: Scalars["String"];
   requestMetadataJson: Scalars["String"];
@@ -2327,6 +2380,25 @@ export type RequestMetadata = {
     RequestMetadataRequestRequestsHasMetadataAggregationSelection
   >;
   requestsHasMetadataConnection: RequestMetadataRequestsHasMetadataConnection;
+};
+
+export type RequestMetadataHasStatusStatusesArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<StatusOptions>;
+  where?: InputMaybe<StatusWhere>;
+};
+
+export type RequestMetadataHasStatusStatusesAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<StatusWhere>;
+};
+
+export type RequestMetadataHasStatusStatusesConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<RequestMetadataHasStatusStatusesConnectionSort>>;
+  where?: InputMaybe<RequestMetadataHasStatusStatusesConnectionWhere>;
 };
 
 export type RequestMetadataRequestsHasMetadataArgs = {
@@ -2357,6 +2429,9 @@ export type RequestMetadataAggregateSelection = {
 };
 
 export type RequestMetadataConnectInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesConnectFieldInput>
+  >;
   requestsHasMetadata?: InputMaybe<
     Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
   >;
@@ -2374,6 +2449,7 @@ export type RequestMetadataConnection = {
 };
 
 export type RequestMetadataCreateInput = {
+  hasStatusStatuses?: InputMaybe<RequestMetadataHasStatusStatusesFieldInput>;
   igoRequestId: Scalars["String"];
   importDate: Scalars["String"];
   requestMetadataJson: Scalars["String"];
@@ -2383,12 +2459,18 @@ export type RequestMetadataCreateInput = {
 };
 
 export type RequestMetadataDeleteInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesDeleteFieldInput>
+  >;
   requestsHasMetadata?: InputMaybe<
     Array<RequestMetadataRequestsHasMetadataDeleteFieldInput>
   >;
 };
 
 export type RequestMetadataDisconnectInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesDisconnectFieldInput>
+  >;
   requestsHasMetadata?: InputMaybe<
     Array<RequestMetadataRequestsHasMetadataDisconnectFieldInput>
   >;
@@ -2400,6 +2482,113 @@ export type RequestMetadataEdge = {
   node: RequestMetadata;
 };
 
+export type RequestMetadataHasStatusStatusesAggregateInput = {
+  AND?: InputMaybe<Array<RequestMetadataHasStatusStatusesAggregateInput>>;
+  OR?: InputMaybe<Array<RequestMetadataHasStatusStatusesAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<RequestMetadataHasStatusStatusesNodeAggregationWhereInput>;
+};
+
+export type RequestMetadataHasStatusStatusesConnectFieldInput = {
+  connect?: InputMaybe<Array<StatusConnectInput>>;
+  where?: InputMaybe<StatusConnectWhere>;
+};
+
+export type RequestMetadataHasStatusStatusesConnection = {
+  __typename?: "RequestMetadataHasStatusStatusesConnection";
+  edges: Array<RequestMetadataHasStatusStatusesRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type RequestMetadataHasStatusStatusesConnectionSort = {
+  node?: InputMaybe<StatusSort>;
+};
+
+export type RequestMetadataHasStatusStatusesConnectionWhere = {
+  AND?: InputMaybe<Array<RequestMetadataHasStatusStatusesConnectionWhere>>;
+  OR?: InputMaybe<Array<RequestMetadataHasStatusStatusesConnectionWhere>>;
+  node?: InputMaybe<StatusWhere>;
+  node_NOT?: InputMaybe<StatusWhere>;
+};
+
+export type RequestMetadataHasStatusStatusesCreateFieldInput = {
+  node: StatusCreateInput;
+};
+
+export type RequestMetadataHasStatusStatusesDeleteFieldInput = {
+  delete?: InputMaybe<StatusDeleteInput>;
+  where?: InputMaybe<RequestMetadataHasStatusStatusesConnectionWhere>;
+};
+
+export type RequestMetadataHasStatusStatusesDisconnectFieldInput = {
+  disconnect?: InputMaybe<StatusDisconnectInput>;
+  where?: InputMaybe<RequestMetadataHasStatusStatusesConnectionWhere>;
+};
+
+export type RequestMetadataHasStatusStatusesFieldInput = {
+  connect?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesConnectFieldInput>
+  >;
+  create?: InputMaybe<Array<RequestMetadataHasStatusStatusesCreateFieldInput>>;
+};
+
+export type RequestMetadataHasStatusStatusesNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesNodeAggregationWhereInput>
+  >;
+  validationReport_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  validationReport_EQUAL?: InputMaybe<Scalars["String"]>;
+  validationReport_GT?: InputMaybe<Scalars["Int"]>;
+  validationReport_GTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_LT?: InputMaybe<Scalars["Int"]>;
+  validationReport_LTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type RequestMetadataHasStatusStatusesRelationship = {
+  __typename?: "RequestMetadataHasStatusStatusesRelationship";
+  cursor: Scalars["String"];
+  node: Status;
+};
+
+export type RequestMetadataHasStatusStatusesUpdateConnectionInput = {
+  node?: InputMaybe<StatusUpdateInput>;
+};
+
+export type RequestMetadataHasStatusStatusesUpdateFieldInput = {
+  connect?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesConnectFieldInput>
+  >;
+  create?: InputMaybe<Array<RequestMetadataHasStatusStatusesCreateFieldInput>>;
+  delete?: InputMaybe<Array<RequestMetadataHasStatusStatusesDeleteFieldInput>>;
+  disconnect?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesDisconnectFieldInput>
+  >;
+  update?: InputMaybe<RequestMetadataHasStatusStatusesUpdateConnectionInput>;
+  where?: InputMaybe<RequestMetadataHasStatusStatusesConnectionWhere>;
+};
+
 export type RequestMetadataOptions = {
   limit?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
@@ -2408,6 +2597,9 @@ export type RequestMetadataOptions = {
 };
 
 export type RequestMetadataRelationInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesCreateFieldInput>
+  >;
   requestsHasMetadata?: InputMaybe<
     Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
   >;
@@ -2924,7 +3116,21 @@ export type RequestMetadataSort = {
   requestMetadataJson?: InputMaybe<SortDirection>;
 };
 
+export type RequestMetadataStatusHasStatusStatusesAggregationSelection = {
+  __typename?: "RequestMetadataStatusHasStatusStatusesAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<RequestMetadataStatusHasStatusStatusesNodeAggregateSelection>;
+};
+
+export type RequestMetadataStatusHasStatusStatusesNodeAggregateSelection = {
+  __typename?: "RequestMetadataStatusHasStatusStatusesNodeAggregateSelection";
+  validationReport: StringAggregateSelectionNonNullable;
+};
+
 export type RequestMetadataUpdateInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<RequestMetadataHasStatusStatusesUpdateFieldInput>
+  >;
   igoRequestId?: InputMaybe<Scalars["String"]>;
   importDate?: InputMaybe<Scalars["String"]>;
   requestMetadataJson?: InputMaybe<Scalars["String"]>;
@@ -2936,6 +3142,29 @@ export type RequestMetadataUpdateInput = {
 export type RequestMetadataWhere = {
   AND?: InputMaybe<Array<RequestMetadataWhere>>;
   OR?: InputMaybe<Array<RequestMetadataWhere>>;
+  hasStatusStatusesAggregate?: InputMaybe<
+    RequestMetadataHasStatusStatusesAggregateInput
+  >;
+  hasStatusStatusesConnection_ALL?: InputMaybe<
+    RequestMetadataHasStatusStatusesConnectionWhere
+  >;
+  hasStatusStatusesConnection_NONE?: InputMaybe<
+    RequestMetadataHasStatusStatusesConnectionWhere
+  >;
+  hasStatusStatusesConnection_SINGLE?: InputMaybe<
+    RequestMetadataHasStatusStatusesConnectionWhere
+  >;
+  hasStatusStatusesConnection_SOME?: InputMaybe<
+    RequestMetadataHasStatusStatusesConnectionWhere
+  >;
+  /** Return RequestMetadata where all of the related Statuses match this filter */
+  hasStatusStatuses_ALL?: InputMaybe<StatusWhere>;
+  /** Return RequestMetadata where none of the related Statuses match this filter */
+  hasStatusStatuses_NONE?: InputMaybe<StatusWhere>;
+  /** Return RequestMetadata where one of the related Statuses match this filter */
+  hasStatusStatuses_SINGLE?: InputMaybe<StatusWhere>;
+  /** Return RequestMetadata where some of the related Statuses match this filter */
+  hasStatusStatuses_SOME?: InputMaybe<StatusWhere>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
   igoRequestId_CONTAINS?: InputMaybe<Scalars["String"]>;
   igoRequestId_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -3187,6 +3416,7 @@ export type RequestSort = {
   projectManagerName?: InputMaybe<SortDirection>;
   qcAccessEmails?: InputMaybe<SortDirection>;
   requestJson?: InputMaybe<SortDirection>;
+  revisable?: InputMaybe<SortDirection>;
   smileRequestId?: InputMaybe<SortDirection>;
   strand?: InputMaybe<SortDirection>;
 };
@@ -3221,6 +3451,7 @@ export type RequestUpdateInput = {
   >;
   qcAccessEmails?: InputMaybe<Scalars["String"]>;
   requestJson?: InputMaybe<Scalars["String"]>;
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   smileRequestId?: InputMaybe<Scalars["String"]>;
   strand?: InputMaybe<Scalars["String"]>;
 };
@@ -3473,6 +3704,8 @@ export type RequestWhere = {
   requestJson_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   requestJson_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   requestJson_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  revisable?: InputMaybe<Scalars["Boolean"]>;
+  revisable_NOT?: InputMaybe<Scalars["Boolean"]>;
   smileRequestId?: InputMaybe<Scalars["String"]>;
   smileRequestId_CONTAINS?: InputMaybe<Scalars["String"]>;
   smileRequestId_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -3520,6 +3753,7 @@ export type Sample = {
     SampleRequestRequestsHasSampleAggregationSelection
   >;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
+  revisable: Scalars["Boolean"];
   sampleAliasesIsAlias: Array<SampleAlias>;
   sampleAliasesIsAliasAggregate?: Maybe<
     SampleSampleAliasSampleAliasesIsAliasAggregationSelection
@@ -3957,6 +4191,7 @@ export type SampleCreateInput = {
   >;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
+  revisable: Scalars["Boolean"];
   sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
   sampleCategory: Scalars["String"];
   sampleClass: Scalars["String"];
@@ -4613,6 +4848,11 @@ export type SampleMetadata = {
   cmoSampleName?: Maybe<Scalars["String"]>;
   collectionYear: Scalars["String"];
   genePanel: Scalars["String"];
+  hasStatusStatuses: Array<Status>;
+  hasStatusStatusesAggregate?: Maybe<
+    SampleMetadataStatusHasStatusStatusesAggregationSelection
+  >;
+  hasStatusStatusesConnection: SampleMetadataHasStatusStatusesConnection;
   igoComplete?: Maybe<Scalars["Boolean"]>;
   igoRequestId?: Maybe<Scalars["String"]>;
   importDate: Scalars["String"];
@@ -4636,6 +4876,25 @@ export type SampleMetadata = {
   tissueLocation?: Maybe<Scalars["String"]>;
   tubeId?: Maybe<Scalars["String"]>;
   tumorOrNormal: Scalars["String"];
+};
+
+export type SampleMetadataHasStatusStatusesArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<StatusOptions>;
+  where?: InputMaybe<StatusWhere>;
+};
+
+export type SampleMetadataHasStatusStatusesAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<StatusWhere>;
+};
+
+export type SampleMetadataHasStatusStatusesConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<SampleMetadataHasStatusStatusesConnectionSort>>;
+  where?: InputMaybe<SampleMetadataHasStatusStatusesConnectionWhere>;
 };
 
 export type SampleMetadataSamplesHasMetadataArgs = {
@@ -4689,6 +4948,9 @@ export type SampleMetadataAggregateSelection = {
 };
 
 export type SampleMetadataConnectInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesConnectFieldInput>
+  >;
   samplesHasMetadata?: InputMaybe<
     Array<SampleMetadataSamplesHasMetadataConnectFieldInput>
   >;
@@ -4715,6 +4977,7 @@ export type SampleMetadataCreateInput = {
   cmoSampleName?: InputMaybe<Scalars["String"]>;
   collectionYear: Scalars["String"];
   genePanel: Scalars["String"];
+  hasStatusStatuses?: InputMaybe<SampleMetadataHasStatusStatusesFieldInput>;
   igoComplete?: InputMaybe<Scalars["Boolean"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
   importDate: Scalars["String"];
@@ -4737,12 +5000,18 @@ export type SampleMetadataCreateInput = {
 };
 
 export type SampleMetadataDeleteInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesDeleteFieldInput>
+  >;
   samplesHasMetadata?: InputMaybe<
     Array<SampleMetadataSamplesHasMetadataDeleteFieldInput>
   >;
 };
 
 export type SampleMetadataDisconnectInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesDisconnectFieldInput>
+  >;
   samplesHasMetadata?: InputMaybe<
     Array<SampleMetadataSamplesHasMetadataDisconnectFieldInput>
   >;
@@ -4754,6 +5023,109 @@ export type SampleMetadataEdge = {
   node: SampleMetadata;
 };
 
+export type SampleMetadataHasStatusStatusesAggregateInput = {
+  AND?: InputMaybe<Array<SampleMetadataHasStatusStatusesAggregateInput>>;
+  OR?: InputMaybe<Array<SampleMetadataHasStatusStatusesAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<SampleMetadataHasStatusStatusesNodeAggregationWhereInput>;
+};
+
+export type SampleMetadataHasStatusStatusesConnectFieldInput = {
+  connect?: InputMaybe<Array<StatusConnectInput>>;
+  where?: InputMaybe<StatusConnectWhere>;
+};
+
+export type SampleMetadataHasStatusStatusesConnection = {
+  __typename?: "SampleMetadataHasStatusStatusesConnection";
+  edges: Array<SampleMetadataHasStatusStatusesRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type SampleMetadataHasStatusStatusesConnectionSort = {
+  node?: InputMaybe<StatusSort>;
+};
+
+export type SampleMetadataHasStatusStatusesConnectionWhere = {
+  AND?: InputMaybe<Array<SampleMetadataHasStatusStatusesConnectionWhere>>;
+  OR?: InputMaybe<Array<SampleMetadataHasStatusStatusesConnectionWhere>>;
+  node?: InputMaybe<StatusWhere>;
+  node_NOT?: InputMaybe<StatusWhere>;
+};
+
+export type SampleMetadataHasStatusStatusesCreateFieldInput = {
+  node: StatusCreateInput;
+};
+
+export type SampleMetadataHasStatusStatusesDeleteFieldInput = {
+  delete?: InputMaybe<StatusDeleteInput>;
+  where?: InputMaybe<SampleMetadataHasStatusStatusesConnectionWhere>;
+};
+
+export type SampleMetadataHasStatusStatusesDisconnectFieldInput = {
+  disconnect?: InputMaybe<StatusDisconnectInput>;
+  where?: InputMaybe<SampleMetadataHasStatusStatusesConnectionWhere>;
+};
+
+export type SampleMetadataHasStatusStatusesFieldInput = {
+  connect?: InputMaybe<Array<SampleMetadataHasStatusStatusesConnectFieldInput>>;
+  create?: InputMaybe<Array<SampleMetadataHasStatusStatusesCreateFieldInput>>;
+};
+
+export type SampleMetadataHasStatusStatusesNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesNodeAggregationWhereInput>
+  >;
+  validationReport_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  validationReport_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  validationReport_EQUAL?: InputMaybe<Scalars["String"]>;
+  validationReport_GT?: InputMaybe<Scalars["Int"]>;
+  validationReport_GTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  validationReport_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_LT?: InputMaybe<Scalars["Int"]>;
+  validationReport_LTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  validationReport_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type SampleMetadataHasStatusStatusesRelationship = {
+  __typename?: "SampleMetadataHasStatusStatusesRelationship";
+  cursor: Scalars["String"];
+  node: Status;
+};
+
+export type SampleMetadataHasStatusStatusesUpdateConnectionInput = {
+  node?: InputMaybe<StatusUpdateInput>;
+};
+
+export type SampleMetadataHasStatusStatusesUpdateFieldInput = {
+  connect?: InputMaybe<Array<SampleMetadataHasStatusStatusesConnectFieldInput>>;
+  create?: InputMaybe<Array<SampleMetadataHasStatusStatusesCreateFieldInput>>;
+  delete?: InputMaybe<Array<SampleMetadataHasStatusStatusesDeleteFieldInput>>;
+  disconnect?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesDisconnectFieldInput>
+  >;
+  update?: InputMaybe<SampleMetadataHasStatusStatusesUpdateConnectionInput>;
+  where?: InputMaybe<SampleMetadataHasStatusStatusesConnectionWhere>;
+};
+
 export type SampleMetadataOptions = {
   limit?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
@@ -4762,6 +5134,9 @@ export type SampleMetadataOptions = {
 };
 
 export type SampleMetadataRelationInput = {
+  hasStatusStatuses?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesCreateFieldInput>
+  >;
   samplesHasMetadata?: InputMaybe<
     Array<SampleMetadataSamplesHasMetadataCreateFieldInput>
   >;
@@ -4979,6 +5354,17 @@ export type SampleMetadataSort = {
   tumorOrNormal?: InputMaybe<SortDirection>;
 };
 
+export type SampleMetadataStatusHasStatusStatusesAggregationSelection = {
+  __typename?: "SampleMetadataStatusHasStatusStatusesAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<SampleMetadataStatusHasStatusStatusesNodeAggregateSelection>;
+};
+
+export type SampleMetadataStatusHasStatusStatusesNodeAggregateSelection = {
+  __typename?: "SampleMetadataStatusHasStatusStatusesNodeAggregateSelection";
+  validationReport: StringAggregateSelectionNonNullable;
+};
+
 export type SampleMetadataUpdateInput = {
   additionalProperties?: InputMaybe<Scalars["String"]>;
   baitSet?: InputMaybe<Scalars["String"]>;
@@ -4989,6 +5375,9 @@ export type SampleMetadataUpdateInput = {
   cmoSampleName?: InputMaybe<Scalars["String"]>;
   collectionYear?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
+  hasStatusStatuses?: InputMaybe<
+    Array<SampleMetadataHasStatusStatusesUpdateFieldInput>
+  >;
   igoComplete?: InputMaybe<Scalars["Boolean"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
   importDate?: InputMaybe<Scalars["String"]>;
@@ -5105,6 +5494,29 @@ export type SampleMetadataWhere = {
   genePanel_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   genePanel_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   genePanel_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  hasStatusStatusesAggregate?: InputMaybe<
+    SampleMetadataHasStatusStatusesAggregateInput
+  >;
+  hasStatusStatusesConnection_ALL?: InputMaybe<
+    SampleMetadataHasStatusStatusesConnectionWhere
+  >;
+  hasStatusStatusesConnection_NONE?: InputMaybe<
+    SampleMetadataHasStatusStatusesConnectionWhere
+  >;
+  hasStatusStatusesConnection_SINGLE?: InputMaybe<
+    SampleMetadataHasStatusStatusesConnectionWhere
+  >;
+  hasStatusStatusesConnection_SOME?: InputMaybe<
+    SampleMetadataHasStatusStatusesConnectionWhere
+  >;
+  /** Return SampleMetadata where all of the related Statuses match this filter */
+  hasStatusStatuses_ALL?: InputMaybe<StatusWhere>;
+  /** Return SampleMetadata where none of the related Statuses match this filter */
+  hasStatusStatuses_NONE?: InputMaybe<StatusWhere>;
+  /** Return SampleMetadata where one of the related Statuses match this filter */
+  hasStatusStatuses_SINGLE?: InputMaybe<StatusWhere>;
+  /** Return SampleMetadata where some of the related Statuses match this filter */
+  hasStatusStatuses_SOME?: InputMaybe<StatusWhere>;
   igoComplete?: InputMaybe<Scalars["Boolean"]>;
   igoComplete_NOT?: InputMaybe<Scalars["Boolean"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
@@ -6092,6 +6504,7 @@ export type SampleSampleMetadataHasMetadataSampleMetadataNodeAggregateSelection 
 /** Fields to sort Samples by. The order in which sorts are applied is not guaranteed when specifying many fields in one SampleSort object. */
 export type SampleSort = {
   datasource?: InputMaybe<SortDirection>;
+  revisable?: InputMaybe<SortDirection>;
   sampleCategory?: InputMaybe<SortDirection>;
   sampleClass?: InputMaybe<SortDirection>;
   smileSampleId?: InputMaybe<SortDirection>;
@@ -6108,6 +6521,7 @@ export type SampleUpdateInput = {
   requestsHasSample?: InputMaybe<
     Array<SampleRequestsHasSampleUpdateFieldInput>
   >;
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias?: InputMaybe<
     Array<SampleSampleAliasesIsAliasUpdateFieldInput>
   >;
@@ -6198,6 +6612,8 @@ export type SampleWhere = {
   requestsHasSample_SINGLE?: InputMaybe<RequestWhere>;
   /** Return Samples where some of the related Requests match this filter */
   requestsHasSample_SOME?: InputMaybe<RequestWhere>;
+  revisable?: InputMaybe<Scalars["Boolean"]>;
+  revisable_NOT?: InputMaybe<Scalars["Boolean"]>;
   sampleAliasesIsAliasAggregate?: InputMaybe<
     SampleSampleAliasesIsAliasAggregateInput
   >;
@@ -6267,6 +6683,1014 @@ export enum SortDirection {
   Desc = "DESC"
 }
 
+export type Status = {
+  __typename?: "Status";
+  requestMetadataHasStatus: Array<RequestMetadata>;
+  requestMetadataHasStatusAggregate?: Maybe<
+    StatusRequestMetadataRequestMetadataHasStatusAggregationSelection
+  >;
+  requestMetadataHasStatusConnection: StatusRequestMetadataHasStatusConnection;
+  sampleMetadataHasStatus: Array<SampleMetadata>;
+  sampleMetadataHasStatusAggregate?: Maybe<
+    StatusSampleMetadataSampleMetadataHasStatusAggregationSelection
+  >;
+  sampleMetadataHasStatusConnection: StatusSampleMetadataHasStatusConnection;
+  validationReport: Scalars["String"];
+  validationStatus: Scalars["Boolean"];
+};
+
+export type StatusRequestMetadataHasStatusArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<RequestMetadataOptions>;
+  where?: InputMaybe<RequestMetadataWhere>;
+};
+
+export type StatusRequestMetadataHasStatusAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<RequestMetadataWhere>;
+};
+
+export type StatusRequestMetadataHasStatusConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<StatusRequestMetadataHasStatusConnectionSort>>;
+  where?: InputMaybe<StatusRequestMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusSampleMetadataHasStatusArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<SampleMetadataOptions>;
+  where?: InputMaybe<SampleMetadataWhere>;
+};
+
+export type StatusSampleMetadataHasStatusAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<SampleMetadataWhere>;
+};
+
+export type StatusSampleMetadataHasStatusConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<StatusSampleMetadataHasStatusConnectionSort>>;
+  where?: InputMaybe<StatusSampleMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusAggregateSelection = {
+  __typename?: "StatusAggregateSelection";
+  count: Scalars["Int"];
+  validationReport: StringAggregateSelectionNonNullable;
+};
+
+export type StatusConnectInput = {
+  requestMetadataHasStatus?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusConnectFieldInput>
+  >;
+  sampleMetadataHasStatus?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusConnectFieldInput>
+  >;
+};
+
+export type StatusConnectWhere = {
+  node: StatusWhere;
+};
+
+export type StatusCreateInput = {
+  requestMetadataHasStatus?: InputMaybe<
+    StatusRequestMetadataHasStatusFieldInput
+  >;
+  sampleMetadataHasStatus?: InputMaybe<StatusSampleMetadataHasStatusFieldInput>;
+  validationReport: Scalars["String"];
+  validationStatus: Scalars["Boolean"];
+};
+
+export type StatusDeleteInput = {
+  requestMetadataHasStatus?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusDeleteFieldInput>
+  >;
+  sampleMetadataHasStatus?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusDeleteFieldInput>
+  >;
+};
+
+export type StatusDisconnectInput = {
+  requestMetadataHasStatus?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusDisconnectFieldInput>
+  >;
+  sampleMetadataHasStatus?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusDisconnectFieldInput>
+  >;
+};
+
+export type StatusEdge = {
+  __typename?: "StatusEdge";
+  cursor: Scalars["String"];
+  node: Status;
+};
+
+export type StatusOptions = {
+  limit?: InputMaybe<Scalars["Int"]>;
+  offset?: InputMaybe<Scalars["Int"]>;
+  /** Specify one or more StatusSort objects to sort Statuses by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort?: InputMaybe<Array<StatusSort>>;
+};
+
+export type StatusRelationInput = {
+  requestMetadataHasStatus?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusCreateFieldInput>
+  >;
+  sampleMetadataHasStatus?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusCreateFieldInput>
+  >;
+};
+
+export type StatusRequestMetadataHasStatusAggregateInput = {
+  AND?: InputMaybe<Array<StatusRequestMetadataHasStatusAggregateInput>>;
+  OR?: InputMaybe<Array<StatusRequestMetadataHasStatusAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<StatusRequestMetadataHasStatusNodeAggregationWhereInput>;
+};
+
+export type StatusRequestMetadataHasStatusConnectFieldInput = {
+  connect?: InputMaybe<Array<RequestMetadataConnectInput>>;
+  where?: InputMaybe<RequestMetadataConnectWhere>;
+};
+
+export type StatusRequestMetadataHasStatusConnection = {
+  __typename?: "StatusRequestMetadataHasStatusConnection";
+  edges: Array<StatusRequestMetadataHasStatusRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type StatusRequestMetadataHasStatusConnectionSort = {
+  node?: InputMaybe<RequestMetadataSort>;
+};
+
+export type StatusRequestMetadataHasStatusConnectionWhere = {
+  AND?: InputMaybe<Array<StatusRequestMetadataHasStatusConnectionWhere>>;
+  OR?: InputMaybe<Array<StatusRequestMetadataHasStatusConnectionWhere>>;
+  node?: InputMaybe<RequestMetadataWhere>;
+  node_NOT?: InputMaybe<RequestMetadataWhere>;
+};
+
+export type StatusRequestMetadataHasStatusCreateFieldInput = {
+  node: RequestMetadataCreateInput;
+};
+
+export type StatusRequestMetadataHasStatusDeleteFieldInput = {
+  delete?: InputMaybe<RequestMetadataDeleteInput>;
+  where?: InputMaybe<StatusRequestMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusRequestMetadataHasStatusDisconnectFieldInput = {
+  disconnect?: InputMaybe<RequestMetadataDisconnectInput>;
+  where?: InputMaybe<StatusRequestMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusRequestMetadataHasStatusFieldInput = {
+  connect?: InputMaybe<Array<StatusRequestMetadataHasStatusConnectFieldInput>>;
+  create?: InputMaybe<Array<StatusRequestMetadataHasStatusCreateFieldInput>>;
+};
+
+export type StatusRequestMetadataHasStatusNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusNodeAggregationWhereInput>
+  >;
+  igoRequestId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_EQUAL?: InputMaybe<Scalars["String"]>;
+  igoRequestId_GT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_GTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  importDate_EQUAL?: InputMaybe<Scalars["String"]>;
+  importDate_GT?: InputMaybe<Scalars["Int"]>;
+  importDate_GTE?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_LT?: InputMaybe<Scalars["Int"]>;
+  importDate_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  requestMetadataJson_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  requestMetadataJson_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  requestMetadataJson_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  requestMetadataJson_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  requestMetadataJson_EQUAL?: InputMaybe<Scalars["String"]>;
+  requestMetadataJson_GT?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_GTE?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LT?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_LTE?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  requestMetadataJson_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type StatusRequestMetadataHasStatusRelationship = {
+  __typename?: "StatusRequestMetadataHasStatusRelationship";
+  cursor: Scalars["String"];
+  node: RequestMetadata;
+};
+
+export type StatusRequestMetadataHasStatusUpdateConnectionInput = {
+  node?: InputMaybe<RequestMetadataUpdateInput>;
+};
+
+export type StatusRequestMetadataHasStatusUpdateFieldInput = {
+  connect?: InputMaybe<Array<StatusRequestMetadataHasStatusConnectFieldInput>>;
+  create?: InputMaybe<Array<StatusRequestMetadataHasStatusCreateFieldInput>>;
+  delete?: InputMaybe<Array<StatusRequestMetadataHasStatusDeleteFieldInput>>;
+  disconnect?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusDisconnectFieldInput>
+  >;
+  update?: InputMaybe<StatusRequestMetadataHasStatusUpdateConnectionInput>;
+  where?: InputMaybe<StatusRequestMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusRequestMetadataRequestMetadataHasStatusAggregationSelection = {
+  __typename?: "StatusRequestMetadataRequestMetadataHasStatusAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<
+    StatusRequestMetadataRequestMetadataHasStatusNodeAggregateSelection
+  >;
+};
+
+export type StatusRequestMetadataRequestMetadataHasStatusNodeAggregateSelection = {
+  __typename?: "StatusRequestMetadataRequestMetadataHasStatusNodeAggregateSelection";
+  igoRequestId: StringAggregateSelectionNonNullable;
+  importDate: StringAggregateSelectionNonNullable;
+  requestMetadataJson: StringAggregateSelectionNonNullable;
+};
+
+export type StatusSampleMetadataHasStatusAggregateInput = {
+  AND?: InputMaybe<Array<StatusSampleMetadataHasStatusAggregateInput>>;
+  OR?: InputMaybe<Array<StatusSampleMetadataHasStatusAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<StatusSampleMetadataHasStatusNodeAggregationWhereInput>;
+};
+
+export type StatusSampleMetadataHasStatusConnectFieldInput = {
+  connect?: InputMaybe<Array<SampleMetadataConnectInput>>;
+  where?: InputMaybe<SampleMetadataConnectWhere>;
+};
+
+export type StatusSampleMetadataHasStatusConnection = {
+  __typename?: "StatusSampleMetadataHasStatusConnection";
+  edges: Array<StatusSampleMetadataHasStatusRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type StatusSampleMetadataHasStatusConnectionSort = {
+  node?: InputMaybe<SampleMetadataSort>;
+};
+
+export type StatusSampleMetadataHasStatusConnectionWhere = {
+  AND?: InputMaybe<Array<StatusSampleMetadataHasStatusConnectionWhere>>;
+  OR?: InputMaybe<Array<StatusSampleMetadataHasStatusConnectionWhere>>;
+  node?: InputMaybe<SampleMetadataWhere>;
+  node_NOT?: InputMaybe<SampleMetadataWhere>;
+};
+
+export type StatusSampleMetadataHasStatusCreateFieldInput = {
+  node: SampleMetadataCreateInput;
+};
+
+export type StatusSampleMetadataHasStatusDeleteFieldInput = {
+  delete?: InputMaybe<SampleMetadataDeleteInput>;
+  where?: InputMaybe<StatusSampleMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusSampleMetadataHasStatusDisconnectFieldInput = {
+  disconnect?: InputMaybe<SampleMetadataDisconnectInput>;
+  where?: InputMaybe<StatusSampleMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusSampleMetadataHasStatusFieldInput = {
+  connect?: InputMaybe<Array<StatusSampleMetadataHasStatusConnectFieldInput>>;
+  create?: InputMaybe<Array<StatusSampleMetadataHasStatusCreateFieldInput>>;
+};
+
+export type StatusSampleMetadataHasStatusNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusNodeAggregationWhereInput>
+  >;
+  additionalProperties_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  additionalProperties_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  additionalProperties_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  additionalProperties_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  additionalProperties_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  additionalProperties_EQUAL?: InputMaybe<Scalars["String"]>;
+  additionalProperties_GT?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_GTE?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LT?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_LTE?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  additionalProperties_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  baitSet_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  baitSet_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  baitSet_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  baitSet_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  baitSet_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  baitSet_EQUAL?: InputMaybe<Scalars["String"]>;
+  baitSet_GT?: InputMaybe<Scalars["Int"]>;
+  baitSet_GTE?: InputMaybe<Scalars["Int"]>;
+  baitSet_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  baitSet_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  baitSet_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  baitSet_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  baitSet_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  baitSet_LT?: InputMaybe<Scalars["Int"]>;
+  baitSet_LTE?: InputMaybe<Scalars["Int"]>;
+  baitSet_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  baitSet_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  baitSet_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  baitSet_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  baitSet_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cfDNA2dBarcode_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cfDNA2dBarcode_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cfDNA2dBarcode_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cfDNA2dBarcode_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cfDNA2dBarcode_EQUAL?: InputMaybe<Scalars["String"]>;
+  cfDNA2dBarcode_GT?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_GTE?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LT?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_LTE?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cfDNA2dBarcode_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cmoInfoIgoId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cmoInfoIgoId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cmoInfoIgoId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cmoInfoIgoId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cmoInfoIgoId_EQUAL?: InputMaybe<Scalars["String"]>;
+  cmoInfoIgoId_GT?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LT?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoInfoIgoId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cmoPatientId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cmoPatientId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cmoPatientId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cmoPatientId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cmoPatientId_EQUAL?: InputMaybe<Scalars["String"]>;
+  cmoPatientId_GT?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LT?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoPatientId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cmoSampleIdFields_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cmoSampleIdFields_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cmoSampleIdFields_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cmoSampleIdFields_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cmoSampleIdFields_EQUAL?: InputMaybe<Scalars["String"]>;
+  cmoSampleIdFields_GT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleIdFields_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cmoSampleName_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cmoSampleName_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cmoSampleName_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cmoSampleName_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cmoSampleName_EQUAL?: InputMaybe<Scalars["String"]>;
+  cmoSampleName_GT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_LTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cmoSampleName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  collectionYear_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  collectionYear_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  collectionYear_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  collectionYear_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  collectionYear_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  collectionYear_EQUAL?: InputMaybe<Scalars["String"]>;
+  collectionYear_GT?: InputMaybe<Scalars["Int"]>;
+  collectionYear_GTE?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LT?: InputMaybe<Scalars["Int"]>;
+  collectionYear_LTE?: InputMaybe<Scalars["Int"]>;
+  collectionYear_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  collectionYear_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  collectionYear_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  collectionYear_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  collectionYear_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  genePanel_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  genePanel_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  genePanel_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  genePanel_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  genePanel_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  genePanel_EQUAL?: InputMaybe<Scalars["String"]>;
+  genePanel_GT?: InputMaybe<Scalars["Int"]>;
+  genePanel_GTE?: InputMaybe<Scalars["Int"]>;
+  genePanel_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  genePanel_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  genePanel_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  genePanel_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  genePanel_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  genePanel_LT?: InputMaybe<Scalars["Int"]>;
+  genePanel_LTE?: InputMaybe<Scalars["Int"]>;
+  genePanel_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  genePanel_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  genePanel_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  genePanel_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  genePanel_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  igoRequestId_EQUAL?: InputMaybe<Scalars["String"]>;
+  igoRequestId_GT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_GTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_LTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  igoRequestId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  importDate_EQUAL?: InputMaybe<Scalars["String"]>;
+  importDate_GT?: InputMaybe<Scalars["Int"]>;
+  importDate_GTE?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  importDate_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_LT?: InputMaybe<Scalars["Int"]>;
+  importDate_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  importDate_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  investigatorSampleId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  investigatorSampleId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  investigatorSampleId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  investigatorSampleId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  investigatorSampleId_EQUAL?: InputMaybe<Scalars["String"]>;
+  investigatorSampleId_GT?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_GTE?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LT?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_LTE?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  investigatorSampleId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  libraries_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  libraries_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  libraries_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  libraries_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  libraries_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  libraries_EQUAL?: InputMaybe<Scalars["String"]>;
+  libraries_GT?: InputMaybe<Scalars["Int"]>;
+  libraries_GTE?: InputMaybe<Scalars["Int"]>;
+  libraries_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  libraries_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  libraries_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  libraries_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  libraries_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  libraries_LT?: InputMaybe<Scalars["Int"]>;
+  libraries_LTE?: InputMaybe<Scalars["Int"]>;
+  libraries_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  libraries_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  libraries_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  libraries_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  libraries_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  oncotreeCode_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  oncotreeCode_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  oncotreeCode_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  oncotreeCode_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  oncotreeCode_EQUAL?: InputMaybe<Scalars["String"]>;
+  oncotreeCode_GT?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_GTE?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LT?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_LTE?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  oncotreeCode_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  preservation_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  preservation_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  preservation_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  preservation_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  preservation_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  preservation_EQUAL?: InputMaybe<Scalars["String"]>;
+  preservation_GT?: InputMaybe<Scalars["Int"]>;
+  preservation_GTE?: InputMaybe<Scalars["Int"]>;
+  preservation_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  preservation_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  preservation_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  preservation_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  preservation_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  preservation_LT?: InputMaybe<Scalars["Int"]>;
+  preservation_LTE?: InputMaybe<Scalars["Int"]>;
+  preservation_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  preservation_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  preservation_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  preservation_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  preservation_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  primaryId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  primaryId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  primaryId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  primaryId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  primaryId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  primaryId_EQUAL?: InputMaybe<Scalars["String"]>;
+  primaryId_GT?: InputMaybe<Scalars["Int"]>;
+  primaryId_GTE?: InputMaybe<Scalars["Int"]>;
+  primaryId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  primaryId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  primaryId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  primaryId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  primaryId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  primaryId_LT?: InputMaybe<Scalars["Int"]>;
+  primaryId_LTE?: InputMaybe<Scalars["Int"]>;
+  primaryId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  primaryId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  primaryId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  primaryId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  primaryId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  qcReports_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  qcReports_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  qcReports_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  qcReports_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  qcReports_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  qcReports_EQUAL?: InputMaybe<Scalars["String"]>;
+  qcReports_GT?: InputMaybe<Scalars["Int"]>;
+  qcReports_GTE?: InputMaybe<Scalars["Int"]>;
+  qcReports_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  qcReports_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  qcReports_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  qcReports_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  qcReports_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  qcReports_LT?: InputMaybe<Scalars["Int"]>;
+  qcReports_LTE?: InputMaybe<Scalars["Int"]>;
+  qcReports_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  qcReports_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  qcReports_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  qcReports_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  qcReports_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sampleClass_EQUAL?: InputMaybe<Scalars["String"]>;
+  sampleClass_GT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleName_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sampleName_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sampleName_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sampleName_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sampleName_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sampleName_EQUAL?: InputMaybe<Scalars["String"]>;
+  sampleName_GT?: InputMaybe<Scalars["Int"]>;
+  sampleName_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleName_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleName_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleName_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleName_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleName_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleName_LT?: InputMaybe<Scalars["Int"]>;
+  sampleName_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleName_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleName_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sampleOrigin_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sampleOrigin_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sampleOrigin_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sampleOrigin_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sampleOrigin_EQUAL?: InputMaybe<Scalars["String"]>;
+  sampleOrigin_GT?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LT?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleOrigin_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleType_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sampleType_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sampleType_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sampleType_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sampleType_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sampleType_EQUAL?: InputMaybe<Scalars["String"]>;
+  sampleType_GT?: InputMaybe<Scalars["Int"]>;
+  sampleType_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleType_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleType_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleType_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleType_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleType_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleType_LT?: InputMaybe<Scalars["Int"]>;
+  sampleType_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleType_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleType_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleType_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleType_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleType_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sex_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sex_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sex_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sex_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sex_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sex_EQUAL?: InputMaybe<Scalars["String"]>;
+  sex_GT?: InputMaybe<Scalars["Int"]>;
+  sex_GTE?: InputMaybe<Scalars["Int"]>;
+  sex_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sex_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sex_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sex_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sex_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sex_LT?: InputMaybe<Scalars["Int"]>;
+  sex_LTE?: InputMaybe<Scalars["Int"]>;
+  sex_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sex_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sex_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sex_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sex_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  species_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  species_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  species_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  species_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  species_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  species_EQUAL?: InputMaybe<Scalars["String"]>;
+  species_GT?: InputMaybe<Scalars["Int"]>;
+  species_GTE?: InputMaybe<Scalars["Int"]>;
+  species_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  species_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  species_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  species_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  species_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  species_LT?: InputMaybe<Scalars["Int"]>;
+  species_LTE?: InputMaybe<Scalars["Int"]>;
+  species_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  species_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  species_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  species_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  species_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  tissueLocation_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  tissueLocation_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  tissueLocation_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  tissueLocation_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  tissueLocation_EQUAL?: InputMaybe<Scalars["String"]>;
+  tissueLocation_GT?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_GTE?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LT?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_LTE?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  tissueLocation_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  tubeId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  tubeId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  tubeId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  tubeId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  tubeId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  tubeId_EQUAL?: InputMaybe<Scalars["String"]>;
+  tubeId_GT?: InputMaybe<Scalars["Int"]>;
+  tubeId_GTE?: InputMaybe<Scalars["Int"]>;
+  tubeId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  tubeId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  tubeId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  tubeId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  tubeId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  tubeId_LT?: InputMaybe<Scalars["Int"]>;
+  tubeId_LTE?: InputMaybe<Scalars["Int"]>;
+  tubeId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  tubeId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  tubeId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  tubeId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  tubeId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  tumorOrNormal_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  tumorOrNormal_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  tumorOrNormal_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  tumorOrNormal_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  tumorOrNormal_EQUAL?: InputMaybe<Scalars["String"]>;
+  tumorOrNormal_GT?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_GTE?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LT?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_LTE?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  tumorOrNormal_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type StatusSampleMetadataHasStatusRelationship = {
+  __typename?: "StatusSampleMetadataHasStatusRelationship";
+  cursor: Scalars["String"];
+  node: SampleMetadata;
+};
+
+export type StatusSampleMetadataHasStatusUpdateConnectionInput = {
+  node?: InputMaybe<SampleMetadataUpdateInput>;
+};
+
+export type StatusSampleMetadataHasStatusUpdateFieldInput = {
+  connect?: InputMaybe<Array<StatusSampleMetadataHasStatusConnectFieldInput>>;
+  create?: InputMaybe<Array<StatusSampleMetadataHasStatusCreateFieldInput>>;
+  delete?: InputMaybe<Array<StatusSampleMetadataHasStatusDeleteFieldInput>>;
+  disconnect?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusDisconnectFieldInput>
+  >;
+  update?: InputMaybe<StatusSampleMetadataHasStatusUpdateConnectionInput>;
+  where?: InputMaybe<StatusSampleMetadataHasStatusConnectionWhere>;
+};
+
+export type StatusSampleMetadataSampleMetadataHasStatusAggregationSelection = {
+  __typename?: "StatusSampleMetadataSampleMetadataHasStatusAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<
+    StatusSampleMetadataSampleMetadataHasStatusNodeAggregateSelection
+  >;
+};
+
+export type StatusSampleMetadataSampleMetadataHasStatusNodeAggregateSelection = {
+  __typename?: "StatusSampleMetadataSampleMetadataHasStatusNodeAggregateSelection";
+  additionalProperties: StringAggregateSelectionNonNullable;
+  baitSet: StringAggregateSelectionNullable;
+  cfDNA2dBarcode: StringAggregateSelectionNullable;
+  cmoInfoIgoId: StringAggregateSelectionNullable;
+  cmoPatientId: StringAggregateSelectionNullable;
+  cmoSampleIdFields: StringAggregateSelectionNonNullable;
+  cmoSampleName: StringAggregateSelectionNullable;
+  collectionYear: StringAggregateSelectionNonNullable;
+  genePanel: StringAggregateSelectionNonNullable;
+  igoRequestId: StringAggregateSelectionNullable;
+  importDate: StringAggregateSelectionNonNullable;
+  investigatorSampleId: StringAggregateSelectionNullable;
+  libraries: StringAggregateSelectionNonNullable;
+  oncotreeCode: StringAggregateSelectionNullable;
+  preservation: StringAggregateSelectionNullable;
+  primaryId: StringAggregateSelectionNonNullable;
+  qcReports: StringAggregateSelectionNonNullable;
+  sampleClass: StringAggregateSelectionNonNullable;
+  sampleName: StringAggregateSelectionNullable;
+  sampleOrigin: StringAggregateSelectionNullable;
+  sampleType: StringAggregateSelectionNonNullable;
+  sex: StringAggregateSelectionNonNullable;
+  species: StringAggregateSelectionNonNullable;
+  tissueLocation: StringAggregateSelectionNullable;
+  tubeId: StringAggregateSelectionNullable;
+  tumorOrNormal: StringAggregateSelectionNonNullable;
+};
+
+/** Fields to sort Statuses by. The order in which sorts are applied is not guaranteed when specifying many fields in one StatusSort object. */
+export type StatusSort = {
+  validationReport?: InputMaybe<SortDirection>;
+  validationStatus?: InputMaybe<SortDirection>;
+};
+
+export type StatusUpdateInput = {
+  requestMetadataHasStatus?: InputMaybe<
+    Array<StatusRequestMetadataHasStatusUpdateFieldInput>
+  >;
+  sampleMetadataHasStatus?: InputMaybe<
+    Array<StatusSampleMetadataHasStatusUpdateFieldInput>
+  >;
+  validationReport?: InputMaybe<Scalars["String"]>;
+  validationStatus?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type StatusWhere = {
+  AND?: InputMaybe<Array<StatusWhere>>;
+  OR?: InputMaybe<Array<StatusWhere>>;
+  requestMetadataHasStatusAggregate?: InputMaybe<
+    StatusRequestMetadataHasStatusAggregateInput
+  >;
+  requestMetadataHasStatusConnection_ALL?: InputMaybe<
+    StatusRequestMetadataHasStatusConnectionWhere
+  >;
+  requestMetadataHasStatusConnection_NONE?: InputMaybe<
+    StatusRequestMetadataHasStatusConnectionWhere
+  >;
+  requestMetadataHasStatusConnection_SINGLE?: InputMaybe<
+    StatusRequestMetadataHasStatusConnectionWhere
+  >;
+  requestMetadataHasStatusConnection_SOME?: InputMaybe<
+    StatusRequestMetadataHasStatusConnectionWhere
+  >;
+  /** Return Statuses where all of the related RequestMetadata match this filter */
+  requestMetadataHasStatus_ALL?: InputMaybe<RequestMetadataWhere>;
+  /** Return Statuses where none of the related RequestMetadata match this filter */
+  requestMetadataHasStatus_NONE?: InputMaybe<RequestMetadataWhere>;
+  /** Return Statuses where one of the related RequestMetadata match this filter */
+  requestMetadataHasStatus_SINGLE?: InputMaybe<RequestMetadataWhere>;
+  /** Return Statuses where some of the related RequestMetadata match this filter */
+  requestMetadataHasStatus_SOME?: InputMaybe<RequestMetadataWhere>;
+  sampleMetadataHasStatusAggregate?: InputMaybe<
+    StatusSampleMetadataHasStatusAggregateInput
+  >;
+  sampleMetadataHasStatusConnection_ALL?: InputMaybe<
+    StatusSampleMetadataHasStatusConnectionWhere
+  >;
+  sampleMetadataHasStatusConnection_NONE?: InputMaybe<
+    StatusSampleMetadataHasStatusConnectionWhere
+  >;
+  sampleMetadataHasStatusConnection_SINGLE?: InputMaybe<
+    StatusSampleMetadataHasStatusConnectionWhere
+  >;
+  sampleMetadataHasStatusConnection_SOME?: InputMaybe<
+    StatusSampleMetadataHasStatusConnectionWhere
+  >;
+  /** Return Statuses where all of the related SampleMetadata match this filter */
+  sampleMetadataHasStatus_ALL?: InputMaybe<SampleMetadataWhere>;
+  /** Return Statuses where none of the related SampleMetadata match this filter */
+  sampleMetadataHasStatus_NONE?: InputMaybe<SampleMetadataWhere>;
+  /** Return Statuses where one of the related SampleMetadata match this filter */
+  sampleMetadataHasStatus_SINGLE?: InputMaybe<SampleMetadataWhere>;
+  /** Return Statuses where some of the related SampleMetadata match this filter */
+  sampleMetadataHasStatus_SOME?: InputMaybe<SampleMetadataWhere>;
+  validationReport?: InputMaybe<Scalars["String"]>;
+  validationReport_CONTAINS?: InputMaybe<Scalars["String"]>;
+  validationReport_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  validationReport_IN?: InputMaybe<Array<Scalars["String"]>>;
+  validationReport_NOT?: InputMaybe<Scalars["String"]>;
+  validationReport_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  validationReport_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  validationReport_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  validationReport_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  validationReport_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  validationStatus?: InputMaybe<Scalars["Boolean"]>;
+  validationStatus_NOT?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type StatusesConnection = {
+  __typename?: "StatusesConnection";
+  edges: Array<StatusEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
 export type StringAggregateSelectionNonNullable = {
   __typename?: "StringAggregateSelectionNonNullable";
   longest: Scalars["String"];
@@ -6334,6 +7758,12 @@ export type UpdateSamplesMutationResponse = {
   __typename?: "UpdateSamplesMutationResponse";
   info: UpdateInfo;
   samples: Array<Sample>;
+};
+
+export type UpdateStatusesMutationResponse = {
+  __typename?: "UpdateStatusesMutationResponse";
+  info: UpdateInfo;
+  statuses: Array<Status>;
 };
 
 export type RequestsListQueryVariables = Exact<{
@@ -6433,7 +7863,6 @@ export type RequestWithSamplesQuery = {
         sampleType: string;
         species: string;
         genePanel: string;
-        baitSet?: string | null;
       }>;
       patientsHasSample: Array<{
         __typename?: "Patient";
@@ -6619,7 +8048,6 @@ export const RequestWithSamplesDocument = gql`
           sampleType
           species
           genePanel
-          baitSet
         }
         patientsHasSample {
           smilePatientId

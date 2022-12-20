@@ -17,6 +17,8 @@ const {
 } = require("apollo-server-core");
 const { OGM } = require("@neo4j/graphql-ogm");
 
+const smileResolvers = require("./resolvers");
+
 // neo4j connection properties
 const neo4j_graphql_uri = properties.get("db.neo4j_graphql_uri");
 const neo4j_username = properties.get("db.neo4j_username");
@@ -113,18 +115,6 @@ async function establishConnection() {
   }
 }
 
-const mutDefs = gql`
-  mutation UpdateRequests($update: RequestUpdateInput, $where: RequestWhere) {
-    updateRequests(update: $update, where: $where) {
-      requests {
-        smileRequestId
-        igoRequestId
-        dataStatus
-      }
-    }
-  }
-`;
-
 const driver = neo4j.driver(
   neo4j_graphql_uri,
   neo4j.auth.basic(neo4j_username, neo4j_password)
@@ -132,23 +122,6 @@ const driver = neo4j.driver(
 
 const sessionFactory = () =>
   driver.session({ defaultAccessMode: neo4j.session.WRITE });
-
-// const resolvers = {
-//   Mutation: {
-//     updateRequestStatus: async (_source, {requestId, dataStatus}) => {
-//       const { x } = await Request.update({
-//         where: {
-//           "igoRequestId": requestId
-//         },
-//         update: {
-//           "dataStatus": dataStatus
-//         }
-//       });
-//       console.log(x)
-//       return x;
-//     }
-//   }
-// }
 
 // We create a async function here until "top level await" has landed
 // so we can use async/await
@@ -158,7 +131,6 @@ async function main() {
   const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
   const ogm = new OGM({ typeDefs, driver });
   ogm.init();
-  const Request = ogm.model("Request");
 
   const app = express();
   app.use(express.static(path.resolve(__dirname, "../build")));
@@ -169,27 +141,22 @@ async function main() {
     res.sendStatus(200);
   });
 
-  // endpoint for updating status of a given request
-  app.post("/requestStatus", async (req, res) => {
-    // cant seem to be able to query successfuly for some reason even though the
-    // status in the database is being updated to whatever I'm sending to the api
-    // see docs here https://neo4j.com/docs/graphql-manual/current/ogm/examples/custom-resolvers/
-    console.log("querying by: ", req.body.requestId);
-    const { r } = await Request.find({
-      where: {
-        igoRequestId: req.body.requestId
+  // custom mutation resolver for updating the sample revisable status to false
+  app.get("/mutation/sample/:smileSampleId", async (req, res) => {
+    const response = await server.executeOperation({
+      query: smileResolvers.sampleRevisableMutationQuery,
+      variables: {
+        where: { smileSampleId: req.params.smileSampleId },
+        update: { revisable: false }
       }
     });
-
-    const { x } = await Request.update({
-      where: {
-        igoRequestId: req.body.requestId
-      },
-      update: {
-        dataStatus: req.body.dataStatus
-      }
-    });
-    return res.sendStatus(200);
+    // response from apollo grapqhl returns the smile sample id and its updated
+    // revisable status meaning that if revisable != false then the mutation failed
+    if (!response.data.updateSamples.samples[0].revisable) {
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(500);
+    }
   });
 
   const httpServer = http.createServer(app);
@@ -199,7 +166,8 @@ async function main() {
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageLocalDefault({ embed: true })
-    ]
+    ],
+    resolvers: smileResolvers.resolvers
   });
 
   neoSchema.getSchema().then(schema => {
