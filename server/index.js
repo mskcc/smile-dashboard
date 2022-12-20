@@ -123,6 +123,29 @@ const driver = neo4j.driver(
 const sessionFactory = () =>
   driver.session({ defaultAccessMode: neo4j.session.WRITE });
 
+const resolvers = {
+  Mutation: {
+    sampleRevisableMutation: async (_, { sample }) => {
+      console.log(sample);
+      if (sample.revisable) {
+        console.log(
+          "sample is revisable",
+          sample.smileSampleId,
+          sample.revisable
+        );
+      } else {
+        console.log(
+          "sample is not revisable",
+          sample.smileSampleId,
+          sample.revisable
+        );
+      }
+      console.log(sample);
+      return updateSamples;
+    }
+  }
+};
+
 // We create a async function here until "top level await" has landed
 // so we can use async/await
 async function main() {
@@ -167,12 +190,13 @@ async function main() {
       ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageLocalDefault({ embed: true })
     ],
-    resolvers: smileResolvers.resolvers
+    resolvers: resolvers
   });
 
   neoSchema.getSchema().then(schema => {
-    const server = new ApolloServer({
-      schema
+    new ApolloServer({
+      schema,
+      resolvers: resolvers
     });
   });
   await server.start();

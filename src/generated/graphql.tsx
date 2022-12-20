@@ -7915,6 +7915,49 @@ export type SamplesQuery = {
   samples: Array<{ __typename?: "Sample"; smileSampleId: string }>;
 };
 
+export type SampleRevisableMutationMutationVariables = Exact<{
+  where?: InputMaybe<SampleWhere>;
+  update?: InputMaybe<SampleUpdateInput>;
+}>;
+
+export type SampleRevisableMutationMutation = {
+  __typename?: "Mutation";
+  updateSamples: {
+    __typename?: "UpdateSamplesMutationResponse";
+    samples: Array<{
+      __typename?: "Sample";
+      smileSampleId: string;
+      revisable: boolean;
+      datasource: string;
+      sampleCategory: string;
+      sampleClass: string;
+      hasMetadataSampleMetadata: Array<{
+        __typename?: "SampleMetadata";
+        cmoSampleName?: string | null;
+        igoComplete?: boolean | null;
+        importDate: string;
+        investigatorSampleId?: string | null;
+        primaryId: string;
+        sampleClass: string;
+        cmoPatientId?: string | null;
+        cmoSampleIdFields: string;
+        sampleName?: string | null;
+        preservation?: string | null;
+        tumorOrNormal: string;
+        oncotreeCode?: string | null;
+        collectionYear: string;
+        sampleOrigin?: string | null;
+        tissueLocation?: string | null;
+        sex: string;
+        libraries: string;
+        sampleType: string;
+        species: string;
+        genePanel: string;
+      }>;
+    }>;
+  };
+};
+
 export const RequestPartsFragmentDoc = gql`
   fragment RequestParts on Request {
     igoRequestId
@@ -8176,4 +8219,87 @@ export type SamplesLazyQueryHookResult = ReturnType<typeof useSamplesLazyQuery>;
 export type SamplesQueryResult = Apollo.QueryResult<
   SamplesQuery,
   SamplesQueryVariables
+>;
+export const SampleRevisableMutationDocument = gql`
+  mutation SampleRevisableMutation(
+    $where: SampleWhere
+    $update: SampleUpdateInput
+  ) {
+    updateSamples(where: $where, update: $update) {
+      samples {
+        smileSampleId
+        revisable
+        datasource
+        sampleCategory
+        sampleClass
+        hasMetadataSampleMetadata {
+          cmoSampleName
+          igoComplete
+          importDate
+          investigatorSampleId
+          primaryId
+          sampleClass
+          cmoPatientId
+          cmoSampleIdFields
+          sampleName
+          preservation
+          tumorOrNormal
+          oncotreeCode
+          collectionYear
+          sampleOrigin
+          tissueLocation
+          sex
+          libraries
+          sampleType
+          species
+          genePanel
+        }
+      }
+    }
+  }
+`;
+export type SampleRevisableMutationMutationFn = Apollo.MutationFunction<
+  SampleRevisableMutationMutation,
+  SampleRevisableMutationMutationVariables
+>;
+
+/**
+ * __useSampleRevisableMutationMutation__
+ *
+ * To run a mutation, you first call `useSampleRevisableMutationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSampleRevisableMutationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sampleRevisableMutationMutation, { data, loading, error }] = useSampleRevisableMutationMutation({
+ *   variables: {
+ *      where: // value for 'where'
+ *      update: // value for 'update'
+ *   },
+ * });
+ */
+export function useSampleRevisableMutationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SampleRevisableMutationMutation,
+    SampleRevisableMutationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SampleRevisableMutationMutation,
+    SampleRevisableMutationMutationVariables
+  >(SampleRevisableMutationDocument, options);
+}
+export type SampleRevisableMutationMutationHookResult = ReturnType<
+  typeof useSampleRevisableMutationMutation
+>;
+export type SampleRevisableMutationMutationResult = Apollo.MutationResult<
+  SampleRevisableMutationMutation
+>;
+export type SampleRevisableMutationMutationOptions = Apollo.BaseMutationOptions<
+  SampleRevisableMutationMutation,
+  SampleRevisableMutationMutationVariables
 >;

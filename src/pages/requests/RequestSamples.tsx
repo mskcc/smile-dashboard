@@ -10,7 +10,7 @@ import classNames from "classnames";
 import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { CSVFormulate } from "../../lib/CSVExport";
-import { SampleDetailsColumns } from "./helpers";
+import { buildSampleTableColumns, SampleDetailsColumns } from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
@@ -50,7 +50,9 @@ function sampleFilterWhereVariables(value: string) {
 
 function getSampleMetadata(data: RequestWithSamplesQuery) {
   return data!.requests[0].hasSampleSamples.map((s: any) => {
-    return s.hasMetadataSampleMetadata[0];
+    let sm = s.hasMetadataSampleMetadata[0];
+    sm.smileSampleId = s.smileSampleId;
+    return sm;
   });
 }
 
@@ -175,7 +177,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
             style={{ height: height, width: width }}
           >
             <AgGridReact
-              columnDefs={SampleDetailsColumns}
+              columnDefs={buildSampleTableColumns()}
               rowData={getSampleMetadata(data!)}
             />
           </div>

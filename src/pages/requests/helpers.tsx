@@ -1,5 +1,8 @@
 import { ColDef } from "ag-grid-community";
+import { FunctionComponent } from "react";
 import { Button } from "react-bootstrap";
+import { useSampleRevisableMutationMutation } from "../../generated/graphql";
+import { Params } from "react-router-dom";
 
 export type ColumnDefinition = {
   dataKey?: string;
@@ -33,6 +36,75 @@ export function buildRequestTableColumns(navigate: any): ColDef[] {
       }
     },
     ...RequestsListColumns
+  ];
+}
+
+interface IEditSamplesProps {
+  smileSampleId: string;
+}
+
+export const EditSamplesButton: FunctionComponent<IEditSamplesProps> = ({
+  smileSampleId
+}) => {
+  const [
+    sampleRevisableMutationMutation,
+    { data, loading, error }
+  ] = useSampleRevisableMutationMutation({
+    variables: {
+      where: { smileSampleId: smileSampleId }
+    }
+  });
+
+  return (
+    <Button
+      variant="outline-secondary"
+      size="sm"
+      onClick={() => {
+        // refresh data
+        let r = sampleRevisableMutationMutation()
+          .then(r => {
+            const sample = r.data?.updateSamples.samples[0];
+            console.log(sample);
+            if (sample?.revisable) {
+              console.log(
+                "updating revisable to false for sample: ",
+                sample.smileSampleId
+              );
+              sampleRevisableMutationMutation({
+                variables: {
+                  where: {
+                    smileSampleId: smileSampleId
+                  },
+                  update: {
+                    revisable: false
+                  }
+                }
+              });
+            } else {
+              console.log(
+                "sample is locked, cannot make revisions at this time"
+              );
+            }
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }}
+    >
+      Edit
+    </Button>
+  );
+};
+
+export function buildSampleTableColumns(): ColDef[] {
+  return [
+    {
+      headerName: "Edit",
+      cellRenderer: (d: any) => {
+        return <EditSamplesButton smileSampleId={d.data.smileSampleId} />;
+      }
+    },
+    ...SampleDetailsColumns
   ];
 }
 

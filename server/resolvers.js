@@ -1,12 +1,12 @@
 const { gql } = require("apollo-server-express");
 
-exports.resolvers = {
-  Mutation: {
-    sampleRevisableMutation: async (_, { smileSampleId, revisable }) => {
-      return updateSamples;
-    }
-  }
-};
+// exports.resolvers = {
+//   Mutation: {
+//     sampleRevisableMutation: async (_, { smileSampleId, revisable }) => {
+//       return updateSamples;
+//     }
+//   }
+// };
 
 exports.sampleRevisableMutationQuery = gql`
   mutation SampleRevisableMutation(
