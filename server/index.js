@@ -125,23 +125,22 @@ const sessionFactory = () =>
 
 const resolvers = {
   Mutation: {
-    sampleRevisableMutation: async (_, { sample }) => {
-      console.log(sample);
-      if (sample.revisable) {
-        console.log(
-          "sample is revisable",
-          sample.smileSampleId,
-          sample.revisable
-        );
-      } else {
-        console.log(
-          "sample is not revisable",
-          sample.smileSampleId,
-          sample.revisable
-        );
-      }
-      console.log(sample);
-      return updateSamples;
+    sampleRevisableMutationMutation: async (_, { ...args }) => {
+      console.log(args);
+      // if (sample.revisable) {
+      //   console.log(
+      //     "sample is revisable",
+      //     sample.smileSampleId,
+      //     sample.revisable
+      //   );
+      // } else {
+      //   console.log(
+      //     "sample is not revisable",
+      //     sample.smileSampleId,
+      //     sample.revisable
+      //   );
+      // }
+      // console.log(sample);
     }
   }
 };
