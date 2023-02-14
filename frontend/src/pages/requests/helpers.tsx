@@ -131,80 +131,123 @@ export const SampleDetailsColumns: ColDef[] = [
     field: "primaryId",
     headerName: "Primary ID",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "cmoSampleName",
     headerName: "CMO Sample Name",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "importDate",
     headerName: "Last Updated",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "investigatorSampleId",
     headerName: "Investigator Sample ID",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "sampleType",
     headerName: "Sample Type",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "species",
     headerName: "Species",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "genePanel",
     headerName: "Gene Panel",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "preservation",
     headerName: "Preservation",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "tumorOrNormal",
     headerName: "Tumor Or Normal",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "sampleClass",
     headerName: "Sample Class",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "oncotreeCode",
     headerName: "Oncotree Code",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "collectionYear",
     headerName: "Collection Year",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "sampleOrigin",
     headerName: "Sample Origin",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "tissueLocation",
     headerName: "Tissue Location",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
   {
     field: "sex",
     headerName: "Sex",
     sortable: true,
+    editable: (params) => editableFields.includes(params.colDef.field!),
   },
 ];
+
+const editableFields: string[] = [
+  "investigatorSampleId",
+  "sampleClass",
+  "cmoPatientId",
+  "sampleName",
+  "preservation",
+  "tumorOrNormal",
+  "oncotreeCode",
+  "collectionYear",
+  "sampleOrigin",
+  "tissueLocation",
+  "sex",
+  "sampleType",
+  "species",
+];
+
+/* 
+Protected fields that shouldn't be editable:
+cmoSampleName
+igoComplete
+importDate
+primaryId
+cmoSampleIdFields
+libraries
+genePanel
+*/
