@@ -166,7 +166,14 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
         {showDiscardChangesButton && (
           <Col className={"text-start"}>
-            <Button size={"sm"}>Discard Changes</Button>
+            <Button
+              onClick={() => {
+                window.location.reload();
+              }}
+              size={"sm"}
+            >
+              Discard Changes
+            </Button>
           </Col>
         )}
 
