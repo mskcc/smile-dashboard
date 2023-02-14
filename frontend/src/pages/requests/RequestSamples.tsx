@@ -80,6 +80,8 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
+  const [showDiscardChangesButton, setShowDiscardChangesButton] =
+    useState(false);
 
   if (loading)
     return (
@@ -91,6 +93,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   if (error) return <Row>Error loading request details / request samples</Row>;
 
   const remoteCount = data!.requests[0].hasSampleSamples.length;
+
+  const onCellValueChanged = (params: CellValueChangedEvent) => {
+    setShowDiscardChangesButton(true);
+  };
 
   return (
     <>
@@ -158,6 +164,12 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
         <Col className={"text-start"}>{remoteCount} matching samples</Col>
 
+        {showDiscardChangesButton && (
+          <Col className={"text-start"}>
+            <Button size={"sm"}>Discard Changes</Button>
+          </Col>
+        )}
+
         <Col className={"text-end"}>
           <Button
             onClick={() => {
@@ -185,8 +197,4 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       </AutoSizer>
     </>
   );
-};
-
-const onCellValueChanged = (params: CellValueChangedEvent) => {
-  console.log("cell value changed");
 };
