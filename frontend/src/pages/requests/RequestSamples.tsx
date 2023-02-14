@@ -18,6 +18,7 @@ import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
+import { CellValueChangedEvent } from "ag-grid-community";
 
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
@@ -177,10 +178,15 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
             <AgGridReact
               columnDefs={SampleDetailsColumns}
               rowData={getSampleMetadata(data!)}
+              onCellValueChanged={onCellValueChanged}
             />
           </div>
         )}
       </AutoSizer>
     </>
   );
+};
+
+const onCellValueChanged = (params: CellValueChangedEvent) => {
+  console.log("cell value changed");
 };
