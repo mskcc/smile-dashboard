@@ -15,6 +15,7 @@ import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
+import "./requestSamples.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
@@ -95,6 +96,14 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
   const onCellValueChanged = (params: CellValueChangedEvent) => {
     setShowEditButtons(true);
+
+    params.colDef.cellClass = (p) =>
+      p.rowIndex.toString() === params.node.id!.toString() ? "edited-cell" : "";
+    params.api.refreshCells({
+      columns: [params.column.getId()],
+      rowNodes: [params.node],
+      force: true,
+    });
   };
 
   return (
