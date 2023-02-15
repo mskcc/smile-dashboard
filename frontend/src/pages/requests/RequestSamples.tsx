@@ -167,6 +167,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
           <>
             <Col className={"text-end"}>
               <Button
+                className={"btn btn-secondary"}
                 onClick={() => {
                   window.location.reload();
                 }}
@@ -177,6 +178,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
             </Col>
             <Col className={"text-start"}>
               <Button
+                className={"btn btn-success"}
                 onClick={() => {
                   window.location.reload();
                 }}
