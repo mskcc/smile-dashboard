@@ -80,8 +80,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
-  const [showDiscardChangesButton, setShowDiscardChangesButton] =
-    useState(false);
+  const [showEditButtons, setShowEditButtons] = useState(false);
 
   if (loading)
     return (
@@ -95,7 +94,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const remoteCount = data!.requests[0].hasSampleSamples.length;
 
   const onCellValueChanged = (params: CellValueChangedEvent) => {
-    setShowDiscardChangesButton(true);
+    setShowEditButtons(true);
   };
 
   return (
@@ -164,17 +163,29 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
         <Col className={"text-start"}>{remoteCount} matching samples</Col>
 
-        {showDiscardChangesButton && (
-          <Col className={"text-start"}>
-            <Button
-              onClick={() => {
-                window.location.reload();
-              }}
-              size={"sm"}
-            >
-              Discard Changes
-            </Button>
-          </Col>
+        {showEditButtons && (
+          <>
+            <Col className={"text-end"}>
+              <Button
+                onClick={() => {
+                  window.location.reload();
+                }}
+                size={"sm"}
+              >
+                Discard Changes
+              </Button>
+            </Col>
+            <Col className={"text-start"}>
+              <Button
+                onClick={() => {
+                  window.location.reload();
+                }}
+                size={"sm"}
+              >
+                Submit Updates
+              </Button>
+            </Col>
+          </>
         )}
 
         <Col className={"text-end"}>
