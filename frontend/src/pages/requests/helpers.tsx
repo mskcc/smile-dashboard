@@ -240,14 +240,3 @@ const editableFields: string[] = [
   "sampleType",
   "species",
 ];
-
-/* 
-Protected fields that shouldn't be editable:
-cmoSampleName
-igoComplete
-importDate
-primaryId
-cmoSampleIdFields
-libraries
-genePanel
-*/
