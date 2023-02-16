@@ -9,13 +9,14 @@ import _, { sample } from "lodash";
 import classNames from "classnames";
 import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
+import { UpdateModal } from "../../components/UpdateModal";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { SampleDetailsColumns } from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
-import "./requestSamples.css";
+import "./RequestSamples.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
@@ -82,6 +83,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
   const [showEditButtons, setShowEditButtons] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   if (loading)
     return (
@@ -119,6 +121,12 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
             setShowDownloadModal(false);
           }}
           exportFilename={"request_" + data?.requests[0].igoRequestId + ".tsv"}
+        />
+      )}
+      {showUpdateModal && (
+        <UpdateModal
+          changes={{ placeholder: "placeholder" }}
+          onHide={() => setShowUpdateModal(false)}
         />
       )}
       <Row
@@ -189,7 +197,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
               <Button
                 className={"btn btn-success"}
                 onClick={() => {
-                  window.location.reload();
+                  setShowUpdateModal(true);
                 }}
                 size={"sm"}
               >
