@@ -1,11 +1,11 @@
 import React, { FunctionComponent } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
+import "./UpdateModal.css";
 
 /* TODOs by priority
 - Store cell updates in the changes object
 - Submit Updates button to make a Mutation call to GraphQL server
-- UpdateModal to have an overlay effect on the RequestSamples page
 */
 
 export const UpdateModal: FunctionComponent<{
@@ -13,7 +13,13 @@ export const UpdateModal: FunctionComponent<{
   onHide: () => void;
 }> = ({ changes, onHide }) => {
   return (
-    <Modal show={true} size={"lg"} centered onHide={onHide}>
+    <Modal
+      show={true}
+      size={"lg"}
+      centered
+      onHide={onHide}
+      className={"modal-overlay"}
+    >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           Are you sure?
