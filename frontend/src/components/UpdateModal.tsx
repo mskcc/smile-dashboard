@@ -6,8 +6,6 @@ import Modal from "react-bootstrap/Modal";
 - Store cell updates in the changes object
 - Submit Updates button to make a Mutation call to GraphQL server
 - UpdateModal to have an overlay effect on the RequestSamples page
-- Fix the closeButton not working
-- Fix not being able to "click out" of the modal
 */
 
 export const UpdateModal: FunctionComponent<{
@@ -15,7 +13,7 @@ export const UpdateModal: FunctionComponent<{
   onHide: () => void;
 }> = ({ changes, onHide }) => {
   return (
-    <Modal show={true} size={"lg"} centered>
+    <Modal show={true} size={"lg"} centered onHide={onHide}>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           Are you sure?
