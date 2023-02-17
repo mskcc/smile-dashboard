@@ -84,6 +84,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [prom, setProm] = useState<any>(Promise.resolve());
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [changes, setChanges] = useState<Change[]>([]);
 
   if (loading)
     return (
@@ -96,6 +97,13 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
   const remoteCount = data!.requests[0].hasSampleSamples.length;
 
+  type Change = {
+    primaryId: string;
+    field: string;
+    oldValue: string;
+    newValue: string;
+  };
+
   const onCellValueChanged = (params: CellValueChangedEvent) => {
     setShowEditButtons(true);
 
@@ -106,6 +114,23 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       rowNodes: [params.node],
       force: true,
     });
+
+    const primaryId = params.data.primaryId;
+    const field = params.colDef.field!;
+    const { oldValue, newValue } = params;
+    setChanges((changes) => {
+      const change = changes.find(
+        (c) => c.primaryId === primaryId && c.field === field
+      );
+      if (change) {
+        change.newValue = newValue;
+      } else {
+        changes.push({ primaryId, field, oldValue, newValue });
+      }
+      return changes;
+    });
+
+    console.log(changes);
   };
 
   return (
