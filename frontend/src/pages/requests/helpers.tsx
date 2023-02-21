@@ -245,5 +245,4 @@ const editableFields: string[] = [
   "tissueLocation",
   "sex",
   "sampleType",
-  "species",
 ];
