@@ -12,6 +12,13 @@ export type ColumnDefinition = {
   cellDataGetter?: (arg: any) => any;
 };
 
+export type CellChange = {
+  primaryId: string;
+  field: string;
+  oldValue: string;
+  newValue: string;
+};
+
 export function buildRequestTableColumns(navigate: any): ColDef[] {
   return [
     {

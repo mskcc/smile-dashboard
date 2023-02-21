@@ -11,7 +11,7 @@ import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { UpdateModal } from "../../components/UpdateModal";
 import { CSVFormulate } from "../../lib/CSVExport";
-import { SampleDetailsColumns } from "./helpers";
+import { SampleDetailsColumns, CellChange } from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
@@ -84,7 +84,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [prom, setProm] = useState<any>(Promise.resolve());
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [changes, setChanges] = useState<Change[]>([]);
+  const [changes, setChanges] = useState<CellChange[]>([]);
 
   if (loading)
     return (
@@ -96,13 +96,6 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   if (error) return <Row>Error loading request details / request samples</Row>;
 
   const remoteCount = data!.requests[0].hasSampleSamples.length;
-
-  type Change = {
-    primaryId: string;
-    field: string;
-    oldValue: string;
-    newValue: string;
-  };
 
   const onCellValueChanged = (params: CellValueChangedEvent) => {
     setShowEditButtons(true);
@@ -129,8 +122,6 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       }
       return changes;
     });
-
-    console.log(changes);
   };
 
   return (
@@ -150,7 +141,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       )}
       {showUpdateModal && (
         <UpdateModal
-          changes={{ placeholder: "placeholder" }}
+          changes={changes}
           onHide={() => setShowUpdateModal(false)}
         />
       )}
