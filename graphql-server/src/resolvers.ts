@@ -1,4 +1,8 @@
-import { UpdateSamplesMutationVariables } from "./generated/graphql";
+import {
+  Mutation,
+  UpdateSamplesMutationResponse,
+  UpdateSamplesMutationVariables,
+} from "./generated/graphql";
 
 export const resolvers = {
   Mutation: {
@@ -9,8 +13,13 @@ export const resolvers = {
       console.log("\n updateSamplesMutation resolver w/args");
       console.log("\n", where);
       console.log("\n", update);
-
-      return null;
+      console.log("\n", _source);
     },
   },
 };
+
+// export const resolvers = {
+//   Mutation: {
+//     updateSamples: {},
+//   },
+// };
