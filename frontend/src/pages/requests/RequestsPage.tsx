@@ -202,6 +202,7 @@ const Requests: FunctionComponent = () => {
               className={"btn btn-danger"}
               onClick={() => {
                 setShowClosingWarning(false);
+                setUnsavedChanges(false);
                 navigate("/requests");
               }}
             >
