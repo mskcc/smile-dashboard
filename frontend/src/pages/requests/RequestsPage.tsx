@@ -59,6 +59,7 @@ const Requests: FunctionComponent = () => {
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<
     typeof setTimeout
   > | null>(null);
+  const [showClosingWarning, setShowClosingWarning] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
 
@@ -120,6 +121,12 @@ const Requests: FunctionComponent = () => {
 
   const remoteCount = data?.requestsConnection.totalCount;
 
+  const handleSamplesModalClosing = () => {
+    if (!showClosingWarning) {
+      navigate("/requests");
+    }
+  };
+
   return (
     <Container fluid>
       {showDownloadModal && (
@@ -169,14 +176,18 @@ const Requests: FunctionComponent = () => {
             <Modal
               show={true}
               dialogClassName="modal-90w"
-              onHide={() => navigate("/requests")}
+              onHide={handleSamplesModalClosing}
             >
               <Modal.Header closeButton>
                 <Modal.Title>Viewing {params.requestId}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <div style={{ height: height * 4 }}>
-                  <RequestSamples height={height * 4 - 50} params={params} />
+                  <RequestSamples
+                    height={height * 4 - 50}
+                    params={params}
+                    setShowClosingWarning={setShowClosingWarning}
+                  />
                 </div>
               </Modal.Body>
             </Modal>

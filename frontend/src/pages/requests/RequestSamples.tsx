@@ -25,6 +25,7 @@ import { CellValueChangedEvent } from "ag-grid-community";
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
   height: number;
+  setShowClosingWarning: (show: boolean) => void;
 }
 
 function sampleFilterWhereVariables(value: string) {
@@ -60,6 +61,7 @@ function getSampleMetadata(data: RequestWithSamplesQuery) {
 export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   params,
   height,
+  setShowClosingWarning,
 }) => {
   const { loading, error, data, refetch } = useRequestWithSamplesQuery({
     variables: {
