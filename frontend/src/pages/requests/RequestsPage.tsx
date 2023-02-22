@@ -60,6 +60,7 @@ const Requests: FunctionComponent = () => {
     typeof setTimeout
   > | null>(null);
   const [showClosingWarning, setShowClosingWarning] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
 
@@ -121,8 +122,10 @@ const Requests: FunctionComponent = () => {
 
   const remoteCount = data?.requestsConnection.totalCount;
 
-  const handleSamplesModalClosing = () => {
-    if (!showClosingWarning) {
+  const handleClose = () => {
+    if (unsavedChanges) {
+      setShowClosingWarning(true);
+    } else {
       navigate("/requests");
     }
   };
@@ -170,14 +173,42 @@ const Requests: FunctionComponent = () => {
         </Col>
       </Row>
 
+      {showClosingWarning && (
+        <Modal show={true} centered onHide={() => setShowClosingWarning(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              Are you sure?
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>
+              You have unsaved changes. Are you sure you want to exit this view?
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className={"btn btn-secondary"}
+              onClick={() => setShowClosingWarning(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className={"btn btn-success"}
+              onClick={() => {
+                setShowClosingWarning(false);
+                navigate("/requests");
+              }}
+            >
+              Exit
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
       {params.requestId && (
         <AutoSizer>
           {({ height, width }) => (
-            <Modal
-              show={true}
-              dialogClassName="modal-90w"
-              onHide={handleSamplesModalClosing}
-            >
+            <Modal show={true} dialogClassName="modal-90w" onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Viewing {params.requestId}</Modal.Title>
               </Modal.Header>
@@ -186,7 +217,7 @@ const Requests: FunctionComponent = () => {
                   <RequestSamples
                     height={height * 4 - 50}
                     params={params}
-                    setShowClosingWarning={setShowClosingWarning}
+                    setUnsavedChanges={setUnsavedChanges}
                   />
                 </div>
               </Modal.Body>
