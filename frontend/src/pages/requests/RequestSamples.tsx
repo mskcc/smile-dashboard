@@ -11,7 +11,7 @@ import { FunctionComponent } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { UpdateModal } from "../../components/UpdateModal";
 import { CSVFormulate } from "../../lib/CSVExport";
-import { SampleDetailsColumns, CellChange } from "./helpers";
+import { SampleDetailsColumns, CellChange, defaultColDef } from "./helpers";
 import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
@@ -247,6 +247,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
               columnDefs={SampleDetailsColumns}
               rowData={getSampleMetadata(data!)}
               onCellValueChanged={onCellValueChanged}
+              defaultColDef={defaultColDef}
             />
           </div>
         )}
