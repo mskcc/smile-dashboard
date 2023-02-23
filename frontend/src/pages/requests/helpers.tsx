@@ -1,5 +1,6 @@
 import { ColDef } from "ag-grid-community";
 import { Button } from "react-bootstrap";
+import "ag-grid-enterprise";
 
 export type ColumnDefinition = {
   dataKey?: string;
@@ -193,6 +194,11 @@ export const SampleDetailsColumns: ColDef[] = [
     headerName: "Tumor Or Normal",
     sortable: true,
     editable: (params) => editableFields.includes(params.colDef.field!),
+    cellEditor: "agRichSelectCellEditor",
+    cellEditorPopup: true,
+    cellEditorParams: {
+      values: ["Tumor", "Normal"],
+    },
   },
   {
     field: "sampleClass",
