@@ -87,6 +87,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [changes, setChanges] = useState<CellChange[]>([]);
+  const [editMode, setEditMode] = useState(true);
   const gridRef = useRef<any>(null);
 
   if (loading)
@@ -101,35 +102,40 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const remoteCount = data!.requests[0].hasSampleSamples.length;
 
   const onCellValueChanged = (params: CellValueChangedEvent) => {
-    setUnsavedChanges(true);
-    setShowEditButtons(true);
+    if (editMode) {
+      setUnsavedChanges(true);
+      setShowEditButtons(true);
 
-    params.colDef.cellClass = (p) =>
-      p.rowIndex.toString() === params.node.id!.toString() ? "edited-cell" : "";
-    params.api.refreshCells({
-      columns: [params.column.getId()],
-      rowNodes: [params.node],
-      force: true,
-    });
+      params.colDef.cellClass = (p) =>
+        p.rowIndex.toString() === params.node.id!.toString()
+          ? "edited-cell"
+          : "";
+      params.api.refreshCells({
+        columns: [params.column.getId()],
+        rowNodes: [params.node],
+        force: true,
+      });
 
-    const primaryId = params.data.primaryId;
-    const field = params.colDef.field!;
-    const { oldValue, newValue } = params;
-    const rowNode = params.node;
-    setChanges((changes) => {
-      const change = changes.find(
-        (c) => c.primaryId === primaryId && c.field === field
-      );
-      if (change) {
-        change.newValue = newValue;
-      } else {
-        changes.push({ primaryId, field, oldValue, newValue, rowNode });
-      }
-      return changes;
-    });
+      const primaryId = params.data.primaryId;
+      const field = params.colDef.field!;
+      const { oldValue, newValue } = params;
+      const rowNode = params.node;
+      setChanges((changes) => {
+        const change = changes.find(
+          (c) => c.primaryId === primaryId && c.field === field
+        );
+        if (change) {
+          change.newValue = newValue;
+        } else {
+          changes.push({ primaryId, field, oldValue, newValue, rowNode });
+        }
+        return changes;
+      });
+    }
   };
 
   const handleDiscardChanges = () => {
+    setEditMode(false);
     let columns: any[] = [];
     let rowNodes: any[] = [];
 
@@ -152,6 +158,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
     setShowEditButtons(false);
     setUnsavedChanges(false);
+    setChanges([]);
+    setTimeout(() => {
+      setEditMode(true);
+    }, 2000);
   };
 
   return (
@@ -248,6 +258,13 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
                 Submit Updates
               </Button>
             </Col>
+          </>
+        )}
+
+        {!editMode && !showEditButtons && (
+          <>
+            <Col className={"text-end"}>Discarding changes...</Col>
+            <Col className={"text-start"}></Col>
           </>
         )}
 
