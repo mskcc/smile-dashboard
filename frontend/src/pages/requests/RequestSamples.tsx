@@ -10,6 +10,7 @@ import classNames from "classnames";
 import { FunctionComponent, useRef } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { UpdateModal } from "../../components/UpdateModal";
+import { DiscardChangesModal } from "../../components/DiscardChangesModal";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { SampleDetailsColumns, CellChange, defaultColDef } from "./helpers";
 import { Params } from "react-router-dom";
@@ -261,12 +262,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
           </>
         )}
 
-        {!editMode && !showEditButtons && (
-          <>
-            <Col className={"text-end"}>Discarding changes...</Col>
-            <Col className={"text-start"}></Col>
-          </>
-        )}
+        {!editMode && !showEditButtons && <DiscardChangesModal />}
 
         <Col className={"text-end"}>
           <Button
