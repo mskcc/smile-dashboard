@@ -115,6 +115,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
     const primaryId = params.data.primaryId;
     const field = params.colDef.field!;
     const { oldValue, newValue } = params;
+    const rowNode = params.node;
     setChanges((changes) => {
       const change = changes.find(
         (c) => c.primaryId === primaryId && c.field === field
@@ -122,9 +123,15 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       if (change) {
         change.newValue = newValue;
       } else {
-        changes.push({ primaryId, field, oldValue, newValue });
+        changes.push({ primaryId, field, oldValue, newValue, rowNode });
       }
       return changes;
+    });
+  };
+
+  const handleDiscardChanges = () => {
+    changes.forEach((c) => {
+      c.rowNode.setDataValue(c.field, c.oldValue);
     });
   };
 
@@ -205,9 +212,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
             <Col className={"text-end"}>
               <Button
                 className={"btn btn-secondary"}
-                onClick={() => {
-                  console.log(gridRef.current.api);
-                }}
+                onClick={handleDiscardChanges}
                 size={"sm"}
               >
                 Discard Changes

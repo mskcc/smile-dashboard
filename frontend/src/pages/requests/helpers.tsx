@@ -1,4 +1,4 @@
-import { ColDef } from "ag-grid-community";
+import { ColDef, RowNode } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 
@@ -18,6 +18,7 @@ export type CellChange = {
   field: string;
   oldValue: string;
   newValue: string;
+  rowNode: RowNode<any>;
 };
 
 export function buildRequestTableColumns(navigate: any): ColDef[] {
