@@ -7,7 +7,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import _, { sample } from "lodash";
 import classNames from "classnames";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useRef } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
 import { UpdateModal } from "../../components/UpdateModal";
 import { CSVFormulate } from "../../lib/CSVExport";
@@ -87,6 +87,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [changes, setChanges] = useState<CellChange[]>([]);
+  const gridRef = useRef<any>(null);
 
   if (loading)
     return (
@@ -205,7 +206,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
               <Button
                 className={"btn btn-secondary"}
                 onClick={() => {
-                  window.location.reload();
+                  console.log(gridRef.current.api);
                 }}
                 size={"sm"}
               >
@@ -248,6 +249,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
               rowData={getSampleMetadata(data!)}
               onCellValueChanged={onCellValueChanged}
               defaultColDef={defaultColDef}
+              ref={gridRef}
             />
           </div>
         )}
