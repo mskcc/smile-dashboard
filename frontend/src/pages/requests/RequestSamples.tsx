@@ -20,7 +20,7 @@ import "./RequestSamples.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import { CellValueChangedEvent } from "ag-grid-community";
+import { CellClassParams, CellValueChangedEvent } from "ag-grid-community";
 
 interface IRequestSummaryProps {
   params: Readonly<Params<string>>;
@@ -130,9 +130,28 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   };
 
   const handleDiscardChanges = () => {
+    let columns: any[] = [];
+    let rowNodes: any[] = [];
+
     changes.forEach((c) => {
       c.rowNode.setDataValue(c.field, c.oldValue);
+      const colDef = gridRef.current.api.getColumnDef(c.field);
+      colDef.cellClass = (p: CellClassParams<any>) =>
+        p.rowIndex.toString() === c.rowNode.rowIndex!.toString()
+          ? "unedited-cell"
+          : "";
+      columns.push(c.field);
+      rowNodes.push(c.rowNode);
     });
+
+    gridRef.current.api.refreshCells({
+      columns: [...columns],
+      rowNodes: [...rowNodes],
+      force: true,
+    });
+
+    setShowEditButtons(false);
+    setUnsavedChanges(false);
   };
 
   return (

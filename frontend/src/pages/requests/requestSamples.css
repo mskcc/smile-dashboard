@@ -1,3 +1,7 @@
 .edited-cell {
   background-color: lemonchiffon;
 }
+
+.unedited-cell {
+  background-color: white;
+}
