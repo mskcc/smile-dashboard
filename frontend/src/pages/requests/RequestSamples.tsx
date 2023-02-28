@@ -17,7 +17,6 @@ import { Params } from "react-router-dom";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
-import "./RequestSamples.css";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
@@ -107,10 +106,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       setUnsavedChanges(true);
       setShowEditButtons(true);
 
-      params.colDef.cellClass = (p) =>
+      params.colDef.cellStyle = (p) =>
         p.rowIndex.toString() === params.node.id!.toString()
-          ? "edited-cell"
-          : "";
+          ? { backgroundColor: "lemonchiffon" }
+          : null;
       params.api.refreshCells({
         columns: [params.column.getId()],
         rowNodes: [params.node],
@@ -143,10 +142,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
     changes.forEach((c) => {
       c.rowNode.setDataValue(c.field, c.oldValue);
       const colDef = gridRef.current.api.getColumnDef(c.field);
-      colDef.cellClass = (p: CellClassParams<any>) =>
+      colDef.cellStyle = (p: CellClassParams<any>) =>
         p.rowIndex.toString() === c.rowNode.rowIndex!.toString()
-          ? "unedited-cell"
-          : "";
+          ? { backgroundColor: "white" }
+          : null;
       columns.push(c.field);
       rowNodes.push(c.rowNode);
     });
