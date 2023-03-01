@@ -15,7 +15,7 @@ export type ColumnDefinition = {
 
 export type CellChange = {
   primaryId: string;
-  field: string;
+  fieldName: string;
   oldValue: string;
   newValue: string;
   rowNode: RowNode<any>;

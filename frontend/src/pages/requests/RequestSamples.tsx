@@ -105,28 +105,34 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       setUnsavedChanges(true);
       setShowEditButtons(true);
 
-      params.colDef.cellStyle = (p) =>
-        p.rowIndex.toString() === params.node.id!.toString()
-          ? { backgroundColor: "lemonchiffon" }
-          : null;
-      params.api.refreshCells({
-        columns: [params.column.getId()],
-        rowNodes: [params.node],
-        force: true,
-      });
-
-      const primaryId = params.data.primaryId;
-      const field = params.colDef.field!;
       const { oldValue, newValue } = params;
       const rowNode = params.node;
+      const fieldName = params.colDef.field!;
+      const primaryId = params.data.primaryId;
+
+      if (oldValue !== newValue) {
+        params.colDef.cellStyle = (p) => {
+          const isSameField = p.colDef.field === fieldName;
+          const isSameRow = p.rowIndex === rowNode.rowIndex;
+          return isSameField && isSameRow
+            ? { backgroundColor: "lemonchiffon" }
+            : null;
+        };
+        params.api.refreshCells({
+          columns: [fieldName],
+          rowNodes: [rowNode],
+          force: true,
+        });
+      }
+
       setChanges((changes) => {
         const change = changes.find(
-          (c) => c.primaryId === primaryId && c.field === field
+          (c) => c.primaryId === primaryId && c.fieldName === fieldName
         );
         if (change) {
           change.newValue = newValue;
         } else {
-          changes.push({ primaryId, field, oldValue, newValue, rowNode });
+          changes.push({ primaryId, fieldName, oldValue, newValue, rowNode });
         }
         return changes;
       });
@@ -139,13 +145,13 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
     let rowNodes: any[] = [];
 
     changes.forEach((c) => {
-      c.rowNode.setDataValue(c.field, c.oldValue);
-      const colDef = gridRef.current.api.getColumnDef(c.field);
+      c.rowNode.setDataValue(c.fieldName, c.oldValue);
+      const colDef = gridRef.current.api.getColumnDef(c.fieldName);
       colDef.cellStyle = (p: CellClassParams<any>) =>
         p.rowIndex.toString() === c.rowNode.rowIndex!.toString()
           ? { backgroundColor: "white" }
           : null;
-      columns.push(c.field);
+      columns.push(c.fieldName);
       rowNodes.push(c.rowNode);
     });
 
@@ -160,7 +166,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
     setChanges([]);
     setTimeout(() => {
       setEditMode(true);
-    }, 100);
+    }, 0);
   };
 
   return (
