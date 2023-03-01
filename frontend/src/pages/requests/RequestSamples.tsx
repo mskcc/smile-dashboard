@@ -289,6 +289,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
               onCellValueChanged={onCellValueChanged}
               defaultColDef={defaultColDef}
               ref={gridRef}
+              gridOptions={{
+                suppressColumnVirtualisation: true,
+                rowBuffer: 9999,
+              }}
             />
           </div>
         )}
