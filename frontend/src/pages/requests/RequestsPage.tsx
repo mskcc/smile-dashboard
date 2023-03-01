@@ -12,7 +12,7 @@ import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
-import "./RequestsPage.css";
+import styles from "./requests.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
@@ -179,7 +179,7 @@ const Requests: FunctionComponent = () => {
           show={true}
           centered
           onHide={() => setShowClosingWarning(false)}
-          className={"modal-overlay"}
+          className={styles.overlay}
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
