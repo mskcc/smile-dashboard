@@ -293,6 +293,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
                 suppressColumnVirtualisation: true,
                 rowBuffer: 9999,
               }}
+              enableRangeSelection={true}
             />
           </div>
         )}
