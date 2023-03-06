@@ -1,31 +1,47 @@
-import { gql, useMutation } from "@apollo/client";
 import { FunctionComponent } from "react";
 import { Button, Container, Table } from "react-bootstrap";
-import { Params, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
-  UpdateSamplesDocument,
+  useSamplesQuery,
   useUpdateSamplesMutation,
 } from "../../generated/graphql";
 
-// const UPDATE_SAMPLE = gql`
-//   mutation UpdateSamples($smileSampleId: String) {
-//     updateSamplesMutation(smileSampleId: $smileSampleId) @client
-//   }
-// `
-
 export const UpdateSamples: FunctionComponent = ({}) => {
   const params = useParams();
-  // const [updateSamplesMutation] = useMutation(UpdateSamplesDocument, { variables: {where: {
-  //   smileSampleId: params.smileSampleId}}})
-  const [updateSamplesMutation, { data, loading, error }] =
-    useUpdateSamplesMutation({
-      variables: {
-        where: {
-          smileSampleId: params.smileSampleId,
-        },
+  const { loading, error, data } = useSamplesQuery({
+    variables: {
+      where: {
+        smileSampleId: params.smileSampleId,
       },
-    });
-  var sdata = undefined;
+    },
+  });
+  console.log(data);
+
+  const [updateSamplesMutation, { ...args }] = useUpdateSamplesMutation({
+    variables: {
+      where: {
+        smileSampleId: params.smileSampleId,
+      },
+      update: {
+        revisable: false,
+        hasMetadataSampleMetadata: [
+          {
+            update: {
+              node: {
+                cmoPatientId: "C-NEWPATIENTID",
+                investigatorSampleId: "new investigator id",
+                // "sampleClass": null,
+                // "sampleName": null,
+                // "sampleOrigin": null,
+                // "sampleType": null,
+                // "tumorOrNormal": null
+              },
+            },
+          },
+        ],
+      },
+    },
+  });
 
   function showTable() {
     return (
@@ -38,10 +54,8 @@ export const UpdateSamples: FunctionComponent = ({}) => {
         </thead>
         <tbody>
           <tr>
-            <td>{data?.updateSamples.samples[0]?.smileSampleId}</td>
-            <td>
-              {data?.updateSamples.samples[0]?.revisable ? "true" : "false"}
-            </td>
+            <td>{data?.samples[0]?.smileSampleId}</td>
+            <td>{data?.samples[0]?.revisable ? "true" : "false"}</td>
           </tr>
         </tbody>
       </Table>
@@ -53,16 +67,28 @@ export const UpdateSamples: FunctionComponent = ({}) => {
       {params.smileSampleId}
       <Button
         onClick={() => {
-          let curValue = data?.updateSamples.samples[0].revisable;
+          let curValue = data?.samples[0].revisable;
           updateSamplesMutation({
             variables: {
-              update: { revisable: !curValue },
+              update: {
+                revisable: !curValue,
+                hasMetadataSampleMetadata: [
+                  {
+                    update: {
+                      node: {
+                        cmoPatientId: "C-NEWPATIENTID",
+                        investigatorSampleId: "new investigator id",
+                        // "sampleClass": null,
+                        // "sampleName": null,
+                        // "sampleOrigin": null,
+                        // "sampleType": null,
+                        // "tumorOrNormal": null
+                      },
+                    },
+                  },
+                ],
+              },
             },
-          }).then((r) => {
-            console.log(
-              "revisable value is now ",
-              r.data?.updateSamples.samples[0].revisable
-            );
           });
         }}
       >
