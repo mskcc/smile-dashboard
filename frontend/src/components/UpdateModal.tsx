@@ -8,6 +8,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { CellChange, ChangeForSubmit } from "../pages/requests/helpers";
 import { useUpdateSamplesMutation } from "../generated/graphql";
+import { CellChange, ChangeForSubmit } from "../pages/requests/helpers";
+import { useUpdateSamplesMutation } from "../generated/graphql";
 
 export const UpdateModal: FunctionComponent<{
   changes: CellChange[];
