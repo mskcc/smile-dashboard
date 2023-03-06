@@ -21,6 +21,12 @@ export type CellChange = {
   rowNode: RowNode<any>;
 };
 
+export type ChangeForSubmit = {
+  [primaryId: string]: {
+    [fieldName: string]: string;
+  };
+};
+
 export function buildRequestTableColumns(navigate: any): ColDef[] {
   return [
     {
