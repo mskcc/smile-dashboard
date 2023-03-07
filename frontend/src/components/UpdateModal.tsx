@@ -32,6 +32,9 @@ export const UpdateModal: FunctionComponent<{
     };
   }, []);
 
+  const [updateSamplesMutation, { data, loading, error }] =
+    useUpdateSamplesMutation({});
+
   // changesForSubmit = {
   //   "primaryId1": {
   //     "field1": "newValue1",
@@ -51,7 +54,26 @@ export const UpdateModal: FunctionComponent<{
         changesForSubmit[c.primaryId] = { [c.fieldName]: c.newValue };
       }
     }
-    console.log(changesForSubmit);
+
+    for (const [key, value] of Object.entries(changesForSubmit)) {
+      updateSamplesMutation({
+        variables: {
+          where: {
+            smileSampleId: key,
+          },
+          update: {
+            revisable: false,
+            hasMetadataSampleMetadata: [
+              {
+                update: {
+                  node: value!,
+                },
+              },
+            ],
+          },
+        },
+      });
+    }
   };
 
   return (
