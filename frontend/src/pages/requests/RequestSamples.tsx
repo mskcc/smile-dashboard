@@ -5,7 +5,6 @@ import {
 } from "../../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import _, { sample } from "lodash";
 import classNames from "classnames";
 import { FunctionComponent, useRef } from "react";
 import { DownloadModal } from "../../components/DownloadModal";
@@ -187,6 +186,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       {showUpdateModal && (
         <UpdateModal
           changes={changes}
+          onSuccess={handleDiscardChanges}
           onHide={() => setShowUpdateModal(false)}
         />
       )}
