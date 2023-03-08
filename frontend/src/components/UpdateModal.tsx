@@ -11,8 +11,9 @@ import { useUpdateSamplesMutation } from "../generated/graphql";
 
 export const UpdateModal: FunctionComponent<{
   changes: CellChange[];
+  onSuccess: () => void;
   onHide: () => void;
-}> = ({ changes, onHide }) => {
+}> = ({ changes, onHide, onSuccess }) => {
   const [rowData, setRowData] = useState(changes);
   const [columnDefs] = useState([
     { field: "primaryId", rowGroup: true, hide: true },
@@ -74,6 +75,9 @@ export const UpdateModal: FunctionComponent<{
         },
       });
     }
+
+    onSuccess();
+    onHide();
   };
 
   return (
