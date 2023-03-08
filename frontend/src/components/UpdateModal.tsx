@@ -17,7 +17,7 @@ export const UpdateModal: FunctionComponent<{
   const [rowData, setRowData] = useState(changes);
   const [columnDefs] = useState([
     { field: "primaryId", rowGroup: true, hide: true },
-    { field: "field" },
+    { field: "fieldName" },
     { field: "oldValue" },
     { field: "newValue" },
   ]);
@@ -35,6 +35,8 @@ export const UpdateModal: FunctionComponent<{
 
   const [updateSamplesMutation, { data, loading, error }] =
     useUpdateSamplesMutation({});
+
+  console.log("changes", changes);
 
   // changesForSubmit = {
   //   "primaryId1": {
@@ -79,6 +81,8 @@ export const UpdateModal: FunctionComponent<{
     onSuccess();
     onHide();
   };
+
+  console.log(rowData);
 
   return (
     <Modal
