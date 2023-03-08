@@ -148,7 +148,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       const colDef = gridRef.current.api.getColumnDef(c.fieldName);
       colDef.cellStyle = (p: CellClassParams<any>) =>
         p.rowIndex.toString() === c.rowNode.rowIndex!.toString()
-          ? { backgroundColor: "white" }
+          ? { backgroundColor: "transparent" }
           : null;
       columns.push(c.fieldName);
       rowNodes.push(c.rowNode);
