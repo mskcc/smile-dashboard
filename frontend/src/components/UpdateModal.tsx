@@ -6,7 +6,8 @@ import "ag-grid-enterprise";
 import styles from "../pages/requests/requests.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { CellChange } from "../pages/requests/helpers";
+import { CellChange, ChangeForSubmit } from "../pages/requests/helpers";
+import { useUpdateSamplesMutation } from "../generated/graphql";
 
 export const UpdateModal: FunctionComponent<{
   changes: CellChange[];
@@ -30,6 +31,50 @@ export const UpdateModal: FunctionComponent<{
       field: "primaryId",
     };
   }, []);
+
+  const [updateSamplesMutation, { data, loading, error }] =
+    useUpdateSamplesMutation({});
+
+  // changesForSubmit = {
+  //   "primaryId1": {
+  //     "field1": "newValue1",
+  //     "field2": "newValue2"
+  //   },
+  //   "primaryId2": {
+  //     "field1": "newValue1",
+  //     "field2": "newValue2"
+  //   }
+  // }
+  const handleSubmitUpdates = () => {
+    const changesForSubmit: ChangeForSubmit = {};
+    for (const c of changes) {
+      if (changesForSubmit[c.primaryId]) {
+        changesForSubmit[c.primaryId][c.fieldName] = c.newValue;
+      } else {
+        changesForSubmit[c.primaryId] = { [c.fieldName]: c.newValue };
+      }
+    }
+
+    for (const [key, value] of Object.entries(changesForSubmit)) {
+      updateSamplesMutation({
+        variables: {
+          hasMetadataSampleMetadataWhere2: {
+            primaryId: key,
+          },
+          update: {
+            revisable: false,
+            hasMetadataSampleMetadata: [
+              {
+                update: {
+                  node: value!,
+                },
+              },
+            ],
+          },
+        },
+      });
+    }
+  };
 
   return (
     <Modal
@@ -62,7 +107,7 @@ export const UpdateModal: FunctionComponent<{
         <Button className={"btn btn-secondary"} onClick={onHide}>
           Cancel
         </Button>
-        <Button className={"btn btn-success"} onClick={onHide}>
+        <Button className={"btn btn-success"} onClick={handleSubmitUpdates}>
           Submit Updates
         </Button>
       </Modal.Footer>

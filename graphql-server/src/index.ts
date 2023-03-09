@@ -127,15 +127,21 @@ async function main() {
           request(
             smile_sample_endpoint + where.smileSampleId,
             { json: true },
-            (err: any, res: any) => {
+            async (err: any, res: any) => {
               if (err) {
                 return console.log(err);
               }
+              // get latest sample metadata from smile web service
+              let sampleData = res.body;
+
               // set revisable to false for sample
               let sample = ogm.model("Sample");
-              sample.find({ where: { smileSampleId: where.smileSampleId } });
-              // get latest sample metadata and apply updates provided through mutation
-              let sampleData = res.body;
+              const d = await sample.update({
+                where: { smileSampleId: sampleData.smileSampleId },
+                update: { revisable: false },
+              });
+
+              // apply updates to metadata
               const smdataupdates =
                 update.hasMetadataSampleMetadata[0].update.node;
               Object.keys(smdataupdates).forEach((key: string) => {
@@ -148,7 +154,9 @@ async function main() {
                 pub_validate_sample_update,
                 JSON.stringify(sampleData)
               );
-              return { samples: [sampleData] };
+              return {
+                data: { updateSamples: { samples: [sampleData] } },
+              };
             }
           );
         },
