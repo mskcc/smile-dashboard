@@ -11,7 +11,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -1850,7 +1849,7 @@ export type Request = {
   projectsHasRequestConnection: RequestProjectsHasRequestConnection;
   qcAccessEmails: Scalars["String"];
   requestJson: Scalars["String"];
-  revisable: Scalars["Boolean"];
+  revisable?: Maybe<Scalars["Boolean"]>;
   smileRequestId: Scalars["String"];
   strand?: Maybe<Scalars["String"]>;
 };
@@ -1976,7 +1975,7 @@ export type RequestCreateInput = {
   projectsHasRequest?: InputMaybe<RequestProjectsHasRequestFieldInput>;
   qcAccessEmails: Scalars["String"];
   requestJson: Scalars["String"];
-  revisable: Scalars["Boolean"];
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   smileRequestId: Scalars["String"];
   strand?: InputMaybe<Scalars["String"]>;
 };
@@ -7722,6 +7721,7 @@ export type UpdateSamplesMutationVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   update?: InputMaybe<SampleUpdateInput>;
   connect?: InputMaybe<SampleConnectInput>;
+  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
 }>;
 
 export type UpdateSamplesMutation = {
@@ -7802,55 +7802,6 @@ export const RequestsListDocument = gql`
   }
   ${RequestPartsFragmentDoc}
 `;
-
-/**
- * __useRequestsListQuery__
- *
- * To run a query within a React component, call `useRequestsListQuery` and pass it any options that fit your needs.
- * When your component renders, `useRequestsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRequestsListQuery({
- *   variables: {
- *      options: // value for 'options'
- *      where: // value for 'where'
- *      requestsConnectionWhere2: // value for 'requestsConnectionWhere2'
- *   },
- * });
- */
-export function useRequestsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    RequestsListQuery,
-    RequestsListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<RequestsListQuery, RequestsListQueryVariables>(
-    RequestsListDocument,
-    options
-  );
-}
-export function useRequestsListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    RequestsListQuery,
-    RequestsListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<RequestsListQuery, RequestsListQueryVariables>(
-    RequestsListDocument,
-    options
-  );
-}
-export type RequestsListQueryHookResult = ReturnType<
-  typeof useRequestsListQuery
->;
-export type RequestsListLazyQueryHookResult = ReturnType<
-  typeof useRequestsListLazyQuery
->;
 export type RequestsListQueryResult = Apollo.QueryResult<
   RequestsListQuery,
   RequestsListQueryVariables
@@ -7911,58 +7862,6 @@ export const RequestWithSamplesDocument = gql`
   }
   ${RequestPartsFragmentDoc}
 `;
-
-/**
- * __useRequestWithSamplesQuery__
- *
- * To run a query within a React component, call `useRequestWithSamplesQuery` and pass it any options that fit your needs.
- * When your component renders, `useRequestWithSamplesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRequestWithSamplesQuery({
- *   variables: {
- *      options: // value for 'options'
- *      where: // value for 'where'
- *      hasSampleSamplesWhere2: // value for 'hasSampleSamplesWhere2'
- *      hasMetadataSampleMetadataWhere2: // value for 'hasMetadataSampleMetadataWhere2'
- *      hasSampleSamplesConnectionWhere2: // value for 'hasSampleSamplesConnectionWhere2'
- *      hasMetadataSampleMetadataOptions2: // value for 'hasMetadataSampleMetadataOptions2'
- *   },
- * });
- */
-export function useRequestWithSamplesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    RequestWithSamplesQuery,
-    RequestWithSamplesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    RequestWithSamplesQuery,
-    RequestWithSamplesQueryVariables
-  >(RequestWithSamplesDocument, options);
-}
-export function useRequestWithSamplesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    RequestWithSamplesQuery,
-    RequestWithSamplesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    RequestWithSamplesQuery,
-    RequestWithSamplesQueryVariables
-  >(RequestWithSamplesDocument, options);
-}
-export type RequestWithSamplesQueryHookResult = ReturnType<
-  typeof useRequestWithSamplesQuery
->;
-export type RequestWithSamplesLazyQueryHookResult = ReturnType<
-  typeof useRequestWithSamplesLazyQuery
->;
 export type RequestWithSamplesQueryResult = Apollo.QueryResult<
   RequestWithSamplesQuery,
   RequestWithSamplesQueryVariables
@@ -8002,45 +7901,6 @@ export const SamplesDocument = gql`
     }
   }
 `;
-
-/**
- * __useSamplesQuery__
- *
- * To run a query within a React component, call `useSamplesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSamplesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSamplesQuery({
- *   variables: {
- *      where: // value for 'where'
- *      hasMetadataSampleMetadataWhere2: // value for 'hasMetadataSampleMetadataWhere2'
- *      hasMetadataSampleMetadataOptions2: // value for 'hasMetadataSampleMetadataOptions2'
- *   },
- * });
- */
-export function useSamplesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SamplesQuery, SamplesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SamplesQuery, SamplesQueryVariables>(
-    SamplesDocument,
-    options
-  );
-}
-export function useSamplesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SamplesQuery, SamplesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SamplesQuery, SamplesQueryVariables>(
-    SamplesDocument,
-    options
-  );
-}
-export type SamplesQueryHookResult = ReturnType<typeof useSamplesQuery>;
-export type SamplesLazyQueryHookResult = ReturnType<typeof useSamplesLazyQuery>;
 export type SamplesQueryResult = Apollo.QueryResult<
   SamplesQuery,
   SamplesQueryVariables
@@ -8050,6 +7910,7 @@ export const UpdateSamplesDocument = gql`
     $where: SampleWhere
     $update: SampleUpdateInput
     $connect: SampleConnectInput
+    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
   ) {
     updateSamples(where: $where, update: $update, connect: $connect) {
       samples {
@@ -8087,41 +7948,6 @@ export const UpdateSamplesDocument = gql`
 export type UpdateSamplesMutationFn = Apollo.MutationFunction<
   UpdateSamplesMutation,
   UpdateSamplesMutationVariables
->;
-
-/**
- * __useUpdateSamplesMutation__
- *
- * To run a mutation, you first call `useUpdateSamplesMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSamplesMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateSamplesMutation, { data, loading, error }] = useUpdateSamplesMutation({
- *   variables: {
- *      where: // value for 'where'
- *      update: // value for 'update'
- *      connect: // value for 'connect'
- *   },
- * });
- */
-export function useUpdateSamplesMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    UpdateSamplesMutation,
-    UpdateSamplesMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    UpdateSamplesMutation,
-    UpdateSamplesMutationVariables
-  >(UpdateSamplesDocument, options);
-}
-export type UpdateSamplesMutationHookResult = ReturnType<
-  typeof useUpdateSamplesMutation
 >;
 export type UpdateSamplesMutationResult =
   Apollo.MutationResult<UpdateSamplesMutation>;

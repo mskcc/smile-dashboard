@@ -127,6 +127,7 @@ mutation UpdateSamples(
   $where: SampleWhere
   $update: SampleUpdateInput
   $connect: SampleConnectInput
+  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
 ) {
   updateSamples(where: $where, update: $update, connect: $connect) {
     samples {

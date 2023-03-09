@@ -58,8 +58,8 @@ export const UpdateModal: FunctionComponent<{
     for (const [key, value] of Object.entries(changesForSubmit)) {
       updateSamplesMutation({
         variables: {
-          where: {
-            smileSampleId: key,
+          hasMetadataSampleMetadataWhere2: {
+            primaryId: key,
           },
           update: {
             revisable: false,

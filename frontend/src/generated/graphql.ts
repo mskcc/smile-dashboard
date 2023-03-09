@@ -1850,7 +1850,7 @@ export type Request = {
   projectsHasRequestConnection: RequestProjectsHasRequestConnection;
   qcAccessEmails: Scalars["String"];
   requestJson: Scalars["String"];
-  revisable: Scalars["Boolean"];
+  revisable?: Maybe<Scalars["Boolean"]>;
   smileRequestId: Scalars["String"];
   strand?: Maybe<Scalars["String"]>;
 };
@@ -1976,7 +1976,7 @@ export type RequestCreateInput = {
   projectsHasRequest?: InputMaybe<RequestProjectsHasRequestFieldInput>;
   qcAccessEmails: Scalars["String"];
   requestJson: Scalars["String"];
-  revisable: Scalars["Boolean"];
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   smileRequestId: Scalars["String"];
   strand?: InputMaybe<Scalars["String"]>;
 };
@@ -7722,6 +7722,7 @@ export type UpdateSamplesMutationVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   update?: InputMaybe<SampleUpdateInput>;
   connect?: InputMaybe<SampleConnectInput>;
+  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
 }>;
 
 export type UpdateSamplesMutation = {
@@ -8050,6 +8051,7 @@ export const UpdateSamplesDocument = gql`
     $where: SampleWhere
     $update: SampleUpdateInput
     $connect: SampleConnectInput
+    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
   ) {
     updateSamples(where: $where, update: $update, connect: $connect) {
       samples {
@@ -8105,6 +8107,7 @@ export type UpdateSamplesMutationFn = Apollo.MutationFunction<
  *      where: // value for 'where'
  *      update: // value for 'update'
  *      connect: // value for 'connect'
+ *      hasMetadataSampleMetadataWhere2: // value for 'hasMetadataSampleMetadataWhere2'
  *   },
  * });
  */
