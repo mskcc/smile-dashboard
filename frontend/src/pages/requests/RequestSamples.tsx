@@ -110,13 +110,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       const primaryId = params.data.primaryId;
 
       if (oldValue !== newValue) {
-        params.colDef.cellStyle = (p) => {
-          const isSameField = p.colDef.field === fieldName;
-          const isSameRow = p.rowIndex === rowNode.rowIndex;
-          return isSameField && isSameRow
+        params.colDef.cellStyle = (p: CellClassParams<any>) =>
+          p.colDef.field === fieldName && p.rowIndex === rowNode.rowIndex
             ? { backgroundColor: "lemonchiffon" }
             : null;
-        };
         params.api.refreshCells({
           columns: [fieldName],
           rowNodes: [rowNode],
