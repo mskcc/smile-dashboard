@@ -1,4 +1,12 @@
 import { Express } from "express";
+import { SamplesDocument, SortDirection } from "frontend/src/generated/graphql";
+
+const fetch = require("node-fetch");
+const gql = require("graphql-tag");
+const ApolloClient = require("apollo-client").ApolloClient;
+const createHttpLink = require("apollo-link-http").createHttpLink;
+const setContext = require("apollo-link-context").setContext;
+const InMemoryCache = require("apollo-cache-inmemory").InMemoryCache;
 
 const path = require("path");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
@@ -8,9 +16,9 @@ const neo4j = require("neo4j-driver");
 const { connect, StringCodec, headers } = require("nats");
 var PropertiesReader = require("properties-reader");
 var properties = new PropertiesReader(
-  path.resolve(__dirname, "../dist/env/application.properties")
+  path.resolve(`${__dirname}`, "./env/application.properties")
 );
-const request = require("request");
+const request = require("request-promise-native");
 const http = require("http");
 const bodyParser = require("body-parser");
 const express = require("express");
@@ -92,77 +100,121 @@ async function main() {
     res.sendStatus(200);
   });
 
+  const httpLink = createHttpLink({
+    uri: "http://localhost:4000/graphql",
+    fetch: fetch,
+  });
+
+  const client = new ApolloClient({
+    link: httpLink,
+    cache: new InMemoryCache(),
+  });
+
   const httpServer = http.createServer(app);
   const typeDefs = await toGraphQLTypeDefs(sessionFactory, false);
   const ogm = new OGM({ typeDefs, driver });
   const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
+    config: {
+      skipValidateTypeDefs: true,
+    },
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageLocalDefault({ embed: true }),
     ],
     resolvers: {
       Mutation: {
-        updateSamples: async (_source: any, { where, update }: any) => {
-          console.log(
-            "querying endpoint: ",
-            smile_sample_endpoint +
-              where.hasMetadataSampleMetadataConnection_SOME.node.primaryId
-          );
-          await request(
+        async updateSamples(_source: any, { where, update }: any) {
+          const data = await request(
             smile_sample_endpoint +
               where.hasMetadataSampleMetadataConnection_SOME.node.primaryId,
-            { json: true },
-            async (err: any, res: any) => {
-              if (err) {
-                return console.log(err);
-              }
-              // get latest sample metadata from smile web service
-              let sampleData = res.body;
-
-              // set revisable to false for sample
-              let sample = ogm.model("Sample");
-              const d = await sample.update({
-                where: { smileSampleId: sampleData.smileSampleId },
-                update: { revisable: false },
-              });
-
-              // apply updates to metadata
-              const smdataupdates =
-                update.hasMetadataSampleMetadata[0].update.node;
-              Object.keys(smdataupdates).forEach((key: string) => {
-                sampleData[key] = smdataupdates[key];
-              });
-
-              // remove 'status' from sample metadata to ensure validator and label
-              // generator use latest status data added during validation process
-              delete sampleData["status"];
-
-              // add isCmoSample to sample's 'additionalProperties' if not already present
-              // this is to ensure that cmo samples get sent to the label generator after validation
-              // since some of the older SMILE samples do not have this additionalProperty set
-              if (sampleData["additionalProperties"]["isCmoSample"] == null) {
-                const requestId =
-                  sampleData["additionalProperties"]["igoRequestId"];
-                let req = ogm.model("Request");
-                const rd = await req.find({
-                  where: { igoRequestId: requestId },
-                });
-                sampleData["additionalProperties"]["isCmoSample"] =
-                  rd[0]["isCmoRequest"].toString();
-              }
-
-              // publish sample update to nats server
-              publishNatsMessage(
-                pub_validate_sample_update,
-                JSON.stringify(sampleData)
-              );
-              return {
-                data: { updateSamples: { samples: [sampleData] } },
-              };
-            }
+            { json: true }
           );
+
+          const smdataupdates = update.hasMetadataSampleMetadata[0].update.node;
+          Object.keys(smdataupdates).forEach((key: string) => {
+            data[key] = smdataupdates[key];
+          });
+
+          // remove 'status' from sample metadata to ensure validator and label
+          // generator use latest status data added during validation process
+          delete data["status"];
+
+          // add isCmoSample to sample's 'additionalProperties' if not already present
+          // this is to ensure that cmo samples get sent to the label generator after validation
+          // since some of the older SMILE samples do not have this additionalProperty set
+          if (data["additionalProperties"]["isCmoSample"] == null) {
+            const requestId = data["additionalProperties"]["igoRequestId"];
+            let req = ogm.model("Request");
+            const rd = await req.find({
+              where: { igoRequestId: requestId },
+            });
+            data["additionalProperties"]["isCmoSample"] =
+              rd[0]["isCmoRequest"].toString();
+          }
+
+          await publishNatsMessage(
+            pub_validate_sample_update,
+            JSON.stringify(data)
+          );
+
+          let sample = ogm.model("Sample");
+
+          await sample.update({
+            where: { smileSampleId: data.smileSampleId },
+            update: { revisable: false },
+          });
+
+          const updatedSamples = await client.query({
+            query: SamplesDocument,
+            variables: {
+              where: {
+                smileSampleId: data.smileSampleId,
+              },
+              hasMetadataSampleMetadataOptions2: {
+                sort: [{ importDate: SortDirection.Desc }],
+                limit: 1,
+              },
+            },
+          });
+
+          Object.keys(smdataupdates).forEach((key: string) => {
+            updatedSamples.data.samples[0].hasMetadataSampleMetadata[0][key] =
+              smdataupdates[key];
+          });
+
+          // THIS IS FROM ANGELICA'S CODE   MUST BE RESTORED
+          // // remove 'status' from sample metadata to ensure validator and label
+          // // generator use latest status data added during validation process
+          // delete sampleData["status"];
+          //
+          // // add isCmoSample to sample's 'additionalProperties' if not already present
+          // // this is to ensure that cmo samples get sent to the label generator after validation
+          // // since some of the older SMILE samples do not have this additionalProperty set
+          // if (sampleData["additionalProperties"]["isCmoSample"] == null) {
+          //   const requestId =
+          //       sampleData["additionalProperties"]["igoRequestId"];
+          //   let req = ogm.model("Request");
+          //   const rd = await req.find({
+          //     where: { igoRequestId: requestId },
+          //   });
+          //   sampleData["additionalProperties"]["isCmoSample"] =
+          //       rd[0]["isCmoRequest"].toString();
+          // }
+          //
+          //
+          //
+
+          return {
+            samples: updatedSamples.data.samples,
+          };
+
+          // publish sample update to nats server
+          // publishNatsMessage(
+          //   pub_validate_sample_update,
+          //   JSON.stringify(sampleData)
+          // )
         },
       },
     },

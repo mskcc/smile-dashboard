@@ -3638,7 +3638,7 @@ export type Sample = {
   requestsHasSample: Array<Request>;
   requestsHasSampleAggregate?: Maybe<SampleRequestRequestsHasSampleAggregationSelection>;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
-  revisable: Scalars["Boolean"];
+  revisable?: Maybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias: Array<SampleAlias>;
   sampleAliasesIsAliasAggregate?: Maybe<SampleSampleAliasSampleAliasesIsAliasAggregationSelection>;
   sampleAliasesIsAliasConnection: SampleSampleAliasesIsAliasConnection;
@@ -4062,7 +4062,7 @@ export type SampleCreateInput = {
   hasMetadataSampleMetadata?: InputMaybe<SampleHasMetadataSampleMetadataFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
-  revisable: Scalars["Boolean"];
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
   sampleCategory: Scalars["String"];
   sampleClass: Scalars["String"];
@@ -7619,6 +7619,7 @@ export type RequestWithSamplesQuery = {
       sampleCategory: string;
       sampleClass: string;
       datasource: string;
+      revisable?: boolean | null;
       hasMetadataSampleMetadata: Array<{
         __typename?: "SampleMetadata";
         cmoSampleName?: string | null;
@@ -7681,6 +7682,30 @@ export type RequestPartsFragment = {
   smileRequestId: string;
 };
 
+export type SampleMetadataFieldsFragment = {
+  __typename?: "SampleMetadata";
+  cmoSampleName?: string | null;
+  igoComplete?: boolean | null;
+  importDate: string;
+  investigatorSampleId?: string | null;
+  primaryId: string;
+  sampleClass: string;
+  cmoPatientId?: string | null;
+  cmoSampleIdFields: string;
+  sampleName?: string | null;
+  preservation?: string | null;
+  tumorOrNormal: string;
+  oncotreeCode?: string | null;
+  collectionYear: string;
+  sampleOrigin?: string | null;
+  tissueLocation?: string | null;
+  sex: string;
+  libraries: string;
+  sampleType: string;
+  species: string;
+  genePanel: string;
+};
+
 export type SamplesQueryVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
@@ -7692,9 +7717,10 @@ export type SamplesQuery = {
   samples: Array<{
     __typename?: "Sample";
     smileSampleId: string;
-    revisable: boolean;
+    revisable?: boolean | null;
     sampleCategory: string;
     sampleClass: string;
+    datasource: string;
     hasMetadataSampleMetadata: Array<{
       __typename?: "SampleMetadata";
       cmoSampleName?: string | null;
@@ -7713,6 +7739,10 @@ export type SamplesQuery = {
       sampleOrigin?: string | null;
       tissueLocation?: string | null;
       sex: string;
+      libraries: string;
+      sampleType: string;
+      species: string;
+      genePanel: string;
     }>;
   }>;
 };
@@ -7721,7 +7751,6 @@ export type UpdateSamplesMutationVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   update?: InputMaybe<SampleUpdateInput>;
   connect?: InputMaybe<SampleConnectInput>;
-  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
 }>;
 
 export type UpdateSamplesMutation = {
@@ -7731,7 +7760,7 @@ export type UpdateSamplesMutation = {
     samples: Array<{
       __typename?: "Sample";
       smileSampleId: string;
-      revisable: boolean;
+      revisable?: boolean | null;
       datasource: string;
       sampleCategory: string;
       sampleClass: string;
@@ -7784,6 +7813,30 @@ export const RequestPartsFragmentDoc = gql`
     smileRequestId
   }
 `;
+export const SampleMetadataFieldsFragmentDoc = gql`
+  fragment SampleMetadataFields on SampleMetadata {
+    cmoSampleName
+    igoComplete
+    importDate
+    investigatorSampleId
+    primaryId
+    sampleClass
+    cmoPatientId
+    cmoSampleIdFields
+    sampleName
+    preservation
+    tumorOrNormal
+    oncotreeCode
+    collectionYear
+    sampleOrigin
+    tissueLocation
+    sex
+    libraries
+    sampleType
+    species
+    genePanel
+  }
+`;
 export const RequestsListDocument = gql`
   query RequestsList(
     $options: RequestOptions
@@ -7822,30 +7875,12 @@ export const RequestWithSamplesDocument = gql`
         sampleCategory
         sampleClass
         datasource
+        revisable
         hasMetadataSampleMetadata(
           where: $hasMetadataSampleMetadataWhere2
           options: $hasMetadataSampleMetadataOptions2
         ) {
-          cmoSampleName
-          igoComplete
-          importDate
-          investigatorSampleId
-          primaryId
-          sampleClass
-          cmoPatientId
-          cmoSampleIdFields
-          sampleName
-          preservation
-          tumorOrNormal
-          oncotreeCode
-          collectionYear
-          sampleOrigin
-          tissueLocation
-          sex
-          libraries
-          sampleType
-          species
-          genePanel
+          ...SampleMetadataFields
         }
         patientsHasSample {
           smilePatientId
@@ -7861,6 +7896,7 @@ export const RequestWithSamplesDocument = gql`
     }
   }
   ${RequestPartsFragmentDoc}
+  ${SampleMetadataFieldsFragmentDoc}
 `;
 export type RequestWithSamplesQueryResult = Apollo.QueryResult<
   RequestWithSamplesQuery,
@@ -7877,29 +7913,16 @@ export const SamplesDocument = gql`
       revisable
       sampleCategory
       sampleClass
+      datasource
       hasMetadataSampleMetadata(
         where: $hasMetadataSampleMetadataWhere2
         options: $hasMetadataSampleMetadataOptions2
       ) {
-        cmoSampleName
-        igoComplete
-        importDate
-        investigatorSampleId
-        primaryId
-        sampleClass
-        cmoPatientId
-        cmoSampleIdFields
-        sampleName
-        preservation
-        tumorOrNormal
-        oncotreeCode
-        collectionYear
-        sampleOrigin
-        tissueLocation
-        sex
+        ...SampleMetadataFields
       }
     }
   }
+  ${SampleMetadataFieldsFragmentDoc}
 `;
 export type SamplesQueryResult = Apollo.QueryResult<
   SamplesQuery,
@@ -7910,7 +7933,6 @@ export const UpdateSamplesDocument = gql`
     $where: SampleWhere
     $update: SampleUpdateInput
     $connect: SampleConnectInput
-    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
   ) {
     updateSamples(where: $where, update: $update, connect: $connect) {
       samples {
@@ -7919,31 +7941,13 @@ export const UpdateSamplesDocument = gql`
         datasource
         sampleCategory
         sampleClass
-        hasMetadataSampleMetadata(where: $hasMetadataSampleMetadataWhere2) {
-          cmoSampleName
-          igoComplete
-          importDate
-          investigatorSampleId
-          primaryId
-          sampleClass
-          cmoPatientId
-          cmoSampleIdFields
-          sampleName
-          preservation
-          tumorOrNormal
-          oncotreeCode
-          collectionYear
-          sampleOrigin
-          tissueLocation
-          sex
-          libraries
-          sampleType
-          species
-          genePanel
+        hasMetadataSampleMetadata {
+          ...SampleMetadataFields
         }
       }
     }
   }
+  ${SampleMetadataFieldsFragmentDoc}
 `;
 export type UpdateSamplesMutationFn = Apollo.MutationFunction<
   UpdateSamplesMutation,
