@@ -75,6 +75,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
         limit: 1,
       },
     },
+    pollInterval: 1000,
     fetchPolicy: "no-cache",
   });
 
@@ -104,10 +105,10 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       setUnsavedChanges(true);
       setShowEditButtons(true);
 
-      const { oldValue, newValue } = params;
+      const { oldValue, newValue, data } = params;
       const rowNode = params.node;
       const fieldName = params.colDef.field!;
-      const primaryId = params.data.primaryId;
+      const primaryId = data.primaryId;
 
       if (oldValue !== newValue) {
         params.colDef.cellStyle = (p: CellClassParams<any>) =>
@@ -128,7 +129,14 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
         if (change) {
           change.newValue = newValue;
         } else {
-          changes.push({ primaryId, fieldName, oldValue, newValue, rowNode });
+          changes.push({
+            primaryId,
+            fieldName,
+            oldValue,
+            newValue,
+            rowNode,
+            data,
+          });
         }
         return changes;
       });
