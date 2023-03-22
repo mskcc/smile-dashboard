@@ -1,12 +1,9 @@
 import React, { FunctionComponent, useState } from "react";
 import { Col, Container, Form, Row, Button } from "react-bootstrap";
 import classNames from "classnames";
+import { useSamplesQuery } from "../../generated/graphql";
 
 export const PatientsPage: FunctionComponent = () => {
-  return <Patients />;
-};
-
-const Patients: FunctionComponent = () => {
   const [val, setVal] = useState("");
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<
     typeof setTimeout
@@ -60,6 +57,28 @@ const Patients: FunctionComponent = () => {
           <Button onClick={() => {}}>Search</Button>
         </Col>
       </Row>
+
+      <Patients val={val} />
     </Container>
   );
+};
+
+interface PatientsInput {
+  val: string;
+}
+
+const Patients: FunctionComponent<PatientsInput> = ({ val }) => {
+  const { data, loading, error } = useSamplesQuery({
+    variables: {
+      hasMetadataSampleMetadataWhere2: {
+        cmoPatientId: val,
+      },
+    },
+  });
+
+  if (loading) {
+    return <div>Loading...</div>;
+  } else {
+    return <>{console.log(data)}</>;
+  }
 };
