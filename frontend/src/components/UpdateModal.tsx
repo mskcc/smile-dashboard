@@ -36,25 +36,19 @@ export const UpdateModal: FunctionComponent<{
   const [updateSamplesMutation, { data, loading, error }] =
     useUpdateSamplesMutation();
 
-  console.log("changes", changes);
-
-  // changesForSubmit = {
-  //   "primaryId1": {
-  //     "field1": "newValue1",
-  //     "field2": "newValue2"
-  //   },
-  //   "primaryId2": {
-  //     "field1": "newValue1",
-  //     "field2": "newValue2"
-  //   }
-  // }
   const handleSubmitUpdates = () => {
     const changesForSubmit: ChangeForSubmit = {};
     for (const c of changes) {
-      if (changesForSubmit[c.primaryId]) {
-        changesForSubmit[c.primaryId][c.fieldName] = c.newValue;
+      let sample = changesForSubmit[c.primaryId];
+      if (sample) {
+        sample.newValues[c.fieldName] = c.newValue;
       } else {
-        changesForSubmit[c.primaryId] = { [c.fieldName]: c.newValue };
+        sample = {
+          newValues: {
+            [c.fieldName]: c.newValue,
+          },
+          data: c.data,
+        };
       }
     }
 
@@ -73,8 +67,20 @@ export const UpdateModal: FunctionComponent<{
             hasMetadataSampleMetadata: [
               {
                 update: {
-                  node: value!,
+                  node: value.newValues,
                 },
+              },
+            ],
+          },
+        },
+        optimisticResponse: {
+          updateSamples: {
+            samples: [
+              {
+                hasMetadataSampleMetadata: [
+                  /* @ts-ignore */
+                  value.data,
+                ],
               },
             ],
           },
@@ -85,8 +91,6 @@ export const UpdateModal: FunctionComponent<{
     onSuccess();
     onHide();
   };
-
-  console.log(rowData);
 
   return (
     <Modal

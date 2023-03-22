@@ -19,11 +19,15 @@ export type CellChange = {
   oldValue: string;
   newValue: string;
   rowNode: RowNode<any>;
+  data: object;
 };
 
 export type ChangeForSubmit = {
   [primaryId: string]: {
-    [fieldName: string]: string;
+    newValues: {
+      [fieldName: string]: string;
+    };
+    data: object;
   };
 };
 
