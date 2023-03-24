@@ -146,7 +146,6 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
     let rowNodes: any[] = [];
 
     changes.forEach((c) => {
-      c.rowNode.setDataValue(c.fieldName, c.oldValue);
       const colDef = gridRef.current.api.getColumnDef(c.fieldName);
       colDef.cellStyle = (p: CellClassParams<any>) =>
         p.rowIndex.toString() === c.rowNode.rowIndex!.toString()
