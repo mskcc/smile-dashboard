@@ -75,6 +75,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
         limit: 1,
       },
     },
+    pollInterval: 1000,
     fetchPolicy: "no-cache",
   });
 
@@ -85,6 +86,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [changes, setChanges] = useState<CellChange[]>([]);
+  const [currentTable, setCurrentTable] = useState<any>([]);
   const [editMode, setEditMode] = useState(true);
   const gridRef = useRef<any>(null);
 
@@ -132,6 +134,9 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
         }
         return changes;
       });
+
+      // grab the current Samples table, including cell changes, for optimistic update
+      setCurrentTable(data?.requests[0].hasSampleSamples);
     }
   };
 
@@ -183,6 +188,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
       {showUpdateModal && (
         <UpdateModal
           changes={changes}
+          currentTable={currentTable}
           onSuccess={handleDiscardChanges}
           onHide={() => setShowUpdateModal(false)}
         />

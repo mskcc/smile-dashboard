@@ -7,13 +7,14 @@ import styles from "../pages/requests/requests.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { CellChange, ChangeForSubmit } from "../pages/requests/helpers";
-import { useUpdateSamplesMutation } from "../generated/graphql";
+import { Sample, useUpdateSamplesMutation } from "../generated/graphql";
 
 export const UpdateModal: FunctionComponent<{
   changes: CellChange[];
+  currentTable: Sample[];
   onSuccess: () => void;
   onHide: () => void;
-}> = ({ changes, onHide, onSuccess }) => {
+}> = ({ changes, currentTable, onHide, onSuccess }) => {
   const [rowData, setRowData] = useState(changes);
   const [columnDefs] = useState([
     { field: "primaryId", rowGroup: true, hide: true },
@@ -36,18 +37,6 @@ export const UpdateModal: FunctionComponent<{
   const [updateSamplesMutation, { data, loading, error }] =
     useUpdateSamplesMutation();
 
-  console.log("changes", changes);
-
-  // changesForSubmit = {
-  //   "primaryId1": {
-  //     "field1": "newValue1",
-  //     "field2": "newValue2"
-  //   },
-  //   "primaryId2": {
-  //     "field1": "newValue1",
-  //     "field2": "newValue2"
-  //   }
-  // }
   const handleSubmitUpdates = () => {
     const changesForSubmit: ChangeForSubmit = {};
     for (const c of changes) {
@@ -79,14 +68,17 @@ export const UpdateModal: FunctionComponent<{
             ],
           },
         },
+        optimisticResponse: {
+          updateSamples: {
+            samples: currentTable,
+          },
+        },
       });
     }
 
     onSuccess();
     onHide();
   };
-
-  console.log(rowData);
 
   return (
     <Modal
