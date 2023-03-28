@@ -75,7 +75,6 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
         limit: 1,
       },
     },
-    pollInterval: 1000,
     fetchPolicy: "no-cache",
   });
 
