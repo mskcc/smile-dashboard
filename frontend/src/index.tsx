@@ -20,7 +20,7 @@ const cache = new InMemoryCache({
       keyFields: ["smileSampleId"],
     },
     SampleMetadata: {
-      keyFields: ["investigatorSampleId"],
+      keyFields: ["primaryId"],
     },
   },
 });

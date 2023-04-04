@@ -219,7 +219,7 @@ export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
 
         <Col className={"text-start"}>{remoteCount} matching samples</Col>
 
-        {_.size(changes) > 0 && (
+        {changes.length > 0 && (
           <>
             <Col className={"text-end"}>
               <Button
