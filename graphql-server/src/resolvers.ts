@@ -1,4 +1,4 @@
-import { SamplesDocument, SortDirection } from "frontend/src/generated/graphql";
+import { SamplesDocument, SortDirection } from "./generated/graphql";
 import { connect, headers, StringCodec } from "nats";
 import { OGM } from "@neo4j/graphql-ogm";
 import { buildProps } from "./buildProps";
