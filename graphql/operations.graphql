@@ -68,6 +68,40 @@ query RequestWithSamples(
   }
 }
 
+query FindSamplesByInputValue(
+  $where: SampleWhere
+  $options: SampleMetadataOptions
+) {
+  samplesConnection(where: $where) {
+    edges {
+      node {
+        ...SampleParts
+        hasMetadataSampleMetadata(options: $options) {
+          ...SampleMetadataParts
+        }
+        requestsHasSampleConnection {
+          edges {
+            node {
+              ...RequestParts
+            }
+          }
+        }
+        patientsHasSampleConnection {
+          edges {
+            node {
+              smilePatientId
+              patientAliasesIsAlias {
+                namespace
+                value
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 fragment RequestParts on Request {
   igoRequestId
   igoProjectId
@@ -87,6 +121,44 @@ fragment RequestParts on Request {
   projectManagerName
   qcAccessEmails
   smileRequestId
+}
+
+fragment SampleParts on Sample {
+  datasource
+  revisable
+  sampleCategory
+  sampleClass
+  smileSampleId
+}
+
+fragment SampleMetadataParts on SampleMetadata {
+  additionalProperties
+  baitSet
+  cfDNA2dBarcode
+  cmoInfoIgoId
+  cmoPatientId
+  cmoSampleIdFields
+  cmoSampleName
+  collectionYear
+  genePanel
+  igoComplete
+  igoRequestId
+  importDate
+  investigatorSampleId
+  libraries
+  oncotreeCode
+  preservation
+  primaryId
+  qcReports
+  sampleClass
+  sampleName
+  sampleOrigin
+  sampleType
+  sex
+  species
+  tissueLocation
+  tubeId
+  tumorOrNormal
 }
 
 query Samples(

@@ -1826,9 +1826,6 @@ export type Request = {
   dataAnalystEmail: Scalars["String"];
   dataAnalystName: Scalars["String"];
   genePanel: Scalars["String"];
-  hasMetadataRequestMetadata: Array<RequestMetadata>;
-  hasMetadataRequestMetadataAggregate?: Maybe<RequestRequestMetadataHasMetadataRequestMetadataAggregationSelection>;
-  hasMetadataRequestMetadataConnection: RequestHasMetadataRequestMetadataConnection;
   hasSampleSamples: Array<Sample>;
   hasSampleSamplesAggregate?: Maybe<RequestSampleHasSampleSamplesAggregationSelection>;
   hasSampleSamplesConnection: RequestHasSampleSamplesConnection;
@@ -1853,25 +1850,6 @@ export type Request = {
   revisable?: Maybe<Scalars["Boolean"]>;
   smileRequestId: Scalars["String"];
   strand?: Maybe<Scalars["String"]>;
-};
-
-export type RequestHasMetadataRequestMetadataArgs = {
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  options?: InputMaybe<RequestMetadataOptions>;
-  where?: InputMaybe<RequestMetadataWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataAggregateArgs = {
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  where?: InputMaybe<RequestMetadataWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<RequestHasMetadataRequestMetadataConnectionSort>>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
 };
 
 export type RequestHasSampleSamplesArgs = {
@@ -1937,9 +1915,6 @@ export type RequestAggregateSelection = {
 };
 
 export type RequestConnectInput = {
-  hasMetadataRequestMetadata?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataConnectFieldInput>
-  >;
   hasSampleSamples?: InputMaybe<
     Array<RequestHasSampleSamplesConnectFieldInput>
   >;
@@ -1958,7 +1933,6 @@ export type RequestCreateInput = {
   dataAnalystEmail: Scalars["String"];
   dataAnalystName: Scalars["String"];
   genePanel: Scalars["String"];
-  hasMetadataRequestMetadata?: InputMaybe<RequestHasMetadataRequestMetadataFieldInput>;
   hasSampleSamples?: InputMaybe<RequestHasSampleSamplesFieldInput>;
   igoProjectId: Scalars["String"];
   igoRequestId: Scalars["String"];
@@ -1982,9 +1956,6 @@ export type RequestCreateInput = {
 };
 
 export type RequestDeleteInput = {
-  hasMetadataRequestMetadata?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataDeleteFieldInput>
-  >;
   hasSampleSamples?: InputMaybe<Array<RequestHasSampleSamplesDeleteFieldInput>>;
   projectsHasRequest?: InputMaybe<
     Array<RequestProjectsHasRequestDeleteFieldInput>
@@ -1992,9 +1963,6 @@ export type RequestDeleteInput = {
 };
 
 export type RequestDisconnectInput = {
-  hasMetadataRequestMetadata?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataDisconnectFieldInput>
-  >;
   hasSampleSamples?: InputMaybe<
     Array<RequestHasSampleSamplesDisconnectFieldInput>
   >;
@@ -2007,153 +1975,6 @@ export type RequestEdge = {
   __typename?: "RequestEdge";
   cursor: Scalars["String"];
   node: Request;
-};
-
-export type RequestHasMetadataRequestMetadataAggregateInput = {
-  AND?: InputMaybe<Array<RequestHasMetadataRequestMetadataAggregateInput>>;
-  OR?: InputMaybe<Array<RequestHasMetadataRequestMetadataAggregateInput>>;
-  count?: InputMaybe<Scalars["Int"]>;
-  count_GT?: InputMaybe<Scalars["Int"]>;
-  count_GTE?: InputMaybe<Scalars["Int"]>;
-  count_LT?: InputMaybe<Scalars["Int"]>;
-  count_LTE?: InputMaybe<Scalars["Int"]>;
-  node?: InputMaybe<RequestHasMetadataRequestMetadataNodeAggregationWhereInput>;
-};
-
-export type RequestHasMetadataRequestMetadataConnectFieldInput = {
-  connect?: InputMaybe<Array<RequestMetadataConnectInput>>;
-  where?: InputMaybe<RequestMetadataConnectWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataConnection = {
-  __typename?: "RequestHasMetadataRequestMetadataConnection";
-  edges: Array<RequestHasMetadataRequestMetadataRelationship>;
-  pageInfo: PageInfo;
-  totalCount: Scalars["Int"];
-};
-
-export type RequestHasMetadataRequestMetadataConnectionSort = {
-  node?: InputMaybe<RequestMetadataSort>;
-};
-
-export type RequestHasMetadataRequestMetadataConnectionWhere = {
-  AND?: InputMaybe<Array<RequestHasMetadataRequestMetadataConnectionWhere>>;
-  OR?: InputMaybe<Array<RequestHasMetadataRequestMetadataConnectionWhere>>;
-  node?: InputMaybe<RequestMetadataWhere>;
-  node_NOT?: InputMaybe<RequestMetadataWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataCreateFieldInput = {
-  node: RequestMetadataCreateInput;
-};
-
-export type RequestHasMetadataRequestMetadataDeleteFieldInput = {
-  delete?: InputMaybe<RequestMetadataDeleteInput>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataDisconnectFieldInput = {
-  disconnect?: InputMaybe<RequestMetadataDisconnectInput>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-};
-
-export type RequestHasMetadataRequestMetadataFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<RequestHasMetadataRequestMetadataCreateFieldInput>>;
-};
-
-export type RequestHasMetadataRequestMetadataNodeAggregationWhereInput = {
-  AND?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataNodeAggregationWhereInput>
-  >;
-  OR?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataNodeAggregationWhereInput>
-  >;
-  igoRequestId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_EQUAL?: InputMaybe<Scalars["String"]>;
-  igoRequestId_GT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_GTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  importDate_EQUAL?: InputMaybe<Scalars["String"]>;
-  importDate_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  requestMetadataJson_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  requestMetadataJson_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  requestMetadataJson_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  requestMetadataJson_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  requestMetadataJson_EQUAL?: InputMaybe<Scalars["String"]>;
-  requestMetadataJson_GT?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_GTE?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LT?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_LTE?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  requestMetadataJson_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-};
-
-export type RequestHasMetadataRequestMetadataRelationship = {
-  __typename?: "RequestHasMetadataRequestMetadataRelationship";
-  cursor: Scalars["String"];
-  node: RequestMetadata;
-};
-
-export type RequestHasMetadataRequestMetadataUpdateConnectionInput = {
-  node?: InputMaybe<RequestMetadataUpdateInput>;
-};
-
-export type RequestHasMetadataRequestMetadataUpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<RequestHasMetadataRequestMetadataCreateFieldInput>>;
-  delete?: InputMaybe<Array<RequestHasMetadataRequestMetadataDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataDisconnectFieldInput>
-  >;
-  update?: InputMaybe<RequestHasMetadataRequestMetadataUpdateConnectionInput>;
-  where?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
 };
 
 export type RequestHasSampleSamplesAggregateInput = {
@@ -2321,9 +2142,6 @@ export type RequestMetadata = {
   igoRequestId: Scalars["String"];
   importDate: Scalars["String"];
   requestMetadataJson: Scalars["String"];
-  requestsHasMetadata: Array<Request>;
-  requestsHasMetadataAggregate?: Maybe<RequestMetadataRequestRequestsHasMetadataAggregationSelection>;
-  requestsHasMetadataConnection: RequestMetadataRequestsHasMetadataConnection;
 };
 
 export type RequestMetadataHasStatusStatusesArgs = {
@@ -2345,25 +2163,6 @@ export type RequestMetadataHasStatusStatusesConnectionArgs = {
   where?: InputMaybe<RequestMetadataHasStatusStatusesConnectionWhere>;
 };
 
-export type RequestMetadataRequestsHasMetadataArgs = {
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  options?: InputMaybe<RequestOptions>;
-  where?: InputMaybe<RequestWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataAggregateArgs = {
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  where?: InputMaybe<RequestWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<RequestMetadataRequestsHasMetadataConnectionSort>>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-};
-
 export type RequestMetadataAggregateSelection = {
   __typename?: "RequestMetadataAggregateSelection";
   count: Scalars["Int"];
@@ -2375,9 +2174,6 @@ export type RequestMetadataAggregateSelection = {
 export type RequestMetadataConnectInput = {
   hasStatusStatuses?: InputMaybe<
     Array<RequestMetadataHasStatusStatusesConnectFieldInput>
-  >;
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
   >;
 };
 
@@ -2397,24 +2193,17 @@ export type RequestMetadataCreateInput = {
   igoRequestId: Scalars["String"];
   importDate: Scalars["String"];
   requestMetadataJson: Scalars["String"];
-  requestsHasMetadata?: InputMaybe<RequestMetadataRequestsHasMetadataFieldInput>;
 };
 
 export type RequestMetadataDeleteInput = {
   hasStatusStatuses?: InputMaybe<
     Array<RequestMetadataHasStatusStatusesDeleteFieldInput>
   >;
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDeleteFieldInput>
-  >;
 };
 
 export type RequestMetadataDisconnectInput = {
   hasStatusStatuses?: InputMaybe<
     Array<RequestMetadataHasStatusStatusesDisconnectFieldInput>
-  >;
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDisconnectFieldInput>
   >;
 };
 
@@ -2542,511 +2331,6 @@ export type RequestMetadataRelationInput = {
   hasStatusStatuses?: InputMaybe<
     Array<RequestMetadataHasStatusStatusesCreateFieldInput>
   >;
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
-  >;
-};
-
-export type RequestMetadataRequestRequestsHasMetadataAggregationSelection = {
-  __typename?: "RequestMetadataRequestRequestsHasMetadataAggregationSelection";
-  count: Scalars["Int"];
-  node?: Maybe<RequestMetadataRequestRequestsHasMetadataNodeAggregateSelection>;
-};
-
-export type RequestMetadataRequestRequestsHasMetadataNodeAggregateSelection = {
-  __typename?: "RequestMetadataRequestRequestsHasMetadataNodeAggregateSelection";
-  dataAccessEmails: StringAggregateSelectionNonNullable;
-  dataAnalystEmail: StringAggregateSelectionNonNullable;
-  dataAnalystName: StringAggregateSelectionNonNullable;
-  genePanel: StringAggregateSelectionNonNullable;
-  igoProjectId: StringAggregateSelectionNonNullable;
-  igoRequestId: StringAggregateSelectionNonNullable;
-  investigatorEmail: StringAggregateSelectionNonNullable;
-  investigatorName: StringAggregateSelectionNonNullable;
-  labHeadEmail: StringAggregateSelectionNonNullable;
-  labHeadName: StringAggregateSelectionNonNullable;
-  libraryType: StringAggregateSelectionNullable;
-  namespace: StringAggregateSelectionNonNullable;
-  otherContactEmails: StringAggregateSelectionNonNullable;
-  piEmail: StringAggregateSelectionNonNullable;
-  projectManagerName: StringAggregateSelectionNonNullable;
-  qcAccessEmails: StringAggregateSelectionNonNullable;
-  requestJson: StringAggregateSelectionNonNullable;
-  smileRequestId: StringAggregateSelectionNonNullable;
-  strand: StringAggregateSelectionNullable;
-};
-
-export type RequestMetadataRequestsHasMetadataAggregateInput = {
-  AND?: InputMaybe<Array<RequestMetadataRequestsHasMetadataAggregateInput>>;
-  OR?: InputMaybe<Array<RequestMetadataRequestsHasMetadataAggregateInput>>;
-  count?: InputMaybe<Scalars["Int"]>;
-  count_GT?: InputMaybe<Scalars["Int"]>;
-  count_GTE?: InputMaybe<Scalars["Int"]>;
-  count_LT?: InputMaybe<Scalars["Int"]>;
-  count_LTE?: InputMaybe<Scalars["Int"]>;
-  node?: InputMaybe<RequestMetadataRequestsHasMetadataNodeAggregationWhereInput>;
-};
-
-export type RequestMetadataRequestsHasMetadataConnectFieldInput = {
-  connect?: InputMaybe<Array<RequestConnectInput>>;
-  where?: InputMaybe<RequestConnectWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataConnection = {
-  __typename?: "RequestMetadataRequestsHasMetadataConnection";
-  edges: Array<RequestMetadataRequestsHasMetadataRelationship>;
-  pageInfo: PageInfo;
-  totalCount: Scalars["Int"];
-};
-
-export type RequestMetadataRequestsHasMetadataConnectionSort = {
-  node?: InputMaybe<RequestSort>;
-};
-
-export type RequestMetadataRequestsHasMetadataConnectionWhere = {
-  AND?: InputMaybe<Array<RequestMetadataRequestsHasMetadataConnectionWhere>>;
-  OR?: InputMaybe<Array<RequestMetadataRequestsHasMetadataConnectionWhere>>;
-  node?: InputMaybe<RequestWhere>;
-  node_NOT?: InputMaybe<RequestWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataCreateFieldInput = {
-  node: RequestCreateInput;
-};
-
-export type RequestMetadataRequestsHasMetadataDeleteFieldInput = {
-  delete?: InputMaybe<RequestDeleteInput>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataDisconnectFieldInput = {
-  disconnect?: InputMaybe<RequestDisconnectInput>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-};
-
-export type RequestMetadataRequestsHasMetadataFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
-  >;
-};
-
-export type RequestMetadataRequestsHasMetadataNodeAggregationWhereInput = {
-  AND?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataNodeAggregationWhereInput>
-  >;
-  OR?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataNodeAggregationWhereInput>
-  >;
-  dataAccessEmails_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  dataAccessEmails_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  dataAccessEmails_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  dataAccessEmails_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  dataAccessEmails_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  dataAccessEmails_EQUAL?: InputMaybe<Scalars["String"]>;
-  dataAccessEmails_GT?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LT?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataAccessEmails_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  dataAnalystEmail_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  dataAnalystEmail_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  dataAnalystEmail_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  dataAnalystEmail_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  dataAnalystEmail_EQUAL?: InputMaybe<Scalars["String"]>;
-  dataAnalystEmail_GT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystEmail_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  dataAnalystName_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  dataAnalystName_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  dataAnalystName_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  dataAnalystName_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  dataAnalystName_EQUAL?: InputMaybe<Scalars["String"]>;
-  dataAnalystName_GT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_LTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  dataAnalystName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  genePanel_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  genePanel_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  genePanel_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  genePanel_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  genePanel_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  genePanel_EQUAL?: InputMaybe<Scalars["String"]>;
-  genePanel_GT?: InputMaybe<Scalars["Int"]>;
-  genePanel_GTE?: InputMaybe<Scalars["Int"]>;
-  genePanel_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  genePanel_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  genePanel_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  genePanel_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  genePanel_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  genePanel_LT?: InputMaybe<Scalars["Int"]>;
-  genePanel_LTE?: InputMaybe<Scalars["Int"]>;
-  genePanel_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  genePanel_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  genePanel_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  genePanel_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  genePanel_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  igoProjectId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  igoProjectId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  igoProjectId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  igoProjectId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  igoProjectId_EQUAL?: InputMaybe<Scalars["String"]>;
-  igoProjectId_GT?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_GTE?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LT?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_LTE?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  igoProjectId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  igoRequestId_EQUAL?: InputMaybe<Scalars["String"]>;
-  igoRequestId_GT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_GTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_LTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  igoRequestId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  investigatorEmail_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  investigatorEmail_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  investigatorEmail_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  investigatorEmail_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  investigatorEmail_EQUAL?: InputMaybe<Scalars["String"]>;
-  investigatorEmail_GT?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_GTE?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LT?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_LTE?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  investigatorEmail_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  investigatorName_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  investigatorName_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  investigatorName_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  investigatorName_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  investigatorName_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  investigatorName_EQUAL?: InputMaybe<Scalars["String"]>;
-  investigatorName_GT?: InputMaybe<Scalars["Int"]>;
-  investigatorName_GTE?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LT?: InputMaybe<Scalars["Int"]>;
-  investigatorName_LTE?: InputMaybe<Scalars["Int"]>;
-  investigatorName_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  investigatorName_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  investigatorName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  investigatorName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  investigatorName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  labHeadEmail_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  labHeadEmail_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  labHeadEmail_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  labHeadEmail_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  labHeadEmail_EQUAL?: InputMaybe<Scalars["String"]>;
-  labHeadEmail_GT?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_GTE?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LT?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_LTE?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  labHeadEmail_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  labHeadName_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  labHeadName_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  labHeadName_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  labHeadName_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  labHeadName_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  labHeadName_EQUAL?: InputMaybe<Scalars["String"]>;
-  labHeadName_GT?: InputMaybe<Scalars["Int"]>;
-  labHeadName_GTE?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LT?: InputMaybe<Scalars["Int"]>;
-  labHeadName_LTE?: InputMaybe<Scalars["Int"]>;
-  labHeadName_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  labHeadName_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  labHeadName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  labHeadName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  labHeadName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  libraryType_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  libraryType_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  libraryType_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  libraryType_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  libraryType_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  libraryType_EQUAL?: InputMaybe<Scalars["String"]>;
-  libraryType_GT?: InputMaybe<Scalars["Int"]>;
-  libraryType_GTE?: InputMaybe<Scalars["Int"]>;
-  libraryType_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  libraryType_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  libraryType_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  libraryType_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  libraryType_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  libraryType_LT?: InputMaybe<Scalars["Int"]>;
-  libraryType_LTE?: InputMaybe<Scalars["Int"]>;
-  libraryType_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  libraryType_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  libraryType_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  libraryType_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  libraryType_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  namespace_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  namespace_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  namespace_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  namespace_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  namespace_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  namespace_EQUAL?: InputMaybe<Scalars["String"]>;
-  namespace_GT?: InputMaybe<Scalars["Int"]>;
-  namespace_GTE?: InputMaybe<Scalars["Int"]>;
-  namespace_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  namespace_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  namespace_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  namespace_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  namespace_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  namespace_LT?: InputMaybe<Scalars["Int"]>;
-  namespace_LTE?: InputMaybe<Scalars["Int"]>;
-  namespace_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  namespace_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  namespace_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  namespace_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  namespace_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  otherContactEmails_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  otherContactEmails_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  otherContactEmails_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  otherContactEmails_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  otherContactEmails_EQUAL?: InputMaybe<Scalars["String"]>;
-  otherContactEmails_GT?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_GTE?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LT?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_LTE?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  otherContactEmails_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  piEmail_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  piEmail_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  piEmail_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  piEmail_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  piEmail_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  piEmail_EQUAL?: InputMaybe<Scalars["String"]>;
-  piEmail_GT?: InputMaybe<Scalars["Int"]>;
-  piEmail_GTE?: InputMaybe<Scalars["Int"]>;
-  piEmail_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  piEmail_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  piEmail_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  piEmail_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  piEmail_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  piEmail_LT?: InputMaybe<Scalars["Int"]>;
-  piEmail_LTE?: InputMaybe<Scalars["Int"]>;
-  piEmail_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  piEmail_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  piEmail_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  piEmail_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  piEmail_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  projectManagerName_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  projectManagerName_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  projectManagerName_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  projectManagerName_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  projectManagerName_EQUAL?: InputMaybe<Scalars["String"]>;
-  projectManagerName_GT?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_GTE?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LT?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_LTE?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  projectManagerName_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  qcAccessEmails_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  qcAccessEmails_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  qcAccessEmails_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  qcAccessEmails_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  qcAccessEmails_EQUAL?: InputMaybe<Scalars["String"]>;
-  qcAccessEmails_GT?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_GTE?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LT?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_LTE?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  qcAccessEmails_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  requestJson_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  requestJson_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  requestJson_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  requestJson_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  requestJson_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  requestJson_EQUAL?: InputMaybe<Scalars["String"]>;
-  requestJson_GT?: InputMaybe<Scalars["Int"]>;
-  requestJson_GTE?: InputMaybe<Scalars["Int"]>;
-  requestJson_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  requestJson_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  requestJson_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  requestJson_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  requestJson_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  requestJson_LT?: InputMaybe<Scalars["Int"]>;
-  requestJson_LTE?: InputMaybe<Scalars["Int"]>;
-  requestJson_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  requestJson_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  requestJson_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  requestJson_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  requestJson_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  smileRequestId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  smileRequestId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  smileRequestId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  smileRequestId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  smileRequestId_EQUAL?: InputMaybe<Scalars["String"]>;
-  smileRequestId_GT?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_GTE?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LT?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_LTE?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  smileRequestId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-  strand_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
-  strand_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
-  strand_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
-  strand_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
-  strand_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
-  strand_EQUAL?: InputMaybe<Scalars["String"]>;
-  strand_GT?: InputMaybe<Scalars["Int"]>;
-  strand_GTE?: InputMaybe<Scalars["Int"]>;
-  strand_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  strand_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
-  strand_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
-  strand_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
-  strand_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
-  strand_LT?: InputMaybe<Scalars["Int"]>;
-  strand_LTE?: InputMaybe<Scalars["Int"]>;
-  strand_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
-  strand_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
-  strand_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
-  strand_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
-  strand_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
-};
-
-export type RequestMetadataRequestsHasMetadataRelationship = {
-  __typename?: "RequestMetadataRequestsHasMetadataRelationship";
-  cursor: Scalars["String"];
-  node: Request;
-};
-
-export type RequestMetadataRequestsHasMetadataUpdateConnectionInput = {
-  node?: InputMaybe<RequestUpdateInput>;
-};
-
-export type RequestMetadataRequestsHasMetadataUpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataConnectFieldInput>
-  >;
-  create?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataCreateFieldInput>
-  >;
-  delete?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDeleteFieldInput>
-  >;
-  disconnect?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataDisconnectFieldInput>
-  >;
-  update?: InputMaybe<RequestMetadataRequestsHasMetadataUpdateConnectionInput>;
-  where?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
 };
 
 /** Fields to sort RequestMetadata by. The order in which sorts are applied is not guaranteed when specifying many fields in one RequestMetadataSort object. */
@@ -3074,9 +2358,6 @@ export type RequestMetadataUpdateInput = {
   igoRequestId?: InputMaybe<Scalars["String"]>;
   importDate?: InputMaybe<Scalars["String"]>;
   requestMetadataJson?: InputMaybe<Scalars["String"]>;
-  requestsHasMetadata?: InputMaybe<
-    Array<RequestMetadataRequestsHasMetadataUpdateFieldInput>
-  >;
 };
 
 export type RequestMetadataWhere = {
@@ -3125,19 +2406,6 @@ export type RequestMetadataWhere = {
   requestMetadataJson_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   requestMetadataJson_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   requestMetadataJson_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  requestsHasMetadataAggregate?: InputMaybe<RequestMetadataRequestsHasMetadataAggregateInput>;
-  requestsHasMetadataConnection_ALL?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-  requestsHasMetadataConnection_NONE?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-  requestsHasMetadataConnection_SINGLE?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-  requestsHasMetadataConnection_SOME?: InputMaybe<RequestMetadataRequestsHasMetadataConnectionWhere>;
-  /** Return RequestMetadata where all of the related Requests match this filter */
-  requestsHasMetadata_ALL?: InputMaybe<RequestWhere>;
-  /** Return RequestMetadata where none of the related Requests match this filter */
-  requestsHasMetadata_NONE?: InputMaybe<RequestWhere>;
-  /** Return RequestMetadata where one of the related Requests match this filter */
-  requestsHasMetadata_SINGLE?: InputMaybe<RequestWhere>;
-  /** Return RequestMetadata where some of the related Requests match this filter */
-  requestsHasMetadata_SOME?: InputMaybe<RequestWhere>;
 };
 
 export type RequestOptions = {
@@ -3277,29 +2545,11 @@ export type RequestProjectsHasRequestUpdateFieldInput = {
 };
 
 export type RequestRelationInput = {
-  hasMetadataRequestMetadata?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataCreateFieldInput>
-  >;
   hasSampleSamples?: InputMaybe<Array<RequestHasSampleSamplesCreateFieldInput>>;
   projectsHasRequest?: InputMaybe<
     Array<RequestProjectsHasRequestCreateFieldInput>
   >;
 };
-
-export type RequestRequestMetadataHasMetadataRequestMetadataAggregationSelection =
-  {
-    __typename?: "RequestRequestMetadataHasMetadataRequestMetadataAggregationSelection";
-    count: Scalars["Int"];
-    node?: Maybe<RequestRequestMetadataHasMetadataRequestMetadataNodeAggregateSelection>;
-  };
-
-export type RequestRequestMetadataHasMetadataRequestMetadataNodeAggregateSelection =
-  {
-    __typename?: "RequestRequestMetadataHasMetadataRequestMetadataNodeAggregateSelection";
-    igoRequestId: StringAggregateSelectionNonNullable;
-    importDate: StringAggregateSelectionNonNullable;
-    requestMetadataJson: StringAggregateSelectionNonNullable;
-  };
 
 export type RequestSampleHasSampleSamplesAggregationSelection = {
   __typename?: "RequestSampleHasSampleSamplesAggregationSelection";
@@ -3347,9 +2597,6 @@ export type RequestUpdateInput = {
   dataAnalystEmail?: InputMaybe<Scalars["String"]>;
   dataAnalystName?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
-  hasMetadataRequestMetadata?: InputMaybe<
-    Array<RequestHasMetadataRequestMetadataUpdateFieldInput>
-  >;
   hasSampleSamples?: InputMaybe<Array<RequestHasSampleSamplesUpdateFieldInput>>;
   igoProjectId?: InputMaybe<Scalars["String"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
@@ -3421,19 +2668,6 @@ export type RequestWhere = {
   genePanel_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   genePanel_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   genePanel_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  hasMetadataRequestMetadataAggregate?: InputMaybe<RequestHasMetadataRequestMetadataAggregateInput>;
-  hasMetadataRequestMetadataConnection_ALL?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-  hasMetadataRequestMetadataConnection_NONE?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-  hasMetadataRequestMetadataConnection_SINGLE?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-  hasMetadataRequestMetadataConnection_SOME?: InputMaybe<RequestHasMetadataRequestMetadataConnectionWhere>;
-  /** Return Requests where all of the related RequestMetadata match this filter */
-  hasMetadataRequestMetadata_ALL?: InputMaybe<RequestMetadataWhere>;
-  /** Return Requests where none of the related RequestMetadata match this filter */
-  hasMetadataRequestMetadata_NONE?: InputMaybe<RequestMetadataWhere>;
-  /** Return Requests where one of the related RequestMetadata match this filter */
-  hasMetadataRequestMetadata_SINGLE?: InputMaybe<RequestMetadataWhere>;
-  /** Return Requests where some of the related RequestMetadata match this filter */
-  hasMetadataRequestMetadata_SOME?: InputMaybe<RequestMetadataWhere>;
   hasSampleSamplesAggregate?: InputMaybe<RequestHasSampleSamplesAggregateInput>;
   hasSampleSamplesConnection_ALL?: InputMaybe<RequestHasSampleSamplesConnectionWhere>;
   hasSampleSamplesConnection_NONE?: InputMaybe<RequestHasSampleSamplesConnectionWhere>;
@@ -7583,87 +6817,6 @@ export type RequestsListQuery = {
   }>;
 };
 
-export type FindSamplesByInputValueQueryVariables = Exact<{
-  options?: InputMaybe<RequestOptions>;
-  where?: InputMaybe<RequestWhere>;
-}>;
-
-export type FindSamplesByInputValueQuery = {
-  __typename?: "Query";
-  samplesConnection: Array<{
-    edges: Array<{
-      nodes: Array<{
-        _typename?: "Sample";
-        smileSampleId: string;
-        sampleCategory: string;
-        sampleClass: string;
-        datasource: string;
-        hasMetadataSampleMetadata: Array<{
-          __typename?: "SampleMetadata";
-          cmoSampleName?: string | null;
-          igoComplete?: boolean | null;
-          importDate: string;
-          investigatorSampleId?: string | null;
-          primaryId: string;
-          sampleClass: string;
-          cmoPatientId?: string | null;
-          cmoSampleIdFields: string;
-          sampleName?: string | null;
-          preservation?: string | null;
-          tumorOrNormal: string;
-          oncotreeCode?: string | null;
-          collectionYear: string;
-          sampleOrigin?: string | null;
-          tissueLocation?: string | null;
-          sex: string;
-          libraries: string;
-          sampleType: string;
-          species: string;
-          genePanel: string;
-        }>;
-        requestsHasSampleConnection: Array<{
-          edges: Array<{
-            nodes: Array<{
-              __typename?: "Request";
-              igoRequestId: string;
-              igoProjectId: string;
-              genePanel: string;
-              dataAnalystName: string;
-              dataAnalystEmail: string;
-              dataAccessEmails: string;
-              bicAnalysis: boolean;
-              investigatorEmail: string;
-              investigatorName: string;
-              isCmoRequest: boolean;
-              labHeadEmail: string;
-              labHeadName: string;
-              libraryType?: string | null;
-              otherContactEmails: string;
-              piEmail: string;
-              projectManagerName: string;
-              qcAccessEmails: string;
-              smileRequestId: string;
-            }>;
-          }>;
-        }>;
-        patientsHasSampleConnection: Array<{
-          edges: Array<{
-            nodes: Array<{
-              __typename?: "Patient";
-              smilePatientId: string;
-              patientAliasesIsAlias: Array<{
-                __typename?: "PatientAlias";
-                namespace: string;
-                value?: string | null;
-              }>;
-            }>;
-          }>;
-        }>;
-      }>;
-    }>;
-  }>;
-};
-
 export type RequestWithSamplesQueryVariables = Exact<{
   options?: InputMaybe<RequestOptions>;
   where?: InputMaybe<RequestWhere>;
@@ -7741,6 +6894,101 @@ export type RequestWithSamplesQuery = {
   }>;
 };
 
+export type FindSamplesByInputValueQueryVariables = Exact<{
+  where?: InputMaybe<SampleWhere>;
+  options?: InputMaybe<SampleMetadataOptions>;
+}>;
+
+export type FindSamplesByInputValueQuery = {
+  __typename?: "Query";
+  samplesConnection: {
+    __typename?: "SamplesConnection";
+    edges: Array<{
+      __typename?: "SampleEdge";
+      node: {
+        __typename?: "Sample";
+        datasource: string;
+        revisable: boolean;
+        sampleCategory: string;
+        sampleClass: string;
+        smileSampleId: string;
+        hasMetadataSampleMetadata: Array<{
+          __typename?: "SampleMetadata";
+          additionalProperties: string;
+          baitSet?: string | null;
+          cfDNA2dBarcode?: string | null;
+          cmoInfoIgoId?: string | null;
+          cmoPatientId?: string | null;
+          cmoSampleIdFields: string;
+          cmoSampleName?: string | null;
+          collectionYear: string;
+          genePanel: string;
+          igoComplete?: boolean | null;
+          igoRequestId?: string | null;
+          importDate: string;
+          investigatorSampleId?: string | null;
+          libraries: string;
+          oncotreeCode?: string | null;
+          preservation?: string | null;
+          primaryId: string;
+          qcReports: string;
+          sampleClass: string;
+          sampleName?: string | null;
+          sampleOrigin?: string | null;
+          sampleType: string;
+          sex: string;
+          species: string;
+          tissueLocation?: string | null;
+          tubeId?: string | null;
+          tumorOrNormal: string;
+        }>;
+        requestsHasSampleConnection: {
+          __typename?: "SampleRequestsHasSampleConnection";
+          edges: Array<{
+            __typename?: "SampleRequestsHasSampleRelationship";
+            node: {
+              __typename?: "Request";
+              igoRequestId: string;
+              igoProjectId: string;
+              genePanel: string;
+              dataAnalystName: string;
+              dataAnalystEmail: string;
+              dataAccessEmails: string;
+              bicAnalysis: boolean;
+              investigatorEmail: string;
+              investigatorName: string;
+              isCmoRequest: boolean;
+              labHeadEmail: string;
+              labHeadName: string;
+              libraryType?: string | null;
+              otherContactEmails: string;
+              piEmail: string;
+              projectManagerName: string;
+              qcAccessEmails: string;
+              smileRequestId: string;
+            };
+          }>;
+        };
+        patientsHasSampleConnection: {
+          __typename?: "SamplePatientsHasSampleConnection";
+          edges: Array<{
+            __typename?: "SamplePatientsHasSampleRelationship";
+            node: {
+              __typename?: "Patient";
+              smilePatientId: string;
+              patientAliasesIsAlias: Array<{
+                __typename?: "PatientAlias";
+                namespace: string;
+                value?: string | null;
+              }>;
+            };
+          }>;
+        };
+      };
+    }>;
+  };
+};
+
 export type RequestPartsFragment = {
   __typename?: "Request";
   igoRequestId: string;
@@ -7761,6 +7009,46 @@ export type RequestPartsFragment = {
   projectManagerName: string;
   qcAccessEmails: string;
   smileRequestId: string;
+};
+
+export type SamplePartsFragment = {
+  __typename?: "Sample";
+  datasource: string;
+  revisable: boolean;
+  sampleCategory: string;
+  sampleClass: string;
+  smileSampleId: string;
+};
+
+export type SampleMetadataPartsFragment = {
+  __typename?: "SampleMetadata";
+  additionalProperties: string;
+  baitSet?: string | null;
+  cfDNA2dBarcode?: string | null;
+  cmoInfoIgoId?: string | null;
+  cmoPatientId?: string | null;
+  cmoSampleIdFields: string;
+  cmoSampleName?: string | null;
+  collectionYear: string;
+  genePanel: string;
+  igoComplete?: boolean | null;
+  igoRequestId?: string | null;
+  importDate: string;
+  investigatorSampleId?: string | null;
+  libraries: string;
+  oncotreeCode?: string | null;
+  preservation?: string | null;
+  primaryId: string;
+  qcReports: string;
+  sampleClass: string;
+  sampleName?: string | null;
+  sampleOrigin?: string | null;
+  sampleType: string;
+  sex: string;
+  species: string;
+  tissueLocation?: string | null;
+  tubeId?: string | null;
+  tumorOrNormal: string;
 };
 
 export type SamplesQueryVariables = Exact<{
@@ -7866,7 +7154,6 @@ export const RequestPartsFragmentDoc = gql`
     smileRequestId
   }
 `;
-
 export const SamplePartsFragmentDoc = gql`
   fragment SampleParts on Sample {
     datasource
@@ -7876,7 +7163,6 @@ export const SamplePartsFragmentDoc = gql`
     smileSampleId
   }
 `;
-
 export const SampleMetadataPartsFragmentDoc = gql`
   fragment SampleMetadataParts on SampleMetadata {
     additionalProperties
@@ -7908,7 +7194,6 @@ export const SampleMetadataPartsFragmentDoc = gql`
     tumorOrNormal
   }
 `;
-
 export const RequestsListDocument = gql`
   query RequestsList(
     $options: RequestOptions
@@ -8092,7 +7377,6 @@ export type RequestWithSamplesQueryResult = Apollo.QueryResult<
   RequestWithSamplesQuery,
   RequestWithSamplesQueryVariables
 >;
-
 export const FindSamplesByInputValueDocument = gql`
   query FindSamplesByInputValue(
     $where: SampleWhere
@@ -8127,13 +7411,13 @@ export const FindSamplesByInputValueDocument = gql`
       }
     }
   }
-  ${RequestPartsFragmentDoc}
   ${SamplePartsFragmentDoc}
   ${SampleMetadataPartsFragmentDoc}
+  ${RequestPartsFragmentDoc}
 `;
 
 /**
- * _useFindSamplesByInputValueQuery_
+ * __useFindSamplesByInputValueQuery__
  *
  * To run a query within a React component, call `useFindSamplesByInputValueQuery` and pass it any options that fit your needs.
  * When your component renders, `useFindSamplesByInputValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
@@ -8144,19 +7428,11 @@ export const FindSamplesByInputValueDocument = gql`
  * @example
  * const { data, loading, error } = useFindSamplesByInputValueQuery({
  *   variables: {
- *      options: {
- *        "limit": 1,
-          "sort": [
-            {
-              "importDate": "DESC"
-            }
-          ]
-        }
- *      where: // value for 'where' (Example: {"cmoPatientId": "C-patientId"})
+ *      where: // value for 'where'
+ *      options: // value for 'options'
  *   },
  * });
  */
-
 export function useFindSamplesByInputValueQuery(
   baseOptions?: Apollo.QueryHookOptions<
     FindSamplesByInputValueQuery,
@@ -8184,14 +7460,13 @@ export function useFindSamplesByInputValueLazyQuery(
 export type FindSamplesByInputValueQueryHookResult = ReturnType<
   typeof useFindSamplesByInputValueQuery
 >;
-export type FindSamplesByInputValuesLazyQueryHookResult = ReturnType<
+export type FindSamplesByInputValueLazyQueryHookResult = ReturnType<
   typeof useFindSamplesByInputValueLazyQuery
 >;
 export type FindSamplesByInputValueQueryResult = Apollo.QueryResult<
   FindSamplesByInputValueQuery,
   FindSamplesByInputValueQueryVariables
 >;
-
 export const SamplesDocument = gql`
   query Samples(
     $where: SampleWhere
