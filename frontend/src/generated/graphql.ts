@@ -7583,6 +7583,87 @@ export type RequestsListQuery = {
   }>;
 };
 
+export type FindSamplesByInputValueQueryVariables = Exact<{
+  options?: InputMaybe<RequestOptions>;
+  where?: InputMaybe<RequestWhere>;
+}>;
+
+export type FindSamplesByInputValueQuery = {
+  __typename?: "Query";
+  samplesConnection: Array<{
+    edges: Array<{
+      nodes: Array<{
+        _typename?: "Sample";
+        smileSampleId: string;
+        sampleCategory: string;
+        sampleClass: string;
+        datasource: string;
+        hasMetadataSampleMetadata: Array<{
+          __typename?: "SampleMetadata";
+          cmoSampleName?: string | null;
+          igoComplete?: boolean | null;
+          importDate: string;
+          investigatorSampleId?: string | null;
+          primaryId: string;
+          sampleClass: string;
+          cmoPatientId?: string | null;
+          cmoSampleIdFields: string;
+          sampleName?: string | null;
+          preservation?: string | null;
+          tumorOrNormal: string;
+          oncotreeCode?: string | null;
+          collectionYear: string;
+          sampleOrigin?: string | null;
+          tissueLocation?: string | null;
+          sex: string;
+          libraries: string;
+          sampleType: string;
+          species: string;
+          genePanel: string;
+        }>;
+        requestsHasSampleConnection: Array<{
+          edges: Array<{
+            nodes: Array<{
+              __typename?: "Request";
+              igoRequestId: string;
+              igoProjectId: string;
+              genePanel: string;
+              dataAnalystName: string;
+              dataAnalystEmail: string;
+              dataAccessEmails: string;
+              bicAnalysis: boolean;
+              investigatorEmail: string;
+              investigatorName: string;
+              isCmoRequest: boolean;
+              labHeadEmail: string;
+              labHeadName: string;
+              libraryType?: string | null;
+              otherContactEmails: string;
+              piEmail: string;
+              projectManagerName: string;
+              qcAccessEmails: string;
+              smileRequestId: string;
+            }>;
+          }>;
+        }>;
+        patientsHasSampleConnection: Array<{
+          edges: Array<{
+            nodes: Array<{
+              __typename?: "Patient";
+              smilePatientId: string;
+              patientAliasesIsAlias: Array<{
+                __typename?: "PatientAlias";
+                namespace: string;
+                value?: string | null;
+              }>;
+            }>;
+          }>;
+        }>;
+      }>;
+    }>;
+  }>;
+};
+
 export type RequestWithSamplesQueryVariables = Exact<{
   options?: InputMaybe<RequestOptions>;
   where?: InputMaybe<RequestWhere>;
@@ -7785,6 +7866,49 @@ export const RequestPartsFragmentDoc = gql`
     smileRequestId
   }
 `;
+
+export const SamplePartsFragmentDoc = gql`
+  fragment SampleParts on Sample {
+    datasource
+    revisable
+    sampleCategory
+    sampleClass
+    smileSampleId
+  }
+`;
+
+export const SampleMetadataPartsFragmentDoc = gql`
+  fragment SampleMetadataParts on SampleMetadata {
+    additionalProperties
+    baitSet
+    cfDNA2dBarcode
+    cmoInfoIgoId
+    cmoPatientId
+    cmoSampleIdFields
+    cmoSampleName
+    collectionYear
+    genePanel
+    igoComplete
+    igoRequestId
+    importDate
+    investigatorSampleId
+    libraries
+    oncotreeCode
+    preservation
+    primaryId
+    qcReports
+    sampleClass
+    sampleName
+    sampleOrigin
+    sampleType
+    sex
+    species
+    tissueLocation
+    tubeId
+    tumorOrNormal
+  }
+`;
+
 export const RequestsListDocument = gql`
   query RequestsList(
     $options: RequestOptions
@@ -7968,6 +8092,106 @@ export type RequestWithSamplesQueryResult = Apollo.QueryResult<
   RequestWithSamplesQuery,
   RequestWithSamplesQueryVariables
 >;
+
+export const FindSamplesByInputValueDocument = gql`
+  query FindSamplesByInputValue(
+    $where: SampleWhere
+    $options: SampleMetadataOptions
+  ) {
+    samplesConnection(where: $where) {
+      edges {
+        node {
+          ...SampleParts
+          hasMetadataSampleMetadata(options: $options) {
+            ...SampleMetadataParts
+          }
+          requestsHasSampleConnection {
+            edges {
+              node {
+                ...RequestParts
+              }
+            }
+          }
+          patientsHasSampleConnection {
+            edges {
+              node {
+                smilePatientId
+                patientAliasesIsAlias {
+                  namespace
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${RequestPartsFragmentDoc}
+  ${SamplePartsFragmentDoc}
+  ${SampleMetadataPartsFragmentDoc}
+`;
+
+/**
+ * _useFindSamplesByInputValueQuery_
+ *
+ * To run a query within a React component, call `useFindSamplesByInputValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindSamplesByInputValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindSamplesByInputValueQuery({
+ *   variables: {
+ *      options: {
+ *        "limit": 1,
+          "sort": [
+            {
+              "importDate": "DESC"
+            }
+          ]
+        }
+ *      where: // value for 'where' (Example: {"cmoPatientId": "C-patientId"})
+ *   },
+ * });
+ */
+
+export function useFindSamplesByInputValueQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    FindSamplesByInputValueQuery,
+    FindSamplesByInputValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    FindSamplesByInputValueQuery,
+    FindSamplesByInputValueQueryVariables
+  >(FindSamplesByInputValueDocument, options);
+}
+export function useFindSamplesByInputValueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    FindSamplesByInputValueQuery,
+    FindSamplesByInputValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    FindSamplesByInputValueQuery,
+    FindSamplesByInputValueQueryVariables
+  >(FindSamplesByInputValueDocument, options);
+}
+export type FindSamplesByInputValueQueryHookResult = ReturnType<
+  typeof useFindSamplesByInputValueQuery
+>;
+export type FindSamplesByInputValuesLazyQueryHookResult = ReturnType<
+  typeof useFindSamplesByInputValueLazyQuery
+>;
+export type FindSamplesByInputValueQueryResult = Apollo.QueryResult<
+  FindSamplesByInputValueQuery,
+  FindSamplesByInputValueQueryVariables
+>;
+
 export const SamplesDocument = gql`
   query Samples(
     $where: SampleWhere
