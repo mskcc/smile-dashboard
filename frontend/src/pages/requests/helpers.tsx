@@ -1,4 +1,9 @@
-import { ColDef, RowNode } from "ag-grid-community";
+import {
+  CellClassParams,
+  ColDef,
+  EditableCallbackParams,
+  RowNode,
+} from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import { SampleMetadata } from "../../generated/graphql";
@@ -21,31 +26,25 @@ export type ChangeForSubmit = {
   };
 };
 
-export function buildRequestTableColumns(navigate: any): ColDef[] {
-  return [
-    {
-      headerName: "View",
-      cellRenderer: (data: any) => {
-        return (
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => {
-              if (data.data.igoRequestId !== undefined) {
-                navigate(`/${data.data.igoRequestId}`);
-              }
-            }}
-          >
-            View
-          </Button>
-        );
-      },
-    },
-    ...RequestsListColumns,
-  ];
-}
-
 export const RequestsListColumns: ColDef[] = [
+  {
+    headerName: "View",
+    cellRenderer: (params: CellClassParams<any>) => {
+      return (
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => {
+            if (params.data.igoRequestId !== undefined) {
+              params.context.navigateFunction(`/${params.data.igoRequestId}`);
+            }
+          }}
+        >
+          View
+        </Button>
+      );
+    },
+  },
   {
     field: "igoRequestId",
     headerName: "IGO Request ID",
@@ -150,8 +149,10 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "revisable",
     headerName: "Status",
-    cellRenderer: function (params: any) {
-      return params.data.revisable ? (
+    cellRenderer: function (
+      params: EditableCallbackParams<SampleMetadataExtended>
+    ) {
+      return params.data?.revisable ? (
         <span>
           <strong>&#10003;</strong> Valid
         </span>

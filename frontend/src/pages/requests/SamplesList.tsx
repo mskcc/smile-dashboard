@@ -68,7 +68,7 @@ function getSampleMetadata(samples: Sample[]) {
   });
 }
 
-export const RequestSamples: FunctionComponent<IRequestSummaryProps> = ({
+export const SamplesList: FunctionComponent<IRequestSummaryProps> = ({
   sampleIds,
   height,
   setUnsavedChanges,

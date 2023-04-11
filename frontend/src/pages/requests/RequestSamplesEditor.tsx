@@ -3,7 +3,7 @@ import {
   SortDirection,
   useRequestWithSamplesQuery,
 } from "../../generated/graphql";
-import { RequestSamples } from "./RequestSamples";
+import { SamplesList } from "./SamplesList";
 import Spinner from "react-spinkit";
 
 export const RequestSamplesEditor: FunctionComponent<{
@@ -39,7 +39,7 @@ export const RequestSamplesEditor: FunctionComponent<{
       (s) => s.smileSampleId
     );
     return (
-      <RequestSamples
+      <SamplesList
         height={height * 4 - 50}
         sampleIds={sampleIds}
         setUnsavedChanges={setUnsavedChanges}

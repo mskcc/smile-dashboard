@@ -1,5 +1,7 @@
 import {
+  RequestWhere,
   SortDirection,
+  usePatientsListLazyQuery,
   useRequestsListLazyQuery,
   useRequestWithSamplesQuery,
 } from "../../generated/graphql";
@@ -7,17 +9,10 @@ import { makeAutoObservable } from "mobx";
 import _ from "lodash";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
-import React, {
-  Dispatch,
-  FunctionComponent,
-  SetStateAction,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { FunctionComponent, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { buildRequestTableColumns, RequestsListColumns } from "./helpers";
-import { RequestSamples } from "./RequestSamples";
+import { RequestsListColumns } from "./helpers";
 import { DownloadModal } from "../../components/DownloadModal";
 import Spinner from "react-spinkit";
 import { CSVFormulate } from "../../lib/CSVExport";
@@ -27,10 +22,11 @@ import styles from "./requests.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import { IServerSideGetRowsParams } from "ag-grid-community";
+import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { RequestSamplesEditor } from "./RequestSamplesEditor";
+import { useHookGeneric } from "../../shared/types";
 
-function requestFilterWhereVariables(value: string) {
+function requestFilterWhereVariables(value: string): RequestWhere[] {
   return [
     { igoProjectId_CONTAINS: value },
     { igoRequestId_CONTAINS: value },
@@ -50,23 +46,45 @@ function requestFilterWhereVariables(value: string) {
   ];
 }
 
-function createStore() {
-  return makeAutoObservable({
-    filter: "",
-    selectedRequest: "",
-    showRequestDetails: false,
-  });
-}
-
-//const store = createStore();
-
 export const RequestsPage: React.FunctionComponent = (props) => {
-  return <Requests />;
+  return (
+    <>
+      <RecordsList
+        lazyRecordsQuery={useRequestsListLazyQuery}
+        nodeName="requests"
+        colDefs={RequestsListColumns}
+        conditionBuilder={requestFilterWhereVariables}
+      />
+      <RecordsList
+        lazyRecordsQuery={usePatientsListLazyQuery}
+        nodeName="patients"
+        colDefs={[
+          {
+            field: "smilePatientId",
+            headerName: "ID",
+          },
+        ]}
+        conditionBuilder={requestFilterWhereVariables}
+      />
+    </>
+  );
 };
 
 export default RequestsPage;
 
-const Requests: FunctionComponent = () => {
+export interface IRecordsProps {
+  lazyRecordsQuery: typeof useHookGeneric;
+  nodeName: string;
+  colDefs: ColDef[];
+  conditionBuilder: (val: string) => Record<string, any>[];
+}
+
+const RecordsList: FunctionComponent<IRecordsProps> = ({
+  lazyRecordsQuery,
+  nodeName,
+  colDefs,
+  conditionBuilder,
+}) => {
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<ReturnType<
@@ -79,7 +97,7 @@ const Requests: FunctionComponent = () => {
 
   // not we aren't using initial fetch
   const [initialFetch, { loading, error, data, fetchMore, refetch }] =
-    useRequestsListLazyQuery({
+    lazyRecordsQuery({
       variables: {
         options: { limit: 20, offset: 0 },
       },
@@ -91,10 +109,10 @@ const Requests: FunctionComponent = () => {
       getRows: (params: IServerSideGetRowsParams) => {
         const fetchInput = {
           where: {
-            OR: requestFilterWhereVariables(val),
+            OR: conditionBuilder(val),
           },
           requestsConnectionWhere2: {
-            OR: requestFilterWhereVariables(val),
+            OR: conditionBuilder(val),
           },
           options: {
             offset: params.request.startRow,
@@ -114,10 +132,10 @@ const Requests: FunctionComponent = () => {
                 variables: fetchInput,
               });
 
-        return thisFetch.then((d) => {
+        return thisFetch.then((d: any) => {
           params.success({
-            rowData: d.data.requests,
-            rowCount: d.data.requestsConnection.totalCount,
+            rowData: d.data[nodeName],
+            rowCount: d.data[`${nodeName}Connection`].totalCount,
           });
         });
       },
@@ -133,7 +151,7 @@ const Requests: FunctionComponent = () => {
 
   if (error) return <p>Error :(</p>;
 
-  const remoteCount = data?.requestsConnection.totalCount;
+  const remoteCount = data?.[`${nodeName}Connection`].totalCount;
 
   const handleClose = () => {
     if (unsavedChanges) {
@@ -151,15 +169,15 @@ const Requests: FunctionComponent = () => {
             return fetchMore({
               variables: {
                 where: {
-                  OR: requestFilterWhereVariables(val),
+                  OR: conditionBuilder(val),
                 },
                 options: {
                   offset: 0,
                   limit: undefined,
                 },
               },
-            }).then(({ data }) => {
-              return CSVFormulate(data.requests, RequestsListColumns);
+            }).then(({ data }: any) => {
+              return CSVFormulate(data[nodeName], colDefs);
             });
           }}
           onComplete={() => setShowDownloadModal(false)}
@@ -296,11 +314,14 @@ const Requests: FunctionComponent = () => {
           >
             <AgGridReact
               rowModelType={"serverSide"}
-              columnDefs={buildRequestTableColumns(navigate)}
+              columnDefs={colDefs}
               serverSideDatasource={datasource}
               serverSideInfiniteScroll={true}
               cacheBlockSize={20}
               debug={false}
+              context={{
+                navigateFunction: navigate,
+              }}
             />
           </div>
         )}
