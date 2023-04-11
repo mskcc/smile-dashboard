@@ -6817,6 +6817,24 @@ export type RequestsListQuery = {
   }>;
 };
 
+export type PatientsListQueryVariables = Exact<{
+  options?: InputMaybe<PatientOptions>;
+}>;
+
+export type PatientsListQuery = {
+  __typename?: "Query";
+  patients: Array<{
+    __typename?: "Patient";
+    smilePatientId: string;
+    hasSampleSamples: Array<{ __typename?: "Sample"; smileSampleId: string }>;
+    hasSampleSamplesConnection: {
+      __typename?: "PatientHasSampleSamplesConnection";
+      totalCount: number;
+    };
+  }>;
+  patientsConnection: { __typename?: "PatientsConnection"; totalCount: number };
+};
+
 export type RequestWithSamplesQueryVariables = Exact<{
   options?: InputMaybe<RequestOptions>;
   where?: InputMaybe<RequestWhere>;
@@ -7142,6 +7160,73 @@ export type RequestsListLazyQueryHookResult = ReturnType<
 export type RequestsListQueryResult = Apollo.QueryResult<
   RequestsListQuery,
   RequestsListQueryVariables
+>;
+export const PatientsListDocument = gql`
+  query PatientsList($options: PatientOptions) {
+    patients(options: $options) {
+      smilePatientId
+      hasSampleSamples {
+        smileSampleId
+      }
+      hasSampleSamplesConnection {
+        totalCount
+      }
+    }
+    patientsConnection {
+      totalCount
+    }
+  }
+`;
+
+/**
+ * __usePatientsListQuery__
+ *
+ * To run a query within a React component, call `usePatientsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePatientsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePatientsListQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function usePatientsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    PatientsListQuery,
+    PatientsListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<PatientsListQuery, PatientsListQueryVariables>(
+    PatientsListDocument,
+    options
+  );
+}
+export function usePatientsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    PatientsListQuery,
+    PatientsListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<PatientsListQuery, PatientsListQueryVariables>(
+    PatientsListDocument,
+    options
+  );
+}
+export type PatientsListQueryHookResult = ReturnType<
+  typeof usePatientsListQuery
+>;
+export type PatientsListLazyQueryHookResult = ReturnType<
+  typeof usePatientsListLazyQuery
+>;
+export type PatientsListQueryResult = Apollo.QueryResult<
+  PatientsListQuery,
+  PatientsListQueryVariables
 >;
 export const RequestWithSamplesDocument = gql`
   query RequestWithSamples(

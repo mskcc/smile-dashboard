@@ -6816,6 +6816,24 @@ export type RequestsListQuery = {
   }>;
 };
 
+export type PatientsListQueryVariables = Exact<{
+  options?: InputMaybe<PatientOptions>;
+}>;
+
+export type PatientsListQuery = {
+  __typename?: "Query";
+  patients: Array<{
+    __typename?: "Patient";
+    smilePatientId: string;
+    hasSampleSamples: Array<{ __typename?: "Sample"; smileSampleId: string }>;
+    hasSampleSamplesConnection: {
+      __typename?: "PatientHasSampleSamplesConnection";
+      totalCount: number;
+    };
+  }>;
+  patientsConnection: { __typename?: "PatientsConnection"; totalCount: number };
+};
+
 export type RequestWithSamplesQueryVariables = Exact<{
   options?: InputMaybe<RequestOptions>;
   where?: InputMaybe<RequestWhere>;
@@ -7092,6 +7110,26 @@ export const RequestsListDocument = gql`
 export type RequestsListQueryResult = Apollo.QueryResult<
   RequestsListQuery,
   RequestsListQueryVariables
+>;
+export const PatientsListDocument = gql`
+  query PatientsList($options: PatientOptions) {
+    patients(options: $options) {
+      smilePatientId
+      hasSampleSamples {
+        smileSampleId
+      }
+      hasSampleSamplesConnection {
+        totalCount
+      }
+    }
+    patientsConnection {
+      totalCount
+    }
+  }
+`;
+export type PatientsListQueryResult = Apollo.QueryResult<
+  PatientsListQuery,
+  PatientsListQueryVariables
 >;
 export const RequestWithSamplesDocument = gql`
   query RequestWithSamples(
