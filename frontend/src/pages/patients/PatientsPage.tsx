@@ -33,7 +33,7 @@ function requestFilterWhereVariables(value: string): RequestWhere[] {
 export const PatientsPage: React.FunctionComponent = (props) => {
   return (
     <>
-      {/* <RecordsList
+      <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
         nodeName="patients"
         colDefs={[
@@ -43,7 +43,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
           },
         ]}
         conditionBuilder={requestFilterWhereVariables} // TODO
-      /> */}
+      />
     </>
   );
 };
