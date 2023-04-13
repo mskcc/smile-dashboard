@@ -13,8 +13,9 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
-import { RequestSamplesEditor } from "../../pages/requests/RequestSamplesEditor"; // TODO
 import { useHookGeneric } from "../../shared/types";
+import { SamplesList } from "../../pages/requests/SamplesList";
+import { SampleMetadata, SampleMetadataWhere } from "../../generated/graphql";
 
 export interface IRecordsProps {
   lazyRecordsQuery: typeof useHookGeneric;
@@ -199,10 +200,15 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
               </Modal.Header>
               <Modal.Body>
                 <div style={{ height: height * 4 }}>
-                  <RequestSamplesEditor
-                    igoRequestId={params.requestId!}
+                  <SamplesList
+                    height={height * 4 - 50}
+                    searchVariables={
+                      {
+                        igoRequestId: params.requestId,
+                      } as SampleMetadataWhere
+                    }
                     setUnsavedChanges={setUnsavedChanges}
-                    height={height}
+                    exportFileName={`request_${"CHANGE THIS"}.tsv`}
                   />
                 </div>
               </Modal.Body>

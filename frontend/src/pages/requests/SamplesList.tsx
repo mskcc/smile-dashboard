@@ -4,6 +4,7 @@ import {
   Sample,
   SampleMetadata,
   useFindSamplesByInputValueQuery,
+  SampleMetadataWhere,
 } from "../../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
@@ -29,10 +30,10 @@ import { CellValueChangedEvent } from "ag-grid-community";
 
 const POLLING_INTERVAL = 2000;
 
-interface IRequestSummaryProps {
+interface ISampleListProps {
   height: number;
   setUnsavedChanges: (val: boolean) => void;
-  sampleIds: string[];
+  searchVariables: SampleMetadataWhere;
   exportFileName?: string;
 }
 
@@ -69,31 +70,19 @@ function getSampleMetadata(samples: Sample[]) {
   });
 }
 
-export const SamplesList: FunctionComponent<IRequestSummaryProps> = ({
-  sampleIds,
+export const SamplesList: FunctionComponent<ISampleListProps> = ({
+  searchVariables,
   height,
   setUnsavedChanges,
   exportFileName,
 }) => {
   const { loading, error, data, startPolling, stopPolling, refetch } =
-    // useSamplesQuery({
-    //   variables: {
-    //     where: {
-    //       smileSampleId_IN: sampleIds,
-    //     },
-    //     hasMetadataSampleMetadataOptions2: {
-    //       sort: [{ importDate: SortDirection.Desc }],
-    //       limit: 1,
-    //     },
-    //   },
-    //   pollInterval: POLLING_INTERVAL,
-    // });
-
     useFindSamplesByInputValueQuery({
       variables: {
         where: {
           hasMetadataSampleMetadata_SOME: {
-            igoRequestId: "08944_B",
+            // igoRequestId: "08944_B",
+            ...searchVariables,
           },
         },
         options: {
@@ -102,8 +91,6 @@ export const SamplesList: FunctionComponent<IRequestSummaryProps> = ({
         },
       },
     });
-
-  // console.log(data2);
 
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -218,15 +205,15 @@ export const SamplesList: FunctionComponent<IRequestSummaryProps> = ({
 
               prom.then(() => {
                 const to = setTimeout(() => {
-                  const rf = refetch({
-                    where: {
-                      smileSampleId_IN: sampleIds,
-                      hasMetadataSampleMetadata_SOME: {
-                        OR: sampleFilterWhereVariables(value),
-                      },
-                    },
-                  });
-                  setProm(rf);
+                  // const rf = refetch({
+                  //   where: {
+                  //     smileSampleId_IN: sampleIds,
+                  //     hasMetadataSampleMetadata_SOME: {
+                  //       OR: sampleFilterWhereVariables(value),
+                  //     },
+                  //   },
+                  // });
+                  // setProm(rf);
                 }, 500);
                 setTypingTimeout(to);
               });
