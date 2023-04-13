@@ -3,6 +3,7 @@ import {
   useSamplesQuery,
   Sample,
   SampleMetadata,
+  useFindSamplesByInputValueQuery,
 } from "../../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
@@ -75,18 +76,34 @@ export const SamplesList: FunctionComponent<IRequestSummaryProps> = ({
   exportFileName,
 }) => {
   const { loading, error, data, startPolling, stopPolling, refetch } =
-    useSamplesQuery({
+    // useSamplesQuery({
+    //   variables: {
+    //     where: {
+    //       smileSampleId_IN: sampleIds,
+    //     },
+    //     hasMetadataSampleMetadataOptions2: {
+    //       sort: [{ importDate: SortDirection.Desc }],
+    //       limit: 1,
+    //     },
+    //   },
+    //   pollInterval: POLLING_INTERVAL,
+    // });
+
+    useFindSamplesByInputValueQuery({
       variables: {
         where: {
-          smileSampleId_IN: sampleIds,
+          hasMetadataSampleMetadata_SOME: {
+            igoRequestId: "08944_B",
+          },
         },
-        hasMetadataSampleMetadataOptions2: {
+        options: {
           sort: [{ importDate: SortDirection.Desc }],
           limit: 1,
         },
       },
-      pollInterval: POLLING_INTERVAL,
     });
+
+  // console.log(data2);
 
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -106,7 +123,7 @@ export const SamplesList: FunctionComponent<IRequestSummaryProps> = ({
 
   if (error) return <Row>Error loading request details / request samples</Row>;
 
-  const samples = data!.samples as Sample[];
+  const samples = data!.samplesConnection.edges.map((e) => e.node) as Sample[];
 
   const remoteCount = samples.length;
 

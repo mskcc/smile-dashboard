@@ -55,9 +55,9 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
           where: {
             OR: conditionBuilder(val),
           },
-          requestsConnectionWhere2: {
-            OR: conditionBuilder(val),
-          },
+          //   requestsConnectionWhere2: {
+          //     OR: conditionBuilder(val),
+          //   },
           options: {
             offset: params.request.startRow,
             limit: params.request.endRow,
