@@ -17,6 +17,10 @@ query RequestsList(
 query PatientsList($options: PatientOptions) {
   patients(options: $options) {
     smilePatientId
+    patientAliasesIsAlias {
+      namespace
+      value
+    }
     hasSampleSamples {
       smileSampleId
     }

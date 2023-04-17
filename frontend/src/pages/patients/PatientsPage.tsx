@@ -61,6 +61,19 @@ export const PatientsPage: React.FunctionComponent = (props) => {
               return undefined;
             },
           },
+          {
+            field: "patientAliasesIsAlias",
+            headerName: "Namespace",
+            valueGetter: function ({ data }) {
+              return data["patientAliasesIsAlias"];
+            },
+            cellClass: (params) => {
+              if (params.data.revisable === false) {
+                return "pendingCell";
+              }
+              return undefined;
+            },
+          },
         ]}
         conditionBuilder={patientFilterWhereVariables}
       />
