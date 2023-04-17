@@ -1,5 +1,5 @@
 import {
-  RequestWhere,
+  PatientWhere,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
 import React from "react";
@@ -11,25 +11,8 @@ import RecordsList from "../../components/RecordsList";
 import { CellClassParams } from "ag-grid-enterprise";
 import { Button } from "react-bootstrap";
 
-// TODO
-function requestFilterWhereVariables(value: string): RequestWhere[] {
-  return [
-    { igoProjectId_CONTAINS: value },
-    { igoRequestId_CONTAINS: value },
-    { genePanel_CONTAINS: value },
-    { dataAnalystEmail_CONTAINS: value },
-    { dataAnalystName_CONTAINS: value },
-    { investigatorEmail_CONTAINS: value },
-    { investigatorName_CONTAINS: value },
-    { labHeadEmail_CONTAINS: value },
-    { libraryType_CONTAINS: value },
-    { labHeadName_CONTAINS: value },
-    { namespace_CONTAINS: value },
-    { piEmail_CONTAINS: value },
-    { otherContactEmails_CONTAINS: value },
-    { projectManagerName_CONTAINS: value },
-    { qcAccessEmails_CONTAINS: value },
-  ];
+function patientFilterWhereVariables(value: string): PatientWhere[] {
+  return [{ smilePatientId_CONTAINS: value }];
 }
 
 export const PatientsPage: React.FunctionComponent = (props) => {
@@ -63,10 +46,23 @@ export const PatientsPage: React.FunctionComponent = (props) => {
           },
           {
             field: "smilePatientId",
-            headerName: "ID",
+            headerName: "Smile Patient ID",
+          },
+          {
+            field: "hasSampleSamplesConnection",
+            headerName: "# Samples",
+            valueGetter: function ({ data }) {
+              return data["hasSampleSamplesConnection"]?.totalCount;
+            },
+            cellClass: (params) => {
+              if (params.data.revisable === false) {
+                return "pendingCell";
+              }
+              return undefined;
+            },
           },
         ]}
-        conditionBuilder={requestFilterWhereVariables} // TODO
+        conditionBuilder={patientFilterWhereVariables}
       />
     </>
   );
