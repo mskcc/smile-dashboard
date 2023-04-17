@@ -20,6 +20,7 @@ import { SampleMetadata, SampleMetadataWhere } from "../generated/graphql";
 export interface IRecordsProps {
   lazyRecordsQuery: typeof useHookGeneric;
   nodeName: string;
+  idFieldName: string;
   colDefs: ColDef[];
   conditionBuilder: (val: string) => Record<string, any>[];
 }
@@ -27,6 +28,7 @@ export interface IRecordsProps {
 const RecordsList: FunctionComponent<IRecordsProps> = ({
   lazyRecordsQuery,
   nodeName,
+  idFieldName,
   colDefs,
   conditionBuilder,
 }) => {
@@ -143,8 +145,10 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
               <li className="breadcrumb-item active">
                 <NavLink to={pageLink}>{pageTitle}</NavLink>
               </li>
-              {params.requestId && ( // TODO
-                <li className="breadcrumb-item active">{params.requestId}</li>
+              {params[idFieldName] && (
+                <li className="breadcrumb-item active">
+                  {params[idFieldName]}
+                </li>
               )}
             </ol>
           </nav>
@@ -190,13 +194,12 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
         </Modal>
       )}
 
-      {/* TODO */}
-      {params.requestId && (
+      {params[idFieldName] && (
         <AutoSizer>
           {({ height, width }) => (
             <Modal show={true} dialogClassName="modal-90w" onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Viewing {params.requestId}</Modal.Title>
+                <Modal.Title>Viewing {params[idFieldName]}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <div style={{ height: height * 4 }}>
@@ -204,11 +207,11 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
                     height={height * 4 - 50}
                     searchVariables={
                       {
-                        igoRequestId: params.requestId,
+                        [idFieldName]: params[idFieldName],
                       } as SampleMetadataWhere
                     }
                     setUnsavedChanges={setUnsavedChanges}
-                    exportFileName={`request_${"CHANGE THIS"}.tsv`}
+                    exportFileName={`${idFieldName}_${params[idFieldName]}.tsv`}
                   />
                 </div>
               </Modal.Body>

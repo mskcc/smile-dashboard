@@ -34,6 +34,7 @@ export const RequestsPage: React.FunctionComponent = (props) => {
     <RecordsList
       lazyRecordsQuery={useRequestsListLazyQuery}
       nodeName="requests"
+      idFieldName="igoRequestId"
       colDefs={RequestsListColumns}
       conditionBuilder={requestFilterWhereVariables}
     />

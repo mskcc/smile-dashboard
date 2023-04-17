@@ -38,6 +38,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
       <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
         nodeName="patients"
+        idFieldName="smilePatientId" // as set by the route path in index.tsx
         colDefs={[
           // TODO: Move this to a helper file
           {

@@ -44,13 +44,13 @@ const root = ReactDOM.render(
           <section className="section dashboard">
             <Routes>
               <Route path="/" element={<RequestsPage />}>
-                <Route path=":requestId" />
+                <Route path=":igoRequestId" />
               </Route>
               <Route path="/requests/" element={<RequestsPage />}>
-                <Route path=":requestId" />
+                <Route path=":igoRequestId" />
               </Route>
               <Route path="/patients/" element={<PatientsPage />}>
-                <Route path=":patientId" />
+                <Route path=":smilePatientId" />
               </Route>
             </Routes>
           </section>
