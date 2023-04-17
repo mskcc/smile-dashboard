@@ -7,7 +7,7 @@ import React from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import RecordsList from "../../shared/components/RecordsList";
+import RecordsList from "../../components/RecordsList";
 
 // TODO
 function requestFilterWhereVariables(value: string): RequestWhere[] {

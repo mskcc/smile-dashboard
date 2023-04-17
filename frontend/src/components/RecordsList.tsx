@@ -3,19 +3,19 @@ import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import React, { FunctionComponent, useMemo } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { DownloadModal } from "../../components/DownloadModal";
+import { DownloadModal } from "./DownloadModal";
 import Spinner from "react-spinkit";
-import { CSVFormulate } from "../../lib/CSVExport";
+import { CSVFormulate } from "../lib/CSVExport";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
-import styles from "../../pages/requests/requests.module.scss"; // TODO
+import styles from "./records.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
-import { useHookGeneric } from "../../shared/types";
-import { SamplesList } from "../../pages/requests/SamplesList";
-import { SampleMetadata, SampleMetadataWhere } from "../../generated/graphql";
+import { useHookGeneric } from "../shared/types";
+import { SamplesList } from "./SamplesList";
+import { SampleMetadata, SampleMetadataWhere } from "../generated/graphql";
 
 export interface IRecordsProps {
   lazyRecordsQuery: typeof useHookGeneric;

@@ -5,21 +5,21 @@ import {
   SampleMetadata,
   useFindSamplesByInputValueQuery,
   SampleMetadataWhere,
-} from "../../generated/graphql";
+} from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import _ from "lodash";
 import classNames from "classnames";
 import { FunctionComponent, useRef } from "react";
-import { DownloadModal } from "../../components/DownloadModal";
-import { UpdateModal } from "../../components/UpdateModal";
-import { CSVFormulate } from "../../lib/CSVExport";
+import { DownloadModal } from "./DownloadModal";
+import { UpdateModal } from "./UpdateModal";
+import { CSVFormulate } from "../lib/CSVExport";
 import {
   SampleDetailsColumns,
   defaultColDef,
   SampleChange,
   SampleMetadataExtended,
-} from "./helpers";
+} from "../pages/requests/helpers";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
@@ -90,6 +90,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           limit: 1,
         },
       },
+      pollInterval: POLLING_INTERVAL,
     });
 
   const [val, setVal] = useState("");
