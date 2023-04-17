@@ -8,6 +8,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
+import { CellClassParams } from "ag-grid-enterprise";
+import { Button } from "react-bootstrap";
 
 // TODO
 function requestFilterWhereVariables(value: string): RequestWhere[] {
@@ -37,6 +39,27 @@ export const PatientsPage: React.FunctionComponent = (props) => {
         lazyRecordsQuery={usePatientsListLazyQuery}
         nodeName="patients"
         colDefs={[
+          // TODO: Move this to a helper file
+          {
+            headerName: "View",
+            cellRenderer: (params: CellClassParams<any>) => {
+              return (
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  onClick={() => {
+                    if (params.data.smilePatientId !== undefined) {
+                      params.context.navigateFunction(
+                        `/${params.data.smilePatientId}`
+                      );
+                    }
+                  }}
+                >
+                  View
+                </Button>
+              );
+            },
+          },
           {
             field: "smilePatientId",
             headerName: "ID",
