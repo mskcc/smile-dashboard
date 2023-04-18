@@ -50,6 +50,25 @@ query RequestWithSamples(
   }
 }
 
+query PatientsList($where: PatientAliasWhere, $options: PatientAliasOptions) {
+  patientAliases(where: $where, options: $options) {
+    namespace
+    value
+    isAliasPatients {
+      smilePatientId
+      hasSampleSamples {
+        smileSampleId
+      }
+      hasSampleSamplesConnection {
+        totalCount
+      }
+    }
+    isAliasPatientsConnection {
+      totalCount
+    }
+  }
+}
+
 query FindSamplesByInputValue(
   $where: SampleWhere
   $options: SampleMetadataOptions

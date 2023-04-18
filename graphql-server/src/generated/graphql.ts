@@ -6901,6 +6901,33 @@ export type RequestWithSamplesQuery = {
   }>;
 };
 
+export type PatientsListQueryVariables = Exact<{
+  where?: InputMaybe<PatientAliasWhere>;
+  options?: InputMaybe<PatientAliasOptions>;
+}>;
+
+export type PatientsListQuery = {
+  __typename?: "Query";
+  patientAliases: Array<{
+    __typename?: "PatientAlias";
+    namespace: string;
+    value?: string | null;
+    isAliasPatients: Array<{
+      __typename?: "Patient";
+      smilePatientId: string;
+      hasSampleSamples: Array<{ __typename?: "Sample"; smileSampleId: string }>;
+      hasSampleSamplesConnection: {
+        __typename?: "PatientHasSampleSamplesConnection";
+        totalCount: number;
+      };
+    }>;
+    isAliasPatientsConnection: {
+      __typename?: "PatientAliasIsAliasPatientsConnection";
+      totalCount: number;
+    };
+  }>;
+};
+
 export type FindSamplesByInputValueQueryVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   options?: InputMaybe<SampleMetadataOptions>;
@@ -7288,6 +7315,30 @@ export const RequestWithSamplesDocument = gql`
 export type RequestWithSamplesQueryResult = Apollo.QueryResult<
   RequestWithSamplesQuery,
   RequestWithSamplesQueryVariables
+>;
+export const PatientsListDocument = gql`
+  query PatientsList($where: PatientAliasWhere, $options: PatientAliasOptions) {
+    patientAliases(where: $where, options: $options) {
+      namespace
+      value
+      isAliasPatients {
+        smilePatientId
+        hasSampleSamples {
+          smileSampleId
+        }
+        hasSampleSamplesConnection {
+          totalCount
+        }
+      }
+      isAliasPatientsConnection {
+        totalCount
+      }
+    }
+  }
+`;
+export type PatientsListQueryResult = Apollo.QueryResult<
+  PatientsListQuery,
+  PatientsListQueryVariables
 >;
 export const FindSamplesByInputValueDocument = gql`
   query FindSamplesByInputValue(
