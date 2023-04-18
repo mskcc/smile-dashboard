@@ -50,7 +50,7 @@ const root = ReactDOM.render(
                 <Route path=":igoRequestId" />
               </Route>
               <Route path="/patients/" element={<PatientsPage />}>
-                <Route path=":smilePatientId" />
+                <Route path=":cmoPatientId" />
               </Route>
             </Routes>
           </section>
