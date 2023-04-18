@@ -68,6 +68,8 @@ export const RequestsPage: React.FunctionComponent = (props) => {
       <RecordsList
         lazyRecordsQuery={useRequestsListLazyQuery}
         nodeName={nodeName}
+        totalCountNodeName="requestsConnection"
+        pageRoute="requests"
         idFieldName="igoRequestId"
         colDefs={RequestsListColumns}
         conditionBuilder={requestFilterWhereVariables}

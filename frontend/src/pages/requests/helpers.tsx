@@ -6,7 +6,7 @@ import {
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
-import { SampleMetadata } from "../../generated/graphql";
+import { Patient, SampleMetadata } from "../../generated/graphql";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -36,7 +36,9 @@ export const RequestsListColumns: ColDef[] = [
           size="sm"
           onClick={() => {
             if (params.data.igoRequestId !== undefined) {
-              params.context.navigateFunction(`/${params.data.igoRequestId}`);
+              params.context.navigateFunction(
+                `/requests/${params.data.igoRequestId}`
+              );
             }
           }}
         >
@@ -137,6 +139,49 @@ export const RequestsListColumns: ColDef[] = [
     field: "otherContactEmails",
     headerName: "Other Contact Emails",
     sortable: true,
+  },
+];
+
+export const PatientsListColumns: ColDef[] = [
+  {
+    headerName: "View",
+    cellRenderer: (params: CellClassParams<any>) => {
+      return (
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => {
+            if (params.data.value !== undefined) {
+              params.context.navigateFunction(`/patients/${params.data.value}`);
+            }
+          }}
+        >
+          View
+        </Button>
+      );
+    },
+  },
+  {
+    field: "namespace",
+    headerName: "Patient ID namespace",
+  },
+  {
+    field: "value",
+    headerName: "Patient ID value",
+  },
+  {
+    field: "isAliasPatients",
+    headerName: "Smile Patient ID",
+    valueGetter: function ({ data }) {
+      return data["isAliasPatients"][0].smilePatientId;
+    },
+  },
+  {
+    field: "hasSampleSamplesConnection",
+    headerName: "# Samples",
+    valueGetter: function ({ data }) {
+      return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
+    },
   },
 ];
 

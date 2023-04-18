@@ -14,21 +14,21 @@ query RequestsList(
   }
 }
 
-query PatientsList($options: PatientOptions) {
-  patients(options: $options) {
-    smilePatientId
-    patientAliasesIsAlias {
-      namespace
-      value
-    }
-    hasSampleSamples {
-      smileSampleId
-    }
-    hasSampleSamplesConnection {
-      totalCount
+query PatientsList($where: PatientAliasWhere, $options: PatientAliasOptions) {
+  patientAliases(where: $where, options: $options) {
+    namespace
+    value
+    isAliasPatients {
+      smilePatientId
+      hasSampleSamples {
+        smileSampleId
+      }
+      hasSampleSamplesConnection {
+        totalCount
+      }
     }
   }
-  patientsConnection {
+  patientAliasesConnection {
     totalCount
   }
 }

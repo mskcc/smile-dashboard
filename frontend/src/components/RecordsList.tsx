@@ -16,10 +16,13 @@ import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { useHookGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
 import { SampleMetadata, SampleMetadataWhere } from "../generated/graphql";
+import { debug } from "console";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookGeneric;
   nodeName: string;
+  totalCountNodeName: string;
+  pageRoute: string;
   idFieldName: string;
   colDefs: ColDef[];
   samplesEditorTitle: string | undefined;
@@ -31,6 +34,8 @@ export interface IRecordsListProps {
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
   lazyRecordsQuery,
   nodeName,
+  totalCountNodeName,
+  pageRoute,
   idFieldName,
   colDefs,
   conditionBuilder,
@@ -88,7 +93,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         return thisFetch.then((d: any) => {
           params.success({
             rowData: d.data[nodeName],
-            rowCount: d.data[`${nodeName}Connection`].totalCount,
+            rowCount: d.data?.[totalCountNodeName]?.totalCount,
           });
         });
       },
@@ -104,10 +109,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
 
   if (error) return <p>Error :(</p>;
 
-  const remoteCount = data?.[`${nodeName}Connection`].totalCount;
-
+  console.log(data);
+  const remoteCount = data?.[totalCountNodeName]?.totalCount;
   const pageTitle = nodeName.charAt(0).toUpperCase() + nodeName.slice(1);
-  const pageLink = `/${nodeName}`;
+  const pageLink = `/${pageRoute}`;
 
   const handleClose = () => {
     if (unsavedChanges) {
