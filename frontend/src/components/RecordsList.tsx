@@ -17,20 +17,26 @@ import { useHookGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
 import { SampleMetadata, SampleMetadataWhere } from "../generated/graphql";
 
-export interface IRecordsProps {
+export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookGeneric;
   nodeName: string;
   idFieldName: string;
   colDefs: ColDef[];
+  samplesEditorTitle: string | undefined;
   conditionBuilder: (val: string) => Record<string, any>[];
+  sampleQueryParamValue: string | undefined;
+  sampleQueryParamFieldName: string;
 }
 
-const RecordsList: FunctionComponent<IRecordsProps> = ({
+const RecordsList: FunctionComponent<IRecordsListProps> = ({
   lazyRecordsQuery,
   nodeName,
   idFieldName,
   colDefs,
   conditionBuilder,
+  samplesEditorTitle,
+  sampleQueryParamValue,
+  sampleQueryParamFieldName,
 }) => {
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -40,7 +46,7 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const navigate = useNavigate();
-  const params = useParams();
+  const urlParams = useParams();
 
   // not we aren't using initial fetch
   const [initialFetch, { loading, error, data, fetchMore, refetch }] =
@@ -135,27 +141,6 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
         />
       )}
 
-      <Row className="pagetitle">
-        <Col>
-          <nav>
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                <a href="/">Home</a>
-              </li>
-              <li className="breadcrumb-item active">
-                <NavLink to={pageLink}>{pageTitle}</NavLink>
-              </li>
-              {params[idFieldName] && (
-                <li className="breadcrumb-item active">
-                  {params[idFieldName]}
-                </li>
-              )}
-            </ol>
-          </nav>
-          <h1>{pageTitle}</h1>
-        </Col>
-      </Row>
-
       {showClosingWarning && (
         <Modal
           show={true}
@@ -194,24 +179,24 @@ const RecordsList: FunctionComponent<IRecordsProps> = ({
         </Modal>
       )}
 
-      {params[idFieldName] && (
+      {urlParams[idFieldName] && (
         <AutoSizer>
           {({ height, width }) => (
             <Modal show={true} dialogClassName="modal-90w" onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Viewing {params[idFieldName]}</Modal.Title>
+                <Modal.Title>{samplesEditorTitle || ""}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div style={{ height: height * 4 }}>
+                <div style={{ height: 600 }}>
                   <SamplesList
                     height={height * 4 - 50}
                     searchVariables={
                       {
-                        [idFieldName]: params[idFieldName],
+                        [idFieldName]: urlParams[idFieldName],
                       } as SampleMetadataWhere
                     }
                     setUnsavedChanges={setUnsavedChanges}
-                    exportFileName={`${idFieldName}_${params[idFieldName]}.tsv`}
+                    exportFileName={`${idFieldName}_${urlParams[idFieldName]}.tsv`}
                   />
                 </div>
               </Modal.Body>

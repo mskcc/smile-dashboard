@@ -10,12 +10,21 @@ import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { CellClassParams } from "ag-grid-enterprise";
 import { Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 
 function patientFilterWhereVariables(value: string): PatientWhere[] {
   return [{ smilePatientId_CONTAINS: value }];
 }
 
 export const PatientsPage: React.FunctionComponent = (props) => {
+  const nodeName = "patients";
+
+  const params = useParams();
+
+  const idFieldName = "cmoPatientId";
+  const pageTitle = nodeName.charAt(0).toUpperCase() + nodeName.slice(1);
+  const pageLink = `/${nodeName}`;
+
   return (
     <>
       <RecordsList
@@ -76,6 +85,9 @@ export const PatientsPage: React.FunctionComponent = (props) => {
           },
         ]}
         conditionBuilder={patientFilterWhereVariables}
+        samplesEditorTitle={"hello world"}
+        sampleQueryParamValue={params[idFieldName]}
+        sampleQueryParamFieldName={idFieldName}
       />
     </>
   );

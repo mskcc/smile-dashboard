@@ -8,6 +8,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
+import { NavLink, useParams } from "react-router-dom";
+import { Col, Container, Row } from "react-bootstrap";
 
 function requestFilterWhereVariables(value: string): RequestWhere[] {
   return [
@@ -30,14 +32,50 @@ function requestFilterWhereVariables(value: string): RequestWhere[] {
 }
 
 export const RequestsPage: React.FunctionComponent = (props) => {
+  const nodeName = "requests";
+
+  const params = useParams();
+
+  const idFieldName = "igoRequestId";
+  const pageTitle = nodeName.charAt(0).toUpperCase() + nodeName.slice(1);
+  const pageLink = `/${nodeName}`;
+
   return (
-    <RecordsList
-      lazyRecordsQuery={useRequestsListLazyQuery}
-      nodeName="requests"
-      idFieldName="igoRequestId"
-      colDefs={RequestsListColumns}
-      conditionBuilder={requestFilterWhereVariables}
-    />
+    <>
+      <Container>
+        <Row className="pagetitle">
+          <Col>
+            <nav>
+              <ol className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a href="/">Home</a>
+                </li>
+                <li className="breadcrumb-item active">
+                  <NavLink to={pageLink}>{pageTitle}</NavLink>
+                </li>
+                {params[idFieldName] && (
+                  <li className="breadcrumb-item active">
+                    {params[idFieldName]}
+                  </li>
+                )}
+              </ol>
+            </nav>
+            <h1>{pageTitle}</h1>
+          </Col>
+        </Row>
+      </Container>
+
+      <RecordsList
+        lazyRecordsQuery={useRequestsListLazyQuery}
+        nodeName={nodeName}
+        idFieldName="igoRequestId"
+        colDefs={RequestsListColumns}
+        conditionBuilder={requestFilterWhereVariables}
+        samplesEditorTitle={`Viewing ${params[idFieldName]}`}
+        sampleQueryParamValue={params[idFieldName]}
+        sampleQueryParamFieldName={idFieldName}
+      />
+    </>
   );
 };
 
