@@ -282,7 +282,6 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               }}
               columnDefs={SampleDetailsColumns}
               rowData={getSampleMetadata(samples)}
-              //onCellValueChanged={onCellValueChanged}
               onCellEditRequest={onCellValueChanged}
               readOnlyEdit={true}
               defaultColDef={defaultColDef}

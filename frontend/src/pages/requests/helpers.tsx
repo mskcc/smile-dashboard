@@ -175,7 +175,7 @@ export const PatientsListColumns: ColDef[] = [
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].smilePatientId;
     },
-    width: 350,
+    width: 400,
   },
   {
     field: "hasSampleSamplesConnection",
@@ -417,6 +417,7 @@ SampleDetailsColumns.forEach((def) => {
 export const defaultColDef: ColDef = {
   sortable: true,
   editable: true,
+  resizable: true,
 };
 
 const protectedFields: string[] = [
