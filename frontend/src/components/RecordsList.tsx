@@ -194,7 +194,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               <Modal.Body>
                 <div style={{ height: 600 }}>
                   <SamplesList
-                    height={height * 4 - 50}
+                    height={height * 11}
                     searchVariables={
                       {
                         [idFieldName]: urlParams[idFieldName],

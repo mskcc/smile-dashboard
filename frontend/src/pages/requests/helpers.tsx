@@ -175,6 +175,7 @@ export const PatientsListColumns: ColDef[] = [
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].smilePatientId;
     },
+    width: 350,
   },
   {
     field: "hasSampleSamplesConnection",
