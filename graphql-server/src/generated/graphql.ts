@@ -6835,6 +6835,11 @@ export type PatientsListQuery = {
         __typename?: "PatientHasSampleSamplesConnection";
         totalCount: number;
       };
+      patientAliasesIsAlias: Array<{
+        __typename?: "PatientAlias";
+        namespace: string;
+        value?: string | null;
+      }>;
     }>;
   }>;
   patientAliasesConnection: {
@@ -7285,6 +7290,10 @@ export const PatientsListDocument = gql`
         }
         hasSampleSamplesConnection {
           totalCount
+        }
+        patientAliasesIsAlias {
+          namespace
+          value
         }
       }
     }

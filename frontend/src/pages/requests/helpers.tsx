@@ -162,12 +162,29 @@ export const PatientsListColumns: ColDef[] = [
     },
   },
   {
-    field: "namespace",
-    headerName: "Patient ID namespace",
+    field: "cmoPatientId",
+    headerName: "CMO patient ID",
+    valueGetter: function ({ data }) {
+      for (let i of data["isAliasPatients"][0]["patientAliasesIsAlias"]) {
+        if (i.namespace == "cmoId") {
+          return i.value;
+        }
+      }
+      // if (data.namespace == "cmoId") {
+      //   return data.value;
+      // }
+    },
   },
   {
-    field: "value",
-    headerName: "Patient ID value",
+    field: "dmpPatientId",
+    headerName: "DMP patient ID",
+    valueGetter: function ({ data }) {
+      for (let i of data["isAliasPatients"][0]?.patientAliasesIsAlias) {
+        if (i.namespace == "dmpId") {
+          return i.value;
+        }
+      }
+    },
   },
   {
     field: "isAliasPatients",
@@ -366,6 +383,21 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     headerName: "Sex",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
   },
+  {
+    field: "validationStatus",
+    headerName: "Validation Status",
+    valueGetter: function ({ data }) {
+      return data?.["hasStatusStatuses"][0].validationStatus;
+    },
+    editable: false,
+  },
+  {
+    field: "validationReport",
+    headerName: "Validation Report",
+    valueGetter: function ({ data }) {
+      return data?.["hasStatusStatuses"][0].validationReport;
+    },
+  },
 ];
 
 SampleDetailsColumns.forEach((def) => {
@@ -429,4 +461,6 @@ const protectedFields: string[] = [
   "libraries",
   "genePanel",
   "species",
+  "validationStatus",
+  "validationReport",
 ];

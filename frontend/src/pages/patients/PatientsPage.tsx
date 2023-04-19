@@ -16,14 +16,14 @@ function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
 }
 
 export const PatientsPage: React.FunctionComponent = (props) => {
-  const nodeName = "patients";
+  const pageRoute = "patients";
 
   const params = useParams();
   console.log(params);
 
   const idFieldName = "cmoPatientId";
-  const pageTitle = nodeName.charAt(0).toUpperCase() + nodeName.slice(1);
-  const pageLink = `/${nodeName}`;
+  const pageTitle = pageRoute.charAt(0).toUpperCase() + pageRoute.slice(1);
+  const pageLink = `/${pageRoute}`;
 
   return (
     <>

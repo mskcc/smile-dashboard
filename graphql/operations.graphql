@@ -26,6 +26,10 @@ query PatientsList($where: PatientAliasWhere, $options: PatientAliasOptions) {
       hasSampleSamplesConnection {
         totalCount
       }
+      patientAliasesIsAlias {
+        namespace
+        value
+      }
     }
   }
   patientAliasesConnection {

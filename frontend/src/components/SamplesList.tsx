@@ -206,15 +206,14 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
               prom.then(() => {
                 const to = setTimeout(() => {
-                  // const rf = refetch({
-                  //   where: {
-                  //     smileSampleId_IN: sampleIds,
-                  //     hasMetadataSampleMetadata_SOME: {
-                  //       OR: sampleFilterWhereVariables(value),
-                  //     },
-                  //   },
-                  // });
-                  // setProm(rf);
+                  const rf = refetch({
+                    where: {
+                      hasMetadataSampleMetadata_SOME: {
+                        OR: sampleFilterWhereVariables(value),
+                      },
+                    },
+                  });
+                  setProm(rf);
                 }, 500);
                 setTypingTimeout(to);
               });
