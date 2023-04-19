@@ -8,59 +8,34 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
-import { NavLink, useParams } from "react-router-dom";
-import { Col, Container, Row } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import PageHeader from "../../shared/components/PageHeader";
 
 function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
   return [{ namespace_CONTAINS: value }, { value_CONTAINS: value }];
 }
 
 export const PatientsPage: React.FunctionComponent = (props) => {
-  const pageRoute = "patients";
-
   const params = useParams();
-  console.log(params);
 
-  const idFieldName = "cmoPatientId";
-  const pageTitle = pageRoute.charAt(0).toUpperCase() + pageRoute.slice(1);
-  const pageLink = `/${pageRoute}`;
+  const nodeName = "patientAliases";
+  const pageRoute = "/patients";
+  const sampleQueryParamFieldName = "cmoPatientId";
+  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   return (
     <>
-      <Container fluid>
-        <Row className="pagetitle">
-          <Col>
-            <nav>
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="/">Home</a>
-                </li>
-                <li className="breadcrumb-item active">
-                  <NavLink to={pageLink}>{pageTitle}</NavLink>
-                </li>
-                {params[idFieldName] && (
-                  <li className="breadcrumb-item active">
-                    {params[idFieldName]}
-                  </li>
-                )}
-              </ol>
-            </nav>
-            <h1>{pageTitle}</h1>
-          </Col>
-        </Row>
-      </Container>
+      <PageHeader pageTitle={"patients"} pageRoute={pageRoute} />
 
       <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
-        nodeName="patientAliases"
+        nodeName={nodeName}
         totalCountNodeName="patientAliasesConnection"
-        pageRoute="patients"
-        idFieldName="cmoPatientId" // as set by the route path in index.tsx
+        pageRoute={pageRoute}
         colDefs={PatientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
-        samplesEditorTitle={`Viewing ${params[idFieldName]}`}
-        sampleQueryParamValue={params[idFieldName]}
-        sampleQueryParamFieldName={idFieldName}
+        sampleQueryParamFieldName={sampleQueryParamFieldName}
+        sampleQueryParamValue={sampleQueryParamValue}
       />
     </>
   );

@@ -163,24 +163,21 @@ export const PatientsListColumns: ColDef[] = [
   },
   {
     field: "cmoPatientId",
-    headerName: "CMO patient ID",
+    headerName: "CMO Patient ID",
     valueGetter: function ({ data }) {
       for (let i of data["isAliasPatients"][0]["patientAliasesIsAlias"]) {
-        if (i.namespace == "cmoId") {
+        if (i.namespace === "cmoId") {
           return i.value;
         }
       }
-      // if (data.namespace == "cmoId") {
-      //   return data.value;
-      // }
     },
   },
   {
     field: "dmpPatientId",
-    headerName: "DMP patient ID",
+    headerName: "DMP Patient ID",
     valueGetter: function ({ data }) {
       for (let i of data["isAliasPatients"][0]?.patientAliasesIsAlias) {
-        if (i.namespace == "dmpId") {
+        if (i.namespace === "dmpId") {
           return i.value;
         }
       }

@@ -8,8 +8,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
-import { NavLink, useParams } from "react-router-dom";
-import { Col, Container, Row } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import PageHeader from "../../shared/components/PageHeader";
 
 function requestFilterWhereVariables(value: string): RequestWhere[] {
   return [
@@ -32,50 +32,26 @@ function requestFilterWhereVariables(value: string): RequestWhere[] {
 }
 
 export const RequestsPage: React.FunctionComponent = (props) => {
-  const nodeName = "requests";
-
   const params = useParams();
 
-  const idFieldName = "igoRequestId";
-  const pageTitle = nodeName.charAt(0).toUpperCase() + nodeName.slice(1);
-  const pageLink = `/${nodeName}`;
+  const nodeName = "requests";
+  const pageRoute = "/requests";
+  const sampleQueryParamFieldName = "igoRequestId";
+  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   return (
     <>
-      <Container fluid>
-        <Row className="pagetitle">
-          <Col>
-            <nav>
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="/">Home</a>
-                </li>
-                <li className="breadcrumb-item active">
-                  <NavLink to={pageLink}>{pageTitle}</NavLink>
-                </li>
-                {params[idFieldName] && (
-                  <li className="breadcrumb-item active">
-                    {params[idFieldName]}
-                  </li>
-                )}
-              </ol>
-            </nav>
-            <h1>{pageTitle}</h1>
-          </Col>
-        </Row>
-      </Container>
+      <PageHeader pageTitle={nodeName} pageRoute={pageRoute} />
 
       <RecordsList
         lazyRecordsQuery={useRequestsListLazyQuery}
         nodeName={nodeName}
         totalCountNodeName="requestsConnection"
-        pageRoute="requests"
-        idFieldName="igoRequestId"
+        pageRoute={pageRoute}
         colDefs={RequestsListColumns}
         conditionBuilder={requestFilterWhereVariables}
-        samplesEditorTitle={`Viewing ${params[idFieldName]}`}
-        sampleQueryParamValue={params[idFieldName]}
-        sampleQueryParamFieldName={idFieldName}
+        sampleQueryParamFieldName={sampleQueryParamFieldName}
+        sampleQueryParamValue={sampleQueryParamValue}
       />
     </>
   );

@@ -1,7 +1,7 @@
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
 import React, { FunctionComponent, useMemo } from "react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { DownloadModal } from "./DownloadModal";
 import Spinner from "react-spinkit";
@@ -15,17 +15,14 @@ import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { useHookGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
-import { SampleMetadata, SampleMetadataWhere } from "../generated/graphql";
-import { debug } from "console";
+import { SampleMetadataWhere } from "../generated/graphql";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookGeneric;
   nodeName: string;
   totalCountNodeName: string;
   pageRoute: string;
-  idFieldName: string;
   colDefs: ColDef[];
-  samplesEditorTitle: string | undefined;
   conditionBuilder: (val: string) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
@@ -36,10 +33,8 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   nodeName,
   totalCountNodeName,
   pageRoute,
-  idFieldName,
   colDefs,
   conditionBuilder,
-  samplesEditorTitle,
   sampleQueryParamValue,
   sampleQueryParamFieldName,
 }) => {
@@ -51,7 +46,6 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const navigate = useNavigate();
-  const urlParams = useParams();
 
   // not we aren't using initial fetch
   const [initialFetch, { loading, error, data, fetchMore, refetch }] =
@@ -109,16 +103,13 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
 
   if (error) return <p>Error :(</p>;
 
-  console.log(data);
   const remoteCount = data?.[totalCountNodeName]?.totalCount;
-  const pageTitle = nodeName.charAt(0).toUpperCase() + nodeName.slice(1);
-  const pageLink = `/${pageRoute}`;
 
   const handleClose = () => {
     if (unsavedChanges) {
       setShowClosingWarning(true);
     } else {
-      navigate(pageLink);
+      navigate(pageRoute);
     }
   };
 
@@ -175,7 +166,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               onClick={() => {
                 setShowClosingWarning(false);
                 setUnsavedChanges(false);
-                navigate("/requests");
+                navigate(pageRoute);
               }}
             >
               Continue Exiting
@@ -184,12 +175,12 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         </Modal>
       )}
 
-      {urlParams[idFieldName] && (
+      {sampleQueryParamValue && (
         <AutoSizer>
           {({ height, width }) => (
             <Modal show={true} dialogClassName="modal-90w" onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>{samplesEditorTitle || ""}</Modal.Title>
+                <Modal.Title>{`Viewing ${sampleQueryParamValue}`}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <div style={{ height: 600 }}>
@@ -197,11 +188,11 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
                     height={height * 11}
                     searchVariables={
                       {
-                        [idFieldName]: urlParams[idFieldName],
+                        [sampleQueryParamFieldName]: sampleQueryParamValue,
                       } as SampleMetadataWhere
                     }
                     setUnsavedChanges={setUnsavedChanges}
-                    exportFileName={`${idFieldName}_${urlParams[idFieldName]}.tsv`}
+                    exportFileName={`${sampleQueryParamFieldName}_${sampleQueryParamValue}.tsv`}
                   />
                 </div>
               </Modal.Body>
@@ -222,7 +213,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             className={"d-inline-block"}
             style={{ width: "300px" }}
             type="search"
-            placeholder={"Search " + pageTitle}
+            placeholder={"Search " + nodeName}
             aria-label="Search"
             defaultValue={val}
             onInput={(event) => {
