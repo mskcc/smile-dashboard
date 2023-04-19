@@ -42,7 +42,7 @@ export const RequestsPage: React.FunctionComponent = (props) => {
 
   return (
     <>
-      <Container>
+      <Container fluid>
         <Row className="pagetitle">
           <Col>
             <nav>
