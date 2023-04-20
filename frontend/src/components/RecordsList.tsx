@@ -63,9 +63,9 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           where: {
             OR: conditionBuilder(val),
           },
-          //   requestsConnectionWhere2: {
-          //     OR: conditionBuilder(val),
-          //   },
+          [`${nodeName}ConnectionWhere2`]: {
+            OR: conditionBuilder(val),
+          },
           options: {
             offset: params.request.startRow,
             limit: params.request.endRow,
