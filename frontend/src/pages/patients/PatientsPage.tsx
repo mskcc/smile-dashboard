@@ -18,10 +18,8 @@ function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
 export const PatientsPage: React.FunctionComponent = (props) => {
   const params = useParams();
 
-  const nodeName = "patientAliases";
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
-  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   return (
     <>
@@ -29,13 +27,14 @@ export const PatientsPage: React.FunctionComponent = (props) => {
 
       <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
-        nodeName={nodeName}
+        nodeName="patientAliases"
         totalCountNodeName="patientAliasesConnection"
         pageRoute={pageRoute}
+        searchTerm="patients"
         colDefs={PatientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
-        sampleQueryParamValue={sampleQueryParamValue}
+        sampleQueryParamValue={params[sampleQueryParamFieldName]}
       />
     </>
   );

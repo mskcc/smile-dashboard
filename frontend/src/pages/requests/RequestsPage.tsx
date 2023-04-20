@@ -34,24 +34,23 @@ function requestFilterWhereVariables(value: string): RequestWhere[] {
 export const RequestsPage: React.FunctionComponent = (props) => {
   const params = useParams();
 
-  const nodeName = "requests";
   const pageRoute = "/requests";
   const sampleQueryParamFieldName = "igoRequestId";
-  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   return (
     <>
-      <PageHeader pageTitle={nodeName} pageRoute={pageRoute} />
+      <PageHeader pageTitle={"requests"} pageRoute={pageRoute} />
 
       <RecordsList
         lazyRecordsQuery={useRequestsListLazyQuery}
-        nodeName={nodeName}
+        nodeName="requests"
         totalCountNodeName="requestsConnection"
         pageRoute={pageRoute}
+        searchTerm="requests"
         colDefs={RequestsListColumns}
         conditionBuilder={requestFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
-        sampleQueryParamValue={sampleQueryParamValue}
+        sampleQueryParamValue={params[sampleQueryParamFieldName]}
       />
     </>
   );

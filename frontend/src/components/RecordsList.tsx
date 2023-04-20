@@ -22,6 +22,7 @@ export interface IRecordsListProps {
   nodeName: string;
   totalCountNodeName: string;
   pageRoute: string;
+  searchTerm: string;
   colDefs: ColDef[];
   conditionBuilder: (val: string) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
@@ -33,6 +34,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   nodeName,
   totalCountNodeName,
   pageRoute,
+  searchTerm,
   colDefs,
   conditionBuilder,
   sampleQueryParamValue,
@@ -213,7 +215,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             className={"d-inline-block"}
             style={{ width: "300px" }}
             type="search"
-            placeholder={"Search " + nodeName}
+            placeholder={"Search " + searchTerm}
             aria-label="Search"
             defaultValue={val}
             onInput={(event) => {
@@ -232,7 +234,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         </Col>
 
         <Col className={"text-start"}>
-          {remoteCount} matching {nodeName}
+          {remoteCount} matching {searchTerm}
         </Col>
 
         <Col className={"text-end"}>
