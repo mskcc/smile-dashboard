@@ -209,7 +209,7 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   },
   {
     field: "revisable",
-    headerName: "Status",
+    headerName: "Revisable",
     cellRenderer: function (
       params: EditableCallbackParams<SampleMetadataExtended>
     ) {
@@ -227,6 +227,24 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
           </div>
           &nbsp;Validating
         </div>
+      );
+    },
+    editable: false,
+  },
+  {
+    field: "validationStatus",
+    headerName: "Status",
+    cellRenderer: function (
+      params: EditableCallbackParams<SampleMetadataExtended>
+    ) {
+      return !params.data?.["hasStatusStatuses"][0].validationStatus ? (
+        <div>
+          <WarningIcon />
+        </div>
+      ) : (
+        <span>
+          <strong>&#10003;</strong>
+        </span>
       );
     },
     editable: false,
@@ -380,22 +398,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     field: "sex",
     headerName: "Sex",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
-  },
-  {
-    field: "validationStatus",
-    headerName: "Validation Status",
-    cellRenderer: function (
-      params: EditableCallbackParams<SampleMetadataExtended>
-    ) {
-      return !params.data?.["hasStatusStatuses"][0].validationStatus ? (
-        <div>
-          <WarningIcon />
-        </div>
-      ) : (
-        <div></div>
-      );
-    },
-    editable: false,
   },
   {
     field: "validationReport",
