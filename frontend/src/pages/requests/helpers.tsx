@@ -6,7 +6,8 @@ import {
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
-import { Patient, SampleMetadata } from "../../generated/graphql";
+import { SampleMetadata } from "../../generated/graphql";
+import WarningIcon from "@material-ui/icons/Warning";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -383,8 +384,16 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "validationStatus",
     headerName: "Validation Status",
-    valueGetter: function ({ data }) {
-      return data?.["hasStatusStatuses"][0].validationStatus;
+    cellRenderer: function (
+      params: EditableCallbackParams<SampleMetadataExtended>
+    ) {
+      return !params.data?.["hasStatusStatuses"][0].validationStatus ? (
+        <div>
+          <WarningIcon />
+        </div>
+      ) : (
+        <div></div>
+      );
     },
     editable: false,
   },
