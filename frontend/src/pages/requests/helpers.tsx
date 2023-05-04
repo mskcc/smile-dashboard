@@ -8,6 +8,8 @@ import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import { SampleMetadata } from "../../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
+import { StatusTooltip } from "./StatusToolTip";
+import { ITooltipComp, ITooltipParams } from "ag-grid-community";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -189,6 +191,10 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     field: "primaryId",
     headerName: "Primary ID",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
+    tooltipField: "validationStatus",
+    tooltipComponentParams: { color: "#ececec" },
+    tooltipValueGetter: (params: ITooltipParams<SampleMetadataExtended>) =>
+      "hello",
   },
   {
     field: "revisable",
@@ -230,6 +236,11 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
         </span>
       );
     },
+    tooltipField: "validationStatus",
+    //tooltipComponentParams: { color: '#ececec' },
+    tooltipComponent: StatusTooltip,
+    //tooltipComponent: StatusTooltip,
+    //tooltipComponent: StatusTooltip,
     editable: false,
   },
   {
