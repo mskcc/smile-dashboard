@@ -2,6 +2,7 @@ import {
   CellClassParams,
   ColDef,
   EditableCallbackParams,
+  ICellRendererParams,
   RowNode,
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
@@ -208,10 +209,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     field: "primaryId",
     headerName: "Primary ID",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
-    tooltipField: "validationStatus",
-    tooltipComponentParams: { color: "#ececec" },
-    tooltipValueGetter: (params: ITooltipParams<SampleMetadataExtended>) =>
-      "hello",
   },
   {
     field: "revisable",
@@ -240,25 +237,35 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "validationStatus",
     headerName: "Status",
-    cellRenderer: function (
-      params: EditableCallbackParams<SampleMetadataExtended>
-    ) {
-      return !params.data?.["hasStatusStatuses"][0].validationStatus ? (
-        <div>
-          <WarningIcon />
-        </div>
-      ) : (
-        <span>
-          <strong>&#10003;</strong>
-        </span>
-      );
+    cellRendererSelector: (params) => {
+      return {
+        component: function (params: ICellRendererParams<any>) {
+          if (params.data?.hasStatusStatuses[0].validationStatus) {
+            return (
+              <div>
+                <strong>&#10003;</strong>
+              </div>
+            );
+          } else {
+            return (
+              <div>
+                <WarningIcon />
+              </div>
+            );
+          }
+        },
+        params: {
+          colDef: {
+            tooltipComponent: StatusTooltip,
+            tooltipShowDelay: 0,
+            tooltipHideDelay: 2000,
+            tooltipValueGetter: function (params: ITooltipParams) {
+              return params;
+            },
+          },
+        },
+      };
     },
-    tooltipField: "validationStatus",
-    //tooltipComponentParams: { color: '#ececec' },
-    tooltipComponent: StatusTooltip,
-    //tooltipComponent: StatusTooltip,
-    //tooltipComponent: StatusTooltip,
-    editable: false,
   },
   {
     field: "cmoSampleName",
