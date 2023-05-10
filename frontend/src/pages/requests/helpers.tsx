@@ -10,7 +10,7 @@ import "ag-grid-enterprise";
 import { SampleMetadata } from "../../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./StatusToolTip";
-import { ITooltipComp, ITooltipParams } from "ag-grid-community";
+import { ITooltipParams } from "ag-grid-community";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -220,9 +220,9 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "validationStatus",
     headerName: "Status",
-    cellRendererSelector: (params) => {
+    cellRendererSelector: (params: ICellRendererParams<any>) => {
       return {
-        component: function (params: ICellRendererParams<any>) {
+        component: () => {
           if (params.data?.hasStatusStatuses[0].validationStatus) {
             return (
               <div>
@@ -240,8 +240,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
         params: {
           colDef: {
             tooltipComponent: StatusTooltip,
-            tooltipShowDelay: 0,
-            tooltipHideDelay: 2000,
             tooltipValueGetter: function (params: ITooltipParams) {
               return params;
             },
@@ -272,9 +270,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   },
   {
     field: "sampleType",
-    // valueGetter: (params) => {
-    //   return params.data.sampleType;
-    // },
     headerName: "Sample Type",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
     cellEditor: "agRichSelectCellEditor",
