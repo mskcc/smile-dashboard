@@ -8,21 +8,33 @@ export const StatusTooltip = (props: ITooltipParams) => {
   const [columnDefs] = useState([
     { field: "fieldName", headerName: "Field Name" },
     {
-      field: "reason",
-      headerName: "Reason",
+      field: "report",
+      headerName: "Report",
       wrapText: true,
       autoHeight: true,
       flex: 2,
     },
   ]);
 
-  const validationReportMap = new Map(
-    Object.entries(JSON.parse(data?.hasStatusStatuses[0].validationReport))
-  );
+  let validationReportMap = new Map();
+  try {
+    validationReportMap = new Map(
+      Object.entries(JSON.parse(data?.hasStatusStatuses[0].validationReport))
+    );
+  } catch (e) {
+    let cleanedReport = (data?.hasStatusStatuses[0].validationReport)
+      .replace("{", "")
+      .replace("}", "");
+    let reportArray = cleanedReport.split(",");
+    for (var r of reportArray) {
+      let splitReport = r.split("=");
+      validationReportMap.set(splitReport[0], splitReport[1]);
+    }
+  }
   const validationReportList: any[] | null | undefined = [];
 
   validationReportMap.forEach(function (value, key) {
-    validationReportList.push({ fieldName: key, reason: value });
+    validationReportList.push({ fieldName: key, report: value });
   });
 
   console.log(validationReportList);
