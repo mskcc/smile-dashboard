@@ -10,7 +10,7 @@ import "ag-grid-enterprise";
 import { SampleMetadata } from "../../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./StatusToolTip";
-import { ITooltipComp, ITooltipParams } from "ag-grid-community";
+import { ITooltipParams } from "ag-grid-community";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -54,12 +54,10 @@ export const RequestsListColumns: ColDef[] = [
   {
     field: "igoRequestId",
     headerName: "IGO Request ID",
-    sortable: true,
   },
   {
     field: "igoProjectId",
     headerName: "IGO Project ID",
-    sortable: true,
   },
   {
     field: "hasSampleSamplesConnection",
@@ -77,72 +75,58 @@ export const RequestsListColumns: ColDef[] = [
   {
     field: "projectManagerName",
     headerName: "Project Manager Name",
-    sortable: true,
   },
   {
     field: "investigatorName",
     headerName: "Investigator Name",
-    sortable: true,
   },
   {
     field: "investigatorEmail",
     headerName: "Investigator Email",
-    sortable: true,
   },
   {
     field: "piEmail",
     headerName: "PI Email",
-    sortable: true,
   },
   {
     field: "dataAnalystName",
     headerName: "Data Analyst Name",
-    sortable: true,
   },
   {
     field: "dataAnalystEmail",
     headerName: "Data Analyst Email",
-    sortable: true,
   },
   {
     field: "genePanel",
     headerName: "Gene Panel",
-    sortable: true,
   },
   {
     field: "labHeadName",
     headerName: "Lab Head Name",
-    sortable: true,
   },
   {
     field: "labHeadEmail",
     headerName: "Lab Head Email",
-    sortable: true,
   },
   {
     field: "qcAccessEmails",
     headerName: "QC Access Emails",
-    sortable: true,
   },
   {
     field: "dataAccessEmails",
     headerName: "Data Access Emails",
-    sortable: true,
   },
   {
     field: "bicAnalysis",
     headerName: "BIC Analysis",
-    sortable: true,
   },
   {
     field: "isCmoRequest",
     headerName: "CMO Request?",
-    sortable: true,
   },
   {
     field: "otherContactEmails",
     headerName: "Other Contact Emails",
-    sortable: true,
   },
 ];
 
@@ -193,7 +177,6 @@ export const PatientsListColumns: ColDef[] = [
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].smilePatientId;
     },
-    width: 400,
   },
   {
     field: "hasSampleSamplesConnection",
@@ -237,9 +220,9 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "validationStatus",
     headerName: "Status",
-    cellRendererSelector: (params) => {
+    cellRendererSelector: (params: ICellRendererParams<any>) => {
       return {
-        component: function (params: ICellRendererParams<any>) {
+        component: () => {
           if (params.data?.hasStatusStatuses[0].validationStatus) {
             return (
               <div>
@@ -257,8 +240,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
         params: {
           colDef: {
             tooltipComponent: StatusTooltip,
-            tooltipShowDelay: 0,
-            tooltipHideDelay: 2000,
             tooltipValueGetter: function (params: ITooltipParams) {
               return params;
             },
@@ -289,9 +270,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   },
   {
     field: "sampleType",
-    // valueGetter: (params) => {
-    //   return params.data.sampleType;
-    // },
     headerName: "Sample Type",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
     cellEditor: "agRichSelectCellEditor",
@@ -472,9 +450,14 @@ SampleDetailsColumns.forEach((def) => {
   };
 });
 
-export const defaultColDef: ColDef = {
+export const defaultSamplesColDef: ColDef = {
   sortable: true,
   editable: true,
+  resizable: true,
+};
+
+export const defaultRecordsColDef: ColDef = {
+  sortable: true,
   resizable: true,
 };
 

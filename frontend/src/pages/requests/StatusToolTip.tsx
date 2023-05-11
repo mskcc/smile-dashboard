@@ -1,12 +1,14 @@
 import { ITooltipParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useState } from "react";
 
 export const StatusTooltip = (props: ITooltipParams) => {
   const data = props.api!.getDisplayedRowAtIndex(props.rowIndex!)!.data;
 
-  const [columnDefs] = useState([
-    { field: "fieldName", headerName: "Field Name" },
+  const columnDefs = [
+    {
+      field: "fieldName",
+      headerName: "Field Name",
+    },
     {
       field: "report",
       headerName: "Report",
@@ -14,7 +16,7 @@ export const StatusTooltip = (props: ITooltipParams) => {
       autoHeight: true,
       flex: 2,
     },
-  ]);
+  ];
 
   let validationReportMap = new Map();
   try {
@@ -22,22 +24,25 @@ export const StatusTooltip = (props: ITooltipParams) => {
       Object.entries(JSON.parse(data?.hasStatusStatuses[0].validationReport))
     );
   } catch (e) {
-    let cleanedReport = (data?.hasStatusStatuses[0].validationReport)
+    const cleanedReport = (data?.hasStatusStatuses[0].validationReport)
       .replace("{", "")
       .replace("}", "");
-    let reportArray = cleanedReport.split(",");
-    for (var r of reportArray) {
-      let splitReport = r.split("=");
-      validationReportMap.set(splitReport[0], splitReport[1]);
+    const reportArray = cleanedReport.split(",");
+    for (const r of reportArray) {
+      const splitReport = r.split("=");
+      validationReportMap.set(splitReport[0].trim(), splitReport[1]);
     }
   }
-  const validationReportList: any[] | null | undefined = [];
+
+  type Report = {
+    fieldName: string;
+    report: string;
+  };
+  const validationReportList: Report[] = [];
 
   validationReportMap.forEach(function (value, key) {
     validationReportList.push({ fieldName: key, report: value });
   });
-
-  console.log(validationReportList);
 
   if (!data?.hasStatusStatuses[0].validationStatus) {
     return (

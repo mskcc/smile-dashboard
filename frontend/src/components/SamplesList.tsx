@@ -1,14 +1,11 @@
 import {
   SortDirection,
-  useSamplesQuery,
   Sample,
-  SampleMetadata,
   useFindSamplesByInputValueQuery,
   SampleMetadataWhere,
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import _ from "lodash";
 import classNames from "classnames";
 import { FunctionComponent, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
@@ -16,7 +13,7 @@ import { UpdateModal } from "./UpdateModal";
 import { CSVFormulate } from "../lib/CSVExport";
 import {
   SampleDetailsColumns,
-  defaultColDef,
+  defaultSamplesColDef,
   SampleChange,
   SampleMetadataExtended,
 } from "../pages/requests/helpers";
@@ -280,12 +277,19 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               rowData={getSampleMetadata(samples)}
               onCellEditRequest={onCellValueChanged}
               readOnlyEdit={true}
-              defaultColDef={defaultColDef}
+              defaultColDef={defaultSamplesColDef}
               ref={gridRef}
               context={{
                 getChanges: () => changes,
               }}
               enableRangeSelection={true}
+              onGridReady={(params) => {
+                params.api.sizeColumnsToFit();
+              }}
+              onFirstDataRendered={(params) => {
+                params.columnApi.autoSizeAllColumns();
+              }}
+              tooltipShowDelay={0}
             />
           </div>
         )}
