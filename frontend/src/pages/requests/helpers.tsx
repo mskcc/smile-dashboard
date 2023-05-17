@@ -371,13 +371,6 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     headerName: "Sex",
     editable: (params) => !protectedFields.includes(params.colDef.field!),
   },
-  {
-    field: "validationReport",
-    headerName: "Validation Report",
-    valueGetter: function ({ data }) {
-      return data?.["hasStatusStatuses"][0].validationReport;
-    },
-  },
 ];
 
 SampleDetailsColumns.forEach((def) => {
