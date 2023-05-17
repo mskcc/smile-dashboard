@@ -1,7 +1,6 @@
 import {
   CellClassParams,
   ColDef,
-  EditableCallbackParams,
   ICellRendererParams,
   RowNode,
 } from "ag-grid-community";
@@ -194,9 +193,9 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     editable: (params) => !protectedFields.includes(params.colDef.field!),
   },
   {
-    field: "status",
+    field: "revisable",
     headerName: "Status",
-    cellRenderer: (params: EditableCallbackParams<SampleMetadataExtended>) => {
+    cellRenderer: (params: ICellRendererParams<SampleMetadataExtended>) => {
       if (params.data?.revisable) {
         return params.data?.hasStatusStatuses[0].validationStatus ? (
           <div>
@@ -449,5 +448,5 @@ const protectedFields: string[] = [
   "species",
   "validationStatus",
   "validationReport",
-  "status",
+  // "status",
 ];
