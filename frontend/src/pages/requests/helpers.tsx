@@ -448,5 +448,5 @@ const protectedFields: string[] = [
   "species",
   "validationStatus",
   "validationReport",
-  // "status",
+  "revisable",
 ];
