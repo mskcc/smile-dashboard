@@ -171,13 +171,6 @@ export const PatientsListColumns: ColDef[] = [
     },
   },
   {
-    field: "isAliasPatients",
-    headerName: "Smile Patient ID",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].smilePatientId;
-    },
-  },
-  {
     field: "hasSampleSamplesConnection",
     headerName: "# Samples",
     valueGetter: function ({ data }) {
