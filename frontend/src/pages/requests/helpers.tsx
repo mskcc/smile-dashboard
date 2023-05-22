@@ -213,7 +213,8 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
     cellRendererParams: {
       colDef: {
         tooltipComponent: StatusTooltip,
-        tooltipValueGetter: (params: ITooltipParams) => params,
+        tooltipValueGetter: (params: ITooltipParams) =>
+          params.data.hasStatusStatuses[0].validationReport,
       },
     },
   },
