@@ -6946,7 +6946,6 @@ export type FindSamplesByInputValueQueryVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   options?: InputMaybe<SampleMetadataOptions>;
   patientAliasesIsAliasWhere2?: InputMaybe<PatientAliasWhere>;
-  requestsHasSampleConnectionWhere2?: InputMaybe<SampleRequestsHasSampleConnectionWhere>;
 }>;
 
 export type FindSamplesByInputValueQuery = {
@@ -7522,7 +7521,6 @@ export const FindSamplesByInputValueDocument = gql`
     $where: SampleWhere
     $options: SampleMetadataOptions
     $patientAliasesIsAliasWhere2: PatientAliasWhere
-    $requestsHasSampleConnectionWhere2: SampleRequestsHasSampleConnectionWhere
   ) {
     samplesConnection(where: $where) {
       edges {
@@ -7577,7 +7575,6 @@ export const FindSamplesByInputValueDocument = gql`
  *      where: // value for 'where'
  *      options: // value for 'options'
  *      patientAliasesIsAliasWhere2: // value for 'patientAliasesIsAliasWhere2'
- *      requestsHasSampleConnectionWhere2: // value for 'requestsHasSampleConnectionWhere2'
  *   },
  * });
  */

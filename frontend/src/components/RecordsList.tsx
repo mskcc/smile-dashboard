@@ -110,8 +110,6 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
 
   const remoteCount = data?.[totalCountNodeName]?.totalCount;
 
-  console.log(data);
-
   const handleClose = () => {
     if (unsavedChanges) {
       setShowClosingWarning(true);
