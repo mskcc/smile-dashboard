@@ -6835,7 +6835,14 @@ export type PatientsListQuery = {
     isAliasPatients: Array<{
       __typename?: "Patient";
       smilePatientId: string;
-      hasSampleSamples: Array<{ __typename?: "Sample"; smileSampleId: string }>;
+      hasSampleSamples: Array<{
+        __typename?: "Sample";
+        smileSampleId: string;
+        hasMetadataSampleMetadata: Array<{
+          __typename?: "SampleMetadata";
+          primaryId: string;
+        }>;
+      }>;
       hasSampleSamplesConnection: {
         __typename?: "PatientHasSampleSamplesConnection";
         totalCount: number;
@@ -6938,6 +6945,7 @@ export type FindSamplesByInputValueQueryVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   options?: InputMaybe<SampleMetadataOptions>;
   patientAliasesIsAliasWhere2?: InputMaybe<PatientAliasWhere>;
+  requestsHasSampleConnectionWhere2?: InputMaybe<SampleRequestsHasSampleConnectionWhere>;
 }>;
 
 export type FindSamplesByInputValueQuery = {
@@ -7296,6 +7304,9 @@ export const PatientsListDocument = gql`
         smilePatientId
         hasSampleSamples {
           smileSampleId
+          hasMetadataSampleMetadata {
+            primaryId
+          }
         }
         hasSampleSamplesConnection {
           totalCount
@@ -7360,6 +7371,7 @@ export const FindSamplesByInputValueDocument = gql`
     $where: SampleWhere
     $options: SampleMetadataOptions
     $patientAliasesIsAliasWhere2: PatientAliasWhere
+    $requestsHasSampleConnectionWhere2: SampleRequestsHasSampleConnectionWhere
   ) {
     samplesConnection(where: $where) {
       edges {

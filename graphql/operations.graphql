@@ -29,6 +29,9 @@ query PatientsList(
       smilePatientId
       hasSampleSamples {
         smileSampleId
+        hasMetadataSampleMetadata {
+          primaryId
+        }
       }
       hasSampleSamplesConnection {
         totalCount
