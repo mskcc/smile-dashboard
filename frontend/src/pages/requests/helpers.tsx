@@ -49,6 +49,7 @@ export const RequestsListColumns: ColDef[] = [
         </Button>
       );
     },
+    sortable: false,
   },
   {
     field: "igoRequestId",
@@ -70,6 +71,7 @@ export const RequestsListColumns: ColDef[] = [
       }
       return undefined;
     },
+    sortable: false,
   },
   {
     field: "projectManagerName",
@@ -147,6 +149,7 @@ export const PatientsListColumns: ColDef[] = [
         </Button>
       );
     },
+    sortable: false,
   },
   {
     field: "cmoPatientId",
@@ -158,6 +161,7 @@ export const PatientsListColumns: ColDef[] = [
         }
       }
     },
+    sortable: false,
   },
   {
     field: "dmpPatientId",
@@ -169,6 +173,7 @@ export const PatientsListColumns: ColDef[] = [
         }
       }
     },
+    sortable: false,
   },
   {
     field: "hasSampleSamplesConnection",
@@ -176,6 +181,7 @@ export const PatientsListColumns: ColDef[] = [
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
     },
+    sortable: false,
   },
   {
     field: "primaryIds",
@@ -187,6 +193,7 @@ export const PatientsListColumns: ColDef[] = [
       }
       return sampleIds.join(", ");
     },
+    sortable: false,
   },
 ];
 
