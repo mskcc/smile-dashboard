@@ -185,12 +185,11 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    field: "primaryIds",
-    headerName: "Primary IDs",
+    headerName: "CMO Sample Names",
     valueGetter: function ({ data }) {
       let sampleIds = [];
       for (let sample of data["isAliasPatients"][0].hasSampleSamples) {
-        sampleIds.push(sample.hasMetadataSampleMetadata[0].primaryId);
+        sampleIds.push(sample.hasMetadataSampleMetadata[0].cmoSampleName);
       }
       return sampleIds.join(", ");
     },
