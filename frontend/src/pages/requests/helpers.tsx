@@ -7,7 +7,7 @@ import {
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
-import { SampleMetadata } from "../../generated/graphql";
+import { SampleMetadata, Sample } from "../../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./StatusToolTip";
 import { ITooltipParams } from "ag-grid-community";
@@ -185,13 +185,13 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    headerName: "CMO Sample Names",
+    headerName: "CMO Sample IDs",
     valueGetter: function ({ data }) {
-      let sampleIds = [];
-      for (let sample of data["isAliasPatients"][0].hasSampleSamples) {
-        sampleIds.push(sample.hasMetadataSampleMetadata[0].cmoSampleName);
-      }
-      return sampleIds.join(", ");
+      return data["isAliasPatients"][0].hasSampleSamples.map(
+        (sample: Sample) =>
+          sample.hasMetadataSampleMetadata[0].cmoSampleName ||
+          sample.hasMetadataSampleMetadata[0].primaryId
+      );
     },
     sortable: false,
   },
