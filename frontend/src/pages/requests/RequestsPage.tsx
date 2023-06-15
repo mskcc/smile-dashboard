@@ -11,28 +11,30 @@ import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
+import { parseSearchQueries } from "../../lib/parseSearchQueries";
 
 function requestFilterWhereVariables(value: string): RequestWhere[] {
-  return [
-    { igoProjectId_CONTAINS: value },
-    { igoRequestId_CONTAINS: value },
-    { genePanel_CONTAINS: value },
-    { dataAnalystEmail_CONTAINS: value },
-    { dataAnalystName_CONTAINS: value },
-    { investigatorEmail_CONTAINS: value },
-    { investigatorName_CONTAINS: value },
-    { labHeadEmail_CONTAINS: value },
-    { libraryType_CONTAINS: value },
-    { labHeadName_CONTAINS: value },
-    { namespace_CONTAINS: value },
-    { piEmail_CONTAINS: value },
-    { otherContactEmails_CONTAINS: value },
-    { projectManagerName_CONTAINS: value },
-    { qcAccessEmails_CONTAINS: value },
-  ];
+  return parseSearchQueries(value).map((query) => ({
+    OR: [
+      { igoProjectId_CONTAINS: query },
+      { igoRequestId_CONTAINS: query },
+      { projectManagerName_CONTAINS: query },
+      { investigatorName_CONTAINS: query },
+      { investigatorEmail_CONTAINS: query },
+      { piEmail_CONTAINS: query },
+      { dataAnalystName_CONTAINS: query },
+      { dataAnalystEmail_CONTAINS: query },
+      { genePanel_CONTAINS: query },
+      { labHeadName_CONTAINS: query },
+      { labHeadEmail_CONTAINS: query },
+      { qcAccessEmails_CONTAINS: query },
+      { dataAccessEmails_CONTAINS: query },
+      { otherContactEmails_CONTAINS: query },
+    ],
+  }));
 }
 
-export const RequestsPage: React.FunctionComponent = (props) => {
+export const RequestsPage: React.FunctionComponent = () => {
   const params = useParams();
 
   const pageRoute = "/requests";

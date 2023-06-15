@@ -11,30 +11,33 @@ import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
+import { parseSearchQueries } from "../../lib/parseSearchQueries";
 
 function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
-  return [
-    { namespace_CONTAINS: value },
-    { value_CONTAINS: value },
-    {
-      isAliasPatients_SOME: {
-        hasSampleSamples_SOME: {
-          hasMetadataSampleMetadata_SOME: {
-            cmoSampleName_CONTAINS: value,
+  return parseSearchQueries(value).map((query) => ({
+    OR: [
+      { value_CONTAINS: query },
+      { namespace_CONTAINS: query },
+      {
+        isAliasPatients_SOME: {
+          hasSampleSamples_SOME: {
+            hasMetadataSampleMetadata_SOME: {
+              cmoSampleName_CONTAINS: query,
+            },
           },
         },
       },
-    },
-    {
-      isAliasPatients_SOME: {
-        hasSampleSamples_SOME: {
-          hasMetadataSampleMetadata_SOME: {
-            primaryId_CONTAINS: value,
+      {
+        isAliasPatients_SOME: {
+          hasSampleSamples_SOME: {
+            hasMetadataSampleMetadata_SOME: {
+              primaryId_CONTAINS: query,
+            },
           },
         },
       },
-    },
-  ];
+    ],
+  }));
 }
 
 export const PatientsPage: React.FunctionComponent = (props) => {
