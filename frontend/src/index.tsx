@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
@@ -34,7 +33,7 @@ const client = new ApolloClient({
   cache,
 });
 
-const root = ReactDOM.render(
+ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
       <div>

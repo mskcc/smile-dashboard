@@ -16,7 +16,7 @@ import {
   defaultSamplesColDef,
   SampleChange,
   SampleMetadataExtended,
-} from "../pages/requests/helpers";
+} from "../shared/helpers";
 import Spinner from "react-spinkit";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
