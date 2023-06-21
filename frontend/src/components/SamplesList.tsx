@@ -29,14 +29,14 @@ const POLLING_INTERVAL = 2000;
 
 interface ISampleListProps {
   height: number;
-  setUnsavedChanges: (val: boolean) => void;
-  searchVariables: SampleMetadataWhere;
+  setUnsavedChanges?: (val: boolean) => void;
+  searchVariables?: SampleMetadataWhere;
   exportFileName?: string;
-  sampleQueryParamFieldName: string;
-  sampleQueryParamValue: string;
+  sampleQueryParamFieldName?: string;
+  sampleQueryParamValue?: string;
 }
 
-function sampleFilterWhereVariables(value: string) {
+function sampleFilterWhereVariables(value: string): SampleMetadataWhere[] {
   return [
     { cmoSampleName_CONTAINS: value },
     { importDate_CONTAINS: value },
@@ -80,9 +80,13 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
       variables: {
-        where: {
-          ...searchVariables,
-        },
+        ...(searchVariables
+          ? {
+              where: {
+                ...searchVariables,
+              },
+            }
+          : {}),
         options: {
           sort: [{ importDate: SortDirection.Desc }],
           limit: 1,
@@ -135,7 +139,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
         return [...changes];
       });
 
-      setUnsavedChanges(true);
+      setUnsavedChanges?.(true);
     }
   };
 
@@ -146,7 +150,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       startPolling(POLLING_INTERVAL);
     }, 10000);
 
-    setUnsavedChanges(false);
+    setUnsavedChanges?.(false);
     setChanges([]);
     setTimeout(() => {
       setEditMode(true);
@@ -208,7 +212,12 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
                     where: {
                       hasMetadataSampleMetadata_SOME: {
                         OR: sampleFilterWhereVariables(value),
-                        [sampleQueryParamFieldName]: sampleQueryParamValue,
+                        ...(sampleQueryParamFieldName && sampleQueryParamValue
+                          ? {
+                              [sampleQueryParamFieldName]:
+                                sampleQueryParamValue,
+                            }
+                          : {}),
                       },
                     },
                   });
@@ -254,7 +263,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
             }}
             size={"sm"}
           >
-            Generate Sample Report
+            Generate Report
           </Button>
         </Col>
       </Row>
@@ -265,7 +274,6 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
             style={{ height: height, width: width }}
           >
             <AgGridReact<SampleMetadataExtended>
-              immutableData={true}
               getRowId={(d) => {
                 return d.data.primaryId;
               }}
