@@ -26,7 +26,6 @@ import "ag-grid-enterprise";
 import { CellValueChangedEvent } from "ag-grid-community";
 
 const POLLING_INTERVAL = 2000;
-
 interface ISampleListProps {
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
@@ -87,7 +86,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               },
             }
           : {
-              first: 100,
+              first: 500,
             }),
         options: {
           sort: [{ importDate: SortDirection.Desc }],
@@ -315,6 +314,11 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               }}
               tooltipShowDelay={0}
               tooltipHideDelay={60000}
+              onBodyScrollEnd={(params) => {
+                if (params.api.getLastDisplayedRow() + 1 === remoteCount) {
+                  alert("Enter a search term to narrow down the results.");
+                }
+              }}
             />
           </div>
         )}
