@@ -315,7 +315,10 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               tooltipShowDelay={0}
               tooltipHideDelay={60000}
               onBodyScrollEnd={(params) => {
-                if (params.api.getLastDisplayedRow() + 1 === remoteCount) {
+                if (
+                  params.api.getLastDisplayedRow() + 1 === remoteCount &&
+                  !searchVariables
+                ) {
                   alert("Enter a search term to narrow down the results.");
                 }
               }}
