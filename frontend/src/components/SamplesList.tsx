@@ -26,6 +26,8 @@ import "ag-grid-enterprise";
 import { CellValueChangedEvent } from "ag-grid-community";
 
 const POLLING_INTERVAL = 2000;
+const max_rows = 500;
+
 interface ISampleListProps {
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
@@ -86,7 +88,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               },
             }
           : {
-              first: 500,
+              first: max_rows,
             }),
         options: {
           sort: [{ importDate: SortDirection.Desc }],
@@ -230,7 +232,11 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           />
         </Col>
 
-        <Col className={"text-start"}>{remoteCount} matching samples</Col>
+        <Col className={"text-start"}>
+          {remoteCount === max_rows
+            ? `${max_rows}+ matching samples`
+            : `${remoteCount} matching samples`}
+        </Col>
 
         {changes.length > 0 && (
           <>
