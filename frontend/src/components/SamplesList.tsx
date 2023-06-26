@@ -86,7 +86,9 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
                 ...searchVariables,
               },
             }
-          : {}),
+          : {
+              first: 100,
+            }),
         options: {
           sort: [{ importDate: SortDirection.Desc }],
           limit: 1,
