@@ -14,24 +14,43 @@ import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../lib/parseSearchQueries";
 
 function requestFilterWhereVariables(value: string): RequestWhere[] {
-  return parseSearchQueries(value).map((query) => ({
-    OR: [
-      { igoProjectId_CONTAINS: query },
-      { igoRequestId_CONTAINS: query },
-      { projectManagerName_CONTAINS: query },
-      { investigatorName_CONTAINS: query },
-      { investigatorEmail_CONTAINS: query },
-      { piEmail_CONTAINS: query },
-      { dataAnalystName_CONTAINS: query },
-      { dataAnalystEmail_CONTAINS: query },
-      { genePanel_CONTAINS: query },
-      { labHeadName_CONTAINS: query },
-      { labHeadEmail_CONTAINS: query },
-      { qcAccessEmails_CONTAINS: query },
-      { dataAccessEmails_CONTAINS: query },
-      { otherContactEmails_CONTAINS: query },
-    ],
-  }));
+  const uniqueQueries = parseSearchQueries(value);
+
+  if (uniqueQueries.length > 1) {
+    return [
+      { igoProjectId_IN: uniqueQueries },
+      { igoRequestId_IN: uniqueQueries },
+      { projectManagerName_IN: uniqueQueries },
+      { investigatorName_IN: uniqueQueries },
+      { investigatorEmail_IN: uniqueQueries },
+      { piEmail_IN: uniqueQueries },
+      { dataAnalystName_IN: uniqueQueries },
+      { dataAnalystEmail_IN: uniqueQueries },
+      { genePanel_IN: uniqueQueries },
+      { labHeadName_IN: uniqueQueries },
+      { labHeadEmail_IN: uniqueQueries },
+      { qcAccessEmails_IN: uniqueQueries },
+      { dataAccessEmails_IN: uniqueQueries },
+      { otherContactEmails_IN: uniqueQueries },
+    ];
+  } else {
+    return [
+      { igoProjectId_CONTAINS: value },
+      { igoRequestId_CONTAINS: value },
+      { projectManagerName_CONTAINS: value },
+      { investigatorName_CONTAINS: value },
+      { investigatorEmail_CONTAINS: value },
+      { piEmail_CONTAINS: value },
+      { dataAnalystName_CONTAINS: value },
+      { dataAnalystEmail_CONTAINS: value },
+      { genePanel_CONTAINS: value },
+      { labHeadName_CONTAINS: value },
+      { labHeadEmail_CONTAINS: value },
+      { qcAccessEmails_CONTAINS: value },
+      { dataAccessEmails_CONTAINS: value },
+      { otherContactEmails_CONTAINS: value },
+    ];
+  }
 }
 
 export const RequestsPage: React.FunctionComponent = () => {
