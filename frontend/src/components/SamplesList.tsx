@@ -10,6 +10,7 @@ import classNames from "classnames";
 import { FunctionComponent, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
+import { AlertModal } from "./AlertModal";
 import { CSVFormulate } from "../lib/CSVExport";
 import {
   SampleDetailsColumns,
@@ -100,6 +101,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
   const [val, setVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState<any>(null);
   const [prom, setProm] = useState<any>(Promise.resolve());
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -175,6 +177,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           exportFileName={exportFileName || "samples.tsv"}
         />
       )}
+
       {showUpdateModal && (
         <UpdateModal
           changes={changes}
@@ -184,6 +187,17 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           onOpen={() => stopPolling()}
         />
       )}
+
+      <AlertModal
+        show={showAlertModal}
+        onHide={() => {
+          setShowAlertModal(false);
+        }}
+        message={
+          "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples."
+        }
+      />
+
       <Row
         className={classNames(
           "d-flex justify-content-between align-items-center tableControlsRow"
@@ -274,6 +288,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           </Button>
         </Col>
       </Row>
+
       <AutoSizer>
         {({ width }) => (
           <div
@@ -321,11 +336,8 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               tooltipShowDelay={0}
               tooltipHideDelay={60000}
               onBodyScrollEnd={(params) => {
-                if (
-                  params.api.getLastDisplayedRow() + 1 === remoteCount &&
-                  !searchVariables
-                ) {
-                  alert("Enter a search term to narrow down the results.");
+                if (params.api.getLastDisplayedRow() + 1 === max_rows) {
+                  setShowAlertModal(true);
                 }
               }}
             />
