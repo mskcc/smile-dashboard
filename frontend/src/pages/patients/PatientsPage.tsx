@@ -14,15 +14,17 @@ import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../lib/parseSearchQueries";
 
 function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
-  return parseSearchQueries(value).map((query) => ({
-    OR: [
-      { value_CONTAINS: query },
-      { namespace_CONTAINS: query },
+  const uniqueQueries = parseSearchQueries(value);
+
+  if (uniqueQueries.length > 1) {
+    return [
+      { value_IN: uniqueQueries },
+      { namespace_IN: uniqueQueries },
       {
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              cmoSampleName_CONTAINS: query,
+              cmoSampleName_IN: uniqueQueries,
             },
           },
         },
@@ -31,13 +33,36 @@ function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              primaryId_CONTAINS: query,
+              primaryId_IN: uniqueQueries,
             },
           },
         },
       },
-    ],
-  }));
+    ];
+  } else {
+    return [
+      { value_CONTAINS: value },
+      { namespace_CONTAINS: value },
+      {
+        isAliasPatients_SOME: {
+          hasSampleSamples_SOME: {
+            hasMetadataSampleMetadata_SOME: {
+              cmoSampleName_CONTAINS: value,
+            },
+          },
+        },
+      },
+      {
+        isAliasPatients_SOME: {
+          hasSampleSamples_SOME: {
+            hasMetadataSampleMetadata_SOME: {
+              primaryId_CONTAINS: value,
+            },
+          },
+        },
+      },
+    ];
+  }
 }
 
 export const PatientsPage: React.FunctionComponent = (props) => {
