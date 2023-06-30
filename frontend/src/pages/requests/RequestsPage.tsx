@@ -35,20 +35,20 @@ function requestFilterWhereVariables(value: string): RequestWhere[] {
     ];
   } else {
     return [
-      { igoProjectId_CONTAINS: value },
-      { igoRequestId_CONTAINS: value },
-      { projectManagerName_CONTAINS: value },
-      { investigatorName_CONTAINS: value },
-      { investigatorEmail_CONTAINS: value },
-      { piEmail_CONTAINS: value },
-      { dataAnalystName_CONTAINS: value },
-      { dataAnalystEmail_CONTAINS: value },
-      { genePanel_CONTAINS: value },
-      { labHeadName_CONTAINS: value },
-      { labHeadEmail_CONTAINS: value },
-      { qcAccessEmails_CONTAINS: value },
-      { dataAccessEmails_CONTAINS: value },
-      { otherContactEmails_CONTAINS: value },
+      { igoProjectId_CONTAINS: uniqueQueries[0] },
+      { igoRequestId_CONTAINS: uniqueQueries[0] },
+      { projectManagerName_CONTAINS: uniqueQueries[0] },
+      { investigatorName_CONTAINS: uniqueQueries[0] },
+      { investigatorEmail_CONTAINS: uniqueQueries[0] },
+      { piEmail_CONTAINS: uniqueQueries[0] },
+      { dataAnalystName_CONTAINS: uniqueQueries[0] },
+      { dataAnalystEmail_CONTAINS: uniqueQueries[0] },
+      { genePanel_CONTAINS: uniqueQueries[0] },
+      { labHeadName_CONTAINS: uniqueQueries[0] },
+      { labHeadEmail_CONTAINS: uniqueQueries[0] },
+      { qcAccessEmails_CONTAINS: uniqueQueries[0] },
+      { dataAccessEmails_CONTAINS: uniqueQueries[0] },
+      { otherContactEmails_CONTAINS: uniqueQueries[0] },
     ];
   }
 }

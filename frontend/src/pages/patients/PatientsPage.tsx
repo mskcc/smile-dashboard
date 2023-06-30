@@ -41,13 +41,13 @@ function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
     ];
   } else {
     return [
-      { value_CONTAINS: value },
-      { namespace_CONTAINS: value },
+      { value_CONTAINS: uniqueQueries[0] },
+      { namespace_CONTAINS: uniqueQueries[0] },
       {
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              cmoSampleName_CONTAINS: value,
+              cmoSampleName_CONTAINS: uniqueQueries[0],
             },
           },
         },
@@ -56,7 +56,7 @@ function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              primaryId_CONTAINS: value,
+              primaryId_CONTAINS: uniqueQueries[0],
             },
           },
         },
