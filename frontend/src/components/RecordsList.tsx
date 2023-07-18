@@ -44,15 +44,14 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   searchVariables,
 }) => {
   const [val, setVal] = useState("");
+  const [searchVal, setSearchVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState<ReturnType<
-    typeof setTimeout
-  > | null>(null);
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const navigate = useNavigate();
 
-  // not we aren't using initial fetch
+  // note that we aren't using initial fetch
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [initialFetch, { loading, error, data, fetchMore, refetch }] =
     lazyRecordsQuery({
       variables: {
@@ -66,10 +65,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       getRows: (params: IServerSideGetRowsParams) => {
         const fetchInput = {
           where: {
-            OR: conditionBuilder(val),
+            OR: conditionBuilder(searchVal),
           },
           [`${nodeName}ConnectionWhere2`]: {
-            OR: conditionBuilder(val),
+            OR: conditionBuilder(searchVal),
           },
           options: {
             offset: params.request.startRow,
@@ -97,7 +96,8 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         });
       },
     };
-  }, [val]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchVal]);
 
   if (loading)
     return (
@@ -219,17 +219,17 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             placeholder={"Search " + searchTerm}
             aria-label="Search"
             defaultValue={val}
-            onInput={(event) => {
-              const value = event.currentTarget.value;
-
-              if (typingTimeout) {
-                clearTimeout(typingTimeout);
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                setSearchVal(val);
               }
-
-              const to = setTimeout(() => {
-                setVal(value);
-              }, 500);
-              setTypingTimeout(to);
+            }}
+            onInput={(event) => {
+              const newVal = event.currentTarget.value;
+              if (newVal === "") {
+                setSearchVal("");
+              }
+              setVal(newVal);
             }}
           />
         </Col>
@@ -237,7 +237,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         <Col md="auto">
           <Button
             onClick={() => {
-              // TODO
+              setSearchVal(val);
             }}
             className={"btn btn-secondary"}
             size={"sm"}
@@ -247,7 +247,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         </Col>
 
         <Col md="auto">
-          {remoteCount.toLocaleString()} matching{" "}
+          {remoteCount?.toLocaleString()} matching{" "}
           {remoteCount > 1 ? searchTerm : searchTerm.slice(0, -1)}
         </Col>
 
