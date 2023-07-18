@@ -81,7 +81,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         };
 
         // if this is NOT first call, use refetch
-        // (which is analogous in this case to the original fetch
+        // (which is analogous in this case to the original fetch)
         const thisFetch =
           params.request.startRow! === 0
             ? refetch(fetchInput)
@@ -234,8 +234,21 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           />
         </Col>
 
-        <Col className={"text-start"}>
-          {remoteCount} matching {searchTerm}
+        <Col md="auto">
+          <Button
+            onClick={() => {
+              // TODO
+            }}
+            className={"btn btn-secondary"}
+            size={"sm"}
+          >
+            Search
+          </Button>
+        </Col>
+
+        <Col md="auto">
+          {remoteCount.toLocaleString()} matching{" "}
+          {remoteCount > 1 ? searchTerm : searchTerm.slice(0, -1)}
         </Col>
 
         <Col className={"text-end"}>
