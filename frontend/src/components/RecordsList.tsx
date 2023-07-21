@@ -17,6 +17,8 @@ import { useHookGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
 import { SampleWhere } from "../generated/graphql";
 import { defaultRecordsColDef } from "../shared/helpers";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
+import { Tooltip } from "@material-ui/core";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookGeneric;
@@ -211,7 +213,23 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         )}
       >
         <Col></Col>
-        <Col className={"text-end"}>
+
+        <Col md="auto" style={{ marginRight: -15 }}>
+          <Tooltip
+            title={
+              <span style={{ fontSize: 12 }}>
+                After inputting your search query, click on &quot;Search&quot;
+                or press &quot;Enter&quot; to get your results. To bulk search,
+                input a list of values separated by spaces or commas (e.g.
+                &quot;value1 value2 value3&quot;)
+              </span>
+            }
+          >
+            <InfoIcon style={{ fontSize: 18, color: "grey" }} />
+          </Tooltip>
+        </Col>
+
+        <Col md="auto">
           <Form.Control
             className={"d-inline-block"}
             style={{ width: "300px" }}
@@ -234,7 +252,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           />
         </Col>
 
-        <Col md="auto">
+        <Col md="auto" style={{ marginLeft: -15 }}>
           <Button
             onClick={() => {
               setSearchVal(val);
