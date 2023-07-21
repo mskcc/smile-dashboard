@@ -214,21 +214,6 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       >
         <Col></Col>
 
-        <Col md="auto" style={{ marginRight: -15 }}>
-          <Tooltip
-            title={
-              <span style={{ fontSize: 12 }}>
-                After inputting your search query, click on &quot;Search&quot;
-                or press &quot;Enter&quot; to get your results. To bulk search,
-                input a list of values separated by spaces or commas (e.g.
-                &quot;value1 value2 value3&quot;)
-              </span>
-            }
-          >
-            <InfoIcon style={{ fontSize: 18, color: "grey" }} />
-          </Tooltip>
-        </Col>
-
         <Col md="auto">
           <Form.Control
             className={"d-inline-block"}
@@ -250,6 +235,21 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               setVal(newVal);
             }}
           />
+        </Col>
+
+        <Col md="auto" style={{ marginLeft: -15 }}>
+          <Tooltip
+            title={
+              <span style={{ fontSize: 12 }}>
+                After inputting your search query, click on &quot;Search&quot;
+                or press &quot;Enter&quot; to get your results. To bulk search,
+                input a list of values separated by spaces or commas (e.g.
+                &quot;value1 value2 value3&quot;)
+              </span>
+            }
+          >
+            <InfoIcon style={{ fontSize: 18, color: "grey" }} />
+          </Tooltip>
         </Col>
 
         <Col md="auto" style={{ marginLeft: -15 }}>
