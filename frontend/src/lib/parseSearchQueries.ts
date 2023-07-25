@@ -1,17 +1,19 @@
+import { chain } from "lodash";
+
 export function parseSearchQueries(value: string): string[] {
-  const queries = value
+  return chain(value)
     .split(/[\s,]+/) // split on whitespaces and commas
-    .filter(Boolean) // remove empty strings (e.g. when `value` is `123,,456`)
-    .map((query) => {
-      query = query.trim();
+    .compact()
+    .uniq()
+    .map((val) => {
+      val = val.trim();
       // Add back leading 0s to queries that were copied from Excel, where leading 0s
       // of number cells are removed by default (e.g. `01234` becomes `1234`).
-      const isNumber = /^\d*$/.test(query);
+      const isNumber = /^\d*$/.test(val);
       if (isNumber) {
-        return query.padStart(5, "0");
+        return val.padStart(5, "0");
       }
-      return query;
-    });
-  const uniqueQueries = Array.from(new Set(queries));
-  return uniqueQueries;
+      return val;
+    })
+    .value();
 }
