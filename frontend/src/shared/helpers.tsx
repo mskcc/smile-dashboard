@@ -202,7 +202,6 @@ export const PatientsListColumns: ColDef[] = [
       return data["isAliasPatients"][0].smilePatientId;
     },
     hide: true,
-    suppressColumnsToolPanel: true,
   },
 ];
 
