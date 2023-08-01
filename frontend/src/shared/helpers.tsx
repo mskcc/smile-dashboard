@@ -195,6 +195,15 @@ export const PatientsListColumns: ColDef[] = [
     },
     sortable: false,
   },
+  {
+    field: "smilePatientId",
+    headerName: "SMILE Patient ID",
+    valueGetter: function ({ data }) {
+      return data["isAliasPatients"][0].smilePatientId;
+    },
+    hide: true,
+    suppressColumnsToolPanel: true,
+  },
 ];
 
 export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
