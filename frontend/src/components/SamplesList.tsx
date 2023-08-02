@@ -25,6 +25,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { CellValueChangedEvent } from "ag-grid-community";
+import { Tooltip } from "@material-ui/core";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 
 const POLLING_INTERVAL = 2000;
 const max_rows = 500;
@@ -244,6 +246,33 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               });
             }}
           />
+        </Col>
+
+        <Col md="auto" style={{ marginLeft: -15 }}>
+          <Tooltip
+            title={
+              <span style={{ fontSize: 12 }}>
+                After inputting your search query, click on &quot;Search&quot;
+                or press &quot;Enter&quot; to get your results. To bulk search,
+                input a list of values separated by spaces or commas (e.g.
+                &quot;value1 value2 value3&quot;)
+              </span>
+            }
+          >
+            <InfoIcon style={{ fontSize: 18, color: "grey" }} />
+          </Tooltip>
+        </Col>
+
+        <Col md="auto" style={{ marginLeft: -15 }}>
+          <Button
+            onClick={() => {
+              // setSearchVal(val);
+            }}
+            className={"btn btn-secondary"}
+            size={"sm"}
+          >
+            Search
+          </Button>
         </Col>
 
         <Col className={"text-start"}>
