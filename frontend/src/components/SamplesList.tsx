@@ -7,7 +7,7 @@ import {
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import classNames from "classnames";
-import { FunctionComponent, useRef } from "react";
+import { FunctionComponent, useEffect, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
@@ -102,14 +102,32 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
     });
 
   const [val, setVal] = useState("");
+  const [searchVal, setSearchVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState<any>(null);
-  const [prom, setProm] = useState<any>(Promise.resolve());
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [changes, setChanges] = useState<SampleChange[]>([]);
   const [editMode, setEditMode] = useState(true);
   const gridRef = useRef<any>(null);
+
+  useEffect(() => {
+    async function refetchSearchVal() {
+      await refetch({
+        where: {
+          hasMetadataSampleMetadata_SOME: {
+            OR: sampleFilterWhereVariables(searchVal),
+            ...(sampleQueryParamFieldName && sampleQueryParamValue
+              ? {
+                  [sampleQueryParamFieldName]: sampleQueryParamValue,
+                }
+              : {}),
+          },
+        },
+      });
+    }
+    refetchSearchVal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchVal]);
 
   if (loading)
     return (
@@ -214,36 +232,17 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
             placeholder="Search Samples"
             aria-label="Search"
             value={val}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                setSearchVal(val);
+              }
+            }}
             onInput={(event) => {
-              const value = event.currentTarget.value;
-
-              if (value !== null) {
-                setVal(value);
+              const newVal = event.currentTarget.value;
+              if (newVal === "") {
+                setSearchVal("");
               }
-
-              if (typingTimeout) {
-                clearTimeout(typingTimeout);
-              }
-
-              prom.then(() => {
-                const to = setTimeout(() => {
-                  const rf = refetch({
-                    where: {
-                      hasMetadataSampleMetadata_SOME: {
-                        OR: sampleFilterWhereVariables(value),
-                        ...(sampleQueryParamFieldName && sampleQueryParamValue
-                          ? {
-                              [sampleQueryParamFieldName]:
-                                sampleQueryParamValue,
-                            }
-                          : {}),
-                      },
-                    },
-                  });
-                  setProm(rf);
-                }, 500);
-                setTypingTimeout(to);
-              });
+              setVal(newVal);
             }}
           />
         </Col>
@@ -266,7 +265,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
         <Col md="auto" style={{ marginLeft: -15 }}>
           <Button
             onClick={() => {
-              // setSearchVal(val);
+              setSearchVal(val);
             }}
             className={"btn btn-secondary"}
             size={"sm"}
