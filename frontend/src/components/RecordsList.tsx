@@ -50,6 +50,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [searchWithMRNs, setSearchWithMRNs] = useState(false);
   const navigate = useNavigate();
 
   // note that we aren't using initial fetch
@@ -267,6 +268,22 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         <Col md="auto">
           {remoteCount?.toLocaleString()} matching{" "}
           {remoteCount > 1 ? searchTerm : searchTerm.slice(0, -1)}
+        </Col>
+
+        <Col md="auto">
+          <div className="vr"></div>
+        </Col>
+
+        <Col md="auto" className="mt-1">
+          <Form>
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Search with MRNs"
+              checked={searchWithMRNs}
+              onChange={(e) => setSearchWithMRNs(e.target.checked)}
+            />
+          </Form>
         </Col>
 
         <Col className={"text-end"}>
