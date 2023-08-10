@@ -41,9 +41,9 @@ interface ISampleListProps {
   sampleQueryParamValue?: string;
 }
 
-function sampleFilterWhereVariables(value: string): SampleMetadataWhere[] {
-  const uniqueQueries = parseSearchQueries(value);
-
+function sampleFilterWhereVariables(
+  uniqueQueries: string[]
+): SampleMetadataWhere[] {
   if (uniqueQueries.length > 1) {
     return [
       { cmoSampleName_IN: uniqueQueries },
@@ -143,7 +143,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       await refetch({
         where: {
           hasMetadataSampleMetadata_SOME: {
-            OR: sampleFilterWhereVariables(searchVal),
+            OR: sampleFilterWhereVariables(parseSearchQueries(searchVal)),
             ...(sampleQueryParamFieldName && sampleQueryParamValue
               ? {
                   [sampleQueryParamFieldName]: sampleQueryParamValue,

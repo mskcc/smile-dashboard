@@ -19,6 +19,7 @@ import { SampleWhere } from "../generated/graphql";
 import { defaultRecordsColDef } from "../shared/helpers";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { Tooltip } from "@material-ui/core";
+import { parseSearchQueries } from "../lib/parseSearchQueries";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookGeneric;
@@ -27,7 +28,7 @@ export interface IRecordsListProps {
   pageRoute: string;
   searchTerm: string;
   colDefs: ColDef[];
-  conditionBuilder: (val: string) => Record<string, any>[];
+  conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
   searchVariables: SampleWhere;
@@ -69,10 +70,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       getRows: (params: IServerSideGetRowsParams) => {
         const fetchInput = {
           where: {
-            OR: conditionBuilder(searchVal),
+            OR: conditionBuilder(parseSearchQueries(searchVal)),
           },
           [`${nodeName}ConnectionWhere2`]: {
-            OR: conditionBuilder(searchVal),
+            OR: conditionBuilder(parseSearchQueries(searchVal)),
           },
           options: {
             offset: params.request.startRow,
@@ -130,7 +131,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             return fetchMore({
               variables: {
                 where: {
-                  OR: conditionBuilder(val),
+                  OR: conditionBuilder(parseSearchQueries(searchVal)),
                 },
                 options: {
                   offset: 0,

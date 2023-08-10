@@ -11,12 +11,11 @@ import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
-import { parseSearchQueries } from "../../lib/parseSearchQueries";
 import { Col, Form } from "react-bootstrap";
 
-function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
-  const uniqueQueries = parseSearchQueries(value);
-
+function patientAliasFilterWhereVariables(
+  uniqueQueries: string[]
+): PatientAliasWhere[] {
   if (uniqueQueries.length > 1) {
     return [
       { value_IN: uniqueQueries },

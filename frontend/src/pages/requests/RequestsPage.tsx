@@ -11,11 +11,8 @@ import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
-import { parseSearchQueries } from "../../lib/parseSearchQueries";
 
-function requestFilterWhereVariables(value: string): RequestWhere[] {
-  const uniqueQueries = parseSearchQueries(value);
-
+function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
   if (uniqueQueries.length > 1) {
     return [
       { igoProjectId_IN: uniqueQueries },
