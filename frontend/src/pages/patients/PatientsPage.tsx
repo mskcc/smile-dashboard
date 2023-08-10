@@ -3,7 +3,7 @@ import {
   SampleWhere,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
-import React from "react";
+import React, { useState } from "react";
 import { PatientsListColumns } from "../../shared/helpers";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -12,6 +12,7 @@ import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../lib/parseSearchQueries";
+import { Col, Form } from "react-bootstrap";
 
 function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
   const uniqueQueries = parseSearchQueries(value);
@@ -67,6 +68,7 @@ function patientAliasFilterWhereVariables(value: string): PatientAliasWhere[] {
 
 export const PatientsPage: React.FunctionComponent = (props) => {
   const params = useParams();
+  const [searchWithMRNs, setSearchWithMRNs] = useState(false);
 
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
@@ -99,6 +101,25 @@ export const PatientsPage: React.FunctionComponent = (props) => {
               },
             ],
           } as SampleWhere
+        }
+        customFilter={
+          <>
+            <Col md="auto" className="mt-1">
+              <div className="vr"></div>
+            </Col>
+
+            <Col md="auto" className="mt-1">
+              <Form>
+                <Form.Check
+                  type="switch"
+                  id="custom-switch"
+                  label="Search with MRNs"
+                  checked={searchWithMRNs}
+                  onChange={(e) => setSearchWithMRNs(e.target.checked)}
+                />
+              </Form>
+            </Col>
+          </>
         }
       />
     </>

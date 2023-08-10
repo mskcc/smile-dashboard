@@ -31,6 +31,7 @@ export interface IRecordsListProps {
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
   searchVariables: SampleWhere;
+  customFilter?: JSX.Element;
 }
 
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
@@ -44,13 +45,13 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   sampleQueryParamValue,
   sampleQueryParamFieldName,
   searchVariables,
+  customFilter,
 }) => {
   const [val, setVal] = useState("");
   const [searchVal, setSearchVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [searchWithMRNs, setSearchWithMRNs] = useState(false);
   const navigate = useNavigate();
 
   // note that we aren't using initial fetch
@@ -270,21 +271,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           {remoteCount > 1 ? searchTerm : searchTerm.slice(0, -1)}
         </Col>
 
-        <Col md="auto">
-          <div className="vr"></div>
-        </Col>
-
-        <Col md="auto" className="mt-1">
-          <Form>
-            <Form.Check
-              type="switch"
-              id="custom-switch"
-              label="Search with MRNs"
-              checked={searchWithMRNs}
-              onChange={(e) => setSearchWithMRNs(e.target.checked)}
-            />
-          </Form>
-        </Col>
+        {customFilter}
 
         <Col className={"text-end"}>
           <Button
