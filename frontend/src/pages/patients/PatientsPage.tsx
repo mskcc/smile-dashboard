@@ -101,7 +101,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
             ],
           } as SampleWhere
         }
-        customFilter={
+        customFilterUI={
           <>
             <Col md="auto" className="mt-1">
               <div className="vr"></div>
@@ -120,6 +120,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
             </Col>
           </>
         }
+        customFilterState={searchWithMRNs}
       />
     </>
   );

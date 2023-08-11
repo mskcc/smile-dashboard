@@ -32,7 +32,8 @@ export interface IRecordsListProps {
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
   searchVariables: SampleWhere;
-  customFilter?: JSX.Element;
+  customFilterUI?: JSX.Element;
+  customFilterState?: boolean;
 }
 
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
@@ -46,10 +47,11 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   sampleQueryParamValue,
   sampleQueryParamFieldName,
   searchVariables,
-  customFilter,
+  customFilterUI,
+  customFilterState,
 }) => {
   const [val, setVal] = useState("");
-  const [searchVal, setSearchVal] = useState("");
+  const [searchVal, setSearchVal] = useState<string[]>([]);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -70,10 +72,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       getRows: (params: IServerSideGetRowsParams) => {
         const fetchInput = {
           where: {
-            OR: conditionBuilder(parseSearchQueries(searchVal)),
+            OR: conditionBuilder(searchVal),
           },
           [`${nodeName}ConnectionWhere2`]: {
-            OR: conditionBuilder(parseSearchQueries(searchVal)),
+            OR: conditionBuilder(searchVal),
           },
           options: {
             offset: params.request.startRow,
@@ -123,6 +125,26 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
     }
   };
 
+  const handleSearch = async () => {
+    const uniqueQueries = parseSearchQueries(val);
+    if (customFilterUI && customFilterState) {
+      // TODO: change host name to env variable
+      const response = await fetch("http://localhost:3000/crosswalk", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(uniqueQueries),
+      });
+      const data = await response.json();
+      const cmoIds = data.map((d: any) => d.cmoId);
+      setSearchVal(cmoIds);
+    } else {
+      setSearchVal(uniqueQueries);
+    }
+  };
+
   return (
     <Container fluid>
       {showDownloadModal && (
@@ -131,7 +153,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             return fetchMore({
               variables: {
                 where: {
-                  OR: conditionBuilder(parseSearchQueries(searchVal)),
+                  OR: conditionBuilder(searchVal),
                 },
                 options: {
                   offset: 0,
@@ -227,13 +249,13 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             defaultValue={val}
             onKeyDown={(event) => {
               if (event.key === "Enter") {
-                setSearchVal(val);
+                handleSearch();
               }
             }}
             onInput={(event) => {
               const newVal = event.currentTarget.value;
               if (newVal === "") {
-                setSearchVal("");
+                setSearchVal([]);
               }
               setVal(newVal);
             }}
@@ -257,9 +279,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
 
         <Col md="auto" style={{ marginLeft: -15 }}>
           <Button
-            onClick={() => {
-              setSearchVal(val);
-            }}
+            onClick={handleSearch}
             className={"btn btn-secondary"}
             size={"sm"}
           >
@@ -272,7 +292,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           {remoteCount > 1 ? searchTerm : searchTerm.slice(0, -1)}
         </Col>
 
-        {customFilter}
+        {customFilterUI}
 
         <Col className={"text-end"}>
           <Button
