@@ -13,6 +13,12 @@ import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { Col, Form } from "react-bootstrap";
 
+type PatientIdsTriplet = {
+  dmpId: string;
+  cmoId: string;
+  ptMrn: string;
+};
+
 function patientAliasFilterWhereVariables(
   uniqueQueries: string[]
 ): PatientAliasWhere[] {
@@ -68,24 +74,26 @@ function patientAliasFilterWhereVariables(
 export const PatientsPage: React.FunctionComponent = (props) => {
   const params = useParams();
   const [searchWithMRNs, setSearchWithMRNs] = useState(false);
+  const [patientIdsTriplets, setPatientIdsTriplets] = useState<
+    PatientIdsTriplet[]
+  >([]);
   const [patientsListColumns, setPatientsListColumns] =
     useState(PatientsListColumns);
-  const [patientIdTriplets, setPatientIdTriplets] = useState<any[]>([]);
 
   useEffect(() => {
-    if (searchWithMRNs && patientIdTriplets.length > 0) {
+    if (searchWithMRNs && patientIdsTriplets.length > 0) {
       const colsWithMRNs = PatientsListColumns.map((column) => {
-        if (column.headerName === "MRN") {
+        if (column.headerName === "Patient MRN") {
           return {
             ...column,
             hide: false,
             valueGetter: (params: any) => {
               const cmoId = params.data.value;
-              const patientIdTriplet = patientIdTriplets.find(
+              const patientIdsTriplet = patientIdsTriplets.find(
                 (triplet) => triplet.cmoId === cmoId
               );
-              if (patientIdTriplet) {
-                return patientIdTriplet.ptMrn;
+              if (patientIdsTriplet) {
+                return patientIdsTriplet.ptMrn;
               } else {
                 return "";
               }
@@ -99,7 +107,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
     } else {
       setPatientsListColumns(PatientsListColumns);
     }
-  }, [searchWithMRNs, patientIdTriplets]);
+  }, [searchWithMRNs, patientIdsTriplets]);
 
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
@@ -153,7 +161,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
           </>
         }
         customFilterState={searchWithMRNs}
-        setCustomFilterVals={setPatientIdTriplets}
+        setCustomFilterVals={setPatientIdsTriplets}
       />
     </>
   );

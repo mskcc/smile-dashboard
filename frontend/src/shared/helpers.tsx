@@ -153,8 +153,9 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    headerName: "MRN",
+    headerName: "Patient MRN",
     hide: true,
+    cellStyle: { color: "crimson" },
   },
   {
     field: "cmoPatientId",
