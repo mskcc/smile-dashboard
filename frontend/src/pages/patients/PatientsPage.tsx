@@ -70,14 +70,26 @@ export const PatientsPage: React.FunctionComponent = (props) => {
   const [searchWithMRNs, setSearchWithMRNs] = useState(false);
   const [patientsListColumns, setPatientsListColumns] =
     useState(PatientsListColumns);
+  const [patientIdTriplets, setPatientIdTriplets] = useState<any[]>([]);
 
   useEffect(() => {
-    if (searchWithMRNs) {
+    if (searchWithMRNs && patientIdTriplets.length > 0) {
       const colsWithMRNs = PatientsListColumns.map((column) => {
         if (column.headerName === "MRN") {
           return {
             ...column,
             hide: false,
+            valueGetter: (params: any) => {
+              const cmoId = params.data.value;
+              const patientIdTriplet = patientIdTriplets.find(
+                (triplet) => triplet.cmoId === cmoId
+              );
+              if (patientIdTriplet) {
+                return patientIdTriplet.ptMrn;
+              } else {
+                return "";
+              }
+            },
           };
         } else {
           return column;
@@ -87,7 +99,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
     } else {
       setPatientsListColumns(PatientsListColumns);
     }
-  }, [searchWithMRNs]);
+  }, [searchWithMRNs, patientIdTriplets]);
 
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
@@ -141,6 +153,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
           </>
         }
         customFilterState={searchWithMRNs}
+        setCustomFilterVals={setPatientIdTriplets}
       />
     </>
   );

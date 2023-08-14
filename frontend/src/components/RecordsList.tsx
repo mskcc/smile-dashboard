@@ -34,6 +34,7 @@ export interface IRecordsListProps {
   searchVariables: SampleWhere;
   customFilterUI?: JSX.Element;
   customFilterState?: boolean;
+  setCustomFilterVals?: (vals: any[]) => void;
 }
 
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
@@ -49,6 +50,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   searchVariables,
   customFilterUI,
   customFilterState,
+  setCustomFilterVals,
 }) => {
   const [val, setVal] = useState("");
   const [searchVal, setSearchVal] = useState<string[]>([]);
@@ -127,7 +129,11 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
 
   const handleSearch = async () => {
     const uniqueQueries = parseSearchQueries(val);
-    if (customFilterUI && customFilterState) {
+    if (
+      customFilterUI &&
+      customFilterState &&
+      setCustomFilterVals!.length > 0
+    ) {
       // TODO: change host name to env variable
       const response = await fetch("http://localhost:3000/crosswalk", {
         method: "POST",
@@ -138,6 +144,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         body: JSON.stringify(uniqueQueries),
       });
       const data = await response.json();
+      setCustomFilterVals!(data);
       const cmoIds = data.map((d: any) => d.cmoId);
       setSearchVal(cmoIds);
     } else {
@@ -255,6 +262,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             onInput={(event) => {
               const newVal = event.currentTarget.value;
               if (newVal === "") {
+                setCustomFilterVals && setCustomFilterVals([]);
                 setSearchVal([]);
               }
               setVal(newVal);
