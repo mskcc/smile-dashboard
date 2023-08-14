@@ -88,6 +88,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
             ...column,
             hide: false,
             valueGetter: (params: any) => {
+              params.columnApi.autoSizeAllColumns();
               const cmoId = params.data.value;
               const patientIdsTriplet = patientIdsTriplets.find(
                 (triplet) => triplet.cmoId === cmoId
