@@ -110,6 +110,23 @@ export const PatientsPage: React.FunctionComponent = (props) => {
     }
   }, [searchWithMRNs, patientIdsTriplets]);
 
+  async function fetchPatientIdsTriplets(
+    patientMrns: string[]
+  ): Promise<string[]> {
+    // TODO: replace with dynamic url
+    const response = await fetch("http://localhost:3000/crosswalk", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(patientMrns),
+    });
+    const data: PatientIdsTriplet[] = await response.json();
+    setPatientIdsTriplets(data);
+    return data.map((d) => d.cmoId);
+  }
+
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
 
@@ -163,6 +180,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
         }
         customFilterState={searchWithMRNs}
         setCustomFilterVals={setPatientIdsTriplets}
+        customFilterFunc={fetchPatientIdsTriplets}
       />
     </>
   );
