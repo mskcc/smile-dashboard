@@ -3,7 +3,7 @@ import {
   SampleWhere,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PatientsListColumns } from "../../shared/helpers";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -68,6 +68,26 @@ function patientAliasFilterWhereVariables(
 export const PatientsPage: React.FunctionComponent = (props) => {
   const params = useParams();
   const [searchWithMRNs, setSearchWithMRNs] = useState(false);
+  const [patientsListColumns, setPatientsListColumns] =
+    useState(PatientsListColumns);
+
+  useEffect(() => {
+    if (searchWithMRNs) {
+      const colsWithMRNs = PatientsListColumns.map((column) => {
+        if (column.headerName === "MRN") {
+          return {
+            ...column,
+            hide: false,
+          };
+        } else {
+          return column;
+        }
+      });
+      setPatientsListColumns(colsWithMRNs);
+    } else {
+      setPatientsListColumns(PatientsListColumns);
+    }
+  }, [searchWithMRNs]);
 
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
@@ -82,7 +102,7 @@ export const PatientsPage: React.FunctionComponent = (props) => {
         totalCountNodeName="patientAliasesConnection"
         pageRoute={pageRoute}
         searchTerm="patients"
-        colDefs={PatientsListColumns}
+        colDefs={patientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}

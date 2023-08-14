@@ -153,6 +153,10 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
+    headerName: "MRN",
+    hide: true,
+  },
+  {
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
     valueGetter: function ({ data }) {
