@@ -153,6 +153,7 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
+    field: "patientMrn",
     headerName: "Patient MRN",
     hide: true,
     cellStyle: { color: "crimson" },
@@ -190,6 +191,7 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
+    field: "cmoSampleIds",
     headerName: "CMO Sample IDs",
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].hasSampleSamples.map(
