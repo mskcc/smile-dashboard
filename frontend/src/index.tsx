@@ -2,12 +2,9 @@ import ReactDOM from "react-dom";
 import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RequestsPage from "./pages/requests/RequestsPage";
-import SmileNavBar from "./shared/components/SmileNavBar";
+import { BrowserRouter } from "react-router-dom";
 import { offsetLimitPagination } from "@apollo/client/utilities";
-import PatientsPage from "./pages/patients/PatientsPage";
-import SamplesPage from "./pages/samples/SamplesPage";
+import App from "./App";
 
 const cache = new InMemoryCache({
   /* @ts-ignore */
@@ -37,26 +34,7 @@ const client = new ApolloClient({
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
-      <div>
-        <SmileNavBar />
-
-        <main id="main" className="main">
-          <section className="section dashboard">
-            <Routes>
-              <Route path="/" element={<RequestsPage />}>
-                <Route path=":igoRequestId" />
-              </Route>
-              <Route path="/requests/" element={<RequestsPage />}>
-                <Route path=":igoRequestId" />
-              </Route>
-              <Route path="/patients/" element={<PatientsPage />}>
-                <Route path=":cmoPatientId" />
-              </Route>
-              <Route path="/samples" element={<SamplesPage />} />
-            </Routes>
-          </section>
-        </main>
-      </div>
+      <App />
     </ApolloProvider>
   </BrowserRouter>,
   document.getElementById("root") as HTMLElement
