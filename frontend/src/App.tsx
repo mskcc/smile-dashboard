@@ -7,31 +7,28 @@ import useAuth from "./hooks/useAuth";
 
 function App() {
   const [isLogin, token] = useAuth();
-  return isLogin ? (
+  return (
     <>
-      <SmileNavBar />
-
       <main id="main" className="main">
-        <section className="section dashboard">
-          <Routes>
-            <Route path="/" element={<RequestsPage />}>
-              <Route path=":igoRequestId" />
-            </Route>
-            <Route path="/requests/" element={<RequestsPage />}>
-              <Route path=":igoRequestId" />
-            </Route>
-            <Route path="/patients/" element={<PatientsPage />}>
-              <Route path=":cmoPatientId" />
-            </Route>
-            <Route path="/samples" element={<SamplesPage />} />
-          </Routes>
-        </section>
+        <SmileNavBar />
+        <Routes>
+          {isLogin && (
+            <>
+              <Route path="/" element={<RequestsPage />}>
+                <Route path=":igoRequestId" />
+              </Route>
+              <Route path="/requests/" element={<RequestsPage />}>
+                <Route path=":igoRequestId" />
+              </Route>
+              <Route path="/patients/" element={<PatientsPage />}>
+                <Route path=":cmoPatientId" />
+              </Route>
+              <Route path="/samples" element={<SamplesPage />} />
+            </>
+          )}
+        </Routes>
       </main>
     </>
-  ) : (
-    <div>
-      <h1>Not login</h1>
-    </div>
   );
 }
 
