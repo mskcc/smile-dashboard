@@ -1,9 +1,10 @@
 import logo_with_text from "../../imgs/logo_with_text.png";
 import { Nav, NavLink } from "react-bootstrap";
 import { FunctionComponent } from "react";
+import Keycloak from "keycloak-js";
 
-const SmileNavBar: FunctionComponent<{ logout: Function | undefined }> = ({
-  logout,
+const SmileNavBar: FunctionComponent<{ keycloakClient: Keycloak }> = ({
+  keycloakClient,
 }) => {
   return (
     <>
@@ -24,9 +25,7 @@ const SmileNavBar: FunctionComponent<{ logout: Function | undefined }> = ({
         <button
           type="button"
           className="btn btn-outline-primary btn-sm ms-auto"
-          onClick={() => {
-            logout && logout();
-          }}
+          onClick={() => keycloakClient.logout()}
         >
           Logout
         </button>
