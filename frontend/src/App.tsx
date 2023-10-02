@@ -3,9 +3,9 @@ import RequestsPage from "./pages/requests/RequestsPage";
 import SmileNavBar from "./shared/components/SmileNavBar";
 import PatientsPage from "./pages/patients/PatientsPage";
 import SamplesPage from "./pages/samples/SamplesPage";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Keycloak from "keycloak-js";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, ApolloLink, HttpLink } from "@apollo/client";
 
 const keycloakClient = new Keycloak({
   url: "https://smile-dev.mskcc.org:8443/",
@@ -14,7 +14,6 @@ const keycloakClient = new Keycloak({
 });
 
 function App() {
-  const [token, setToken] = useState<string | undefined>(undefined);
   const apolloClient = useApolloClient();
 
   useEffect(() => {
@@ -22,8 +21,17 @@ function App() {
       .init({
         onLoad: "login-required",
       })
-      .then((res) => {
-        setToken(keycloakClient.token);
+      .then(() => {
+        const newApolloLink = new ApolloLink((operation, forward) => {
+          operation.setContext({
+            headers: {
+              authorization: `Bearer ${keycloakClient.token}`,
+              roles: keycloakClient.realmAccess?.roles,
+            },
+          });
+          return forward(operation);
+        }).concat(new HttpLink({ uri: "http://localhost:4000/graphql" }));
+        apolloClient.setLink(newApolloLink);
       });
   }, []);
 
