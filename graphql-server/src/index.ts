@@ -1,4 +1,4 @@
-import { Express } from "express";
+import { Express, Request } from "express";
 import { buildResolvers } from "./resolvers";
 import { buildProps } from "./buildProps";
 
@@ -74,6 +74,13 @@ async function main() {
   Promise.all([neoSchema.getSchema(), ogm.init()]).then(async ([schema]) => {
     const server = new ApolloServer({
       schema,
+      // context: ({ req }: { req: Request }) => {
+      //   const token = req.headers.authorization || "";
+      //   const roles = req.headers.roles || "";
+
+      //   console.log("token", token);
+      //   console.log("roles", roles);
+      // },
     });
     await server.start();
     server.applyMiddleware({ app });
