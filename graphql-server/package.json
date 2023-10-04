@@ -27,6 +27,7 @@
     "graphql": "^16.5.0",
     "nats": "^2.7.1",
     "neo4j-driver": "^4.4.6",
+    "oracledb": "^6.1.0",
     "prettier": "1.19.1",
     "properties-reader": "^2.2.0",
     "request": "^2.88.2",

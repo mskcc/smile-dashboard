@@ -22,5 +22,9 @@ export function buildProps() {
     pub_validate_sample_update: properties.get(
       "topics.pub_validate_igo_sample_update"
     ),
+
+    oracle_user: properties.get("crdb.oracle_user"),
+    oracle_password: properties.get("crdb.oracle_password"),
+    oracle_connect_string: properties.get("crdb.oracle_connect_string"),
   };
 }

@@ -34,11 +34,29 @@ const driver = neo4j.driver(
 const sessionFactory = () =>
   driver.session({ defaultAccessMode: neo4j.session.WRITE });
 
+const oracledb = require("oracledb");
+oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+
 async function main() {
   const app: Express = express();
   app.use(express.static(path.resolve(__dirname, "../build")));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(express.json({ limit: "50mb" })); // increase to support bulk searching
+
+  app.get("/crosswalk", async (req, res) => {
+    const connection = await oracledb.getConnection({
+      user: props.oracle_user,
+      password: props.oracle_password,
+      connectString: props.oracle_connect_string,
+    });
+
+    const result = await connection.execute(
+      "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE C-MP76JR IN (DMP_ID, PT_MRN, CMO_ID)"
+    );
+
+    console.log(result.rows);
+    await connection.close();
+  });
 
   // for health check
   app.get("/", (req, res) => {
