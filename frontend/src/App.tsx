@@ -30,7 +30,7 @@ function App() {
             },
           });
           return forward(operation);
-        }).concat(new HttpLink({ uri: "http://localhost:4000/graphql" }));
+        }).concat(new HttpLink({ uri: "http://localhost:4001/graphql" }));
         apolloClient.setLink(newApolloLink);
       });
   }, []);
