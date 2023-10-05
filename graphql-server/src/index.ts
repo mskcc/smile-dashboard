@@ -1,12 +1,10 @@
-import { Express, Request } from "express";
+import { Express } from "express";
 import { buildResolvers } from "./resolvers";
 import { buildProps } from "./buildProps";
 
 const fetch = require("node-fetch");
-const gql = require("graphql-tag");
 const ApolloClient = require("apollo-client").ApolloClient;
 const createHttpLink = require("apollo-link-http").createHttpLink;
-const setContext = require("apollo-link-context").setContext;
 const InMemoryCache = require("apollo-cache-inmemory").InMemoryCache;
 
 const path = require("path");
