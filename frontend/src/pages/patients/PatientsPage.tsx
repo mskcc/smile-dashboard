@@ -12,6 +12,7 @@ import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { Col, Form } from "react-bootstrap";
+import Keycloak from "keycloak-js";
 
 type PatientIdsTriplet = {
   dmpId: string;
@@ -71,7 +72,13 @@ function patientAliasFilterWhereVariables(
   }
 }
 
-export const PatientsPage: React.FunctionComponent = (props) => {
+const keycloakClient = new Keycloak({
+  url: "https://smile-dev.mskcc.org:8443/",
+  realm: "smile",
+  clientId: "smile-dashboard-test",
+});
+
+export const PatientsPage: React.FunctionComponent = () => {
   const params = useParams();
   const [searchWithMRNs, setSearchWithMRNs] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
@@ -79,6 +86,21 @@ export const PatientsPage: React.FunctionComponent = (props) => {
   >([]);
   const [patientsListColumns, setPatientsListColumns] =
     useState(PatientsListColumns);
+
+  // Handle user being redirected back to the app after logging in
+  useEffect(() => {
+    keycloakClient
+      .init({
+        onLoad: "check-sso",
+        silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso`,
+      })
+      .then(() => {
+        keycloakClient.authenticated && setSearchWithMRNs(true);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   useEffect(() => {
     if (searchWithMRNs && patientIdsTriplets.length > 0) {
@@ -171,7 +193,14 @@ export const PatientsPage: React.FunctionComponent = (props) => {
                   id="custom-switch"
                   label="Search with MRNs"
                   checked={searchWithMRNs}
-                  onChange={(e) => setSearchWithMRNs(e.target.checked)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      keycloakClient.login();
+                    } else {
+                      setSearchWithMRNs(false);
+                      keycloakClient.logout();
+                    }
+                  }}
                 />
               </Form>
             </Col>
