@@ -182,7 +182,11 @@ export default function PatientsPage({
                   checked={searchWithMRNs}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      keycloakClient.login();
+                      if (!keycloakClient.authenticated) {
+                        keycloakClient.login();
+                      } else {
+                        setSearchWithMRNs(true);
+                      }
                     } else {
                       setSearchWithMRNs(false);
                     }

@@ -25,7 +25,7 @@ export default function SmileNavBar({
           <NavLink href="/patients">Patients</NavLink>
           <NavLink href="/samples">Samples</NavLink>
         </Nav>
-        {searchWithMRNs && (
+        {keycloakClient.authenticated && (
           <div className="ms-auto d-flex">
             <p className="m-auto">Logged in as nguyenq2@mskcc.org</p>
             <button

@@ -18,10 +18,10 @@ function App() {
 
   // Handle user being redirected back to the app after logging in
   useEffect(() => {
+    // if (searchWithMRNs && !keycloakClient.authenticated) {
     keycloakClient
       .init({
-        onLoad: "check-sso",
-        silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso`,
+        onLoad: "login-required",
       })
       .then(() => {
         keycloakClient.authenticated && setSearchWithMRNs(true);
@@ -29,6 +29,7 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
+    // }
   }, []);
 
   return (
@@ -38,6 +39,7 @@ function App() {
           keycloakClient={keycloakClient}
           searchWithMRNs={searchWithMRNs}
         />
+        <button onClick={() => console.log(keycloakClient)}>Log</button>
         <Routes>
           <>
             <Route path="/" element={<RequestsPage />}>
