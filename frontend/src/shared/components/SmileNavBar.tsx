@@ -26,15 +26,18 @@ export default function SmileNavBar({
           <NavLink href="/samples">Samples</NavLink>
         </Nav>
         {searchWithMRNs && (
-          <button
-            type="button"
-            className="btn btn-outline-primary btn-sm ms-auto"
-            onClick={() => {
-              keycloakClient.logout();
-            }}
-          >
-            Logout
-          </button>
+          <div className="ms-auto d-flex">
+            <p className="m-auto">Logged in as nguyenq2@mskcc.org</p>
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm m-3"
+              onClick={() => {
+                keycloakClient.logout();
+              }}
+            >
+              Logout
+            </button>
+          </div>
         )}
       </header>
     </>
