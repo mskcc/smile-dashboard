@@ -72,35 +72,22 @@ function patientAliasFilterWhereVariables(
   }
 }
 
-const keycloakClient = new Keycloak({
-  url: "https://smile-dev.mskcc.org:8443/",
-  realm: "smile",
-  clientId: "smile-dashboard-test",
-});
-
-export const PatientsPage: React.FunctionComponent = () => {
+export default function PatientsPage({
+  keycloakClient,
+  searchWithMRNs,
+  setSearchWithMRNs,
+}: {
+  keycloakClient: Keycloak;
+  searchWithMRNs: boolean;
+  setSearchWithMRNs: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const params = useParams();
-  const [searchWithMRNs, setSearchWithMRNs] = useState(false);
+
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
     PatientIdsTriplet[]
   >([]);
   const [patientsListColumns, setPatientsListColumns] =
     useState(PatientsListColumns);
-
-  // Handle user being redirected back to the app after logging in
-  useEffect(() => {
-    keycloakClient
-      .init({
-        onLoad: "check-sso",
-        silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso`,
-      })
-      .then(() => {
-        keycloakClient.authenticated && setSearchWithMRNs(true);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   useEffect(() => {
     if (searchWithMRNs && patientIdsTriplets.length > 0) {
@@ -198,7 +185,6 @@ export const PatientsPage: React.FunctionComponent = () => {
                       keycloakClient.login();
                     } else {
                       setSearchWithMRNs(false);
-                      keycloakClient.logout();
                     }
                   }}
                 />
@@ -212,6 +198,4 @@ export const PatientsPage: React.FunctionComponent = () => {
       />
     </>
   );
-};
-
-export default PatientsPage;
+}
