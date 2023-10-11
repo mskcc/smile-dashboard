@@ -4,10 +4,8 @@ import Keycloak from "keycloak-js";
 
 export default function SmileNavBar({
   keycloakClient,
-  searchWithMRNs,
 }: {
   keycloakClient: Keycloak;
-  searchWithMRNs: boolean;
 }) {
   return (
     <>

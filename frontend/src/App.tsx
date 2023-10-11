@@ -35,10 +35,7 @@ function App() {
   return (
     <>
       <main id="main" className="main">
-        <SmileNavBar
-          keycloakClient={keycloakClient}
-          searchWithMRNs={searchWithMRNs}
-        />
+        <SmileNavBar keycloakClient={keycloakClient} />
         <button onClick={() => console.log(keycloakClient)}>Log</button>
         <Routes>
           <>
