@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import RequestsPage from "./pages/requests/RequestsPage";
 import SmileNavBar from "./shared/components/SmileNavBar";
 import PatientsPage from "./pages/patients/PatientsPage";
-import SilentCheckSSO from "./pages/patients/SilentCheckSSO";
 import SamplesPage from "./pages/samples/SamplesPage";
 import { useEffect, useState } from "react";
 import Keycloak from "keycloak-js";
@@ -16,12 +15,12 @@ const keycloakClient = new Keycloak({
 function App() {
   const [searchWithMRNs, setSearchWithMRNs] = useState(false);
 
-  // Handle user being redirected back to the app after logging in
   useEffect(() => {
-    // if (searchWithMRNs && !keycloakClient.authenticated) {
     keycloakClient
       .init({
-        onLoad: "login-required",
+        onLoad: "check-sso",
+        silentCheckSsoRedirectUri:
+          window.location.origin + "/silent-check-sso.html",
       })
       .then(() => {
         keycloakClient.authenticated && setSearchWithMRNs(true);
@@ -29,14 +28,12 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
-    // }
   }, []);
 
   return (
     <>
       <main id="main" className="main">
         <SmileNavBar keycloakClient={keycloakClient} />
-        <button onClick={() => console.log(keycloakClient)}>Log</button>
         <Routes>
           <>
             <Route path="/" element={<RequestsPage />}>
@@ -58,7 +55,6 @@ function App() {
               <Route path=":cmoPatientId" />
             </Route>
             <Route path="/samples" element={<SamplesPage />} />
-            <Route path="/silent-check-sso" element={<SilentCheckSSO />} />
           </>
         </Routes>
       </main>

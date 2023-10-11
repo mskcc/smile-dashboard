@@ -25,7 +25,9 @@ export default function SmileNavBar({
         </Nav>
         {keycloakClient.authenticated && (
           <div className="ms-auto d-flex">
-            <p className="m-auto">Logged in as nguyenq2@mskcc.org</p>
+            <p className="m-auto">
+              Logged in as {keycloakClient.idTokenParsed?.email}
+            </p>
             <button
               type="button"
               className="btn btn-outline-primary btn-sm m-3"
