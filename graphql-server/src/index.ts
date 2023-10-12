@@ -6,6 +6,7 @@ const fetch = require("node-fetch");
 const ApolloClient = require("apollo-client").ApolloClient;
 const createHttpLink = require("apollo-link-http").createHttpLink;
 const InMemoryCache = require("apollo-cache-inmemory").InMemoryCache;
+const cors = require("cors");
 
 const path = require("path");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
@@ -32,7 +33,7 @@ const driver = neo4j.driver(
 const sessionFactory = () =>
   driver.session({ defaultAccessMode: neo4j.session.WRITE });
 
-// OracleDB connection requires `node-oracledb` on Thick mode & the Oracle Instant Client, which is unavailable for M1 Macs
+// OracleDB requires node-oracledb's Thick mode & the Oracle Instant Client, which is unavailable for M1 Macs
 let oracledb: any = null;
 const os = require("os");
 if (os.arch() !== "arm64") {
@@ -46,24 +47,35 @@ async function main() {
   app.use(express.static(path.resolve(__dirname, "../build")));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(express.json({ limit: "50mb" })); // increase to support bulk searching
+  app.use(cors());
 
-  if (os.arch() !== "arm64" && oracledb !== null) {
-    app.get("/crosswalk", async (req, res) => {
+  app.post("/crosswalk", async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    const patientMrns = req.body;
+    const patientIdsTriplets = [];
+
+    if (os.arch() !== "arm64" && oracledb !== null) {
       const connection = await oracledb.getConnection({
         user: props.oracle_user,
         password: props.oracle_password,
         connectString: props.oracle_connect_string,
       });
 
-      const result = await connection.execute(
-        "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE '9LHE08' IN (DMP_ID, PT_MRN, CMO_ID)"
-      );
-
-      res.send(result.rows);
+      for (const patientMrn of patientMrns) {
+        const result = await connection.execute(
+          "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientMrn IN (DMP_ID, PT_MRN, CMO_ID)",
+          { patientMrn }
+        );
+        if (result.rows.length > 0) {
+          patientIdsTriplets.push(result.rows[0]);
+        }
+      }
       await connection.close();
-      return;
-    });
-  }
+    }
+
+    res.sendStatus(200);
+    return;
+  });
 
   // for health check
   app.get("/", (req, res) => {
@@ -97,16 +109,7 @@ async function main() {
   });
 
   Promise.all([neoSchema.getSchema(), ogm.init()]).then(async ([schema]) => {
-    const server = new ApolloServer({
-      schema,
-      // context: ({ req }: { req: Request }) => {
-      //   const token = req.headers.authorization || "";
-      //   const roles = req.headers.roles || "";
-
-      //   console.log("token", token);
-      //   console.log("roles", roles);
-      // },
-    });
+    const server = new ApolloServer({ schema });
     await server.start();
     server.applyMiddleware({ app });
     await new Promise((resolve) => httpServer.listen({ port: 4001 }, resolve));

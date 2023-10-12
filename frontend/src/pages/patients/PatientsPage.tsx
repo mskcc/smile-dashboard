@@ -121,18 +121,26 @@ export default function PatientsPage({
   async function fetchPatientIdsTriplets(
     patientMrns: string[]
   ): Promise<string[]> {
-    // TODO: replace with dynamic url
-    const response = await fetch("http://localhost:3000/crosswalk", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(patientMrns),
-    });
-    const data: PatientIdsTriplet[] = await response.json();
-    setPatientIdsTriplets(data);
-    return data.map((d) => d.cmoId);
+    try {
+      const response = await fetch("http://localhost:4001/crosswalk", {
+        // TODO: replace with dynamic url
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${keycloakClient.token}`,
+        },
+        body: JSON.stringify(patientMrns),
+      });
+
+      const data: PatientIdsTriplet[] = await response.json();
+
+      setPatientIdsTriplets(data);
+
+      return data.map((d) => d.cmoId);
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   }
 
   const pageRoute = "/patients";
