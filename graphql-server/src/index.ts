@@ -2,6 +2,10 @@ import { Express } from "express";
 import { buildResolvers } from "./resolvers";
 import { buildProps } from "./buildProps";
 
+import { Issuer, Strategy } from "openid-client";
+const passport = require("passport");
+const expressSession = require("express-session");
+
 const fetch = require("node-fetch");
 const ApolloClient = require("apollo-client").ApolloClient;
 const createHttpLink = require("apollo-link-http").createHttpLink;
@@ -48,6 +52,97 @@ async function main() {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(express.json({ limit: "50mb" })); // increase to support bulk searching
   app.use(cors());
+
+  const keycloakIssuer = await Issuer.discover(
+    "https://smile-dev.mskcc.org:8443/realms/smile"
+  );
+  console.log(
+    "Discovered issuer %s %O",
+    keycloakIssuer.issuer,
+    keycloakIssuer.metadata
+  );
+
+  const keycloakClient = new keycloakIssuer.Client({
+    client_id: "smile-dashboard-test",
+    client_secret: "long_secret-here", // placeholder
+    redirect_uris: ["http://localhost:4001/auth/callback"],
+    post_logout_redirect_uris: ["http://localhost:4001/logout/callback"],
+    response_types: ["code"],
+  });
+
+  const memoryStore = new expressSession.MemoryStore();
+  app.use(
+    expressSession({
+      secret: "another_long_secret", // placeholder
+      resave: false,
+      saveUninitialized: true,
+      store: memoryStore,
+    })
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.authenticate("session"));
+
+  passport.use(
+    "oidc",
+    new Strategy(
+      { client: keycloakClient },
+      (tokenSet: any, userinfo: any, done: any) => {
+        return done(null, tokenSet.claims());
+      }
+    )
+  );
+
+  passport.serializeUser(function (user: any, done: any) {
+    done(null, user);
+  });
+  passport.deserializeUser(function (user: any, done: any) {
+    done(null, user);
+  });
+
+  app.get("/test", (req, res, next) => {
+    passport.authenticate("oidc")(req, res, next);
+  });
+
+  app.get("/auth/callback", (req, res, next) => {
+    passport.authenticate("oidc", {
+      successRedirect: "/testauth",
+      failureRedirect: "/",
+    })(req, res, next);
+  });
+
+  const checkAuthenticated = (req: any, res: any, next: any) => {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.redirect("/test");
+  };
+
+  app.get("/testauth", checkAuthenticated, (req, res) => {
+    res.send("test");
+  });
+
+  app.get("/other", checkAuthenticated, (req, res) => {
+    res.send("other");
+  });
+
+  //unprotected route
+  app.get("/free", function (req, res) {
+    res.send("free");
+  });
+
+  app.get("/logout", (req, res) => {
+    res.redirect(keycloakClient.endSessionUrl());
+  });
+
+  app.get("/logout/callback", (req: any, res, next) => {
+    req.logout((err: any) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect("/");
+    });
+  });
 
   app.post("/crosswalk", async (req, res) => {
     const token = req.headers.authorization?.split(" ")[1];
