@@ -3,7 +3,7 @@ import {
   SampleWhere,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { PatientsListColumns } from "../../shared/helpers";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -12,7 +12,6 @@ import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { Col, Form } from "react-bootstrap";
-import Keycloak from "keycloak-js";
 
 type PatientIdsTriplet = {
   dmpId: string;
@@ -72,17 +71,10 @@ function patientAliasFilterWhereVariables(
   }
 }
 
-export default function PatientsPage({
-  keycloakClient,
-  searchWithMRNs,
-  setSearchWithMRNs,
-}: {
-  keycloakClient: Keycloak;
-  searchWithMRNs: boolean;
-  setSearchWithMRNs: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function PatientsPage() {
   const params = useParams();
 
+  const [searchWithMRNs, setSearchWithMRNs] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
     PatientIdsTriplet[]
   >([]);
@@ -122,12 +114,11 @@ export default function PatientsPage({
     patientMrns: string[]
   ): Promise<string[]> {
     try {
-      const response = await fetch("http://localhost:4001/crosswalk", {
-        // TODO: replace with dynamic url
+      // TODO: replace with dynamic url
+      const response = await fetch("http://localhost:4001/mrn-search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${keycloakClient.token}`,
         },
         body: JSON.stringify(patientMrns),
       });
@@ -189,15 +180,7 @@ export default function PatientsPage({
                   label="Search with MRNs"
                   checked={searchWithMRNs}
                   onChange={(e) => {
-                    if (e.target.checked) {
-                      if (!keycloakClient.authenticated) {
-                        keycloakClient.login();
-                      } else {
-                        setSearchWithMRNs(true);
-                      }
-                    } else {
-                      setSearchWithMRNs(false);
-                    }
+                    setSearchWithMRNs(e.target.checked);
                   }}
                 />
               </Form>

@@ -1,12 +1,7 @@
 import logo_with_text from "../../imgs/logo_with_text.png";
 import { Nav, NavLink } from "react-bootstrap";
-import Keycloak from "keycloak-js";
 
-export default function SmileNavBar({
-  keycloakClient,
-}: {
-  keycloakClient: Keycloak;
-}) {
+export default function SmileNavBar() {
   return (
     <>
       <header
@@ -23,22 +18,16 @@ export default function SmileNavBar({
           <NavLink href="/patients">Patients</NavLink>
           <NavLink href="/samples">Samples</NavLink>
         </Nav>
-        {keycloakClient.authenticated && (
-          <div className="ms-auto d-flex">
-            <p className="m-auto">
-              Logged in as {keycloakClient.idTokenParsed?.email}
-            </p>
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm m-3"
-              onClick={() => {
-                keycloakClient.logout();
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        )}
+        <div className="ms-auto d-flex">
+          <p className="m-auto">Logged in as email@email.com</p>
+          <button
+            type="button"
+            className="btn btn-outline-primary btn-sm m-3"
+            onClick={() => {}}
+          >
+            Logout
+          </button>
+        </div>
       </header>
     </>
   );
