@@ -123,6 +123,30 @@ export default function PatientsPage() {
         body: JSON.stringify(patientMrns),
       });
 
+      if (response.status === 401) {
+        const width = 800,
+          height = 800;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+
+        // TODO: turn these values into env variables
+        const keycloakAuthUrl =
+          "https://smile-dev.mskcc.org:8443/realms/smile/protocol/openid-connect/auth";
+        const clientId = "smile-dashboard-test";
+        const authCallbackUrl = encodeURIComponent(
+          "http://localhost:4001/auth/callback"
+        );
+        const queryParams = `client_id=${clientId}&scope=openid&response_type=code&redirect_uri=${authCallbackUrl}`;
+        const url = `${keycloakAuthUrl}?${queryParams}`;
+
+        window.open(
+          url,
+          "_blank",
+          `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
+        );
+        return [];
+      }
+
       const data: PatientIdsTriplet[] = await response.json();
 
       setPatientIdsTriplets(data);

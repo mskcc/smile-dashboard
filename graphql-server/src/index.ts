@@ -56,11 +56,6 @@ async function main() {
   const keycloakIssuer = await Issuer.discover(
     "https://smile-dev.mskcc.org:8443/realms/smile"
   );
-  console.log(
-    "Discovered issuer %s %O",
-    keycloakIssuer.issuer,
-    keycloakIssuer.metadata
-  );
 
   const keycloakClient = new keycloakIssuer.Client({
     client_id: "smile-dashboard-test",
@@ -88,7 +83,7 @@ async function main() {
     new Strategy(
       { client: keycloakClient },
       (tokenSet: any, userinfo: any, done: any) => {
-        return done(null, tokenSet.claims());
+        return done(null, tokenSet.claims()); // look more under the hood what this is doing; might use this to check the user's role
       }
     )
   );
@@ -100,35 +95,28 @@ async function main() {
     done(null, user);
   });
 
-  app.get("/test", (req, res, next) => {
+  app.get("/login", (req, res, next) => {
     passport.authenticate("oidc")(req, res, next);
   });
 
   app.get("/auth/callback", (req, res, next) => {
     passport.authenticate("oidc", {
-      successRedirect: "/testauth",
+      successRedirect: "/post-login",
       failureRedirect: "/",
     })(req, res, next);
   });
 
+  // middleware to check if user is authenticated using passport
   const checkAuthenticated = (req: any, res: any, next: any) => {
     if (req.isAuthenticated()) {
       return next();
+    } else {
+      res.status(401).send("401 Unauthorized");
     }
-    res.redirect("/test");
   };
 
-  app.get("/testauth", checkAuthenticated, (req, res) => {
-    res.send("test");
-  });
-
-  app.get("/other", checkAuthenticated, (req, res) => {
-    res.send("other");
-  });
-
-  //unprotected route
-  app.get("/free", function (req, res) {
-    res.send("free");
+  app.get("/post-login", checkAuthenticated, (req, res) => {
+    res.send("You are logged in");
   });
 
   app.get("/logout", (req, res) => {
@@ -144,8 +132,7 @@ async function main() {
     });
   });
 
-  app.post("/crosswalk", async (req, res) => {
-    const token = req.headers.authorization?.split(" ")[1];
+  app.post("/mrn-search", checkAuthenticated, async (req, res) => {
     const patientMrns = req.body;
     const patientIdsTriplets = [];
 
