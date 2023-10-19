@@ -76,18 +76,11 @@ async function main() {
   );
 
   app.use(passport.initialize());
-  app.use(passport.authenticate("session"));
 
-  passport.use(
-    "oidc",
-    new Strategy(
-      { client: keycloakClient },
-      (tokenSet: any, userinfo: any, done: any) => {
-        return done(null, tokenSet.claims()); // look more under the hood what this is doing; might use this to check the user's role
-      }
-    )
-  );
+  // Enables persistent login sessions; equivalent to `app.use(passport.authenticate('session'))`
+  app.use(passport.session());
 
+  // These two functions are required for the Session strategy above to work
   passport.serializeUser(function (user: any, done: any) {
     done(null, user);
   });
@@ -95,20 +88,36 @@ async function main() {
     done(null, user);
   });
 
+  passport.use(
+    "oidc",
+    new Strategy(
+      { client: keycloakClient },
+      (tokenSet: any, userinfo: any, done: any) => {
+        return done(null, tokenSet.claims());
+      }
+    )
+  );
+
   app.get("/login", (req, res, next) => {
+    // Initiates the authentication request
     passport.authenticate("oidc")(req, res, next);
   });
 
   app.get("/auth/callback", (req, res, next) => {
+    // This second passport.authenticate() serves a distinct function from the above.
+    // Lets Keycloak respond to the above authentication request, following the OpenID protocol.
+    // If successful, this adds `isAuthenticated()` to the `req` object which is used below.
     passport.authenticate("oidc", {
       successRedirect: "/post-login",
       failureRedirect: "/",
     })(req, res, next);
   });
 
-  // middleware to check if user is authenticated using passport
+  // Helps protected route check if user is authenticated
   const checkAuthenticated = (req: any, res: any, next: any) => {
-    if (req.isAuthenticated()) {
+    const isAuthenticated = req.isAuthenticated();
+    // console.log("isAuthenticated:", isAuthenticated);
+    if (isAuthenticated) {
       return next();
     } else {
       res.status(401).send("401 Unauthorized");
@@ -144,6 +153,10 @@ async function main() {
       }
       res.redirect("/");
     });
+  });
+
+  app.get("/check-login", checkAuthenticated, async (req, res) => {
+    res.send("You are logged in.");
   });
 
   app.post("/mrn-search", checkAuthenticated, async (req, res) => {
