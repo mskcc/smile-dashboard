@@ -71,7 +71,7 @@ function patientAliasFilterWhereVariables(
   }
 }
 
-export default function PatientsPage() {
+export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const params = useParams();
 
   const [searchWithMRNs, setSearchWithMRNs] = useState(false);
@@ -80,6 +80,23 @@ export default function PatientsPage() {
   >([]);
   const [patientsListColumns, setPatientsListColumns] =
     useState(PatientsListColumns);
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  useEffect(() => {
+    function handleLogin(event: any) {
+      if (event.origin !== "http://localhost:4001") return;
+      setUserEmail(event.data);
+      setPopupOpen(false);
+    }
+
+    if (popupOpen) {
+      window.addEventListener("message", handleLogin);
+      return () => {
+        window.removeEventListener("message", handleLogin);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [popupOpen]);
 
   useEffect(() => {
     if (searchWithMRNs && patientIdsTriplets.length > 0) {
@@ -124,6 +141,8 @@ export default function PatientsPage() {
       });
 
       if (response.status === 401) {
+        setPopupOpen(true);
+
         const width = 800,
           height = 800;
         const left = (window.screen.width - width) / 2;

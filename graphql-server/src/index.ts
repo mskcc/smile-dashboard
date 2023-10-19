@@ -115,16 +115,21 @@ async function main() {
     }
   };
 
-  app.get("/post-login", checkAuthenticated, (req, res) => {
+  app.get("/post-login", checkAuthenticated, (req: any, res) => {
+    const userEmail = req.user.email;
+
     res.send(`
       <script>
+        window.opener.postMessage(${JSON.stringify(
+          userEmail
+        )}, "http://localhost:3006/patients");
         window.onload = function() {
           setTimeout(function() {
             window.close();
-          }, 2000);
-        }
+          }, 1000);
+        };
       </script>
-      You are logged in. This tab will close automatically.
+      You are logged in.
     `);
   });
 
@@ -165,6 +170,7 @@ async function main() {
     }
 
     res.sendStatus(200);
+    res.send(patientIdsTriplets);
     return;
   });
 
