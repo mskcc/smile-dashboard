@@ -116,7 +116,16 @@ async function main() {
   };
 
   app.get("/post-login", checkAuthenticated, (req, res) => {
-    res.send("You are logged in");
+    res.send(`
+      <script>
+        window.onload = function() {
+          setTimeout(function() {
+            window.close();
+          }, 2000);
+        }
+      </script>
+      You are logged in. This tab will close automatically.
+    `);
   });
 
   app.get("/logout", (req, res) => {
