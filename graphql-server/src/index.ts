@@ -51,7 +51,12 @@ async function main() {
   app.use(express.static(path.resolve(__dirname, "../build")));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(express.json({ limit: "50mb" })); // increase to support bulk searching
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "http://localhost:3006",
+      credentials: true,
+    })
+  );
 
   const keycloakIssuer = await Issuer.discover(
     "https://smile-dev.mskcc.org:8443/realms/smile"
@@ -182,8 +187,7 @@ async function main() {
       await connection.close();
     }
 
-    res.sendStatus(200);
-    res.send(patientIdsTriplets);
+    res.status(200).json(patientIdsTriplets);
     return;
   });
 

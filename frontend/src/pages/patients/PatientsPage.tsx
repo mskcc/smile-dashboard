@@ -134,6 +134,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       // TODO: replace with dynamic url
       const response = await fetch("http://localhost:4001/mrn-search", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -143,8 +144,8 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       if (response.status === 401) {
         setPopupOpen(true);
 
-        const width = 800,
-          height = 800;
+        const width = 800;
+        const height = 800;
         const left = (window.screen.width - width) / 2;
         const top = (window.screen.height - height) / 2;
 
@@ -157,9 +158,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       }
 
       const data: PatientIdsTriplet[] = await response.json();
-
       setPatientIdsTriplets(data);
-
       return data.map((d) => d.cmoId);
     } catch (error) {
       console.log(error);
