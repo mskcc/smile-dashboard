@@ -1,6 +1,6 @@
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container, Form, Row, Modal } from "react-bootstrap";
-import React, { FunctionComponent, useMemo } from "react";
+import { FunctionComponent, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { DownloadModal } from "./DownloadModal";

@@ -9,28 +9,26 @@ function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   return (
-    <>
-      <main id="main" className="main">
-        <SmileNavBar userEmail={userEmail} />
-        <Routes>
-          <>
-            <Route path="/" element={<RequestsPage />}>
-              <Route path=":igoRequestId" />
-            </Route>
-            <Route path="/requests/" element={<RequestsPage />}>
-              <Route path=":igoRequestId" />
-            </Route>
-            <Route
-              path="/patients/"
-              element={<PatientsPage setUserEmail={setUserEmail} />}
-            >
-              <Route path=":cmoPatientId" />
-            </Route>
-            <Route path="/samples" element={<SamplesPage />} />
-          </>
-        </Routes>
-      </main>
-    </>
+    <main id="main" className="main">
+      <SmileNavBar userEmail={userEmail} />
+      <Routes>
+        <>
+          <Route path="/" element={<RequestsPage />}>
+            <Route path=":igoRequestId" />
+          </Route>
+          <Route path="/requests/" element={<RequestsPage />}>
+            <Route path=":igoRequestId" />
+          </Route>
+          <Route
+            path="/patients/"
+            element={<PatientsPage setUserEmail={setUserEmail} />}
+          >
+            <Route path=":cmoPatientId" />
+          </Route>
+          <Route path="/samples" element={<SamplesPage />} />
+        </>
+      </Routes>
+    </main>
   );
 }
 
