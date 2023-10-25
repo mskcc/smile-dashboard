@@ -13,6 +13,8 @@ import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { Col, Form } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
+import { Tooltip } from "@material-ui/core";
+import InfoIcon from "@material-ui/icons/InfoOutlined";
 
 type PatientIdsTriplet = {
   dmpId: string;
@@ -75,7 +77,7 @@ function patientAliasFilterWhereVariables(
 export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const params = useParams();
 
-  const [searchWithMRNs, setSearchWithMRNs] = useState(false);
+  const [phiEnabled, setPhiEnabled] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
     PatientIdsTriplet[]
   >([]);
@@ -101,7 +103,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   }, [popupOpen]);
 
   useEffect(() => {
-    if (searchWithMRNs && patientIdsTriplets.length > 0) {
+    if (phiEnabled && patientIdsTriplets.length > 0) {
       const colsWithMRNs = PatientsListColumns.map((column) => {
         if (column.headerName === "Patient MRN") {
           return {
@@ -127,7 +129,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
     } else {
       setPatientsListColumns(PatientsListColumns);
     }
-  }, [searchWithMRNs, patientIdsTriplets]);
+  }, [phiEnabled, patientIdsTriplets]);
 
   async function fetchPatientIdsTriplets(
     patientMrns: string[]
@@ -216,17 +218,31 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
                 <Form.Check
                   type="switch"
                   id="custom-switch"
-                  label="Search with MRNs"
-                  checked={searchWithMRNs}
+                  label="PHI-enabled"
+                  checked={phiEnabled}
                   onChange={(e) => {
-                    setSearchWithMRNs(e.target.checked);
+                    setPhiEnabled(e.target.checked);
                   }}
                 />
               </Form>
             </Col>
+
+            <Col md="auto" style={{ marginLeft: -15 }}>
+              <Tooltip
+                title={
+                  <span style={{ fontSize: 12 }}>
+                    When enabled, you can search for patients by either their
+                    MRN, CMO Patient ID, or DMP Patient ID. The results will
+                    include an additional column with the patient's MRN.
+                  </span>
+                }
+              >
+                <InfoIcon style={{ fontSize: 18, color: "grey" }} />
+              </Tooltip>
+            </Col>
           </>
         }
-        customFilterState={searchWithMRNs}
+        customFilterState={phiEnabled}
         setCustomFilterVals={setPatientIdsTriplets}
         customFilterFunc={fetchPatientIdsTriplets}
       />
