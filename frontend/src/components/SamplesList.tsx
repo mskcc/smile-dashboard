@@ -243,7 +243,8 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
         onHide={() => {
           setShowAlertModal(false);
         }}
-        message={
+        title={"Limit reached"}
+        content={
           "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples."
         }
       />
