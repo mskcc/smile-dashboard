@@ -12,6 +12,7 @@ import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { Col, Form } from "react-bootstrap";
+import { AlertModal } from "../../components/AlertModal";
 
 type PatientIdsTriplet = {
   dmpId: string;
@@ -81,6 +82,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const [patientsListColumns, setPatientsListColumns] =
     useState(PatientsListColumns);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
 
   useEffect(() => {
     function handleLogin(event: any) {
@@ -141,6 +143,11 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
         body: JSON.stringify(patientMrns),
       });
 
+      if (response.status === 403) {
+        setShowAlertModal(true);
+        return [];
+      }
+
       if (response.status === 401) {
         setPopupOpen(true);
 
@@ -161,7 +168,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       setPatientIdsTriplets(data);
       return data.map((d) => d.cmoId);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return [];
     }
   }
@@ -222,6 +229,17 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
         customFilterState={searchWithMRNs}
         setCustomFilterVals={setPatientIdsTriplets}
         customFilterFunc={fetchPatientIdsTriplets}
+      />
+
+      <AlertModal
+        show={showAlertModal}
+        onHide={() => {
+          setShowAlertModal(false);
+        }}
+        title={"Access unauthorized"}
+        content={
+          "You are not authorized to access PHI data. If you would like to request access, please reach out to the administrator."
+        }
       />
     </>
   );
