@@ -118,11 +118,8 @@ async function main() {
     })(req, res, next);
   });
 
-  // Helps protected route check if user is authenticated
   const checkAuthenticated = (req: any, res: any, next: any) => {
-    const isAuthenticated = req.isAuthenticated();
-    // console.log("isAuthenticated:", isAuthenticated);
-    if (isAuthenticated) {
+    if (req.isAuthenticated()) {
       return next();
     } else {
       res.status(401).send("401 Unauthorized");
@@ -164,32 +161,46 @@ async function main() {
     res.send("You are logged in.");
   });
 
-  app.post("/mrn-search", checkAuthenticated, async (req, res) => {
-    const patientMrns = req.body;
-    const patientIdsTriplets = [];
-
-    if (os.arch() !== "arm64" && oracledb !== null) {
-      const connection = await oracledb.getConnection({
-        user: props.oracle_user,
-        password: props.oracle_password,
-        connectString: props.oracle_connect_string,
-      });
-
-      for (const patientMrn of patientMrns) {
-        const result = await connection.execute(
-          "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientMrn IN (DMP_ID, PT_MRN, CMO_ID)",
-          { patientMrn }
-        );
-        if (result.rows.length > 0) {
-          patientIdsTriplets.push(result.rows[0]);
-        }
-      }
-      await connection.close();
+  function checkAuthorized(req: any, res: any, next: any) {
+    const userRoles = req.user.groups;
+    if (userRoles.includes("mrn-search")) {
+      return next();
+    } else {
+      res.status(403).send("403 Forbidden");
     }
+  }
 
-    res.status(200).json(patientIdsTriplets);
-    return;
-  });
+  app.post(
+    "/mrn-search",
+    checkAuthenticated,
+    checkAuthorized,
+    async (req, res) => {
+      const patientMrns = req.body;
+      const patientIdsTriplets = [];
+
+      if (os.arch() !== "arm64" && oracledb !== null) {
+        const connection = await oracledb.getConnection({
+          user: props.oracle_user,
+          password: props.oracle_password,
+          connectString: props.oracle_connect_string,
+        });
+
+        for (const patientMrn of patientMrns) {
+          const result = await connection.execute(
+            "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientMrn IN (DMP_ID, PT_MRN, CMO_ID)",
+            { patientMrn }
+          );
+          if (result.rows.length > 0) {
+            patientIdsTriplets.push(result.rows[0]);
+          }
+        }
+        await connection.close();
+      }
+
+      res.status(200).json(patientIdsTriplets);
+      return;
+    }
+  );
 
   // for health check
   app.get("/", (req, res) => {
