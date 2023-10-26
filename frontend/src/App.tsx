@@ -10,12 +10,16 @@ function App() {
 
   useEffect(() => {
     async function checkLogin() {
-      const response = await fetch("http://localhost:4001/check-login", {
-        credentials: "include",
-      });
-      if (response.status === 200) {
-        const userEmail = await response.text();
-        setUserEmail(userEmail);
+      try {
+        const response = await fetch("http://localhost:4001/check-login", {
+          credentials: "include",
+        });
+        if (response.status === 200) {
+          const userEmail = await response.text();
+          setUserEmail(userEmail);
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
     checkLogin();
@@ -23,7 +27,7 @@ function App() {
 
   return (
     <main id="main" className="main">
-      <SmileNavBar userEmail={userEmail} />
+      <SmileNavBar userEmail={userEmail} setUserEmail={setUserEmail} />
       <Routes>
         <>
           <Route path="/" element={<RequestsPage />}>

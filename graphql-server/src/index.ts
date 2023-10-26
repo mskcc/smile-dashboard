@@ -66,7 +66,6 @@ async function main() {
     client_id: "smile-dashboard-test",
     client_secret: "long_secret-here", // placeholder
     redirect_uris: ["http://localhost:4001/auth/callback"],
-    post_logout_redirect_uris: ["http://localhost:4001/logout/callback"],
     response_types: ["code"],
   });
 
@@ -93,11 +92,13 @@ async function main() {
     done(null, user);
   });
 
+  let id_token = "";
   passport.use(
     "oidc",
     new Strategy(
       { client: keycloakClient },
       (tokenSet: any, userinfo: any, done: any) => {
+        id_token = tokenSet.id_token;
         return done(null, tokenSet.claims());
       }
     )
@@ -144,21 +145,20 @@ async function main() {
     `);
   });
 
-  app.get("/logout", (req, res) => {
-    // res.redirect(keycloakClient.endSessionUrl());
-    res.redirect(
-      "https://smile-dev.mskcc.org:8443/auth/realms/smile/protocol/openid-connect/logout"
-    );
-    // https://smile-dev.mskcc.org:8443/realms/smile/protocol/openid-connect/logout?post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Flogout%2Fcallback&client_id=smile-dashboard-test
-  });
-
-  app.get("/logout/callback", (req: any, res, next) => {
-    req.logout((err: any) => {
-      if (err) {
-        return next(err);
+  app.post("/logout", (req: any, res, next) => {
+    // Clear Passport session/user object from req
+    req.logOut((error: any) => {
+      if (error) {
+        return next(error);
       }
-      res.redirect("/");
     });
+
+    // Clear Keycloak session directly without "log out?" prompt
+    res.redirect(
+      keycloakClient.endSessionUrl({
+        id_token_hint: id_token,
+      })
+    );
   });
 
   app.get("/check-login", checkAuthenticated, async (req: any, res) => {

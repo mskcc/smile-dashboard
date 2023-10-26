@@ -3,8 +3,10 @@ import { Nav, NavLink } from "react-bootstrap";
 
 export default function SmileNavBar({
   userEmail,
+  setUserEmail,
 }: {
   userEmail: string | null;
+  setUserEmail: (email: string | null) => void;
 }) {
   return (
     <>
@@ -28,7 +30,14 @@ export default function SmileNavBar({
             <button
               type="button"
               className="btn btn-outline-primary btn-sm m-3"
-              onClick={() => {}}
+              onClick={() => {
+                fetch("http://localhost:4001/logout", {
+                  method: "POST",
+                  credentials: "include",
+                  mode: "no-cors",
+                });
+                setUserEmail(null);
+              }}
             >
               Logout
             </button>
