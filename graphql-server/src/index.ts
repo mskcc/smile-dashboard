@@ -145,7 +145,11 @@ async function main() {
   });
 
   app.get("/logout", (req, res) => {
-    res.redirect(keycloakClient.endSessionUrl());
+    // res.redirect(keycloakClient.endSessionUrl());
+    res.redirect(
+      "https://smile-dev.mskcc.org:8443/auth/realms/smile/protocol/openid-connect/logout"
+    );
+    // https://smile-dev.mskcc.org:8443/realms/smile/protocol/openid-connect/logout?post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A4001%2Flogout%2Fcallback&client_id=smile-dashboard-test
   });
 
   app.get("/logout/callback", (req: any, res, next) => {
@@ -157,8 +161,8 @@ async function main() {
     });
   });
 
-  app.get("/check-login", checkAuthenticated, async (req, res) => {
-    res.send("You are logged in.");
+  app.get("/check-login", checkAuthenticated, async (req: any, res) => {
+    res.status(200).send(req.user.email);
   });
 
   function checkAuthorized(req: any, res: any, next: any) {
