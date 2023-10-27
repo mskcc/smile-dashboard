@@ -3,7 +3,7 @@ import {
   SampleWhere,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PatientsListColumns } from "../../shared/helpers";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -76,6 +76,7 @@ function patientAliasFilterWhereVariables(
 
 export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const params = useParams();
+  const childRef = useRef<any>(null);
 
   const [phiEnabled, setPhiEnabled] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
@@ -91,6 +92,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       if (event.origin !== "http://localhost:4001") return;
       setUserEmail(event.data);
       setPopupOpen(false);
+      childRef.current.handleSearch();
     }
 
     if (popupOpen) {
@@ -245,6 +247,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
         customFilterState={phiEnabled}
         setCustomFilterVals={setPatientIdsTriplets}
         customFilterFunc={fetchPatientIdsTriplets}
+        ref={childRef}
       />
 
       <AlertModal
