@@ -127,7 +127,7 @@ const RecordsList = forwardRef<Ref, IRecordsListProps>(
         customFilterFunc
       ) {
         const newQueries = await customFilterFunc(uniqueQueries);
-        setSearchVal(newQueries);
+        if (newQueries.length > 0) setSearchVal(newQueries);
       } else {
         setSearchVal(uniqueQueries);
       }
