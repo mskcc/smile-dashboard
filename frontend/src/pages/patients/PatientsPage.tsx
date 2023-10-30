@@ -74,6 +74,10 @@ function patientAliasFilterWhereVariables(
   }
 }
 
+function addCDashToCMOId(cmoId: string): string {
+  return cmoId.length === 6 ? `C-${cmoId}` : cmoId;
+}
+
 export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const params = useParams();
   const childRef = useRef<any>(null);
@@ -114,7 +118,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
             valueGetter: (params: any) => {
               const cmoId = params.data.value;
               const patientIdsTriplet = patientIdsTriplets.find(
-                (triplet) => triplet.cmoId === cmoId
+                (triplet) => addCDashToCMOId(triplet.cmoId) === cmoId
               );
               if (patientIdsTriplet) {
                 return patientIdsTriplet.ptMrn;
@@ -137,7 +141,6 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
     patientMrns: string[]
   ): Promise<string[]> {
     try {
-      // TODO: replace with dynamic url
       const response = await fetch("http://localhost:4001/mrn-search", {
         method: "POST",
         credentials: "include",
@@ -170,7 +173,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
 
       const data: PatientIdsTriplet[] = await response.json();
       setPatientIdsTriplets(data);
-      return data.map((d) => d.cmoId);
+      return data.map((d) => addCDashToCMOId(d.cmoId));
     } catch (error) {
       console.error(error);
       return [];
