@@ -7,7 +7,7 @@ import {
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
-import { SampleMetadata, Sample } from "../generated/graphql";
+import { SampleMetadata } from "../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./components/StatusToolTip";
 import { ITooltipParams } from "ag-grid-community";
@@ -129,86 +129,6 @@ export const RequestsListColumns: ColDef[] = [
   {
     field: "otherContactEmails",
     headerName: "Other Contact Emails",
-  },
-];
-
-export const PatientsListColumns: ColDef[] = [
-  {
-    headerName: "View",
-    cellRenderer: (params: CellClassParams<any>) => {
-      return (
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => {
-            if (params.data.value !== undefined) {
-              params.context.navigateFunction(`/patients/${params.data.value}`);
-            }
-          }}
-        >
-          View
-        </Button>
-      );
-    },
-    sortable: false,
-  },
-  {
-    field: "patientMrn",
-    headerName: "Patient MRN",
-    hide: true,
-    cellStyle: { color: "crimson" },
-  },
-  {
-    field: "cmoPatientId",
-    headerName: "CMO Patient ID",
-    valueGetter: function ({ data }) {
-      for (let i of data["isAliasPatients"][0]["patientAliasesIsAlias"]) {
-        if (i.namespace === "cmoId") {
-          return i.value;
-        }
-      }
-    },
-    sortable: false,
-  },
-  {
-    field: "dmpPatientId",
-    headerName: "DMP Patient ID",
-    valueGetter: function ({ data }) {
-      for (let i of data["isAliasPatients"][0]?.patientAliasesIsAlias) {
-        if (i.namespace === "dmpId") {
-          return i.value;
-        }
-      }
-    },
-    sortable: false,
-  },
-  {
-    field: "hasSampleSamplesConnection",
-    headerName: "# Samples",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
-    },
-    sortable: false,
-  },
-  {
-    field: "cmoSampleIds",
-    headerName: "CMO Sample IDs",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].hasSampleSamples.map(
-        (sample: Sample) =>
-          sample.hasMetadataSampleMetadata[0].cmoSampleName ||
-          sample.hasMetadataSampleMetadata[0].primaryId
-      );
-    },
-    sortable: false,
-  },
-  {
-    field: "smilePatientId",
-    headerName: "SMILE Patient ID",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].smilePatientId;
-    },
-    hide: true,
   },
 ];
 

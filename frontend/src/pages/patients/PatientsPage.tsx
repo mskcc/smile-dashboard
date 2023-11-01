@@ -2,21 +2,23 @@ import {
   PatientAliasWhere,
   SampleWhere,
   usePatientsListLazyQuery,
+  Sample,
 } from "../../generated/graphql";
-import { useEffect, useRef, useState } from "react";
-import { PatientsListColumns } from "../../shared/helpers";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CellClassParams, ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
-import { Col, Form } from "react-bootstrap";
+import { Col, Form, Button } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
 import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
+import { parseSearchQueries } from "../../lib/parseSearchQueries";
 
-type PatientIdsTriplet = {
+export type PatientIdsTriplet = {
   dmpId: string;
   cmoId: string;
   ptMrn: string;
@@ -80,65 +82,18 @@ function addCDashToCMOId(cmoId: string): string {
 
 export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const params = useParams();
-  const childRef = useRef<any>(null);
+
+  const [searchVal, setSearchVal] = useState<string[]>([]);
+  const [inputVal, setInputVal] = useState("");
 
   const [phiEnabled, setPhiEnabled] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
     PatientIdsTriplet[]
   >([]);
-  const [patientsListColumns, setPatientsListColumns] =
-    useState(PatientsListColumns);
-  const [popupOpen, setPopupOpen] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
 
-  useEffect(() => {
-    function handleLogin(event: any) {
-      if (event.origin !== "http://localhost:4001") return;
-      setUserEmail(event.data);
-      setPopupOpen(false);
-      childRef.current.handleSearch();
-    }
-
-    if (popupOpen) {
-      window.addEventListener("message", handleLogin);
-      return () => {
-        window.removeEventListener("message", handleLogin);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [popupOpen]);
-
-  useEffect(() => {
-    if (phiEnabled && patientIdsTriplets.length > 0) {
-      const colsWithMRNs = PatientsListColumns.map((column) => {
-        if (column.headerName === "Patient MRN") {
-          return {
-            ...column,
-            hide: false,
-            valueGetter: (params: any) => {
-              const cmoId = params.data.value;
-              const patientIdsTriplet = patientIdsTriplets.find(
-                (triplet) => addCDashToCMOId(triplet.cmoId) === cmoId
-              );
-              if (patientIdsTriplet) {
-                return patientIdsTriplet.ptMrn;
-              } else {
-                return "";
-              }
-            },
-          };
-        } else {
-          return column;
-        }
-      });
-      setPatientsListColumns(colsWithMRNs);
-    } else {
-      setPatientsListColumns(PatientsListColumns);
-    }
-  }, [phiEnabled, patientIdsTriplets]);
-
   async function fetchPatientIdsTriplets(
-    patientMrns: string[]
+    patientIds: string[]
   ): Promise<string[]> {
     try {
       const response = await fetch("http://localhost:4001/mrn-search", {
@@ -147,7 +102,7 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(patientMrns),
+        body: JSON.stringify(patientIds),
       });
 
       if (response.status === 403) {
@@ -156,8 +111,6 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       }
 
       if (response.status === 401) {
-        setPopupOpen(true);
-
         const width = 800;
         const height = 800;
         const left = (window.screen.width - width) / 2;
@@ -180,6 +133,60 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
     }
   }
 
+  const handleSearch = async () => {
+    const uniqueQueries = parseSearchQueries(inputVal);
+    if (phiEnabled) {
+      console.log("Searching");
+      const newQueries = await fetchPatientIdsTriplets(uniqueQueries);
+      if (newQueries.length > 0) setSearchVal(newQueries);
+    } else {
+      setSearchVal(uniqueQueries);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("message", handleLogin);
+
+    function handleLogin(event: any) {
+      if (event.origin !== "http://localhost:4001") return;
+      setUserEmail(event.data);
+      handleSearch();
+    }
+
+    return () => {
+      window.removeEventListener("message", handleLogin);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phiEnabled]);
+
+  PatientsListColumns = useMemo(() => {
+    if (phiEnabled && patientIdsTriplets.length > 0) {
+      return PatientsListColumns.map((column) => {
+        if (column.headerName === "Patient MRN") {
+          return {
+            ...column,
+            hide: false,
+            valueGetter: (params: any) => {
+              const cmoId = params.data.value;
+              const patientIdsTriplet = patientIdsTriplets.find(
+                (triplet) => addCDashToCMOId(triplet.cmoId) === cmoId
+              );
+              if (patientIdsTriplet) {
+                return patientIdsTriplet.ptMrn;
+              } else {
+                return "";
+              }
+            },
+          };
+        } else {
+          return column;
+        }
+      });
+    } else {
+      return PatientsListColumns;
+    }
+  }, [phiEnabled, patientIdsTriplets]);
+
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
 
@@ -187,13 +194,30 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
     <>
       <PageHeader pageTitle={"patients"} pageRoute={pageRoute} />
 
+      <button
+        onClick={() => {
+          console.log(phiEnabled);
+        }}
+      >
+        Log
+      </button>
+
+      <button
+        onClick={() => {
+          console.log("patientIdsTriplets", patientIdsTriplets);
+          handleSearch();
+        }}
+      >
+        Search
+      </button>
+
       <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
         nodeName="patientAliases"
         totalCountNodeName="patientAliasesConnection"
         pageRoute={pageRoute}
         searchTerm="patients"
-        colDefs={patientsListColumns}
+        colDefs={PatientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
@@ -247,10 +271,12 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
             </Col>
           </>
         }
-        customFilterState={phiEnabled}
         setCustomFilterVals={setPatientIdsTriplets}
-        customFilterFunc={fetchPatientIdsTriplets}
-        ref={childRef}
+        handleSearch={handleSearch}
+        searchVal={searchVal}
+        setSearchVal={setSearchVal}
+        inputVal={inputVal}
+        setInputVal={setInputVal}
       />
 
       <AlertModal
@@ -266,3 +292,83 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
     </>
   );
 }
+
+let PatientsListColumns: ColDef[] = [
+  {
+    headerName: "View",
+    cellRenderer: (params: CellClassParams<any>) => {
+      return (
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => {
+            if (params.data.value !== undefined) {
+              params.context.navigateFunction(`/patients/${params.data.value}`);
+            }
+          }}
+        >
+          View
+        </Button>
+      );
+    },
+    sortable: false,
+  },
+  {
+    field: "patientMrn",
+    headerName: "Patient MRN",
+    hide: true,
+    cellStyle: { color: "crimson" },
+  },
+  {
+    field: "cmoPatientId",
+    headerName: "CMO Patient ID",
+    valueGetter: function ({ data }) {
+      for (let i of data["isAliasPatients"][0]["patientAliasesIsAlias"]) {
+        if (i.namespace === "cmoId") {
+          return i.value;
+        }
+      }
+    },
+    sortable: false,
+  },
+  {
+    field: "dmpPatientId",
+    headerName: "DMP Patient ID",
+    valueGetter: function ({ data }) {
+      for (let i of data["isAliasPatients"][0]?.patientAliasesIsAlias) {
+        if (i.namespace === "dmpId") {
+          return i.value;
+        }
+      }
+    },
+    sortable: false,
+  },
+  {
+    field: "hasSampleSamplesConnection",
+    headerName: "# Samples",
+    valueGetter: function ({ data }) {
+      return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
+    },
+    sortable: false,
+  },
+  {
+    field: "cmoSampleIds",
+    headerName: "CMO Sample IDs",
+    valueGetter: function ({ data }) {
+      return data["isAliasPatients"][0].hasSampleSamples.map(
+        (sample: Sample) =>
+          sample.hasMetadataSampleMetadata[0].cmoSampleName ||
+          sample.hasMetadataSampleMetadata[0].primaryId
+      );
+    },
+    sortable: false,
+  },
+  {
+    field: "smilePatientId",
+    headerName: "SMILE Patient ID",
+    valueGetter: function ({ data }) {
+      return data["isAliasPatients"][0].smilePatientId;
+    },
+    hide: true,
+  },
+];
