@@ -92,12 +92,16 @@ async function main() {
     done(null, user);
   });
 
+  let ssoSessionIdleTimeout = 0;
+  let loginTime = 0;
   let id_token = "";
+
   passport.use(
     "oidc",
     new Strategy(
       { client: keycloakClient },
       (tokenSet: any, userinfo: any, done: any) => {
+        ssoSessionIdleTimeout = tokenSet.refresh_expires_in * 1000; // convert to ms because it's in s by default
         id_token = tokenSet.id_token;
         return done(null, tokenSet.claims());
       }
@@ -120,6 +124,19 @@ async function main() {
   });
 
   const checkAuthenticated = (req: any, res: any, next: any) => {
+    if (loginTime !== 0) {
+      if (Date.now() - loginTime > ssoSessionIdleTimeout) {
+        // Clear Passport session/user object from req
+        req.logOut((error: any) => {
+          if (error) {
+            return next(error);
+          }
+        });
+      } else {
+        loginTime = Date.now();
+      }
+    }
+
     if (req.isAuthenticated()) {
       return next();
     } else {
@@ -128,8 +145,9 @@ async function main() {
   };
 
   app.get("/post-login", checkAuthenticated, (req: any, res) => {
-    const userEmail = req.user.email;
+    loginTime = Date.now();
 
+    const userEmail = req.user.email;
     res.send(`
       <script>
         window.opener.postMessage(${JSON.stringify(
@@ -146,7 +164,6 @@ async function main() {
   });
 
   app.post("/logout", (req: any, res, next) => {
-    // Clear Passport session/user object from req
     req.logOut((error: any) => {
       if (error) {
         return next(error);

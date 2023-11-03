@@ -4,7 +4,7 @@ import {
   usePatientsListLazyQuery,
   Sample,
 } from "../../generated/graphql";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CellClassParams, ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -136,7 +136,6 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   const handleSearch = async () => {
     const uniqueQueries = parseSearchQueries(inputVal);
     if (phiEnabled) {
-      console.log("Searching");
       const newQueries = await fetchPatientIdsTriplets(uniqueQueries);
       if (newQueries.length > 0) setSearchVal(newQueries);
     } else {
@@ -193,23 +192,6 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
   return (
     <>
       <PageHeader pageTitle={"patients"} pageRoute={pageRoute} />
-
-      <button
-        onClick={() => {
-          console.log(phiEnabled);
-        }}
-      >
-        Log
-      </button>
-
-      <button
-        onClick={() => {
-          console.log("patientIdsTriplets", patientIdsTriplets);
-          handleSearch();
-        }}
-      >
-        Search
-      </button>
 
       <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
