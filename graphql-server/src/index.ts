@@ -63,8 +63,8 @@ async function main() {
   );
 
   const keycloakClient = new keycloakIssuer.Client({
-    client_id: "smile-dashboard-test",
-    client_secret: "long_secret-here", // placeholder
+    client_id: props.keycloak_client_id,
+    client_secret: props.keycloak_client_secret,
     redirect_uris: ["http://localhost:4001/auth/callback"],
     response_types: ["code"],
   });
@@ -72,9 +72,9 @@ async function main() {
   const memoryStore = new expressSession.MemoryStore();
   app.use(
     expressSession({
-      secret: "another_long_secret", // placeholder
+      secret: props.express_session_secret,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       store: memoryStore,
     })
   );
