@@ -1,31 +1,42 @@
 import { Express } from "express";
-import { buildResolvers } from "./resolvers";
-import { buildProps } from "./buildProps";
+const express = require("express");
+const fetch = require("node-fetch");
+const cors = require("cors");
+const path = require("path");
+const http = require("http");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const fs = require("fs");
 
 import { Issuer, Strategy } from "openid-client";
 const passport = require("passport");
 const expressSession = require("express-session");
 
-const fetch = require("node-fetch");
-const ApolloClient = require("apollo-client").ApolloClient;
-const createHttpLink = require("apollo-link-http").createHttpLink;
-const InMemoryCache = require("apollo-cache-inmemory").InMemoryCache;
-const cors = require("cors");
-
-const path = require("path");
+const neo4j = require("neo4j-driver");
 const { Neo4jGraphQL } = require("@neo4j/graphql");
+const { OGM } = require("@neo4j/graphql-ogm");
+
+const ApolloClient = require("apollo-client").ApolloClient;
 const { ApolloServer } = require("apollo-server-express");
 const { toGraphQLTypeDefs } = require("@neo4j/introspector");
-const neo4j = require("neo4j-driver");
-
-const http = require("http");
-const bodyParser = require("body-parser");
-const express = require("express");
+const createHttpLink = require("apollo-link-http").createHttpLink;
+const InMemoryCache = require("apollo-cache-inmemory").InMemoryCache;
 const {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageLocalDefault,
 } = require("apollo-server-core");
-const { OGM } = require("@neo4j/graphql-ogm");
+
+import { buildResolvers } from "./resolvers";
+import { buildProps } from "./buildProps";
+
+// OracleDB requires node-oracledb's Thick mode & the Oracle Instant Client, which is unavailable for M1 Macs
+let oracledb: any = null;
+const os = require("os");
+if (os.arch() !== "arm64") {
+  oracledb = require("oracledb");
+  oracledb.initOracleClient();
+  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+}
 
 const props = buildProps();
 
@@ -36,15 +47,6 @@ const driver = neo4j.driver(
 
 const sessionFactory = () =>
   driver.session({ defaultAccessMode: neo4j.session.WRITE });
-
-// OracleDB requires node-oracledb's Thick mode & the Oracle Instant Client, which is unavailable for M1 Macs
-let oracledb: any = null;
-const os = require("os");
-if (os.arch() !== "arm64") {
-  oracledb = require("oracledb");
-  oracledb.initOracleClient();
-  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
-}
 
 async function main() {
   const app: Express = express();
