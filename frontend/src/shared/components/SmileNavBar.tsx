@@ -31,7 +31,7 @@ export default function SmileNavBar({
               type="button"
               className="btn btn-outline-primary btn-sm m-3"
               onClick={() => {
-                fetch("http://localhost:4001/logout", {
+                fetch("https://localhost:4000/logout", {
                   method: "POST",
                   credentials: "include",
                   mode: "no-cors",

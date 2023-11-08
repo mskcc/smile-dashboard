@@ -117,7 +117,7 @@ export default function PatientsPage({
     patientIds: string[]
   ): Promise<string[]> {
     try {
-      const response = await fetch("http://localhost:4001/mrn-search", {
+      const response = await fetch("https://localhost:4000/mrn-search", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -141,7 +141,7 @@ export default function PatientsPage({
         const top = (window.screen.height - height) / 2;
 
         window.open(
-          "http://localhost:4001/login",
+          "https://localhost:4000/login",
           "_blank",
           `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
         );
@@ -171,7 +171,7 @@ export default function PatientsPage({
     window.addEventListener("message", handleLogin);
 
     function handleLogin(event: any) {
-      if (event.origin !== "http://localhost:4001") return;
+      if (event.origin !== "https://localhost:4000") return;
       setUserEmail(event.data);
       setAlertModal({
         show: true,

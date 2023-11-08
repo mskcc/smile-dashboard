@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     async function checkLogin() {
       try {
-        const response = await fetch("http://localhost:4001/check-login", {
+        const response = await fetch("https://localhost:4000/check-login", {
           credentials: "include",
         });
         if (response.status === 200) {

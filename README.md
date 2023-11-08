@@ -29,6 +29,12 @@ If running into build issues, try purging existing contents from all `/node_modu
 rm -rf ./node_modules frontend/node_modules graphql-server/node_modules
 ```
 
+### Add SSL Certificate
+
+Download `smile-dashboard-web-cert.pem` and `smile-dashboard-web-key.pem` from [here](https://github.mskcc.org/cmo/smile-configuration/tree/master/resources/smile-dashboard).
+
+Create a new directory named `.cert` at the root of the project and place the downloaded files in it.
+
 ### Dashboard Backend
 
 The backend for the dashboard is under `./graphql-server`.
@@ -42,16 +48,16 @@ yarn build:backend
 yarn dev:backend
 ```
 
-If successful, the graphql client should be available at `http://localhost:4001/graphql`.
+If successful, the graphql client should be available at `https://localhost:4000/graphql`.
 
 ### Dashboard App
 
-Set an environment variable `${REACT_APP_GRAPHQL_CLIENT_URI}` that points to the graphql client the webapp should be using. The app will default to `http://localhost:4001/graphql` if this is unset.
+Set an environment variable `${REACT_APP_GRAPHQL_CLIENT_URI}` that points to the graphql client the webapp should be using. The app will default to `https://localhost:4000/graphql` if this is unset.
 
 Example:
 
 ```
-export REACT_APP_GRAPHQL_CLIENT_URI=http://localhost:4001/graphql
+export REACT_APP_GRAPHQL_CLIENT_URI=https://localhost:4000/graphql
 ```
 
 To run the frontend:
@@ -62,7 +68,7 @@ yarn dev:frontend
 
 Example pages:
 
-- http://localhost:3006/
+- https://localhost:3006/
 
 > **Tip:** This page should open automatically through your default web browser. If not then please navigate to the web app manually.
 
@@ -124,9 +130,9 @@ services:
       neo4j:
         condition: service_healthy
     ports:
-      - 4001:4001
+      - 4000:4000
     healthcheck:
-        test: ["CMD", "curl", "-s", "http://localhost:4001"]
+        test: ["CMD", "curl", "-s", "https://localhost:4000"]
         interval: 30s
         timeout: 10s
         retries: 5

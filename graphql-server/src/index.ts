@@ -7,6 +7,7 @@ const http = require("http");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const fs = require("fs");
+const https = require("https");
 
 import { Issuer, Strategy } from "openid-client";
 const passport = require("passport");
@@ -55,7 +56,7 @@ async function main() {
   app.use(express.json({ limit: "50mb" })); // increase to support bulk searching
   app.use(
     cors({
-      origin: "http://localhost:3006",
+      origin: "https://localhost:3006",
       credentials: true,
     })
   );
@@ -67,7 +68,7 @@ async function main() {
   const keycloakClient = new keycloakIssuer.Client({
     client_id: props.keycloak_client_id,
     client_secret: props.keycloak_client_secret,
-    redirect_uris: ["http://localhost:4001/auth/callback"],
+    redirect_uris: ["https://localhost:4000/auth/callback"],
     response_types: ["code"],
   });
 
@@ -154,7 +155,7 @@ async function main() {
       <script>
         window.opener.postMessage(${JSON.stringify(
           userEmail
-        )}, "http://localhost:3006/patients");
+        )}, "https://localhost:3006/patients");
         window.onload = function() {
           setTimeout(function() {
             window.close();
@@ -248,7 +249,7 @@ async function main() {
   });
 
   const httpLink = createHttpLink({
-    uri: "http://localhost:4001/graphql",
+    uri: "https://localhost:4000/graphql",
     fetch: fetch,
   });
 
@@ -257,7 +258,18 @@ async function main() {
     cache: new InMemoryCache(),
   });
 
-  const httpServer = http.createServer(app);
+  const httpsServer = https.createServer(
+    {
+      key: fs.readFileSync(
+        path.join(__dirname, "../../.cert/smile-dashboard-web-key.pem")
+      ),
+      cert: fs.readFileSync(
+        path.join(__dirname, "../../.cert/smile-dashboard-web-cert.pem")
+      ),
+    },
+    app
+  );
+
   const typeDefs = await toGraphQLTypeDefs(sessionFactory, false);
   const ogm = new OGM({ typeDefs, driver });
   const neoSchema = new Neo4jGraphQL({
@@ -267,7 +279,7 @@ async function main() {
       skipValidateTypeDefs: true,
     },
     plugins: [
-      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginDrainHttpServer({ httpServer: httpsServer }),
       ApolloServerPluginLandingPageLocalDefault({ embed: true }),
     ],
     resolvers: buildResolvers(ogm, client),
@@ -277,9 +289,9 @@ async function main() {
     const server = new ApolloServer({ schema });
     await server.start();
     server.applyMiddleware({ app });
-    await new Promise((resolve) => httpServer.listen({ port: 4001 }, resolve));
+    await new Promise((resolve) => httpsServer.listen({ port: 4000 }, resolve));
     console.log(
-      `🚀 Server ready at http://localhost:4001${server.graphqlPath}`
+      `🚀 Server ready at https://localhost:4000${server.graphqlPath}`
     );
   });
 }
