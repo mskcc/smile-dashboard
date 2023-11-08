@@ -80,17 +80,38 @@ function addCDashToCMOId(cmoId: string): string {
   return cmoId.length === 6 ? `C-${cmoId}` : cmoId;
 }
 
-export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
+const phiWarning = {
+  title: "Warning",
+  content:
+    "The information contained in this transmission from Memorial Sloan-Kettering Cancer Center is privileged, confidential and protected health information (PHI) and it is protected from disclosure under applicable law, including the Health Insurance Portability and Accountability Act of 1996, as amended (HIPAA). This transmission is intended for the sole use of approved individuals with permission and training to access this information and PHI. You are notified that your access to this transmission is logged. If you have received this transmission in error, please immediately delete this information and any attachments from any computer.",
+};
+
+const unauthorizedWarning = {
+  title: "Access unauthorized",
+  content:
+    "You are not authorized to access PHI data. If you would like to request access, please reach out to the administrator.",
+};
+
+export default function PatientsPage({
+  setUserEmail,
+}: {
+  setUserEmail: (userEmail: string | null) => void;
+}) {
   const params = useParams();
 
   const [searchVal, setSearchVal] = useState<string[]>([]);
   const [inputVal, setInputVal] = useState("");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const [phiEnabled, setPhiEnabled] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
     PatientIdsTriplet[]
   >([]);
-  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertModal, setAlertModal] = useState<{
+    show: boolean;
+    title: string;
+    content: string;
+  }>({ show: false, title: "", content: "" });
 
   async function fetchPatientIdsTriplets(
     patientIds: string[]
@@ -106,7 +127,10 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
       });
 
       if (response.status === 403) {
-        setShowAlertModal(true);
+        setAlertModal({
+          show: true,
+          ...unauthorizedWarning,
+        });
         return [];
       }
 
@@ -149,6 +173,10 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
     function handleLogin(event: any) {
       if (event.origin !== "http://localhost:4001") return;
       setUserEmail(event.data);
+      setAlertModal({
+        show: true,
+        ...phiWarning,
+      });
       handleSearch();
     }
 
@@ -259,17 +287,24 @@ export default function PatientsPage({ setUserEmail }: { setUserEmail: any }) {
         setSearchVal={setSearchVal}
         inputVal={inputVal}
         setInputVal={setInputVal}
+        showDownloadModal={showDownloadModal}
+        setShowDownloadModal={setShowDownloadModal}
+        handleDownload={() => {
+          setAlertModal({
+            show: true,
+            ...phiWarning,
+          });
+          setShowDownloadModal(true);
+        }}
       />
 
       <AlertModal
-        show={showAlertModal}
+        show={alertModal.show}
         onHide={() => {
-          setShowAlertModal(false);
+          setAlertModal({ ...alertModal, show: false });
         }}
-        title={"Access unauthorized"}
-        content={
-          "You are not authorized to access PHI data. If you would like to request access, please reach out to the administrator."
-        }
+        title={alertModal.title}
+        content={alertModal.content}
       />
     </>
   );

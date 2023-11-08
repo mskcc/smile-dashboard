@@ -55,6 +55,7 @@ export const RequestsPage: React.FunctionComponent = () => {
   const params = useParams();
   const [searchVal, setSearchVal] = useState<string[]>([]);
   const [inputVal, setInputVal] = useState("");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const pageRoute = "/requests";
   const sampleQueryParamFieldName = "igoRequestId";
@@ -90,6 +91,9 @@ export const RequestsPage: React.FunctionComponent = () => {
         setSearchVal={setSearchVal}
         inputVal={inputVal}
         setInputVal={setInputVal}
+        showDownloadModal={showDownloadModal}
+        setShowDownloadModal={setShowDownloadModal}
+        handleDownload={() => setShowDownloadModal(true)}
       />
     </>
   );

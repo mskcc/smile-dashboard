@@ -39,6 +39,9 @@ export interface IRecordsListProps {
   handleSearch: () => void;
   inputVal: string;
   setInputVal: (val: string) => void;
+  showDownloadModal: boolean;
+  setShowDownloadModal: (val: boolean) => void;
+  handleDownload: () => void;
 }
 
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
@@ -59,8 +62,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   handleSearch,
   inputVal,
   setInputVal,
+  showDownloadModal,
+  setShowDownloadModal,
+  handleDownload,
 }) => {
-  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const navigate = useNavigate();
@@ -284,12 +289,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         {customFilterUI}
 
         <Col className={"text-end"}>
-          <Button
-            onClick={() => {
-              setShowDownloadModal(true);
-            }}
-            size={"sm"}
-          >
+          <Button onClick={handleDownload} size={"sm"}>
             Generate Report
           </Button>
         </Col>

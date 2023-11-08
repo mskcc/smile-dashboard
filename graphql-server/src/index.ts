@@ -74,7 +74,7 @@ async function main() {
     expressSession({
       secret: props.express_session_secret,
       resave: false,
-      saveUninitialized: false,
+      saveUninitialized: true,
       store: memoryStore,
     })
   );
@@ -159,7 +159,7 @@ async function main() {
           }, 1000);
         };
       </script>
-      You are logged in.
+      <p>You are logged in.</p>
     `);
   });
 
