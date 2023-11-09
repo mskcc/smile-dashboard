@@ -35,6 +35,20 @@ Download `smile-dashboard-web-cert.pem` and `smile-dashboard-web-key.pem` from [
 
 Create a new directory named `.cert` at the root of the project and place the downloaded files in it.
 
+### Download the Oracle Instant Client
+
+The Oracle Instant Client allows us to connect to an Oracle database (CRDB) for MRN-CMO-DMP data.
+
+Download the Oracle Instant Client from [here](https://www.oracle.com/database/technologies/instant-client/downloads.html). 
+
+Select the version corresponding to your operating system and download the latest version's `Basic Package` zip file.
+
+Unzip and copy the entire directory to `/graphql-server/opt/oracle`.
+
+#### Why can't we just use the Nodejs' `oracledb` package?
+
+By default, `node-oracledb` runs in [Thin mode (vs. Thick mode)](https://node-oracledb.readthedocs.io/en/latest/user_guide/appendix_a.html). The CRDB uses a password verifier type (`0x939`) that is not supported by Thin mode. Pairing the Oracle Instant Client with `node-oracledb` allows us enables Thick mode and allows us to connect to the CRDB.
+
 ### Dashboard Backend
 
 The backend for the dashboard is under `./graphql-server`.
