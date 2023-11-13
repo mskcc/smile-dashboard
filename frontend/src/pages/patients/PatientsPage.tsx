@@ -17,6 +17,7 @@ import { AlertModal } from "../../components/AlertModal";
 import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { parseSearchQueries } from "../../lib/parseSearchQueries";
+import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
 
 export type PatientIdsTriplet = {
   dmpId: string;
@@ -117,14 +118,17 @@ export default function PatientsPage({
     patientIds: string[]
   ): Promise<string[]> {
     try {
-      const response = await fetch("https://localhost:4000/mrn-search", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(patientIds),
-      });
+      const response = await fetch(
+        `${REACT_APP_EXPRESS_SERVER_ORIGIN}/mrn-search`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(patientIds),
+        }
+      );
 
       if (response.status === 403) {
         setAlertModal({
@@ -141,7 +145,7 @@ export default function PatientsPage({
         const top = (window.screen.height - height) / 2;
 
         window.open(
-          "https://localhost:4000/login",
+          `${REACT_APP_EXPRESS_SERVER_ORIGIN}/login`,
           "_blank",
           `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
         );
@@ -171,7 +175,7 @@ export default function PatientsPage({
     window.addEventListener("message", handleLogin);
 
     function handleLogin(event: any) {
-      if (event.origin !== "https://localhost:4000") return;
+      if (event.origin !== `${REACT_APP_EXPRESS_SERVER_ORIGIN}`) return;
       setUserEmail(event.data);
       setAlertModal({
         show: true,

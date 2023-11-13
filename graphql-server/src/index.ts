@@ -3,7 +3,6 @@ const express = require("express");
 const fetch = require("node-fetch");
 const cors = require("cors");
 const path = require("path");
-const http = require("http");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const fs = require("fs");
@@ -29,6 +28,7 @@ const {
 
 import { buildResolvers } from "./resolvers";
 import { buildProps } from "./buildProps";
+import { EXPRESS_SERVER_ORIGIN, REACT_SERVER_ORIGIN } from "./constants";
 
 // OracleDB requires node-oracledb's Thick mode & the Oracle Instant Client, which is unavailable for M1 Macs
 let oracledb: any = null;
@@ -56,19 +56,17 @@ async function main() {
   app.use(express.json({ limit: "50mb" })); // increase to support bulk searching
   app.use(
     cors({
-      origin: "https://localhost:3006",
+      origin: REACT_SERVER_ORIGIN,
       credentials: true,
     })
   );
 
-  const keycloakIssuer = await Issuer.discover(
-    "https://smile-dev.mskcc.org:8443/realms/smile"
-  );
+  const keycloakIssuer = await Issuer.discover(props.keycloak_server_uri);
 
   const keycloakClient = new keycloakIssuer.Client({
     client_id: props.keycloak_client_id,
     client_secret: props.keycloak_client_secret,
-    redirect_uris: ["https://localhost:4000/auth/callback"],
+    redirect_uris: [`${EXPRESS_SERVER_ORIGIN}/auth/callback`],
     response_types: ["code"],
   });
 
@@ -155,7 +153,7 @@ async function main() {
       <script>
         window.opener.postMessage(${JSON.stringify(
           userEmail
-        )}, "https://localhost:3006/patients");
+        )}, ${REACT_SERVER_ORIGIN}/patients);
         window.onload = function() {
           setTimeout(function() {
             window.close();
@@ -291,7 +289,7 @@ async function main() {
     server.applyMiddleware({ app });
     await new Promise((resolve) => httpsServer.listen({ port: 4000 }, resolve));
     console.log(
-      `🚀 Server ready at https://localhost:4000${server.graphqlPath}`
+      `🚀 Server ready at ${EXPRESS_SERVER_ORIGIN}${server.graphqlPath}`
     );
   });
 }

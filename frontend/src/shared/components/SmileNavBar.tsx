@@ -1,5 +1,6 @@
 import logo_with_text from "../../imgs/logo_with_text.png";
 import { Nav, NavLink } from "react-bootstrap";
+import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../constants";
 
 export default function SmileNavBar({
   userEmail,
@@ -31,7 +32,7 @@ export default function SmileNavBar({
               type="button"
               className="btn btn-outline-primary btn-sm m-3"
               onClick={() => {
-                fetch("https://localhost:4000/logout", {
+                fetch(`${REACT_APP_EXPRESS_SERVER_ORIGIN}/logout`, {
                   method: "POST",
                   credentials: "include",
                   mode: "no-cors",

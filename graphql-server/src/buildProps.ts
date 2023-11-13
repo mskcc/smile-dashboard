@@ -29,6 +29,7 @@ export function buildProps() {
 
     keycloak_client_id: properties.get("auth.keycloak_client_id"),
     keycloak_client_secret: properties.get("auth.keycloak_client_secret"),
+    keycloak_server_uri: properties.get("auth.keycloak_server_uri"),
     express_session_secret: properties.get("auth.express_session_secret"),
 
     log_dir: properties.get("log.log_dir"),

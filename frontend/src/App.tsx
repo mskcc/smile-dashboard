@@ -4,6 +4,7 @@ import SmileNavBar from "./shared/components/SmileNavBar";
 import PatientsPage from "./pages/patients/PatientsPage";
 import SamplesPage from "./pages/samples/SamplesPage";
 import { useEffect, useState } from "react";
+import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "./shared/constants";
 
 function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -11,9 +12,12 @@ function App() {
   useEffect(() => {
     async function checkLogin() {
       try {
-        const response = await fetch("https://localhost:4000/check-login", {
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${REACT_APP_EXPRESS_SERVER_ORIGIN}/check-login`,
+          {
+            credentials: "include",
+          }
+        );
         if (response.status === 200) {
           const userEmail = await response.text();
           setUserEmail(userEmail);
