@@ -153,7 +153,7 @@ async function main() {
       <script>
         window.opener.postMessage(${JSON.stringify(
           userEmail
-        )}, ${REACT_SERVER_ORIGIN}/patients);
+        )}, "${REACT_SERVER_ORIGIN}/patients");
         window.onload = function() {
           setTimeout(function() {
             window.close();
