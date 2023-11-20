@@ -214,7 +214,7 @@ async function main() {
     checkAuthenticated,
     checkAuthorized,
     async (req, res) => {
-      const patientMrns = req.body;
+      const patientIds = req.body;
       const patientIdsTriplets = [];
 
       if (os.arch() !== "arm64" && oracledb !== null) {
@@ -224,10 +224,10 @@ async function main() {
           connectString: props.oracle_connect_string,
         });
 
-        for (const patientMrn of patientMrns) {
+        for (const patientId of patientIds) {
           const result = await connection.execute(
-            "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientMrn IN (DMP_ID, PT_MRN, CMO_ID)",
-            { patientMrn }
+            "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientId IN (DMP_ID, PT_MRN, CMO_ID)",
+            { patientId }
           );
           if (result.rows.length > 0) {
             patientIdsTriplets.push(result.rows[0]);

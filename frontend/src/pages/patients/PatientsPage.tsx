@@ -19,10 +19,11 @@ import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { parseSearchQueries } from "../../lib/parseSearchQueries";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
 
+// This type mirrors the fields types in the CRDB. CMO_ID is stored without the "C-" prefix
 export type PatientIdsTriplet = {
-  dmpId: string;
-  cmoId: string;
-  ptMrn: string;
+  DMP_ID: string;
+  CMO_ID: string;
+  PT_MRN: string;
 };
 
 function patientAliasFilterWhereVariables(
@@ -154,7 +155,7 @@ export default function PatientsPage({
 
       const data: PatientIdsTriplet[] = await response.json();
       setPatientIdsTriplets(data);
-      return data.map((d) => addCDashToCMOId(d.cmoId));
+      return data.map((d) => addCDashToCMOId(d.CMO_ID));
     } catch (error) {
       console.error(error);
       return [];
@@ -162,8 +163,12 @@ export default function PatientsPage({
   }
 
   const handleSearch = async () => {
-    const uniqueQueries = parseSearchQueries(inputVal);
+    let uniqueQueries = parseSearchQueries(inputVal);
     if (phiEnabled) {
+      uniqueQueries = uniqueQueries.map((query) => {
+        if (query.startsWith("C-")) return query.slice(2);
+        else return query;
+      });
       const newQueries = await fetchPatientIdsTriplets(uniqueQueries);
       if (newQueries.length > 0) setSearchVal(newQueries);
     } else {
@@ -177,11 +182,11 @@ export default function PatientsPage({
     function handleLogin(event: any) {
       if (event.origin !== `${REACT_APP_EXPRESS_SERVER_ORIGIN}`) return;
       setUserEmail(event.data);
+      handleSearch();
       setAlertModal({
         show: true,
         ...phiWarning,
       });
-      handleSearch();
     }
 
     return () => {
@@ -200,10 +205,10 @@ export default function PatientsPage({
             valueGetter: (params: any) => {
               const cmoId = params.data.value;
               const patientIdsTriplet = patientIdsTriplets.find(
-                (triplet) => addCDashToCMOId(triplet.cmoId) === cmoId
+                (triplet) => addCDashToCMOId(triplet.CMO_ID) === cmoId
               );
               if (patientIdsTriplet) {
-                return patientIdsTriplet.ptMrn;
+                return patientIdsTriplet.PT_MRN;
               } else {
                 return "";
               }
