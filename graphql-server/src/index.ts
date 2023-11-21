@@ -94,8 +94,12 @@ async function main() {
   });
 
   let ssoSessionIdleTimeout = 0;
-  let loginTime = 0;
-  let id_token = "";
+  let activeUserSessions: {
+    [keycloakUserId: string]: {
+      lastAuthCheckTime: number;
+      idTokenHint: string;
+    };
+  } = {};
 
   passport.use(
     "oidc",
@@ -103,8 +107,12 @@ async function main() {
       { client: keycloakClient },
       (tokenSet: any, userinfo: any, done: any) => {
         ssoSessionIdleTimeout = tokenSet.refresh_expires_in * 1000; // convert to ms because it's in s by default
-        id_token = tokenSet.id_token;
-        return done(null, tokenSet.claims());
+        const claims = tokenSet.claims();
+        activeUserSessions[claims.sub] = {
+          lastAuthCheckTime: Date.now(),
+          idTokenHint: tokenSet.id_token,
+        };
+        return done(null, claims);
       }
     )
   );
@@ -124,17 +132,34 @@ async function main() {
     })(req, res, next);
   });
 
-  const checkAuthenticated = (req: any, res: any, next: any) => {
-    if (loginTime !== 0) {
-      if (Date.now() - loginTime > ssoSessionIdleTimeout) {
-        // Clear Passport session/user object from req
-        req.logOut((error: any) => {
-          if (error) {
-            return next(error);
-          }
-        });
+  function logOutEverywhere(req: any, res: any, next: any) {
+    const idTokenHint = activeUserSessions[req.user.sub].idTokenHint;
+    delete activeUserSessions[req.user.sub];
+
+    // Clear Passport session/user object from req
+    req.logOut((error: any) => {
+      if (error) {
+        return next(error);
+      }
+    });
+
+    // Clear Keycloak session directly without "log out?" prompt and without redirecting the response
+    fetch(keycloakClient.endSessionUrl({ id_token_hint: idTokenHint }), {
+      mode: "no-cors",
+    });
+  }
+
+  function checkAuthenticated(req: any, res: any, next: any) {
+    const keycloakUserId = req.user?.sub;
+
+    if (keycloakUserId in activeUserSessions) {
+      const userDetails = activeUserSessions[keycloakUserId];
+      const lastAuthCheckTime = Date.now() - userDetails.lastAuthCheckTime;
+
+      if (lastAuthCheckTime > ssoSessionIdleTimeout) {
+        logOutEverywhere(req, res, next);
       } else {
-        loginTime = Date.now();
+        userDetails.lastAuthCheckTime = Date.now();
       }
     }
 
@@ -143,11 +168,9 @@ async function main() {
     } else {
       res.status(401).send("401 Unauthorized");
     }
-  };
+  }
 
   app.get("/post-login", checkAuthenticated, (req: any, res) => {
-    loginTime = Date.now();
-
     const userEmail = req.user.email;
     res.send(`
       <script>
@@ -165,18 +188,7 @@ async function main() {
   });
 
   app.post("/logout", (req: any, res, next) => {
-    req.logOut((error: any) => {
-      if (error) {
-        return next(error);
-      }
-    });
-
-    // Clear Keycloak session directly without "log out?" prompt
-    res.redirect(
-      keycloakClient.endSessionUrl({
-        id_token_hint: id_token,
-      })
-    );
+    logOutEverywhere(req, res, next);
   });
 
   app.get("/check-login", checkAuthenticated, async (req: any, res) => {
