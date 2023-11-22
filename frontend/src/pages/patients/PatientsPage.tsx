@@ -2,22 +2,21 @@ import {
   PatientAliasWhere,
   SampleWhere,
   usePatientsListLazyQuery,
-  Sample,
 } from "../../generated/graphql";
 import { useEffect, useMemo, useState } from "react";
-import { CellClassParams, ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
-import { Col, Form, Button } from "react-bootstrap";
+import { Col, Form } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
 import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { parseSearchQueries } from "../../lib/parseSearchQueries";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
+import { PatientsListColumns } from "../../shared/helpers";
 
 // This type mirrors the fields types in the CRDB. CMO_ID is stored without the "C-" prefix
 export type PatientIdsTriplet = {
@@ -82,21 +81,29 @@ function addCDashToCMOId(cmoId: string): string {
   return cmoId.length === 6 ? `C-${cmoId}` : cmoId;
 }
 
-const phiWarning = {
+const PHI_WARNING = {
   title: "Warning",
   content:
     "The information contained in this transmission from Memorial Sloan-Kettering Cancer Center is privileged, confidential and protected health information (PHI) and it is protected from disclosure under applicable law, including the Health Insurance Portability and Accountability Act of 1996, as amended (HIPAA). This transmission is intended for the sole use of approved individuals with permission and training to access this information and PHI. You are notified that your access to this transmission is logged. If you have received this transmission in error, please immediately delete this information and any attachments from any computer.",
 };
 
-const unauthorizedWarning = {
+const UNAUTHORIZED_WARNING = {
   title: "Access unauthorized",
   content:
     "You are not authorized to access PHI data. If you would like to request access, please reach out to the administrator.",
 };
 
+const NO_PHI_SEARCH_RESULTS = {
+  title: "No results found",
+  content:
+    "No results were found for your search. Your patient ID search term does not exists in either the SMILE or CRDB databases.",
+};
+
 export default function PatientsPage({
+  userEmail,
   setUserEmail,
 }: {
+  userEmail: string | null;
   setUserEmail: (userEmail: string | null) => void;
 }) {
   const params = useParams();
@@ -134,7 +141,7 @@ export default function PatientsPage({
       if (response.status === 403) {
         setAlertModal({
           show: true,
-          ...unauthorizedWarning,
+          ...UNAUTHORIZED_WARNING,
         });
         return [];
       }
@@ -155,7 +162,12 @@ export default function PatientsPage({
 
       const data: PatientIdsTriplet[] = await response.json();
       setPatientIdsTriplets(data);
-      return data.map((d) => addCDashToCMOId(d.CMO_ID));
+
+      if (data.length > 0) {
+        return data.map((d) => addCDashToCMOId(d.CMO_ID));
+      } else {
+        return [];
+      }
     } catch (error) {
       console.error(error);
       return [];
@@ -165,12 +177,18 @@ export default function PatientsPage({
   const handleSearch = async () => {
     let uniqueQueries = parseSearchQueries(inputVal);
     if (phiEnabled) {
-      uniqueQueries = uniqueQueries.map((query) => {
-        if (query.startsWith("C-")) return query.slice(2);
-        else return query;
-      });
+      uniqueQueries = uniqueQueries.map((query) =>
+        query.startsWith("C-") ? query.slice(2) : query
+      );
       const newQueries = await fetchPatientIdsTriplets(uniqueQueries);
-      if (newQueries.length > 0) setSearchVal(newQueries);
+      if (newQueries.length > 0) {
+        setSearchVal(newQueries);
+      } else {
+        setAlertModal({
+          show: true,
+          ...NO_PHI_SEARCH_RESULTS,
+        });
+      }
     } else {
       setSearchVal(uniqueQueries);
     }
@@ -185,43 +203,44 @@ export default function PatientsPage({
       handleSearch();
       setAlertModal({
         show: true,
-        ...phiWarning,
+        ...PHI_WARNING,
       });
     }
 
     return () => {
       window.removeEventListener("message", handleLogin);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [phiEnabled]);
 
-  PatientsListColumns = useMemo(() => {
-    if (phiEnabled && patientIdsTriplets.length > 0) {
-      return PatientsListColumns.map((column) => {
-        if (column.headerName === "Patient MRN") {
-          return {
-            ...column,
-            hide: false,
-            valueGetter: (params: any) => {
-              const cmoId = params.data.value;
-              const patientIdsTriplet = patientIdsTriplets.find(
-                (triplet) => addCDashToCMOId(triplet.CMO_ID) === cmoId
-              );
-              if (patientIdsTriplet) {
-                return patientIdsTriplet.PT_MRN;
-              } else {
-                return "";
-              }
-            },
-          };
-        } else {
-          return column;
-        }
-      });
-    } else {
-      return PatientsListColumns;
-    }
-  }, [phiEnabled, patientIdsTriplets]);
+  let ActiveColumns = useMemo(() => {
+    return PatientsListColumns.map((column) => {
+      if (
+        column.headerName === "Patient MRN" &&
+        phiEnabled &&
+        patientIdsTriplets.length > 0 &&
+        userEmail
+      ) {
+        return {
+          ...column,
+          hide: false,
+          valueGetter: (params: any) => {
+            const cmoId = params.data.value;
+            const patientIdsTriplet = patientIdsTriplets.find(
+              (triplet) => addCDashToCMOId(triplet.CMO_ID) === cmoId
+            );
+            if (patientIdsTriplet) {
+              return patientIdsTriplet.PT_MRN;
+            } else {
+              return "";
+            }
+          },
+        };
+      } else {
+        return column;
+      }
+    });
+  }, [phiEnabled, patientIdsTriplets, userEmail]);
 
   const pageRoute = "/patients";
   const sampleQueryParamFieldName = "cmoPatientId";
@@ -236,7 +255,7 @@ export default function PatientsPage({
         totalCountNodeName="patientAliasesConnection"
         pageRoute={pageRoute}
         searchTerm="patients"
-        colDefs={PatientsListColumns}
+        colDefs={ActiveColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
@@ -301,7 +320,7 @@ export default function PatientsPage({
         handleDownload={() => {
           setAlertModal({
             show: true,
-            ...phiWarning,
+            ...PHI_WARNING,
           });
           setShowDownloadModal(true);
         }}
@@ -318,83 +337,3 @@ export default function PatientsPage({
     </>
   );
 }
-
-let PatientsListColumns: ColDef[] = [
-  {
-    headerName: "View",
-    cellRenderer: (params: CellClassParams<any>) => {
-      return (
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => {
-            if (params.data.value !== undefined) {
-              params.context.navigateFunction(`/patients/${params.data.value}`);
-            }
-          }}
-        >
-          View
-        </Button>
-      );
-    },
-    sortable: false,
-  },
-  {
-    field: "patientMrn",
-    headerName: "Patient MRN",
-    hide: true,
-    cellStyle: { color: "crimson" },
-  },
-  {
-    field: "cmoPatientId",
-    headerName: "CMO Patient ID",
-    valueGetter: function ({ data }) {
-      for (let i of data["isAliasPatients"][0]["patientAliasesIsAlias"]) {
-        if (i.namespace === "cmoId") {
-          return i.value;
-        }
-      }
-    },
-    sortable: false,
-  },
-  {
-    field: "dmpPatientId",
-    headerName: "DMP Patient ID",
-    valueGetter: function ({ data }) {
-      for (let i of data["isAliasPatients"][0]?.patientAliasesIsAlias) {
-        if (i.namespace === "dmpId") {
-          return i.value;
-        }
-      }
-    },
-    sortable: false,
-  },
-  {
-    field: "hasSampleSamplesConnection",
-    headerName: "# Samples",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
-    },
-    sortable: false,
-  },
-  {
-    field: "cmoSampleIds",
-    headerName: "CMO Sample IDs",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].hasSampleSamples.map(
-        (sample: Sample) =>
-          sample.hasMetadataSampleMetadata[0].cmoSampleName ||
-          sample.hasMetadataSampleMetadata[0].primaryId
-      );
-    },
-    sortable: false,
-  },
-  {
-    field: "smilePatientId",
-    headerName: "SMILE Patient ID",
-    valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].smilePatientId;
-    },
-    hide: true,
-  },
-];

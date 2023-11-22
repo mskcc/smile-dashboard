@@ -9,6 +9,15 @@ export default function SmileNavBar({
   userEmail: string | null;
   setUserEmail: (email: string | null) => void;
 }) {
+  function handleLogout() {
+    fetch(`${REACT_APP_EXPRESS_SERVER_ORIGIN}/logout`, {
+      method: "POST",
+      credentials: "include",
+      mode: "no-cors",
+    });
+    setUserEmail(null);
+  }
+
   return (
     <>
       <header
@@ -31,14 +40,7 @@ export default function SmileNavBar({
             <button
               type="button"
               className="btn btn-outline-primary btn-sm m-3"
-              onClick={() => {
-                fetch(`${REACT_APP_EXPRESS_SERVER_ORIGIN}/logout`, {
-                  method: "POST",
-                  credentials: "include",
-                  mode: "no-cors",
-                });
-                setUserEmail(null);
-              }}
+              onClick={handleLogout}
             >
               Logout
             </button>

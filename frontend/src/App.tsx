@@ -42,7 +42,9 @@ function App() {
           </Route>
           <Route
             path="/patients/"
-            element={<PatientsPage setUserEmail={setUserEmail} />}
+            element={
+              <PatientsPage userEmail={userEmail} setUserEmail={setUserEmail} />
+            }
           >
             <Route path=":cmoPatientId" />
           </Route>

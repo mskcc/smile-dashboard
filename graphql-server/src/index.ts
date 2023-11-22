@@ -230,22 +230,28 @@ async function main() {
       const patientIdsTriplets = [];
 
       if (os.arch() !== "arm64" && oracledb !== null) {
-        const connection = await oracledb.getConnection({
-          user: props.oracle_user,
-          password: props.oracle_password,
-          connectString: props.oracle_connect_string,
-        });
+        try {
+          const connection = await oracledb.getConnection({
+            user: props.oracle_user,
+            password: props.oracle_password,
+            connectString: props.oracle_connect_string,
+          });
 
-        for (const patientId of patientIds) {
-          const result = await connection.execute(
-            "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientId IN (DMP_ID, PT_MRN, CMO_ID)",
-            { patientId }
-          );
-          if (result.rows.length > 0) {
-            patientIdsTriplets.push(result.rows[0]);
-          }
+          const promises = patientIds.map(async (patientId: string) => {
+            const result = await connection.execute(
+              "SELECT CMO_ID, DMP_ID, PT_MRN FROM CRDB_CMO_LOJ_DMP_MAP WHERE :patientId IN (DMP_ID, PT_MRN, CMO_ID)",
+              { patientId }
+            );
+            if (result.rows.length > 0) {
+              return result.rows[0];
+            }
+          });
+
+          patientIdsTriplets.push(...(await Promise.all(promises)));
+          await connection.close();
+        } catch (error) {
+          console.error("Error in OracleDB connection: ", error);
         }
-        await connection.close();
       }
 
       res.status(200).json(patientIdsTriplets);
