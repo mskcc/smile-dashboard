@@ -183,7 +183,7 @@ export default function PatientsPage({
       const newQueries = await fetchPatientIdsTriplets(uniqueQueries);
       if (newQueries.length > 0) {
         setSearchVal(newQueries);
-      } else {
+      } else if (userEmail) {
         setAlertModal({
           show: true,
           ...NO_PHI_SEARCH_RESULTS,
@@ -200,11 +200,11 @@ export default function PatientsPage({
     function handleLogin(event: any) {
       if (event.origin !== `${REACT_APP_EXPRESS_SERVER_ORIGIN}`) return;
       setUserEmail(event.data);
-      handleSearch();
       setAlertModal({
         show: true,
         ...PHI_WARNING,
       });
+      handleSearch();
     }
 
     return () => {
