@@ -199,7 +199,7 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    headerName: "Consent Status (Part A)",
+    headerName: "12-245 Part A",
     valueGetter: function ({ data }) {
       return JSON.parse(
         data["isAliasPatients"][0].hasSampleSamples[0]
@@ -209,7 +209,7 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    headerName: "Consent Status (Part C)",
+    headerName: "12-245 Part C",
     valueGetter: function ({ data }) {
       return JSON.parse(
         data["isAliasPatients"][0].hasSampleSamples[0]
