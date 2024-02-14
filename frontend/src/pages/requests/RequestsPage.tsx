@@ -3,11 +3,8 @@ import {
   SampleWhere,
   useRequestsListLazyQuery,
 } from "../../generated/graphql";
-import React, { useState } from "react";
+import { useState } from "react";
 import { RequestsListColumns } from "../../shared/helpers";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
@@ -51,7 +48,7 @@ function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
   }
 }
 
-export const RequestsPage: React.FunctionComponent = () => {
+export default function RequestsPage() {
   const params = useParams();
   const [searchVal, setSearchVal] = useState<string[]>([]);
   const [inputVal, setInputVal] = useState("");
@@ -97,6 +94,4 @@ export const RequestsPage: React.FunctionComponent = () => {
       />
     </>
   );
-};
-
-export default RequestsPage;
+}

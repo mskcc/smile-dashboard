@@ -5,9 +5,6 @@ import {
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";

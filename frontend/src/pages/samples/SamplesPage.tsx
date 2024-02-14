@@ -1,11 +1,7 @@
-import React from "react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-enterprise";
 import PageHeader from "../../shared/components/PageHeader";
 import { SamplesList } from "../../components/SamplesList";
 
-export const SamplesPage: React.FunctionComponent = (props) => {
+export default function SamplesPage() {
   const pageRoute = "/samples";
 
   return (
@@ -15,6 +11,4 @@ export const SamplesPage: React.FunctionComponent = (props) => {
       <SamplesList height={540} />
     </>
   );
-};
-
-export default SamplesPage;
+}
