@@ -1,4 +1,3 @@
-import logo_with_text from "../../imgs/logo_with_text.png";
 import { Nav, NavLink } from "react-bootstrap";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../constants";
 import { Dispatch, SetStateAction } from "react";
@@ -27,7 +26,7 @@ export default function SmileNavBar({
       >
         <div>
           <a href="/" className="logo">
-            <img src={logo_with_text} alt="" />
+            <img src="/img/logo_with_text.png" alt="Navbar logo" />
           </a>
         </div>
         <Nav>
