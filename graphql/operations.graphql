@@ -227,3 +227,35 @@ query GetPatientIdsTriplets($patientIds: [String!]!) {
     PT_MRN
   }
 }
+
+query FindCohortSamples(
+  $bamCompleteOptions: BamCompleteOptions
+  $mafCompleteOptions: MafCompleteOptions
+  $qcCompleteOptions: QcCompleteOptions
+) {
+  cohorts {
+    cohortId
+    hasSample2Samples {
+      hasMetadataSampleMetadata {
+        ...SampleMetadataParts
+      }
+      hasTempoTempos {
+        hasEventBamCompletes(options: $bamCompleteOptions) {
+          date
+          status
+        }
+        hasEventMafCompletes(options: $mafCompleteOptions) {
+          date
+          normalPrimaryId
+          status
+        }
+        hasEventQcCompletes(options: $qcCompleteOptions) {
+          date
+          reason
+          result
+          status
+        }
+      }
+    }
+  }
+}
