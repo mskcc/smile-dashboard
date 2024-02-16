@@ -1,5 +1,6 @@
 import PageHeader from "../../shared/components/PageHeader";
 import { SamplesList } from "../../components/SamplesList";
+import { useFindSamplesByInputValueQuery } from "../../generated/graphql";
 
 export default function SamplesPage() {
   const pageRoute = "/samples";
@@ -8,7 +9,10 @@ export default function SamplesPage() {
     <>
       <PageHeader pageTitle={"samples"} pageRoute={pageRoute} />
 
-      <SamplesList height={540} />
+      <SamplesList
+        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
+        height={540}
+      />
     </>
   );
 }

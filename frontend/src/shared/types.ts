@@ -3,7 +3,7 @@ import { RequestsListDocument } from "../generated/graphql";
 
 const defaultOptions = {} as const;
 
-export function useHookGeneric<T, V>(
+export function useHookLazyGeneric<T, V>(
   baseOptions?: Apollo.LazyQueryHookOptions<any, any>
 ) {
   const options = { ...defaultOptions, ...baseOptions };

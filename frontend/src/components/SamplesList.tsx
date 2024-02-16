@@ -1,7 +1,6 @@
 import {
   SortDirection,
   Sample,
-  useFindSamplesByInputValueQuery,
   SampleMetadataWhere,
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -30,6 +29,7 @@ const POLLING_INTERVAL = 2000;
 const max_rows = 500;
 
 interface ISampleListProps {
+  useSampleRecordsQuery: any;
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
   searchVariables?: SampleMetadataWhere;
@@ -98,6 +98,7 @@ function getSampleMetadata(samples: Sample[]) {
 }
 
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
+  useSampleRecordsQuery,
   searchVariables,
   height,
   setUnsavedChanges,
@@ -106,7 +107,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
   sampleQueryParamValue,
 }) => {
   const { loading, error, data, startPolling, stopPolling, refetch } =
-    useFindSamplesByInputValueQuery({
+    useSampleRecordsQuery({
       variables: {
         ...(searchVariables
           ? {
@@ -160,7 +161,9 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
   if (error) return <ErrorMessage error={error} />;
 
-  const samples = data!.samplesConnection.edges.map((e) => e.node) as Sample[];
+  const samples = data!.samplesConnection.edges.map(
+    (e: any) => e.node
+  ) as Sample[];
 
   const remoteCount = samples.length;
 
