@@ -21,6 +21,863 @@ export type Scalars = {
   Float: number;
 };
 
+export type Cohort = {
+  __typename?: "Cohort";
+  cohortId: Scalars["String"];
+  hasCohortCompleteCohortCompletes: Array<CohortComplete>;
+  hasCohortCompleteCohortCompletesAggregate?: Maybe<CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection>;
+  hasCohortCompleteCohortCompletesConnection: CohortHasCohortCompleteCohortCompletesConnection;
+  hasCohortSampleSamples: Array<Sample>;
+  hasCohortSampleSamplesAggregate?: Maybe<CohortSampleHasCohortSampleSamplesAggregationSelection>;
+  hasCohortSampleSamplesConnection: CohortHasCohortSampleSamplesConnection;
+};
+
+export type CohortHasCohortCompleteCohortCompletesArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<CohortCompleteOptions>;
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesConnectionSort>
+  >;
+  where?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+};
+
+export type CohortHasCohortSampleSamplesArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<SampleOptions>;
+  where?: InputMaybe<SampleWhere>;
+};
+
+export type CohortHasCohortSampleSamplesAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<SampleWhere>;
+};
+
+export type CohortHasCohortSampleSamplesConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectionSort>>;
+  where?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+};
+
+export type CohortAggregateSelection = {
+  __typename?: "CohortAggregateSelection";
+  cohortId: StringAggregateSelectionNonNullable;
+  count: Scalars["Int"];
+};
+
+export type CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection =
+  {
+    __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection";
+    count: Scalars["Int"];
+    node?: Maybe<CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection>;
+  };
+
+export type CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection =
+  {
+    __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection";
+    analyst: StringAggregateSelectionNonNullable;
+    date: StringAggregateSelectionNonNullable;
+    status: StringAggregateSelectionNonNullable;
+    type: StringAggregateSelectionNonNullable;
+  };
+
+export type CohortComplete = {
+  __typename?: "CohortComplete";
+  analyst: Scalars["String"];
+  cohortsHasCohortComplete: Array<Cohort>;
+  cohortsHasCohortCompleteAggregate?: Maybe<CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection>;
+  cohortsHasCohortCompleteConnection: CohortCompleteCohortsHasCohortCompleteConnection;
+  date: Scalars["String"];
+  status: Scalars["String"];
+  type: Scalars["String"];
+};
+
+export type CohortCompleteCohortsHasCohortCompleteArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<CohortOptions>;
+  where?: InputMaybe<CohortWhere>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<CohortWhere>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteConnectionSort>
+  >;
+  where?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+};
+
+export type CohortCompleteAggregateSelection = {
+  __typename?: "CohortCompleteAggregateSelection";
+  analyst: StringAggregateSelectionNonNullable;
+  count: Scalars["Int"];
+  date: StringAggregateSelectionNonNullable;
+  status: StringAggregateSelectionNonNullable;
+  type: StringAggregateSelectionNonNullable;
+};
+
+export type CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection = {
+  __typename?: "CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<CohortCompleteCohortCohortsHasCohortCompleteNodeAggregateSelection>;
+};
+
+export type CohortCompleteCohortCohortsHasCohortCompleteNodeAggregateSelection =
+  {
+    __typename?: "CohortCompleteCohortCohortsHasCohortCompleteNodeAggregateSelection";
+    cohortId: StringAggregateSelectionNonNullable;
+  };
+
+export type CohortCompleteCohortsHasCohortCompleteAggregateInput = {
+  AND?: InputMaybe<Array<CohortCompleteCohortsHasCohortCompleteAggregateInput>>;
+  OR?: InputMaybe<Array<CohortCompleteCohortsHasCohortCompleteAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteConnectFieldInput = {
+  connect?: InputMaybe<Array<CohortConnectInput>>;
+  where?: InputMaybe<CohortConnectWhere>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteConnection = {
+  __typename?: "CohortCompleteCohortsHasCohortCompleteConnection";
+  edges: Array<CohortCompleteCohortsHasCohortCompleteRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type CohortCompleteCohortsHasCohortCompleteConnectionSort = {
+  node?: InputMaybe<CohortSort>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteConnectionWhere = {
+  AND?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteConnectionWhere>
+  >;
+  OR?: InputMaybe<Array<CohortCompleteCohortsHasCohortCompleteConnectionWhere>>;
+  node?: InputMaybe<CohortWhere>;
+  node_NOT?: InputMaybe<CohortWhere>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteCreateFieldInput = {
+  node: CohortCreateInput;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteDeleteFieldInput = {
+  delete?: InputMaybe<CohortDeleteInput>;
+  where?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput = {
+  disconnect?: InputMaybe<CohortDisconnectInput>;
+  where?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteFieldInput = {
+  connect?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteConnectFieldInput>
+  >;
+  create?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteCreateFieldInput>
+  >;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput>
+  >;
+  cohortId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cohortId_EQUAL?: InputMaybe<Scalars["String"]>;
+  cohortId_GT?: InputMaybe<Scalars["Int"]>;
+  cohortId_GTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_LT?: InputMaybe<Scalars["Int"]>;
+  cohortId_LTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteRelationship = {
+  __typename?: "CohortCompleteCohortsHasCohortCompleteRelationship";
+  cursor: Scalars["String"];
+  node: Cohort;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteUpdateConnectionInput = {
+  node?: InputMaybe<CohortUpdateInput>;
+};
+
+export type CohortCompleteCohortsHasCohortCompleteUpdateFieldInput = {
+  connect?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteConnectFieldInput>
+  >;
+  create?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteCreateFieldInput>
+  >;
+  delete?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteDeleteFieldInput>
+  >;
+  disconnect?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput>
+  >;
+  update?: InputMaybe<CohortCompleteCohortsHasCohortCompleteUpdateConnectionInput>;
+  where?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+};
+
+export type CohortCompleteConnectInput = {
+  cohortsHasCohortComplete?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteConnectFieldInput>
+  >;
+};
+
+export type CohortCompleteConnectWhere = {
+  node: CohortCompleteWhere;
+};
+
+export type CohortCompleteCreateInput = {
+  analyst: Scalars["String"];
+  cohortsHasCohortComplete?: InputMaybe<CohortCompleteCohortsHasCohortCompleteFieldInput>;
+  date: Scalars["String"];
+  status: Scalars["String"];
+  type: Scalars["String"];
+};
+
+export type CohortCompleteDeleteInput = {
+  cohortsHasCohortComplete?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteDeleteFieldInput>
+  >;
+};
+
+export type CohortCompleteDisconnectInput = {
+  cohortsHasCohortComplete?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput>
+  >;
+};
+
+export type CohortCompleteEdge = {
+  __typename?: "CohortCompleteEdge";
+  cursor: Scalars["String"];
+  node: CohortComplete;
+};
+
+export type CohortCompleteOptions = {
+  limit?: InputMaybe<Scalars["Int"]>;
+  offset?: InputMaybe<Scalars["Int"]>;
+  /** Specify one or more CohortCompleteSort objects to sort CohortCompletes by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort?: InputMaybe<Array<CohortCompleteSort>>;
+};
+
+export type CohortCompleteRelationInput = {
+  cohortsHasCohortComplete?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteCreateFieldInput>
+  >;
+};
+
+/** Fields to sort CohortCompletes by. The order in which sorts are applied is not guaranteed when specifying many fields in one CohortCompleteSort object. */
+export type CohortCompleteSort = {
+  analyst?: InputMaybe<SortDirection>;
+  date?: InputMaybe<SortDirection>;
+  status?: InputMaybe<SortDirection>;
+  type?: InputMaybe<SortDirection>;
+};
+
+export type CohortCompleteUpdateInput = {
+  analyst?: InputMaybe<Scalars["String"]>;
+  cohortsHasCohortComplete?: InputMaybe<
+    Array<CohortCompleteCohortsHasCohortCompleteUpdateFieldInput>
+  >;
+  date?: InputMaybe<Scalars["String"]>;
+  status?: InputMaybe<Scalars["String"]>;
+  type?: InputMaybe<Scalars["String"]>;
+};
+
+export type CohortCompleteWhere = {
+  AND?: InputMaybe<Array<CohortCompleteWhere>>;
+  OR?: InputMaybe<Array<CohortCompleteWhere>>;
+  analyst?: InputMaybe<Scalars["String"]>;
+  analyst_CONTAINS?: InputMaybe<Scalars["String"]>;
+  analyst_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  analyst_IN?: InputMaybe<Array<Scalars["String"]>>;
+  analyst_NOT?: InputMaybe<Scalars["String"]>;
+  analyst_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  analyst_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  analyst_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  analyst_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  analyst_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  cohortsHasCohortCompleteAggregate?: InputMaybe<CohortCompleteCohortsHasCohortCompleteAggregateInput>;
+  cohortsHasCohortCompleteConnection_ALL?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+  cohortsHasCohortCompleteConnection_NONE?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+  cohortsHasCohortCompleteConnection_SINGLE?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+  cohortsHasCohortCompleteConnection_SOME?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
+  /** Return CohortCompletes where all of the related Cohorts match this filter */
+  cohortsHasCohortComplete_ALL?: InputMaybe<CohortWhere>;
+  /** Return CohortCompletes where none of the related Cohorts match this filter */
+  cohortsHasCohortComplete_NONE?: InputMaybe<CohortWhere>;
+  /** Return CohortCompletes where one of the related Cohorts match this filter */
+  cohortsHasCohortComplete_SINGLE?: InputMaybe<CohortWhere>;
+  /** Return CohortCompletes where some of the related Cohorts match this filter */
+  cohortsHasCohortComplete_SOME?: InputMaybe<CohortWhere>;
+  date?: InputMaybe<Scalars["String"]>;
+  date_CONTAINS?: InputMaybe<Scalars["String"]>;
+  date_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  date_IN?: InputMaybe<Array<Scalars["String"]>>;
+  date_NOT?: InputMaybe<Scalars["String"]>;
+  date_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  date_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  date_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  date_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  date_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  status?: InputMaybe<Scalars["String"]>;
+  status_CONTAINS?: InputMaybe<Scalars["String"]>;
+  status_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  status_IN?: InputMaybe<Array<Scalars["String"]>>;
+  status_NOT?: InputMaybe<Scalars["String"]>;
+  status_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  status_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  status_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  status_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  status_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  type?: InputMaybe<Scalars["String"]>;
+  type_CONTAINS?: InputMaybe<Scalars["String"]>;
+  type_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  type_IN?: InputMaybe<Array<Scalars["String"]>>;
+  type_NOT?: InputMaybe<Scalars["String"]>;
+  type_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  type_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  type_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  type_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  type_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+};
+
+export type CohortCompletesConnection = {
+  __typename?: "CohortCompletesConnection";
+  edges: Array<CohortCompleteEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type CohortConnectInput = {
+  hasCohortCompleteCohortCompletes?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesConnectFieldInput>
+  >;
+  hasCohortSampleSamples?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesConnectFieldInput>
+  >;
+};
+
+export type CohortConnectWhere = {
+  node: CohortWhere;
+};
+
+export type CohortCreateInput = {
+  cohortId: Scalars["String"];
+  hasCohortCompleteCohortCompletes?: InputMaybe<CohortHasCohortCompleteCohortCompletesFieldInput>;
+  hasCohortSampleSamples?: InputMaybe<CohortHasCohortSampleSamplesFieldInput>;
+};
+
+export type CohortDeleteInput = {
+  hasCohortCompleteCohortCompletes?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesDeleteFieldInput>
+  >;
+  hasCohortSampleSamples?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesDeleteFieldInput>
+  >;
+};
+
+export type CohortDisconnectInput = {
+  hasCohortCompleteCohortCompletes?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesDisconnectFieldInput>
+  >;
+  hasCohortSampleSamples?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesDisconnectFieldInput>
+  >;
+};
+
+export type CohortEdge = {
+  __typename?: "CohortEdge";
+  cursor: Scalars["String"];
+  node: Cohort;
+};
+
+export type CohortHasCohortCompleteCohortCompletesAggregateInput = {
+  AND?: InputMaybe<Array<CohortHasCohortCompleteCohortCompletesAggregateInput>>;
+  OR?: InputMaybe<Array<CohortHasCohortCompleteCohortCompletesAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesConnectFieldInput = {
+  connect?: InputMaybe<Array<CohortCompleteConnectInput>>;
+  where?: InputMaybe<CohortCompleteConnectWhere>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesConnection = {
+  __typename?: "CohortHasCohortCompleteCohortCompletesConnection";
+  edges: Array<CohortHasCohortCompleteCohortCompletesRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type CohortHasCohortCompleteCohortCompletesConnectionSort = {
+  node?: InputMaybe<CohortCompleteSort>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesConnectionWhere = {
+  AND?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesConnectionWhere>
+  >;
+  OR?: InputMaybe<Array<CohortHasCohortCompleteCohortCompletesConnectionWhere>>;
+  node?: InputMaybe<CohortCompleteWhere>;
+  node_NOT?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesCreateFieldInput = {
+  node: CohortCompleteCreateInput;
+};
+
+export type CohortHasCohortCompleteCohortCompletesDeleteFieldInput = {
+  delete?: InputMaybe<CohortCompleteDeleteInput>;
+  where?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesDisconnectFieldInput = {
+  disconnect?: InputMaybe<CohortCompleteDisconnectInput>;
+  where?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesFieldInput = {
+  connect?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesConnectFieldInput>
+  >;
+  create?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesCreateFieldInput>
+  >;
+};
+
+export type CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput>
+  >;
+  analyst_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  analyst_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  analyst_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  analyst_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  analyst_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  analyst_EQUAL?: InputMaybe<Scalars["String"]>;
+  analyst_GT?: InputMaybe<Scalars["Int"]>;
+  analyst_GTE?: InputMaybe<Scalars["Int"]>;
+  analyst_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  analyst_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  analyst_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  analyst_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  analyst_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  analyst_LT?: InputMaybe<Scalars["Int"]>;
+  analyst_LTE?: InputMaybe<Scalars["Int"]>;
+  analyst_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  analyst_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  analyst_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  analyst_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  analyst_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  date_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  date_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  date_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  date_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  date_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  date_EQUAL?: InputMaybe<Scalars["String"]>;
+  date_GT?: InputMaybe<Scalars["Int"]>;
+  date_GTE?: InputMaybe<Scalars["Int"]>;
+  date_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  date_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  date_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  date_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  date_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  date_LT?: InputMaybe<Scalars["Int"]>;
+  date_LTE?: InputMaybe<Scalars["Int"]>;
+  date_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  date_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  date_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  date_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  date_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  status_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  status_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  status_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  status_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  status_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  status_EQUAL?: InputMaybe<Scalars["String"]>;
+  status_GT?: InputMaybe<Scalars["Int"]>;
+  status_GTE?: InputMaybe<Scalars["Int"]>;
+  status_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  status_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  status_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  status_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  status_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  status_LT?: InputMaybe<Scalars["Int"]>;
+  status_LTE?: InputMaybe<Scalars["Int"]>;
+  status_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  status_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  status_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  status_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  status_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  type_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  type_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  type_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  type_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  type_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  type_EQUAL?: InputMaybe<Scalars["String"]>;
+  type_GT?: InputMaybe<Scalars["Int"]>;
+  type_GTE?: InputMaybe<Scalars["Int"]>;
+  type_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  type_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  type_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  type_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  type_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  type_LT?: InputMaybe<Scalars["Int"]>;
+  type_LTE?: InputMaybe<Scalars["Int"]>;
+  type_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  type_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  type_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  type_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  type_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesRelationship = {
+  __typename?: "CohortHasCohortCompleteCohortCompletesRelationship";
+  cursor: Scalars["String"];
+  node: CohortComplete;
+};
+
+export type CohortHasCohortCompleteCohortCompletesUpdateConnectionInput = {
+  node?: InputMaybe<CohortCompleteUpdateInput>;
+};
+
+export type CohortHasCohortCompleteCohortCompletesUpdateFieldInput = {
+  connect?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesConnectFieldInput>
+  >;
+  create?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesCreateFieldInput>
+  >;
+  delete?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesDeleteFieldInput>
+  >;
+  disconnect?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesDisconnectFieldInput>
+  >;
+  update?: InputMaybe<CohortHasCohortCompleteCohortCompletesUpdateConnectionInput>;
+  where?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+};
+
+export type CohortHasCohortSampleSamplesAggregateInput = {
+  AND?: InputMaybe<Array<CohortHasCohortSampleSamplesAggregateInput>>;
+  OR?: InputMaybe<Array<CohortHasCohortSampleSamplesAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<CohortHasCohortSampleSamplesNodeAggregationWhereInput>;
+};
+
+export type CohortHasCohortSampleSamplesConnectFieldInput = {
+  connect?: InputMaybe<Array<SampleConnectInput>>;
+  where?: InputMaybe<SampleConnectWhere>;
+};
+
+export type CohortHasCohortSampleSamplesConnection = {
+  __typename?: "CohortHasCohortSampleSamplesConnection";
+  edges: Array<CohortHasCohortSampleSamplesRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type CohortHasCohortSampleSamplesConnectionSort = {
+  node?: InputMaybe<SampleSort>;
+};
+
+export type CohortHasCohortSampleSamplesConnectionWhere = {
+  AND?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectionWhere>>;
+  OR?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectionWhere>>;
+  node?: InputMaybe<SampleWhere>;
+  node_NOT?: InputMaybe<SampleWhere>;
+};
+
+export type CohortHasCohortSampleSamplesCreateFieldInput = {
+  node: SampleCreateInput;
+};
+
+export type CohortHasCohortSampleSamplesDeleteFieldInput = {
+  delete?: InputMaybe<SampleDeleteInput>;
+  where?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+};
+
+export type CohortHasCohortSampleSamplesDisconnectFieldInput = {
+  disconnect?: InputMaybe<SampleDisconnectInput>;
+  where?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+};
+
+export type CohortHasCohortSampleSamplesFieldInput = {
+  connect?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectFieldInput>>;
+  create?: InputMaybe<Array<CohortHasCohortSampleSamplesCreateFieldInput>>;
+};
+
+export type CohortHasCohortSampleSamplesNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<Array<CohortHasCohortSampleSamplesNodeAggregationWhereInput>>;
+  datasource_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  datasource_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  datasource_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  datasource_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  datasource_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  datasource_EQUAL?: InputMaybe<Scalars["String"]>;
+  datasource_GT?: InputMaybe<Scalars["Int"]>;
+  datasource_GTE?: InputMaybe<Scalars["Int"]>;
+  datasource_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  datasource_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  datasource_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  datasource_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  datasource_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  datasource_LT?: InputMaybe<Scalars["Int"]>;
+  datasource_LTE?: InputMaybe<Scalars["Int"]>;
+  datasource_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  datasource_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  datasource_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  datasource_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  datasource_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sampleCategory_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sampleCategory_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sampleCategory_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sampleCategory_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sampleCategory_EQUAL?: InputMaybe<Scalars["String"]>;
+  sampleCategory_GT?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LT?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleCategory_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  sampleClass_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  sampleClass_EQUAL?: InputMaybe<Scalars["String"]>;
+  sampleClass_GT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_LTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  sampleClass_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  smileSampleId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  smileSampleId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  smileSampleId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  smileSampleId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  smileSampleId_EQUAL?: InputMaybe<Scalars["String"]>;
+  smileSampleId_GT?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_GTE?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LT?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_LTE?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  smileSampleId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type CohortHasCohortSampleSamplesRelationship = {
+  __typename?: "CohortHasCohortSampleSamplesRelationship";
+  cursor: Scalars["String"];
+  node: Sample;
+};
+
+export type CohortHasCohortSampleSamplesUpdateConnectionInput = {
+  node?: InputMaybe<SampleUpdateInput>;
+};
+
+export type CohortHasCohortSampleSamplesUpdateFieldInput = {
+  connect?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectFieldInput>>;
+  create?: InputMaybe<Array<CohortHasCohortSampleSamplesCreateFieldInput>>;
+  delete?: InputMaybe<Array<CohortHasCohortSampleSamplesDeleteFieldInput>>;
+  disconnect?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesDisconnectFieldInput>
+  >;
+  update?: InputMaybe<CohortHasCohortSampleSamplesUpdateConnectionInput>;
+  where?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+};
+
+export type CohortOptions = {
+  limit?: InputMaybe<Scalars["Int"]>;
+  offset?: InputMaybe<Scalars["Int"]>;
+  /** Specify one or more CohortSort objects to sort Cohorts by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort?: InputMaybe<Array<CohortSort>>;
+};
+
+export type CohortRelationInput = {
+  hasCohortCompleteCohortCompletes?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesCreateFieldInput>
+  >;
+  hasCohortSampleSamples?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesCreateFieldInput>
+  >;
+};
+
+export type CohortSampleHasCohortSampleSamplesAggregationSelection = {
+  __typename?: "CohortSampleHasCohortSampleSamplesAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<CohortSampleHasCohortSampleSamplesNodeAggregateSelection>;
+};
+
+export type CohortSampleHasCohortSampleSamplesNodeAggregateSelection = {
+  __typename?: "CohortSampleHasCohortSampleSamplesNodeAggregateSelection";
+  datasource: StringAggregateSelectionNonNullable;
+  sampleCategory: StringAggregateSelectionNonNullable;
+  sampleClass: StringAggregateSelectionNonNullable;
+  smileSampleId: StringAggregateSelectionNonNullable;
+};
+
+/** Fields to sort Cohorts by. The order in which sorts are applied is not guaranteed when specifying many fields in one CohortSort object. */
+export type CohortSort = {
+  cohortId?: InputMaybe<SortDirection>;
+};
+
+export type CohortUpdateInput = {
+  cohortId?: InputMaybe<Scalars["String"]>;
+  hasCohortCompleteCohortCompletes?: InputMaybe<
+    Array<CohortHasCohortCompleteCohortCompletesUpdateFieldInput>
+  >;
+  hasCohortSampleSamples?: InputMaybe<
+    Array<CohortHasCohortSampleSamplesUpdateFieldInput>
+  >;
+};
+
+export type CohortWhere = {
+  AND?: InputMaybe<Array<CohortWhere>>;
+  OR?: InputMaybe<Array<CohortWhere>>;
+  cohortId?: InputMaybe<Scalars["String"]>;
+  cohortId_CONTAINS?: InputMaybe<Scalars["String"]>;
+  cohortId_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  cohortId_IN?: InputMaybe<Array<Scalars["String"]>>;
+  cohortId_NOT?: InputMaybe<Scalars["String"]>;
+  cohortId_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  cohortId_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  cohortId_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  cohortId_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  cohortId_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  hasCohortCompleteCohortCompletesAggregate?: InputMaybe<CohortHasCohortCompleteCohortCompletesAggregateInput>;
+  hasCohortCompleteCohortCompletesConnection_ALL?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+  hasCohortCompleteCohortCompletesConnection_NONE?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+  hasCohortCompleteCohortCompletesConnection_SINGLE?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+  hasCohortCompleteCohortCompletesConnection_SOME?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
+  /** Return Cohorts where all of the related CohortCompletes match this filter */
+  hasCohortCompleteCohortCompletes_ALL?: InputMaybe<CohortCompleteWhere>;
+  /** Return Cohorts where none of the related CohortCompletes match this filter */
+  hasCohortCompleteCohortCompletes_NONE?: InputMaybe<CohortCompleteWhere>;
+  /** Return Cohorts where one of the related CohortCompletes match this filter */
+  hasCohortCompleteCohortCompletes_SINGLE?: InputMaybe<CohortCompleteWhere>;
+  /** Return Cohorts where some of the related CohortCompletes match this filter */
+  hasCohortCompleteCohortCompletes_SOME?: InputMaybe<CohortCompleteWhere>;
+  hasCohortSampleSamplesAggregate?: InputMaybe<CohortHasCohortSampleSamplesAggregateInput>;
+  hasCohortSampleSamplesConnection_ALL?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+  hasCohortSampleSamplesConnection_NONE?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+  hasCohortSampleSamplesConnection_SINGLE?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+  hasCohortSampleSamplesConnection_SOME?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
+  /** Return Cohorts where all of the related Samples match this filter */
+  hasCohortSampleSamples_ALL?: InputMaybe<SampleWhere>;
+  /** Return Cohorts where none of the related Samples match this filter */
+  hasCohortSampleSamples_NONE?: InputMaybe<SampleWhere>;
+  /** Return Cohorts where one of the related Samples match this filter */
+  hasCohortSampleSamples_SINGLE?: InputMaybe<SampleWhere>;
+  /** Return Cohorts where some of the related Samples match this filter */
+  hasCohortSampleSamples_SOME?: InputMaybe<SampleWhere>;
+};
+
+export type CohortsConnection = {
+  __typename?: "CohortsConnection";
+  edges: Array<CohortEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type CreateCohortCompletesMutationResponse = {
+  __typename?: "CreateCohortCompletesMutationResponse";
+  cohortCompletes: Array<CohortComplete>;
+  info: CreateInfo;
+};
+
+export type CreateCohortsMutationResponse = {
+  __typename?: "CreateCohortsMutationResponse";
+  cohorts: Array<Cohort>;
+  info: CreateInfo;
+};
+
 export type CreateInfo = {
   __typename?: "CreateInfo";
   bookmark?: Maybe<Scalars["String"]>;
@@ -91,6 +948,8 @@ export type DeleteInfo = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  createCohortCompletes: CreateCohortCompletesMutationResponse;
+  createCohorts: CreateCohortsMutationResponse;
   createPatientAliases: CreatePatientAliasesMutationResponse;
   createPatients: CreatePatientsMutationResponse;
   createProjects: CreateProjectsMutationResponse;
@@ -100,6 +959,8 @@ export type Mutation = {
   createSampleMetadata: CreateSampleMetadataMutationResponse;
   createSamples: CreateSamplesMutationResponse;
   createStatuses: CreateStatusesMutationResponse;
+  deleteCohortCompletes: DeleteInfo;
+  deleteCohorts: DeleteInfo;
   deletePatientAliases: DeleteInfo;
   deletePatients: DeleteInfo;
   deleteProjects: DeleteInfo;
@@ -109,6 +970,8 @@ export type Mutation = {
   deleteSampleMetadata: DeleteInfo;
   deleteSamples: DeleteInfo;
   deleteStatuses: DeleteInfo;
+  updateCohortCompletes: UpdateCohortCompletesMutationResponse;
+  updateCohorts: UpdateCohortsMutationResponse;
   updatePatientAliases: UpdatePatientAliasesMutationResponse;
   updatePatients: UpdatePatientsMutationResponse;
   updateProjects: UpdateProjectsMutationResponse;
@@ -118,6 +981,14 @@ export type Mutation = {
   updateSampleMetadata: UpdateSampleMetadataMutationResponse;
   updateSamples: UpdateSamplesMutationResponse;
   updateStatuses: UpdateStatusesMutationResponse;
+};
+
+export type MutationCreateCohortCompletesArgs = {
+  input: Array<CohortCompleteCreateInput>;
+};
+
+export type MutationCreateCohortsArgs = {
+  input: Array<CohortCreateInput>;
 };
 
 export type MutationCreatePatientAliasesArgs = {
@@ -154,6 +1025,16 @@ export type MutationCreateSamplesArgs = {
 
 export type MutationCreateStatusesArgs = {
   input: Array<StatusCreateInput>;
+};
+
+export type MutationDeleteCohortCompletesArgs = {
+  delete?: InputMaybe<CohortCompleteDeleteInput>;
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type MutationDeleteCohortsArgs = {
+  delete?: InputMaybe<CohortDeleteInput>;
+  where?: InputMaybe<CohortWhere>;
 };
 
 export type MutationDeletePatientAliasesArgs = {
@@ -199,6 +1080,24 @@ export type MutationDeleteSamplesArgs = {
 export type MutationDeleteStatusesArgs = {
   delete?: InputMaybe<StatusDeleteInput>;
   where?: InputMaybe<StatusWhere>;
+};
+
+export type MutationUpdateCohortCompletesArgs = {
+  connect?: InputMaybe<CohortCompleteConnectInput>;
+  create?: InputMaybe<CohortCompleteRelationInput>;
+  delete?: InputMaybe<CohortCompleteDeleteInput>;
+  disconnect?: InputMaybe<CohortCompleteDisconnectInput>;
+  update?: InputMaybe<CohortCompleteUpdateInput>;
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type MutationUpdateCohortsArgs = {
+  connect?: InputMaybe<CohortConnectInput>;
+  create?: InputMaybe<CohortRelationInput>;
+  delete?: InputMaybe<CohortDeleteInput>;
+  disconnect?: InputMaybe<CohortDisconnectInput>;
+  update?: InputMaybe<CohortUpdateInput>;
+  where?: InputMaybe<CohortWhere>;
 };
 
 export type MutationUpdatePatientAliasesArgs = {
@@ -352,7 +1251,7 @@ export type PatientAlias = {
   isAliasPatientsAggregate?: Maybe<PatientAliasPatientIsAliasPatientsAggregationSelection>;
   isAliasPatientsConnection: PatientAliasIsAliasPatientsConnection;
   namespace: Scalars["String"];
-  value: Scalars["String"];
+  value?: Maybe<Scalars["String"]>;
 };
 
 export type PatientAliasIsAliasPatientsArgs = {
@@ -378,7 +1277,7 @@ export type PatientAliasAggregateSelection = {
   __typename?: "PatientAliasAggregateSelection";
   count: Scalars["Int"];
   namespace: StringAggregateSelectionNonNullable;
-  value: StringAggregateSelectionNonNullable;
+  value: StringAggregateSelectionNullable;
 };
 
 export type PatientAliasConnectInput = {
@@ -394,7 +1293,7 @@ export type PatientAliasConnectWhere = {
 export type PatientAliasCreateInput = {
   isAliasPatients?: InputMaybe<PatientAliasIsAliasPatientsFieldInput>;
   namespace: Scalars["String"];
-  value: Scalars["String"];
+  value?: InputMaybe<Scalars["String"]>;
 };
 
 export type PatientAliasDeleteInput = {
@@ -581,11 +1480,11 @@ export type PatientAliasWhere = {
   value?: InputMaybe<Scalars["String"]>;
   value_CONTAINS?: InputMaybe<Scalars["String"]>;
   value_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  value_IN?: InputMaybe<Array<Scalars["String"]>>;
+  value_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   value_NOT?: InputMaybe<Scalars["String"]>;
   value_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
   value_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  value_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  value_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   value_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   value_STARTS_WITH?: InputMaybe<Scalars["String"]>;
 };
@@ -818,7 +1717,7 @@ export type PatientPatientAliasPatientAliasesIsAliasAggregationSelection = {
 export type PatientPatientAliasPatientAliasesIsAliasNodeAggregateSelection = {
   __typename?: "PatientPatientAliasPatientAliasesIsAliasNodeAggregateSelection";
   namespace: StringAggregateSelectionNonNullable;
-  value: StringAggregateSelectionNonNullable;
+  value: StringAggregateSelectionNullable;
 };
 
 export type PatientPatientAliasesIsAliasAggregateInput = {
@@ -1653,6 +2552,12 @@ export type ProjectsConnection = {
 
 export type Query = {
   __typename?: "Query";
+  cohortCompletes: Array<CohortComplete>;
+  cohortCompletesAggregate: CohortCompleteAggregateSelection;
+  cohortCompletesConnection: CohortCompletesConnection;
+  cohorts: Array<Cohort>;
+  cohortsAggregate: CohortAggregateSelection;
+  cohortsConnection: CohortsConnection;
   patientAliases: Array<PatientAlias>;
   patientAliasesAggregate: PatientAliasAggregateSelection;
   patientAliasesConnection: PatientAliasesConnection;
@@ -1681,6 +2586,38 @@ export type Query = {
   statuses: Array<Status>;
   statusesAggregate: StatusAggregateSelection;
   statusesConnection: StatusesConnection;
+};
+
+export type QueryCohortCompletesArgs = {
+  options?: InputMaybe<CohortCompleteOptions>;
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type QueryCohortCompletesAggregateArgs = {
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type QueryCohortCompletesConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<InputMaybe<CohortCompleteSort>>>;
+  where?: InputMaybe<CohortCompleteWhere>;
+};
+
+export type QueryCohortsArgs = {
+  options?: InputMaybe<CohortOptions>;
+  where?: InputMaybe<CohortWhere>;
+};
+
+export type QueryCohortsAggregateArgs = {
+  where?: InputMaybe<CohortWhere>;
+};
+
+export type QueryCohortsConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<InputMaybe<CohortSort>>>;
+  where?: InputMaybe<CohortWhere>;
 };
 
 export type QueryPatientAliasesArgs = {
@@ -3635,6 +4572,9 @@ export type RequestsConnection = {
 
 export type Sample = {
   __typename?: "Sample";
+  cohortsHasCohortSample: Array<Cohort>;
+  cohortsHasCohortSampleAggregate?: Maybe<SampleCohortCohortsHasCohortSampleAggregationSelection>;
+  cohortsHasCohortSampleConnection: SampleCohortsHasCohortSampleConnection;
   datasource: Scalars["String"];
   hasMetadataSampleMetadata: Array<SampleMetadata>;
   hasMetadataSampleMetadataAggregate?: Maybe<SampleSampleMetadataHasMetadataSampleMetadataAggregationSelection>;
@@ -3652,6 +4592,25 @@ export type Sample = {
   sampleCategory: Scalars["String"];
   sampleClass: Scalars["String"];
   smileSampleId: Scalars["String"];
+};
+
+export type SampleCohortsHasCohortSampleArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  options?: InputMaybe<CohortOptions>;
+  where?: InputMaybe<CohortWhere>;
+};
+
+export type SampleCohortsHasCohortSampleAggregateArgs = {
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  where?: InputMaybe<CohortWhere>;
+};
+
+export type SampleCohortsHasCohortSampleConnectionArgs = {
+  after?: InputMaybe<Scalars["String"]>;
+  directed?: InputMaybe<Scalars["Boolean"]>;
+  first?: InputMaybe<Scalars["Int"]>;
+  sort?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectionSort>>;
+  where?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
 };
 
 export type SampleHasMetadataSampleMetadataArgs = {
@@ -4045,7 +5004,122 @@ export type SampleAliasesConnection = {
   totalCount: Scalars["Int"];
 };
 
+export type SampleCohortCohortsHasCohortSampleAggregationSelection = {
+  __typename?: "SampleCohortCohortsHasCohortSampleAggregationSelection";
+  count: Scalars["Int"];
+  node?: Maybe<SampleCohortCohortsHasCohortSampleNodeAggregateSelection>;
+};
+
+export type SampleCohortCohortsHasCohortSampleNodeAggregateSelection = {
+  __typename?: "SampleCohortCohortsHasCohortSampleNodeAggregateSelection";
+  cohortId: StringAggregateSelectionNonNullable;
+};
+
+export type SampleCohortsHasCohortSampleAggregateInput = {
+  AND?: InputMaybe<Array<SampleCohortsHasCohortSampleAggregateInput>>;
+  OR?: InputMaybe<Array<SampleCohortsHasCohortSampleAggregateInput>>;
+  count?: InputMaybe<Scalars["Int"]>;
+  count_GT?: InputMaybe<Scalars["Int"]>;
+  count_GTE?: InputMaybe<Scalars["Int"]>;
+  count_LT?: InputMaybe<Scalars["Int"]>;
+  count_LTE?: InputMaybe<Scalars["Int"]>;
+  node?: InputMaybe<SampleCohortsHasCohortSampleNodeAggregationWhereInput>;
+};
+
+export type SampleCohortsHasCohortSampleConnectFieldInput = {
+  connect?: InputMaybe<Array<CohortConnectInput>>;
+  where?: InputMaybe<CohortConnectWhere>;
+};
+
+export type SampleCohortsHasCohortSampleConnection = {
+  __typename?: "SampleCohortsHasCohortSampleConnection";
+  edges: Array<SampleCohortsHasCohortSampleRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"];
+};
+
+export type SampleCohortsHasCohortSampleConnectionSort = {
+  node?: InputMaybe<CohortSort>;
+};
+
+export type SampleCohortsHasCohortSampleConnectionWhere = {
+  AND?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectionWhere>>;
+  OR?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectionWhere>>;
+  node?: InputMaybe<CohortWhere>;
+  node_NOT?: InputMaybe<CohortWhere>;
+};
+
+export type SampleCohortsHasCohortSampleCreateFieldInput = {
+  node: CohortCreateInput;
+};
+
+export type SampleCohortsHasCohortSampleDeleteFieldInput = {
+  delete?: InputMaybe<CohortDeleteInput>;
+  where?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+};
+
+export type SampleCohortsHasCohortSampleDisconnectFieldInput = {
+  disconnect?: InputMaybe<CohortDisconnectInput>;
+  where?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+};
+
+export type SampleCohortsHasCohortSampleFieldInput = {
+  connect?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectFieldInput>>;
+  create?: InputMaybe<Array<SampleCohortsHasCohortSampleCreateFieldInput>>;
+};
+
+export type SampleCohortsHasCohortSampleNodeAggregationWhereInput = {
+  AND?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleNodeAggregationWhereInput>
+  >;
+  OR?: InputMaybe<Array<SampleCohortsHasCohortSampleNodeAggregationWhereInput>>;
+  cohortId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  cohortId_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  cohortId_EQUAL?: InputMaybe<Scalars["String"]>;
+  cohortId_GT?: InputMaybe<Scalars["Int"]>;
+  cohortId_GTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  cohortId_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_LT?: InputMaybe<Scalars["Int"]>;
+  cohortId_LTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  cohortId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+};
+
+export type SampleCohortsHasCohortSampleRelationship = {
+  __typename?: "SampleCohortsHasCohortSampleRelationship";
+  cursor: Scalars["String"];
+  node: Cohort;
+};
+
+export type SampleCohortsHasCohortSampleUpdateConnectionInput = {
+  node?: InputMaybe<CohortUpdateInput>;
+};
+
+export type SampleCohortsHasCohortSampleUpdateFieldInput = {
+  connect?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectFieldInput>>;
+  create?: InputMaybe<Array<SampleCohortsHasCohortSampleCreateFieldInput>>;
+  delete?: InputMaybe<Array<SampleCohortsHasCohortSampleDeleteFieldInput>>;
+  disconnect?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleDisconnectFieldInput>
+  >;
+  update?: InputMaybe<SampleCohortsHasCohortSampleUpdateConnectionInput>;
+  where?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+};
+
 export type SampleConnectInput = {
+  cohortsHasCohortSample?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleConnectFieldInput>
+  >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataConnectFieldInput>
   >;
@@ -4065,6 +5139,7 @@ export type SampleConnectWhere = {
 };
 
 export type SampleCreateInput = {
+  cohortsHasCohortSample?: InputMaybe<SampleCohortsHasCohortSampleFieldInput>;
   datasource: Scalars["String"];
   hasMetadataSampleMetadata?: InputMaybe<SampleHasMetadataSampleMetadataFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
@@ -4077,6 +5152,9 @@ export type SampleCreateInput = {
 };
 
 export type SampleDeleteInput = {
+  cohortsHasCohortSample?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleDeleteFieldInput>
+  >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataDeleteFieldInput>
   >;
@@ -4092,6 +5170,9 @@ export type SampleDeleteInput = {
 };
 
 export type SampleDisconnectInput = {
+  cohortsHasCohortSample?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleDisconnectFieldInput>
+  >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataDisconnectFieldInput>
   >;
@@ -5686,6 +6767,9 @@ export type SamplePatientsHasSampleUpdateFieldInput = {
 };
 
 export type SampleRelationInput = {
+  cohortsHasCohortSample?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleCreateFieldInput>
+  >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataCreateFieldInput>
   >;
@@ -6365,6 +7449,9 @@ export type SampleSort = {
 };
 
 export type SampleUpdateInput = {
+  cohortsHasCohortSample?: InputMaybe<
+    Array<SampleCohortsHasCohortSampleUpdateFieldInput>
+  >;
   datasource?: InputMaybe<Scalars["String"]>;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataUpdateFieldInput>
@@ -6387,6 +7474,19 @@ export type SampleUpdateInput = {
 export type SampleWhere = {
   AND?: InputMaybe<Array<SampleWhere>>;
   OR?: InputMaybe<Array<SampleWhere>>;
+  cohortsHasCohortSampleAggregate?: InputMaybe<SampleCohortsHasCohortSampleAggregateInput>;
+  cohortsHasCohortSampleConnection_ALL?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+  cohortsHasCohortSampleConnection_NONE?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+  cohortsHasCohortSampleConnection_SINGLE?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+  cohortsHasCohortSampleConnection_SOME?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
+  /** Return Samples where all of the related Cohorts match this filter */
+  cohortsHasCohortSample_ALL?: InputMaybe<CohortWhere>;
+  /** Return Samples where none of the related Cohorts match this filter */
+  cohortsHasCohortSample_NONE?: InputMaybe<CohortWhere>;
+  /** Return Samples where one of the related Cohorts match this filter */
+  cohortsHasCohortSample_SINGLE?: InputMaybe<CohortWhere>;
+  /** Return Samples where some of the related Cohorts match this filter */
+  cohortsHasCohortSample_SOME?: InputMaybe<CohortWhere>;
   datasource?: InputMaybe<Scalars["String"]>;
   datasource_CONTAINS?: InputMaybe<Scalars["String"]>;
   datasource_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -7490,6 +8590,18 @@ export type StringAggregateSelectionNullable = {
   shortest?: Maybe<Scalars["String"]>;
 };
 
+export type UpdateCohortCompletesMutationResponse = {
+  __typename?: "UpdateCohortCompletesMutationResponse";
+  cohortCompletes: Array<CohortComplete>;
+  info: UpdateInfo;
+};
+
+export type UpdateCohortsMutationResponse = {
+  __typename?: "UpdateCohortsMutationResponse";
+  cohorts: Array<Cohort>;
+  info: UpdateInfo;
+};
+
 export type UpdateInfo = {
   __typename?: "UpdateInfo";
   bookmark?: Maybe<Scalars["String"]>;
@@ -7604,7 +8716,7 @@ export type PatientsListQuery = {
   patientAliases: Array<{
     __typename?: "PatientAlias";
     namespace: string;
-    value: string;
+    value?: string | null;
     isAliasPatients: Array<{
       __typename?: "Patient";
       smilePatientId: string;
@@ -7625,7 +8737,7 @@ export type PatientsListQuery = {
       patientAliasesIsAlias: Array<{
         __typename?: "PatientAlias";
         namespace: string;
-        value: string;
+        value?: string | null;
       }>;
     }>;
   }>;
@@ -7705,7 +8817,7 @@ export type RequestWithSamplesQuery = {
         patientAliasesIsAlias: Array<{
           __typename?: "PatientAlias";
           namespace: string;
-          value: string;
+          value?: string | null;
         }>;
       }>;
     }>;
@@ -7808,7 +8920,7 @@ export type FindSamplesByInputValueQuery = {
               patientAliasesIsAlias: Array<{
                 __typename?: "PatientAlias";
                 namespace: string;
-                value: string;
+                value?: string | null;
               }>;
             };
           }>;
