@@ -13,14 +13,17 @@ import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { useHookLazyGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
-import { SampleWhere } from "../generated/graphql";
+import {
+  SampleWhere,
+  useFindSamplesByInputValueQuery,
+} from "../generated/graphql";
 import { defaultRecordsColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
+import { getAllSamples } from "../shared/utils";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookLazyGeneric;
-  useSampleRecordsQuery: any;
   nodeName: string;
   totalCountNodeName: string;
   pageRoute: string;
@@ -43,7 +46,6 @@ export interface IRecordsListProps {
 }
 
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
-  useSampleRecordsQuery,
   lazyRecordsQuery,
   nodeName,
   totalCountNodeName,
@@ -204,7 +206,8 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               <Modal.Body>
                 <div style={{ height: 600 }}>
                   <SamplesList
-                    useSampleRecordsQuery={useSampleRecordsQuery}
+                    useSampleRecordsQuery={useFindSamplesByInputValueQuery}
+                    getSamples={getAllSamples}
                     height={height * 11}
                     searchVariables={searchVariables}
                     setUnsavedChanges={setUnsavedChanges}

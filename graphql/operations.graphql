@@ -229,6 +229,7 @@ query GetPatientIdsTriplets($patientIds: [String!]!) {
 }
 
 query FindCohortSamples(
+  $options: SampleMetadataOptions
   $bamCompleteOptions: BamCompleteOptions
   $mafCompleteOptions: MafCompleteOptions
   $qcCompleteOptions: QcCompleteOptions
@@ -236,8 +237,13 @@ query FindCohortSamples(
   cohorts {
     cohortId
     hasSample2Samples {
-      hasMetadataSampleMetadata {
+      ...SampleParts
+      hasMetadataSampleMetadata(options: $options) {
         ...SampleMetadataParts
+        hasStatusStatuses {
+          validationReport
+          validationStatus
+        }
       }
       hasTempoTempos {
         hasEventBamCompletes(options: $bamCompleteOptions) {

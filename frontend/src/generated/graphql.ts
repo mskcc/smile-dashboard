@@ -11643,6 +11643,7 @@ export type GetPatientIdsTripletsQuery = {
 };
 
 export type FindCohortSamplesQueryVariables = Exact<{
+  options?: InputMaybe<SampleMetadataOptions>;
   bamCompleteOptions?: InputMaybe<BamCompleteOptions>;
   mafCompleteOptions?: InputMaybe<MafCompleteOptions>;
   qcCompleteOptions?: InputMaybe<QcCompleteOptions>;
@@ -11655,6 +11656,11 @@ export type FindCohortSamplesQuery = {
     cohortId: string;
     hasSample2Samples: Array<{
       __typename?: "Sample";
+      datasource: string;
+      revisable: boolean;
+      sampleCategory: string;
+      sampleClass: string;
+      smileSampleId: string;
       hasMetadataSampleMetadata: Array<{
         __typename?: "SampleMetadata";
         additionalProperties: string;
@@ -11684,6 +11690,11 @@ export type FindCohortSamplesQuery = {
         tissueLocation?: string | null;
         tubeId?: string | null;
         tumorOrNormal: string;
+        hasStatusStatuses: Array<{
+          __typename?: "Status";
+          validationReport: string;
+          validationStatus: boolean;
+        }>;
       }>;
       hasTempoTempos: Array<{
         __typename?: "Tempo";
@@ -12315,6 +12326,7 @@ export type GetPatientIdsTripletsQueryResult = Apollo.QueryResult<
 >;
 export const FindCohortSamplesDocument = gql`
   query FindCohortSamples(
+    $options: SampleMetadataOptions
     $bamCompleteOptions: BamCompleteOptions
     $mafCompleteOptions: MafCompleteOptions
     $qcCompleteOptions: QcCompleteOptions
@@ -12322,8 +12334,13 @@ export const FindCohortSamplesDocument = gql`
     cohorts {
       cohortId
       hasSample2Samples {
-        hasMetadataSampleMetadata {
+        ...SampleParts
+        hasMetadataSampleMetadata(options: $options) {
           ...SampleMetadataParts
+          hasStatusStatuses {
+            validationReport
+            validationStatus
+          }
         }
         hasTempoTempos {
           hasEventBamCompletes(options: $bamCompleteOptions) {
@@ -12345,6 +12362,7 @@ export const FindCohortSamplesDocument = gql`
       }
     }
   }
+  ${SamplePartsFragmentDoc}
   ${SampleMetadataPartsFragmentDoc}
 `;
 
@@ -12360,6 +12378,7 @@ export const FindCohortSamplesDocument = gql`
  * @example
  * const { data, loading, error } = useFindCohortSamplesQuery({
  *   variables: {
+ *      options: // value for 'options'
  *      bamCompleteOptions: // value for 'bamCompleteOptions'
  *      mafCompleteOptions: // value for 'mafCompleteOptions'
  *      qcCompleteOptions: // value for 'qcCompleteOptions'

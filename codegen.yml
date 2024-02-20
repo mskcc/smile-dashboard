@@ -1,5 +1,6 @@
 overwrite: true
 schema: "https://localhost:4000/graphql"
+# schema: "https://smile-dev.mskcc.org:4000/graphql"
 documents: "./graphql/**/*.{ts,tsx,graphql}"
 generates:
   ./frontend/src/generated/graphql.ts:

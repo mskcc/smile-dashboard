@@ -30,6 +30,7 @@ const max_rows = 500;
 
 interface ISampleListProps {
   useSampleRecordsQuery: any;
+  getSamples: (data: any) => Sample[];
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
   searchVariables?: SampleMetadataWhere;
@@ -99,6 +100,7 @@ function getSampleMetadata(samples: Sample[]) {
 
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
   useSampleRecordsQuery,
+  getSamples,
   searchVariables,
   height,
   setUnsavedChanges,
@@ -161,9 +163,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
   if (error) return <ErrorMessage error={error} />;
 
-  const samples = data!.samplesConnection.edges.map(
-    (e: any) => e.node
-  ) as Sample[];
+  const samples = getSamples(data);
 
   const remoteCount = samples.length;
 

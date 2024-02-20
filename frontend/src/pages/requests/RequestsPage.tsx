@@ -1,7 +1,6 @@
 import {
   RequestWhere,
   SampleWhere,
-  useFindSamplesByInputValueQuery,
   useRequestsListLazyQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
@@ -68,7 +67,6 @@ export default function RequestsPage() {
       <PageHeader pageTitle={"requests"} pageRoute={pageRoute} />
 
       <RecordsList
-        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
         lazyRecordsQuery={useRequestsListLazyQuery}
         nodeName="requests"
         totalCountNodeName="requestsConnection"

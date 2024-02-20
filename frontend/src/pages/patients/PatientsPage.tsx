@@ -1,7 +1,6 @@
 import {
   PatientAliasWhere,
   SampleWhere,
-  useFindSamplesByInputValueQuery,
   useGetPatientIdsTripletsLazyQuery,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
@@ -257,7 +256,6 @@ export default function PatientsPage({
       <PageHeader pageTitle={"patients"} pageRoute={pageRoute} />
 
       <RecordsList
-        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
         lazyRecordsQuery={usePatientsListLazyQuery}
         nodeName="patientAliases"
         totalCountNodeName="patientAliasesConnection"
