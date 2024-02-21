@@ -17,10 +17,13 @@ import {
   SampleWhere,
   useFindSamplesByInputValueQuery,
 } from "../generated/graphql";
-import { defaultRecordsColDef } from "../shared/helpers";
+import { SampleDetailsColumns, defaultRecordsColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
-import { getAllSamples } from "../shared/utils";
+import {
+  getAllSamplesFromQueryData,
+  getMetadataFromSamples,
+} from "../shared/utils";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookLazyGeneric;
@@ -206,8 +209,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               <Modal.Body>
                 <div style={{ height: 600 }}>
                   <SamplesList
+                    columnDefs={SampleDetailsColumns}
                     useSampleRecordsQuery={useFindSamplesByInputValueQuery}
-                    getSamples={getAllSamples}
+                    getSamplesFromQueryData={getAllSamplesFromQueryData}
+                    getRowData={getMetadataFromSamples}
                     height={height * 11}
                     searchVariables={searchVariables}
                     setUnsavedChanges={setUnsavedChanges}

@@ -21,7 +21,7 @@ import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import { CellValueChangedEvent } from "ag-grid-community";
+import { CellValueChangedEvent, ColDef } from "ag-grid-community";
 import { parseSearchQueries } from "../utils/parseSearchQueries";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
@@ -29,8 +29,10 @@ const POLLING_INTERVAL = 2000;
 const max_rows = 500;
 
 interface ISampleListProps {
+  columnDefs: ColDef[];
   useSampleRecordsQuery: any;
-  getSamples: (data: any) => Sample[];
+  getSamplesFromQueryData: (data: any) => Sample[];
+  getRowData: (samples: Sample[]) => any[];
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
   searchVariables?: SampleMetadataWhere;
@@ -89,18 +91,11 @@ function sampleFilterWhereVariables(
   }
 }
 
-function getSampleMetadata(samples: Sample[]) {
-  return samples.map((s: any) => {
-    return {
-      ...s.hasMetadataSampleMetadata[0],
-      revisable: s.revisable,
-    };
-  });
-}
-
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
+  columnDefs,
   useSampleRecordsQuery,
-  getSamples,
+  getSamplesFromQueryData,
+  getRowData,
   searchVariables,
   height,
   setUnsavedChanges,
@@ -163,7 +158,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
   if (error) return <ErrorMessage error={error} />;
 
-  const samples = getSamples(data);
+  const samples = getSamplesFromQueryData(data);
 
   const remoteCount = samples.length;
 
@@ -213,7 +208,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
         <DownloadModal
           loader={() => {
             return Promise.resolve(
-              CSVFormulate(getSampleMetadata(samples), SampleDetailsColumns)
+              CSVFormulate(getRowData(samples), SampleDetailsColumns)
             );
           }}
           onComplete={() => {
@@ -303,7 +298,6 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
                 unlocked: function (params) {
                   return params.data?.revisable === true;
                 },
-
                 locked: function (params) {
                   return params.data?.revisable === false;
                 },
@@ -317,8 +311,8 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
                   );
                 },
               }}
-              columnDefs={SampleDetailsColumns}
-              rowData={getSampleMetadata(samples)}
+              columnDefs={columnDefs}
+              rowData={getRowData(samples)}
               onCellEditRequest={onCellValueChanged}
               readOnlyEdit={true}
               defaultColDef={defaultSamplesColDef}

@@ -406,7 +406,7 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   },
 ];
 
-SampleDetailsColumns.forEach((colDef) => {
+function setEditableConfigs(colDef: ColDef<SampleMetadataExtended>) {
   colDef.cellClassRules = {
     unsubmittedChange: (params: any) => {
       const changes = params.context.getChanges();
@@ -475,7 +475,76 @@ SampleDetailsColumns.forEach((colDef) => {
       };
     }
   };
-});
+}
+
+SampleDetailsColumns.forEach((colDef) => setEditableConfigs(colDef));
+
+export const CohortDetailsColumns: ColDef[] = [
+  {
+    field: "primaryId",
+    headerName: "Primary ID",
+  },
+  {
+    field: "revisable",
+    headerName: "Status",
+    cellRenderer: (params: ICellRendererParams) => {
+      if (params.data?.revisable) {
+        return params.data?.hasStatusStatuses[0]?.validationStatus ? (
+          <div>
+            <strong>&#10003;</strong>
+          </div>
+        ) : (
+          <div>
+            <WarningIcon />
+          </div>
+        );
+      } else {
+        return (
+          <div className="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        );
+      }
+    },
+    cellRendererParams: {
+      colDef: {
+        tooltipComponent: StatusTooltip,
+        tooltipValueGetter: (params: ITooltipParams) =>
+          params.data.hasStatusStatuses[0]?.validationReport ??
+          params.data.hasStatusStatuses,
+      },
+    },
+  },
+  {
+    headerName: "BAM Complete Date",
+    valueGetter: ({ data }) => data.bamComplete.date,
+  },
+  {
+    headerName: "BAM Complete Status",
+    valueGetter: ({ data }) => data.bamComplete.status,
+  },
+  {
+    headerName: "MAF Complete Date",
+    valueGetter: ({ data }) => data.mafComplete.date,
+  },
+  {
+    headerName: "MAF Complete Status",
+    valueGetter: ({ data }) => data.mafComplete.status,
+  },
+  {
+    headerName: "QC Complete Date",
+    valueGetter: ({ data }) => data.qcComplete.date,
+  },
+  {
+    headerName: "QC Complete Status",
+    valueGetter: ({ data }) => data.qcComplete.status,
+  },
+];
+
+CohortDetailsColumns.forEach((colDef) => setEditableConfigs(colDef));
 
 export const defaultSamplesColDef: ColDef = {
   sortable: true,

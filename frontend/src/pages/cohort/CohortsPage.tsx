@@ -1,7 +1,11 @@
 import { SamplesList } from "../../components/SamplesList";
 import { useFindCohortSamplesQuery } from "../../generated/graphql";
 import PageHeader from "../../shared/components/PageHeader";
-import { getCohortSamples } from "../../shared/utils";
+import { CohortDetailsColumns } from "../../shared/helpers";
+import {
+  getCohortDataFromSamples,
+  getCohortSamplesFromQueryData,
+} from "../../shared/utils";
 
 export default function CohortsPage() {
   return (
@@ -9,8 +13,10 @@ export default function CohortsPage() {
       <PageHeader pageTitle={"cohorts"} pageRoute="/cohorts" />
 
       <SamplesList
+        columnDefs={CohortDetailsColumns}
         useSampleRecordsQuery={useFindCohortSamplesQuery}
-        getSamples={getCohortSamples}
+        getSamplesFromQueryData={getCohortSamplesFromQueryData}
+        getRowData={getCohortDataFromSamples}
         height={540}
       />
     </>
