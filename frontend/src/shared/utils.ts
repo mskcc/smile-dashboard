@@ -6,7 +6,7 @@ export function getAllSamplesFromQueryData(data: any) {
 
 export function getCohortSamplesFromQueryData(data: any) {
   return data!.cohorts.flatMap((c: any) =>
-    c.hasSample2Samples.map((s: any) => s)
+    c.hasCohortSampleSamples.map((s: any) => s)
   ) as Sample[];
 }
 

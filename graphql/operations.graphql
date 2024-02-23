@@ -236,7 +236,7 @@ query FindCohortSamples(
 ) {
   cohorts {
     cohortId
-    hasSample2Samples {
+    hasCohortSampleSamples {
       ...SampleParts
       hasMetadataSampleMetadata(options: $options) {
         ...SampleMetadataParts

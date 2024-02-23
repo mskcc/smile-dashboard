@@ -20,20 +20,6 @@ export type Scalars = {
   Float: number;
 };
 
-<<<<<<< HEAD
-export type Cohort = {
-  __typename?: "Cohort";
-  cohortId: Scalars["String"];
-  hasCohortCompleteCohortCompletes: Array<CohortComplete>;
-  hasCohortCompleteCohortCompletesAggregate?: Maybe<CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection>;
-  hasCohortCompleteCohortCompletesConnection: CohortHasCohortCompleteCohortCompletesConnection;
-  hasCohortSampleSamples: Array<Sample>;
-  hasCohortSampleSamplesAggregate?: Maybe<CohortSampleHasCohortSampleSamplesAggregationSelection>;
-  hasCohortSampleSamplesConnection: CohortHasCohortSampleSamplesConnection;
-};
-
-export type CohortHasCohortCompleteCohortCompletesArgs = {
-=======
 export type BamComplete = {
   __typename?: "BamComplete";
   date: Scalars["String"];
@@ -243,31 +229,25 @@ export type BamCompletesConnection = {
 export type Cohort = {
   __typename?: "Cohort";
   cohortId: Scalars["String"];
-  hasMetadata2CohortCompletes: Array<CohortComplete>;
-  hasMetadata2CohortCompletesAggregate?: Maybe<CohortCohortCompleteHasMetadata2CohortCompletesAggregationSelection>;
-  hasMetadata2CohortCompletesConnection: CohortHasMetadata2CohortCompletesConnection;
-  hasSample2Samples: Array<Sample>;
-  hasSample2SamplesAggregate?: Maybe<CohortSampleHasSample2SamplesAggregationSelection>;
-  hasSample2SamplesConnection: CohortHasSample2SamplesConnection;
+  hasCohortCompleteCohortCompletes: Array<CohortComplete>;
+  hasCohortCompleteCohortCompletesAggregate?: Maybe<CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection>;
+  hasCohortCompleteCohortCompletesConnection: CohortHasCohortCompleteCohortCompletesConnection;
+  hasCohortSampleSamples: Array<Sample>;
+  hasCohortSampleSamplesAggregate?: Maybe<CohortSampleHasCohortSampleSamplesAggregationSelection>;
+  hasCohortSampleSamplesConnection: CohortHasCohortSampleSamplesConnection;
 };
 
-export type CohortHasMetadata2CohortCompletesArgs = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
+export type CohortHasCohortCompleteCohortCompletesArgs = {
   directed?: InputMaybe<Scalars["Boolean"]>;
   options?: InputMaybe<CohortCompleteOptions>;
   where?: InputMaybe<CohortCompleteWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesAggregateArgs = {
-=======
-export type CohortHasMetadata2CohortCompletesAggregateArgs = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   where?: InputMaybe<CohortCompleteWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesConnectionArgs = {
   after?: InputMaybe<Scalars["String"]>;
   directed?: InputMaybe<Scalars["Boolean"]>;
@@ -279,46 +259,22 @@ export type CohortHasCohortCompleteCohortCompletesConnectionArgs = {
 };
 
 export type CohortHasCohortSampleSamplesArgs = {
-=======
-export type CohortHasMetadata2CohortCompletesConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<CohortHasMetadata2CohortCompletesConnectionSort>>;
-  where?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-};
-
-export type CohortHasSample2SamplesArgs = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   options?: InputMaybe<SampleOptions>;
   where?: InputMaybe<SampleWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesAggregateArgs = {
-=======
-export type CohortHasSample2SamplesAggregateArgs = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   where?: InputMaybe<SampleWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesConnectionArgs = {
   after?: InputMaybe<Scalars["String"]>;
   directed?: InputMaybe<Scalars["Boolean"]>;
   first?: InputMaybe<Scalars["Int"]>;
   sort?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectionSort>>;
   where?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
-=======
-export type CohortHasSample2SamplesConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<CohortHasSample2SamplesConnectionSort>>;
-  where?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 };
 
 export type CohortAggregateSelection = {
@@ -327,7 +283,6 @@ export type CohortAggregateSelection = {
   count: Scalars["Int"];
 };
 
-<<<<<<< HEAD
 export type CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection =
   {
     __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection";
@@ -338,18 +293,6 @@ export type CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelec
 export type CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection =
   {
     __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection";
-=======
-export type CohortCohortCompleteHasMetadata2CohortCompletesAggregationSelection =
-  {
-    __typename?: "CohortCohortCompleteHasMetadata2CohortCompletesAggregationSelection";
-    count: Scalars["Int"];
-    node?: Maybe<CohortCohortCompleteHasMetadata2CohortCompletesNodeAggregateSelection>;
-  };
-
-export type CohortCohortCompleteHasMetadata2CohortCompletesNodeAggregateSelection =
-  {
-    __typename?: "CohortCohortCompleteHasMetadata2CohortCompletesNodeAggregateSelection";
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
     analyst: StringAggregateSelectionNonNullable;
     date: StringAggregateSelectionNonNullable;
     status: StringAggregateSelectionNonNullable;
@@ -359,40 +302,25 @@ export type CohortCohortCompleteHasMetadata2CohortCompletesNodeAggregateSelectio
 export type CohortComplete = {
   __typename?: "CohortComplete";
   analyst: Scalars["String"];
-<<<<<<< HEAD
   cohortsHasCohortComplete: Array<Cohort>;
   cohortsHasCohortCompleteAggregate?: Maybe<CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection>;
   cohortsHasCohortCompleteConnection: CohortCompleteCohortsHasCohortCompleteConnection;
-=======
-  cohortsHasMetadata2: Array<Cohort>;
-  cohortsHasMetadata2Aggregate?: Maybe<CohortCompleteCohortCohortsHasMetadata2AggregationSelection>;
-  cohortsHasMetadata2Connection: CohortCompleteCohortsHasMetadata2Connection;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   date: Scalars["String"];
   status: Scalars["String"];
   type: Scalars["String"];
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteArgs = {
-=======
-export type CohortCompleteCohortsHasMetadata2Args = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   options?: InputMaybe<CohortOptions>;
   where?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteAggregateArgs = {
-=======
-export type CohortCompleteCohortsHasMetadata2AggregateArgs = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   where?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteConnectionArgs = {
   after?: InputMaybe<Scalars["String"]>;
   directed?: InputMaybe<Scalars["Boolean"]>;
@@ -401,14 +329,6 @@ export type CohortCompleteCohortsHasCohortCompleteConnectionArgs = {
     Array<CohortCompleteCohortsHasCohortCompleteConnectionSort>
   >;
   where?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
-=======
-export type CohortCompleteCohortsHasMetadata2ConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2ConnectionSort>>;
-  where?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 };
 
 export type CohortCompleteAggregateSelection = {
@@ -420,7 +340,6 @@ export type CohortCompleteAggregateSelection = {
   type: StringAggregateSelectionNonNullable;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection = {
   __typename?: "CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection";
   count: Scalars["Int"];
@@ -436,56 +355,26 @@ export type CohortCompleteCohortCohortsHasCohortCompleteNodeAggregateSelection =
 export type CohortCompleteCohortsHasCohortCompleteAggregateInput = {
   AND?: InputMaybe<Array<CohortCompleteCohortsHasCohortCompleteAggregateInput>>;
   OR?: InputMaybe<Array<CohortCompleteCohortsHasCohortCompleteAggregateInput>>;
-=======
-export type CohortCompleteCohortCohortsHasMetadata2AggregationSelection = {
-  __typename?: "CohortCompleteCohortCohortsHasMetadata2AggregationSelection";
-  count: Scalars["Int"];
-  node?: Maybe<CohortCompleteCohortCohortsHasMetadata2NodeAggregateSelection>;
-};
-
-export type CohortCompleteCohortCohortsHasMetadata2NodeAggregateSelection = {
-  __typename?: "CohortCompleteCohortCohortsHasMetadata2NodeAggregateSelection";
-  cohortId: StringAggregateSelectionNonNullable;
-};
-
-export type CohortCompleteCohortsHasMetadata2AggregateInput = {
-  AND?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2AggregateInput>>;
-  OR?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2AggregateInput>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   count?: InputMaybe<Scalars["Int"]>;
   count_GT?: InputMaybe<Scalars["Int"]>;
   count_GTE?: InputMaybe<Scalars["Int"]>;
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
-<<<<<<< HEAD
   node?: InputMaybe<CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput>;
 };
 
 export type CohortCompleteCohortsHasCohortCompleteConnectFieldInput = {
-=======
-  node?: InputMaybe<CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput>;
-};
-
-export type CohortCompleteCohortsHasMetadata2ConnectFieldInput = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   connect?: InputMaybe<Array<CohortConnectInput>>;
   where?: InputMaybe<CohortConnectWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteConnection = {
   __typename?: "CohortCompleteCohortsHasCohortCompleteConnection";
   edges: Array<CohortCompleteCohortsHasCohortCompleteRelationship>;
-=======
-export type CohortCompleteCohortsHasMetadata2Connection = {
-  __typename?: "CohortCompleteCohortsHasMetadata2Connection";
-  edges: Array<CohortCompleteCohortsHasMetadata2Relationship>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   pageInfo: PageInfo;
   totalCount: Scalars["Int"];
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteConnectionSort = {
   node?: InputMaybe<CohortSort>;
 };
@@ -495,20 +384,10 @@ export type CohortCompleteCohortsHasCohortCompleteConnectionWhere = {
     Array<CohortCompleteCohortsHasCohortCompleteConnectionWhere>
   >;
   OR?: InputMaybe<Array<CohortCompleteCohortsHasCohortCompleteConnectionWhere>>;
-=======
-export type CohortCompleteCohortsHasMetadata2ConnectionSort = {
-  node?: InputMaybe<CohortSort>;
-};
-
-export type CohortCompleteCohortsHasMetadata2ConnectionWhere = {
-  AND?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2ConnectionWhere>>;
-  OR?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2ConnectionWhere>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   node?: InputMaybe<CohortWhere>;
   node_NOT?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteCreateFieldInput = {
   node: CohortCreateInput;
 };
@@ -538,35 +417,6 @@ export type CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput = {
   >;
   OR?: InputMaybe<
     Array<CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput>
-=======
-export type CohortCompleteCohortsHasMetadata2CreateFieldInput = {
-  node: CohortCreateInput;
-};
-
-export type CohortCompleteCohortsHasMetadata2DeleteFieldInput = {
-  delete?: InputMaybe<CohortDeleteInput>;
-  where?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-};
-
-export type CohortCompleteCohortsHasMetadata2DisconnectFieldInput = {
-  disconnect?: InputMaybe<CohortDisconnectInput>;
-  where?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-};
-
-export type CohortCompleteCohortsHasMetadata2FieldInput = {
-  connect?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2ConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2CreateFieldInput>>;
-};
-
-export type CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput = {
-  AND?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput>
-  >;
-  OR?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   cohortId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   cohortId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
@@ -590,18 +440,12 @@ export type CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput = {
   cohortId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteRelationship = {
   __typename?: "CohortCompleteCohortsHasCohortCompleteRelationship";
-=======
-export type CohortCompleteCohortsHasMetadata2Relationship = {
-  __typename?: "CohortCompleteCohortsHasMetadata2Relationship";
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   cursor: Scalars["String"];
   node: Cohort;
 };
 
-<<<<<<< HEAD
 export type CohortCompleteCohortsHasCohortCompleteUpdateConnectionInput = {
   node?: InputMaybe<CohortUpdateInput>;
 };
@@ -626,28 +470,6 @@ export type CohortCompleteCohortsHasCohortCompleteUpdateFieldInput = {
 export type CohortCompleteConnectInput = {
   cohortsHasCohortComplete?: InputMaybe<
     Array<CohortCompleteCohortsHasCohortCompleteConnectFieldInput>
-=======
-export type CohortCompleteCohortsHasMetadata2UpdateConnectionInput = {
-  node?: InputMaybe<CohortUpdateInput>;
-};
-
-export type CohortCompleteCohortsHasMetadata2UpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2ConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2CreateFieldInput>>;
-  delete?: InputMaybe<Array<CohortCompleteCohortsHasMetadata2DeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2DisconnectFieldInput>
-  >;
-  update?: InputMaybe<CohortCompleteCohortsHasMetadata2UpdateConnectionInput>;
-  where?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-};
-
-export type CohortCompleteConnectInput = {
-  cohortsHasMetadata2?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2ConnectFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
@@ -657,35 +479,21 @@ export type CohortCompleteConnectWhere = {
 
 export type CohortCompleteCreateInput = {
   analyst: Scalars["String"];
-<<<<<<< HEAD
   cohortsHasCohortComplete?: InputMaybe<CohortCompleteCohortsHasCohortCompleteFieldInput>;
-=======
-  cohortsHasMetadata2?: InputMaybe<CohortCompleteCohortsHasMetadata2FieldInput>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   date: Scalars["String"];
   status: Scalars["String"];
   type: Scalars["String"];
 };
 
 export type CohortCompleteDeleteInput = {
-<<<<<<< HEAD
   cohortsHasCohortComplete?: InputMaybe<
     Array<CohortCompleteCohortsHasCohortCompleteDeleteFieldInput>
-=======
-  cohortsHasMetadata2?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2DeleteFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
 export type CohortCompleteDisconnectInput = {
-<<<<<<< HEAD
   cohortsHasCohortComplete?: InputMaybe<
     Array<CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput>
-=======
-  cohortsHasMetadata2?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2DisconnectFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
@@ -703,13 +511,8 @@ export type CohortCompleteOptions = {
 };
 
 export type CohortCompleteRelationInput = {
-<<<<<<< HEAD
   cohortsHasCohortComplete?: InputMaybe<
     Array<CohortCompleteCohortsHasCohortCompleteCreateFieldInput>
-=======
-  cohortsHasMetadata2?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2CreateFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
@@ -723,13 +526,8 @@ export type CohortCompleteSort = {
 
 export type CohortCompleteUpdateInput = {
   analyst?: InputMaybe<Scalars["String"]>;
-<<<<<<< HEAD
   cohortsHasCohortComplete?: InputMaybe<
     Array<CohortCompleteCohortsHasCohortCompleteUpdateFieldInput>
-=======
-  cohortsHasMetadata2?: InputMaybe<
-    Array<CohortCompleteCohortsHasMetadata2UpdateFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   date?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<Scalars["String"]>;
@@ -749,7 +547,6 @@ export type CohortCompleteWhere = {
   analyst_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   analyst_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   analyst_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-<<<<<<< HEAD
   cohortsHasCohortCompleteAggregate?: InputMaybe<CohortCompleteCohortsHasCohortCompleteAggregateInput>;
   cohortsHasCohortCompleteConnection_ALL?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
   cohortsHasCohortCompleteConnection_NONE?: InputMaybe<CohortCompleteCohortsHasCohortCompleteConnectionWhere>;
@@ -763,21 +560,6 @@ export type CohortCompleteWhere = {
   cohortsHasCohortComplete_SINGLE?: InputMaybe<CohortWhere>;
   /** Return CohortCompletes where some of the related Cohorts match this filter */
   cohortsHasCohortComplete_SOME?: InputMaybe<CohortWhere>;
-=======
-  cohortsHasMetadata2Aggregate?: InputMaybe<CohortCompleteCohortsHasMetadata2AggregateInput>;
-  cohortsHasMetadata2Connection_ALL?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-  cohortsHasMetadata2Connection_NONE?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-  cohortsHasMetadata2Connection_SINGLE?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-  cohortsHasMetadata2Connection_SOME?: InputMaybe<CohortCompleteCohortsHasMetadata2ConnectionWhere>;
-  /** Return CohortCompletes where all of the related Cohorts match this filter */
-  cohortsHasMetadata2_ALL?: InputMaybe<CohortWhere>;
-  /** Return CohortCompletes where none of the related Cohorts match this filter */
-  cohortsHasMetadata2_NONE?: InputMaybe<CohortWhere>;
-  /** Return CohortCompletes where one of the related Cohorts match this filter */
-  cohortsHasMetadata2_SINGLE?: InputMaybe<CohortWhere>;
-  /** Return CohortCompletes where some of the related Cohorts match this filter */
-  cohortsHasMetadata2_SOME?: InputMaybe<CohortWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   date?: InputMaybe<Scalars["String"]>;
   date_CONTAINS?: InputMaybe<Scalars["String"]>;
   date_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -818,19 +600,11 @@ export type CohortCompletesConnection = {
 };
 
 export type CohortConnectInput = {
-<<<<<<< HEAD
   hasCohortCompleteCohortCompletes?: InputMaybe<
     Array<CohortHasCohortCompleteCohortCompletesConnectFieldInput>
   >;
   hasCohortSampleSamples?: InputMaybe<
     Array<CohortHasCohortSampleSamplesConnectFieldInput>
-=======
-  hasMetadata2CohortCompletes?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesConnectFieldInput>
-  >;
-  hasSample2Samples?: InputMaybe<
-    Array<CohortHasSample2SamplesConnectFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
@@ -840,7 +614,6 @@ export type CohortConnectWhere = {
 
 export type CohortCreateInput = {
   cohortId: Scalars["String"];
-<<<<<<< HEAD
   hasCohortCompleteCohortCompletes?: InputMaybe<CohortHasCohortCompleteCohortCompletesFieldInput>;
   hasCohortSampleSamples?: InputMaybe<CohortHasCohortSampleSamplesFieldInput>;
 };
@@ -851,35 +624,15 @@ export type CohortDeleteInput = {
   >;
   hasCohortSampleSamples?: InputMaybe<
     Array<CohortHasCohortSampleSamplesDeleteFieldInput>
-=======
-  hasMetadata2CohortCompletes?: InputMaybe<CohortHasMetadata2CohortCompletesFieldInput>;
-  hasSample2Samples?: InputMaybe<CohortHasSample2SamplesFieldInput>;
-};
-
-export type CohortDeleteInput = {
-  hasMetadata2CohortCompletes?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesDeleteFieldInput>
-  >;
-  hasSample2Samples?: InputMaybe<
-    Array<CohortHasSample2SamplesDeleteFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
 export type CohortDisconnectInput = {
-<<<<<<< HEAD
   hasCohortCompleteCohortCompletes?: InputMaybe<
     Array<CohortHasCohortCompleteCohortCompletesDisconnectFieldInput>
   >;
   hasCohortSampleSamples?: InputMaybe<
     Array<CohortHasCohortSampleSamplesDisconnectFieldInput>
-=======
-  hasMetadata2CohortCompletes?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesDisconnectFieldInput>
-  >;
-  hasSample2Samples?: InputMaybe<
-    Array<CohortHasSample2SamplesDisconnectFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
@@ -889,49 +642,29 @@ export type CohortEdge = {
   node: Cohort;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesAggregateInput = {
   AND?: InputMaybe<Array<CohortHasCohortCompleteCohortCompletesAggregateInput>>;
   OR?: InputMaybe<Array<CohortHasCohortCompleteCohortCompletesAggregateInput>>;
-=======
-export type CohortHasMetadata2CohortCompletesAggregateInput = {
-  AND?: InputMaybe<Array<CohortHasMetadata2CohortCompletesAggregateInput>>;
-  OR?: InputMaybe<Array<CohortHasMetadata2CohortCompletesAggregateInput>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   count?: InputMaybe<Scalars["Int"]>;
   count_GT?: InputMaybe<Scalars["Int"]>;
   count_GTE?: InputMaybe<Scalars["Int"]>;
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
-<<<<<<< HEAD
   node?: InputMaybe<CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput>;
 };
 
 export type CohortHasCohortCompleteCohortCompletesConnectFieldInput = {
-=======
-  node?: InputMaybe<CohortHasMetadata2CohortCompletesNodeAggregationWhereInput>;
-};
-
-export type CohortHasMetadata2CohortCompletesConnectFieldInput = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   connect?: InputMaybe<Array<CohortCompleteConnectInput>>;
   where?: InputMaybe<CohortCompleteConnectWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesConnection = {
   __typename?: "CohortHasCohortCompleteCohortCompletesConnection";
   edges: Array<CohortHasCohortCompleteCohortCompletesRelationship>;
-=======
-export type CohortHasMetadata2CohortCompletesConnection = {
-  __typename?: "CohortHasMetadata2CohortCompletesConnection";
-  edges: Array<CohortHasMetadata2CohortCompletesRelationship>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   pageInfo: PageInfo;
   totalCount: Scalars["Int"];
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesConnectionSort = {
   node?: InputMaybe<CohortCompleteSort>;
 };
@@ -941,20 +674,10 @@ export type CohortHasCohortCompleteCohortCompletesConnectionWhere = {
     Array<CohortHasCohortCompleteCohortCompletesConnectionWhere>
   >;
   OR?: InputMaybe<Array<CohortHasCohortCompleteCohortCompletesConnectionWhere>>;
-=======
-export type CohortHasMetadata2CohortCompletesConnectionSort = {
-  node?: InputMaybe<CohortCompleteSort>;
-};
-
-export type CohortHasMetadata2CohortCompletesConnectionWhere = {
-  AND?: InputMaybe<Array<CohortHasMetadata2CohortCompletesConnectionWhere>>;
-  OR?: InputMaybe<Array<CohortHasMetadata2CohortCompletesConnectionWhere>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   node?: InputMaybe<CohortCompleteWhere>;
   node_NOT?: InputMaybe<CohortCompleteWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesCreateFieldInput = {
   node: CohortCompleteCreateInput;
 };
@@ -984,35 +707,6 @@ export type CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput = {
   >;
   OR?: InputMaybe<
     Array<CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput>
-=======
-export type CohortHasMetadata2CohortCompletesCreateFieldInput = {
-  node: CohortCompleteCreateInput;
-};
-
-export type CohortHasMetadata2CohortCompletesDeleteFieldInput = {
-  delete?: InputMaybe<CohortCompleteDeleteInput>;
-  where?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-};
-
-export type CohortHasMetadata2CohortCompletesDisconnectFieldInput = {
-  disconnect?: InputMaybe<CohortCompleteDisconnectInput>;
-  where?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-};
-
-export type CohortHasMetadata2CohortCompletesFieldInput = {
-  connect?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<CohortHasMetadata2CohortCompletesCreateFieldInput>>;
-};
-
-export type CohortHasMetadata2CohortCompletesNodeAggregationWhereInput = {
-  AND?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesNodeAggregationWhereInput>
-  >;
-  OR?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesNodeAggregationWhereInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   analyst_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   analyst_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
@@ -1096,18 +790,12 @@ export type CohortHasMetadata2CohortCompletesNodeAggregationWhereInput = {
   type_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesRelationship = {
   __typename?: "CohortHasCohortCompleteCohortCompletesRelationship";
-=======
-export type CohortHasMetadata2CohortCompletesRelationship = {
-  __typename?: "CohortHasMetadata2CohortCompletesRelationship";
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   cursor: Scalars["String"];
   node: CohortComplete;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortCompleteCohortCompletesUpdateConnectionInput = {
   node?: InputMaybe<CohortCompleteUpdateInput>;
 };
@@ -1132,62 +820,26 @@ export type CohortHasCohortCompleteCohortCompletesUpdateFieldInput = {
 export type CohortHasCohortSampleSamplesAggregateInput = {
   AND?: InputMaybe<Array<CohortHasCohortSampleSamplesAggregateInput>>;
   OR?: InputMaybe<Array<CohortHasCohortSampleSamplesAggregateInput>>;
-=======
-export type CohortHasMetadata2CohortCompletesUpdateConnectionInput = {
-  node?: InputMaybe<CohortCompleteUpdateInput>;
-};
-
-export type CohortHasMetadata2CohortCompletesUpdateFieldInput = {
-  connect?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesConnectFieldInput>
-  >;
-  create?: InputMaybe<Array<CohortHasMetadata2CohortCompletesCreateFieldInput>>;
-  delete?: InputMaybe<Array<CohortHasMetadata2CohortCompletesDeleteFieldInput>>;
-  disconnect?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesDisconnectFieldInput>
-  >;
-  update?: InputMaybe<CohortHasMetadata2CohortCompletesUpdateConnectionInput>;
-  where?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-};
-
-export type CohortHasSample2SamplesAggregateInput = {
-  AND?: InputMaybe<Array<CohortHasSample2SamplesAggregateInput>>;
-  OR?: InputMaybe<Array<CohortHasSample2SamplesAggregateInput>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   count?: InputMaybe<Scalars["Int"]>;
   count_GT?: InputMaybe<Scalars["Int"]>;
   count_GTE?: InputMaybe<Scalars["Int"]>;
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
-<<<<<<< HEAD
   node?: InputMaybe<CohortHasCohortSampleSamplesNodeAggregationWhereInput>;
 };
 
 export type CohortHasCohortSampleSamplesConnectFieldInput = {
-=======
-  node?: InputMaybe<CohortHasSample2SamplesNodeAggregationWhereInput>;
-};
-
-export type CohortHasSample2SamplesConnectFieldInput = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   connect?: InputMaybe<Array<SampleConnectInput>>;
   where?: InputMaybe<SampleConnectWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesConnection = {
   __typename?: "CohortHasCohortSampleSamplesConnection";
   edges: Array<CohortHasCohortSampleSamplesRelationship>;
-=======
-export type CohortHasSample2SamplesConnection = {
-  __typename?: "CohortHasSample2SamplesConnection";
-  edges: Array<CohortHasSample2SamplesRelationship>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   pageInfo: PageInfo;
   totalCount: Scalars["Int"];
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesConnectionSort = {
   node?: InputMaybe<SampleSort>;
 };
@@ -1195,20 +847,10 @@ export type CohortHasCohortSampleSamplesConnectionSort = {
 export type CohortHasCohortSampleSamplesConnectionWhere = {
   AND?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectionWhere>>;
   OR?: InputMaybe<Array<CohortHasCohortSampleSamplesConnectionWhere>>;
-=======
-export type CohortHasSample2SamplesConnectionSort = {
-  node?: InputMaybe<SampleSort>;
-};
-
-export type CohortHasSample2SamplesConnectionWhere = {
-  AND?: InputMaybe<Array<CohortHasSample2SamplesConnectionWhere>>;
-  OR?: InputMaybe<Array<CohortHasSample2SamplesConnectionWhere>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   node?: InputMaybe<SampleWhere>;
   node_NOT?: InputMaybe<SampleWhere>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesCreateFieldInput = {
   node: SampleCreateInput;
 };
@@ -1233,30 +875,6 @@ export type CohortHasCohortSampleSamplesNodeAggregationWhereInput = {
     Array<CohortHasCohortSampleSamplesNodeAggregationWhereInput>
   >;
   OR?: InputMaybe<Array<CohortHasCohortSampleSamplesNodeAggregationWhereInput>>;
-=======
-export type CohortHasSample2SamplesCreateFieldInput = {
-  node: SampleCreateInput;
-};
-
-export type CohortHasSample2SamplesDeleteFieldInput = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
-};
-
-export type CohortHasSample2SamplesDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  where?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
-};
-
-export type CohortHasSample2SamplesFieldInput = {
-  connect?: InputMaybe<Array<CohortHasSample2SamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<CohortHasSample2SamplesCreateFieldInput>>;
-};
-
-export type CohortHasSample2SamplesNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<CohortHasSample2SamplesNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<CohortHasSample2SamplesNodeAggregationWhereInput>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   datasource_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   datasource_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
   datasource_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
@@ -1339,18 +957,12 @@ export type CohortHasSample2SamplesNodeAggregationWhereInput = {
   smileSampleId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesRelationship = {
   __typename?: "CohortHasCohortSampleSamplesRelationship";
-=======
-export type CohortHasSample2SamplesRelationship = {
-  __typename?: "CohortHasSample2SamplesRelationship";
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   cursor: Scalars["String"];
   node: Sample;
 };
 
-<<<<<<< HEAD
 export type CohortHasCohortSampleSamplesUpdateConnectionInput = {
   node?: InputMaybe<SampleUpdateInput>;
 };
@@ -1364,19 +976,6 @@ export type CohortHasCohortSampleSamplesUpdateFieldInput = {
   >;
   update?: InputMaybe<CohortHasCohortSampleSamplesUpdateConnectionInput>;
   where?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
-=======
-export type CohortHasSample2SamplesUpdateConnectionInput = {
-  node?: InputMaybe<SampleUpdateInput>;
-};
-
-export type CohortHasSample2SamplesUpdateFieldInput = {
-  connect?: InputMaybe<Array<CohortHasSample2SamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<CohortHasSample2SamplesCreateFieldInput>>;
-  delete?: InputMaybe<Array<CohortHasSample2SamplesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<CohortHasSample2SamplesDisconnectFieldInput>>;
-  update?: InputMaybe<CohortHasSample2SamplesUpdateConnectionInput>;
-  where?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 };
 
 export type CohortOptions = {
@@ -1387,7 +986,6 @@ export type CohortOptions = {
 };
 
 export type CohortRelationInput = {
-<<<<<<< HEAD
   hasCohortCompleteCohortCompletes?: InputMaybe<
     Array<CohortHasCohortCompleteCohortCompletesCreateFieldInput>
   >;
@@ -1404,24 +1002,6 @@ export type CohortSampleHasCohortSampleSamplesAggregationSelection = {
 
 export type CohortSampleHasCohortSampleSamplesNodeAggregateSelection = {
   __typename?: "CohortSampleHasCohortSampleSamplesNodeAggregateSelection";
-=======
-  hasMetadata2CohortCompletes?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesCreateFieldInput>
-  >;
-  hasSample2Samples?: InputMaybe<
-    Array<CohortHasSample2SamplesCreateFieldInput>
-  >;
-};
-
-export type CohortSampleHasSample2SamplesAggregationSelection = {
-  __typename?: "CohortSampleHasSample2SamplesAggregationSelection";
-  count: Scalars["Int"];
-  node?: Maybe<CohortSampleHasSample2SamplesNodeAggregateSelection>;
-};
-
-export type CohortSampleHasSample2SamplesNodeAggregateSelection = {
-  __typename?: "CohortSampleHasSample2SamplesNodeAggregateSelection";
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   datasource: StringAggregateSelectionNonNullable;
   sampleCategory: StringAggregateSelectionNonNullable;
   sampleClass: StringAggregateSelectionNonNullable;
@@ -1435,19 +1015,11 @@ export type CohortSort = {
 
 export type CohortUpdateInput = {
   cohortId?: InputMaybe<Scalars["String"]>;
-<<<<<<< HEAD
   hasCohortCompleteCohortCompletes?: InputMaybe<
     Array<CohortHasCohortCompleteCohortCompletesUpdateFieldInput>
   >;
   hasCohortSampleSamples?: InputMaybe<
     Array<CohortHasCohortSampleSamplesUpdateFieldInput>
-=======
-  hasMetadata2CohortCompletes?: InputMaybe<
-    Array<CohortHasMetadata2CohortCompletesUpdateFieldInput>
-  >;
-  hasSample2Samples?: InputMaybe<
-    Array<CohortHasSample2SamplesUpdateFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
 };
 
@@ -1464,7 +1036,6 @@ export type CohortWhere = {
   cohortId_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   cohortId_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   cohortId_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-<<<<<<< HEAD
   hasCohortCompleteCohortCompletesAggregate?: InputMaybe<CohortHasCohortCompleteCohortCompletesAggregateInput>;
   hasCohortCompleteCohortCompletesConnection_ALL?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
   hasCohortCompleteCohortCompletesConnection_NONE?: InputMaybe<CohortHasCohortCompleteCohortCompletesConnectionWhere>;
@@ -1491,34 +1062,6 @@ export type CohortWhere = {
   hasCohortSampleSamples_SINGLE?: InputMaybe<SampleWhere>;
   /** Return Cohorts where some of the related Samples match this filter */
   hasCohortSampleSamples_SOME?: InputMaybe<SampleWhere>;
-=======
-  hasMetadata2CohortCompletesAggregate?: InputMaybe<CohortHasMetadata2CohortCompletesAggregateInput>;
-  hasMetadata2CohortCompletesConnection_ALL?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-  hasMetadata2CohortCompletesConnection_NONE?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-  hasMetadata2CohortCompletesConnection_SINGLE?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-  hasMetadata2CohortCompletesConnection_SOME?: InputMaybe<CohortHasMetadata2CohortCompletesConnectionWhere>;
-  /** Return Cohorts where all of the related CohortCompletes match this filter */
-  hasMetadata2CohortCompletes_ALL?: InputMaybe<CohortCompleteWhere>;
-  /** Return Cohorts where none of the related CohortCompletes match this filter */
-  hasMetadata2CohortCompletes_NONE?: InputMaybe<CohortCompleteWhere>;
-  /** Return Cohorts where one of the related CohortCompletes match this filter */
-  hasMetadata2CohortCompletes_SINGLE?: InputMaybe<CohortCompleteWhere>;
-  /** Return Cohorts where some of the related CohortCompletes match this filter */
-  hasMetadata2CohortCompletes_SOME?: InputMaybe<CohortCompleteWhere>;
-  hasSample2SamplesAggregate?: InputMaybe<CohortHasSample2SamplesAggregateInput>;
-  hasSample2SamplesConnection_ALL?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
-  hasSample2SamplesConnection_NONE?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
-  hasSample2SamplesConnection_SINGLE?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
-  hasSample2SamplesConnection_SOME?: InputMaybe<CohortHasSample2SamplesConnectionWhere>;
-  /** Return Cohorts where all of the related Samples match this filter */
-  hasSample2Samples_ALL?: InputMaybe<SampleWhere>;
-  /** Return Cohorts where none of the related Samples match this filter */
-  hasSample2Samples_NONE?: InputMaybe<SampleWhere>;
-  /** Return Cohorts where one of the related Samples match this filter */
-  hasSample2Samples_SINGLE?: InputMaybe<SampleWhere>;
-  /** Return Cohorts where some of the related Samples match this filter */
-  hasSample2Samples_SOME?: InputMaybe<SampleWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 };
 
 export type CohortsConnection = {
@@ -1528,15 +1071,12 @@ export type CohortsConnection = {
   totalCount: Scalars["Int"];
 };
 
-<<<<<<< HEAD
-=======
 export type CreateBamCompletesMutationResponse = {
   __typename?: "CreateBamCompletesMutationResponse";
   bamCompletes: Array<BamComplete>;
   info: CreateInfo;
 };
 
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 export type CreateCohortCompletesMutationResponse = {
   __typename?: "CreateCohortCompletesMutationResponse";
   cohortCompletes: Array<CohortComplete>;
@@ -1858,15 +1398,10 @@ export type MafCompletesConnection = {
 
 export type Mutation = {
   __typename?: "Mutation";
-<<<<<<< HEAD
-  createCohortCompletes: CreateCohortCompletesMutationResponse;
-  createCohorts: CreateCohortsMutationResponse;
-=======
   createBamCompletes: CreateBamCompletesMutationResponse;
   createCohortCompletes: CreateCohortCompletesMutationResponse;
   createCohorts: CreateCohortsMutationResponse;
   createMafCompletes: CreateMafCompletesMutationResponse;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   createPatientAliases: CreatePatientAliasesMutationResponse;
   createPatients: CreatePatientsMutationResponse;
   createProjects: CreateProjectsMutationResponse;
@@ -1877,16 +1412,11 @@ export type Mutation = {
   createSampleMetadata: CreateSampleMetadataMutationResponse;
   createSamples: CreateSamplesMutationResponse;
   createStatuses: CreateStatusesMutationResponse;
-<<<<<<< HEAD
-  deleteCohortCompletes: DeleteInfo;
-  deleteCohorts: DeleteInfo;
-=======
   createTempos: CreateTemposMutationResponse;
   deleteBamCompletes: DeleteInfo;
   deleteCohortCompletes: DeleteInfo;
   deleteCohorts: DeleteInfo;
   deleteMafCompletes: DeleteInfo;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   deletePatientAliases: DeleteInfo;
   deletePatients: DeleteInfo;
   deleteProjects: DeleteInfo;
@@ -1897,16 +1427,11 @@ export type Mutation = {
   deleteSampleMetadata: DeleteInfo;
   deleteSamples: DeleteInfo;
   deleteStatuses: DeleteInfo;
-<<<<<<< HEAD
-  updateCohortCompletes: UpdateCohortCompletesMutationResponse;
-  updateCohorts: UpdateCohortsMutationResponse;
-=======
   deleteTempos: DeleteInfo;
   updateBamCompletes: UpdateBamCompletesMutationResponse;
   updateCohortCompletes: UpdateCohortCompletesMutationResponse;
   updateCohorts: UpdateCohortsMutationResponse;
   updateMafCompletes: UpdateMafCompletesMutationResponse;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   updatePatientAliases: UpdatePatientAliasesMutationResponse;
   updatePatients: UpdatePatientsMutationResponse;
   updateProjects: UpdateProjectsMutationResponse;
@@ -1934,14 +1459,6 @@ export type MutationCreateCohortsArgs = {
 
 export type MutationCreateMafCompletesArgs = {
   input: Array<MafCompleteCreateInput>;
-};
-
-export type MutationCreateCohortCompletesArgs = {
-  input: Array<CohortCompleteCreateInput>;
-};
-
-export type MutationCreateCohortsArgs = {
-  input: Array<CohortCreateInput>;
 };
 
 export type MutationCreatePatientAliasesArgs = {
@@ -1984,8 +1501,6 @@ export type MutationCreateStatusesArgs = {
   input: Array<StatusCreateInput>;
 };
 
-<<<<<<< HEAD
-=======
 export type MutationCreateTemposArgs = {
   input: Array<TempoCreateInput>;
 };
@@ -1995,7 +1510,6 @@ export type MutationDeleteBamCompletesArgs = {
   where?: InputMaybe<BamCompleteWhere>;
 };
 
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 export type MutationDeleteCohortCompletesArgs = {
   delete?: InputMaybe<CohortCompleteDeleteInput>;
   where?: InputMaybe<CohortCompleteWhere>;
@@ -2006,14 +1520,11 @@ export type MutationDeleteCohortsArgs = {
   where?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
-=======
 export type MutationDeleteMafCompletesArgs = {
   delete?: InputMaybe<MafCompleteDeleteInput>;
   where?: InputMaybe<MafCompleteWhere>;
 };
 
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 export type MutationDeletePatientAliasesArgs = {
   delete?: InputMaybe<PatientAliasDeleteInput>;
   where?: InputMaybe<PatientAliasWhere>;
@@ -2064,8 +1575,6 @@ export type MutationDeleteStatusesArgs = {
   where?: InputMaybe<StatusWhere>;
 };
 
-<<<<<<< HEAD
-=======
 export type MutationDeleteTemposArgs = {
   delete?: InputMaybe<TempoDeleteInput>;
   where?: InputMaybe<TempoWhere>;
@@ -2080,7 +1589,6 @@ export type MutationUpdateBamCompletesArgs = {
   where?: InputMaybe<BamCompleteWhere>;
 };
 
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 export type MutationUpdateCohortCompletesArgs = {
   connect?: InputMaybe<CohortCompleteConnectInput>;
   create?: InputMaybe<CohortCompleteRelationInput>;
@@ -2099,8 +1607,6 @@ export type MutationUpdateCohortsArgs = {
   where?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
-=======
 export type MutationUpdateMafCompletesArgs = {
   connect?: InputMaybe<MafCompleteConnectInput>;
   create?: InputMaybe<MafCompleteRelationInput>;
@@ -2110,7 +1616,6 @@ export type MutationUpdateMafCompletesArgs = {
   where?: InputMaybe<MafCompleteWhere>;
 };
 
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 export type MutationUpdatePatientAliasesArgs = {
   connect?: InputMaybe<PatientAliasConnectInput>;
   create?: InputMaybe<PatientAliasRelationInput>;
@@ -2280,7 +1785,7 @@ export type PatientAlias = {
   isAliasPatientsAggregate?: Maybe<PatientAliasPatientIsAliasPatientsAggregationSelection>;
   isAliasPatientsConnection: PatientAliasIsAliasPatientsConnection;
   namespace: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
+  value: Scalars["String"];
 };
 
 export type PatientAliasIsAliasPatientsArgs = {
@@ -2306,7 +1811,7 @@ export type PatientAliasAggregateSelection = {
   __typename?: "PatientAliasAggregateSelection";
   count: Scalars["Int"];
   namespace: StringAggregateSelectionNonNullable;
-  value: StringAggregateSelectionNullable;
+  value: StringAggregateSelectionNonNullable;
 };
 
 export type PatientAliasConnectInput = {
@@ -2322,7 +1827,7 @@ export type PatientAliasConnectWhere = {
 export type PatientAliasCreateInput = {
   isAliasPatients?: InputMaybe<PatientAliasIsAliasPatientsFieldInput>;
   namespace: Scalars["String"];
-  value?: InputMaybe<Scalars["String"]>;
+  value: Scalars["String"];
 };
 
 export type PatientAliasDeleteInput = {
@@ -2509,11 +2014,11 @@ export type PatientAliasWhere = {
   value?: InputMaybe<Scalars["String"]>;
   value_CONTAINS?: InputMaybe<Scalars["String"]>;
   value_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  value_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  value_IN?: InputMaybe<Array<Scalars["String"]>>;
   value_NOT?: InputMaybe<Scalars["String"]>;
   value_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
   value_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  value_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  value_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   value_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   value_STARTS_WITH?: InputMaybe<Scalars["String"]>;
 };
@@ -2746,7 +2251,7 @@ export type PatientPatientAliasPatientAliasesIsAliasAggregationSelection = {
 export type PatientPatientAliasPatientAliasesIsAliasNodeAggregateSelection = {
   __typename?: "PatientPatientAliasPatientAliasesIsAliasNodeAggregateSelection";
   namespace: StringAggregateSelectionNonNullable;
-  value: StringAggregateSelectionNullable;
+  value: StringAggregateSelectionNonNullable;
 };
 
 export type PatientPatientAliasesIsAliasAggregateInput = {
@@ -3815,24 +3320,18 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
-<<<<<<< HEAD
-=======
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   cohortCompletes: Array<CohortComplete>;
   cohortCompletesAggregate: CohortCompleteAggregateSelection;
   cohortCompletesConnection: CohortCompletesConnection;
   cohorts: Array<Cohort>;
   cohortsAggregate: CohortAggregateSelection;
   cohortsConnection: CohortsConnection;
-<<<<<<< HEAD
-=======
   mafCompletes: Array<MafComplete>;
   mafCompletesAggregate: MafCompleteAggregateSelection;
   mafCompletesConnection: MafCompletesConnection;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   patientAliases: Array<PatientAlias>;
   patientAliasesAggregate: PatientAliasAggregateSelection;
   patientAliasesConnection: PatientAliasesConnection;
@@ -3931,38 +3430,6 @@ export type QueryMafCompletesConnectionArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   sort?: InputMaybe<Array<InputMaybe<MafCompleteSort>>>;
   where?: InputMaybe<MafCompleteWhere>;
-};
-
-export type QueryCohortCompletesArgs = {
-  options?: InputMaybe<CohortCompleteOptions>;
-  where?: InputMaybe<CohortCompleteWhere>;
-};
-
-export type QueryCohortCompletesAggregateArgs = {
-  where?: InputMaybe<CohortCompleteWhere>;
-};
-
-export type QueryCohortCompletesConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<InputMaybe<CohortCompleteSort>>>;
-  where?: InputMaybe<CohortCompleteWhere>;
-};
-
-export type QueryCohortsArgs = {
-  options?: InputMaybe<CohortOptions>;
-  where?: InputMaybe<CohortWhere>;
-};
-
-export type QueryCohortsAggregateArgs = {
-  where?: InputMaybe<CohortWhere>;
-};
-
-export type QueryCohortsConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<InputMaybe<CohortSort>>>;
-  where?: InputMaybe<CohortWhere>;
 };
 
 export type QueryPatientAliasesArgs = {
@@ -5948,15 +5415,9 @@ export type RequestsConnection = {
 
 export type Sample = {
   __typename?: "Sample";
-<<<<<<< HEAD
   cohortsHasCohortSample: Array<Cohort>;
   cohortsHasCohortSampleAggregate?: Maybe<SampleCohortCohortsHasCohortSampleAggregationSelection>;
   cohortsHasCohortSampleConnection: SampleCohortsHasCohortSampleConnection;
-=======
-  cohortsHasSample2: Array<Cohort>;
-  cohortsHasSample2Aggregate?: Maybe<SampleCohortCohortsHasSample2AggregationSelection>;
-  cohortsHasSample2Connection: SampleCohortsHasSample2Connection;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   datasource: Scalars["String"];
   hasMetadataSampleMetadata: Array<SampleMetadata>;
   hasMetadataSampleMetadataAggregate?: Maybe<SampleSampleMetadataHasMetadataSampleMetadataAggregationSelection>;
@@ -5979,40 +5440,23 @@ export type Sample = {
   smileSampleId: Scalars["String"];
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleArgs = {
-=======
-export type SampleCohortsHasSample2Args = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   options?: InputMaybe<CohortOptions>;
   where?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleAggregateArgs = {
-=======
-export type SampleCohortsHasSample2AggregateArgs = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   directed?: InputMaybe<Scalars["Boolean"]>;
   where?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleConnectionArgs = {
   after?: InputMaybe<Scalars["String"]>;
   directed?: InputMaybe<Scalars["Boolean"]>;
   first?: InputMaybe<Scalars["Int"]>;
   sort?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectionSort>>;
   where?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
-=======
-export type SampleCohortsHasSample2ConnectionArgs = {
-  after?: InputMaybe<Scalars["String"]>;
-  directed?: InputMaybe<Scalars["Boolean"]>;
-  first?: InputMaybe<Scalars["Int"]>;
-  sort?: InputMaybe<Array<SampleCohortsHasSample2ConnectionSort>>;
-  where?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 };
 
 export type SampleHasMetadataSampleMetadataArgs = {
@@ -6424,7 +5868,6 @@ export type SampleAliasesConnection = {
   totalCount: Scalars["Int"];
 };
 
-<<<<<<< HEAD
 export type SampleCohortCohortsHasCohortSampleAggregationSelection = {
   __typename?: "SampleCohortCohortsHasCohortSampleAggregationSelection";
   count: Scalars["Int"];
@@ -6439,56 +5882,26 @@ export type SampleCohortCohortsHasCohortSampleNodeAggregateSelection = {
 export type SampleCohortsHasCohortSampleAggregateInput = {
   AND?: InputMaybe<Array<SampleCohortsHasCohortSampleAggregateInput>>;
   OR?: InputMaybe<Array<SampleCohortsHasCohortSampleAggregateInput>>;
-=======
-export type SampleCohortCohortsHasSample2AggregationSelection = {
-  __typename?: "SampleCohortCohortsHasSample2AggregationSelection";
-  count: Scalars["Int"];
-  node?: Maybe<SampleCohortCohortsHasSample2NodeAggregateSelection>;
-};
-
-export type SampleCohortCohortsHasSample2NodeAggregateSelection = {
-  __typename?: "SampleCohortCohortsHasSample2NodeAggregateSelection";
-  cohortId: StringAggregateSelectionNonNullable;
-};
-
-export type SampleCohortsHasSample2AggregateInput = {
-  AND?: InputMaybe<Array<SampleCohortsHasSample2AggregateInput>>;
-  OR?: InputMaybe<Array<SampleCohortsHasSample2AggregateInput>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   count?: InputMaybe<Scalars["Int"]>;
   count_GT?: InputMaybe<Scalars["Int"]>;
   count_GTE?: InputMaybe<Scalars["Int"]>;
   count_LT?: InputMaybe<Scalars["Int"]>;
   count_LTE?: InputMaybe<Scalars["Int"]>;
-<<<<<<< HEAD
   node?: InputMaybe<SampleCohortsHasCohortSampleNodeAggregationWhereInput>;
 };
 
 export type SampleCohortsHasCohortSampleConnectFieldInput = {
-=======
-  node?: InputMaybe<SampleCohortsHasSample2NodeAggregationWhereInput>;
-};
-
-export type SampleCohortsHasSample2ConnectFieldInput = {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   connect?: InputMaybe<Array<CohortConnectInput>>;
   where?: InputMaybe<CohortConnectWhere>;
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleConnection = {
   __typename?: "SampleCohortsHasCohortSampleConnection";
   edges: Array<SampleCohortsHasCohortSampleRelationship>;
-=======
-export type SampleCohortsHasSample2Connection = {
-  __typename?: "SampleCohortsHasSample2Connection";
-  edges: Array<SampleCohortsHasSample2Relationship>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   pageInfo: PageInfo;
   totalCount: Scalars["Int"];
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleConnectionSort = {
   node?: InputMaybe<CohortSort>;
 };
@@ -6496,20 +5909,10 @@ export type SampleCohortsHasCohortSampleConnectionSort = {
 export type SampleCohortsHasCohortSampleConnectionWhere = {
   AND?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectionWhere>>;
   OR?: InputMaybe<Array<SampleCohortsHasCohortSampleConnectionWhere>>;
-=======
-export type SampleCohortsHasSample2ConnectionSort = {
-  node?: InputMaybe<CohortSort>;
-};
-
-export type SampleCohortsHasSample2ConnectionWhere = {
-  AND?: InputMaybe<Array<SampleCohortsHasSample2ConnectionWhere>>;
-  OR?: InputMaybe<Array<SampleCohortsHasSample2ConnectionWhere>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   node?: InputMaybe<CohortWhere>;
   node_NOT?: InputMaybe<CohortWhere>;
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleCreateFieldInput = {
   node: CohortCreateInput;
 };
@@ -6534,30 +5937,6 @@ export type SampleCohortsHasCohortSampleNodeAggregationWhereInput = {
     Array<SampleCohortsHasCohortSampleNodeAggregationWhereInput>
   >;
   OR?: InputMaybe<Array<SampleCohortsHasCohortSampleNodeAggregationWhereInput>>;
-=======
-export type SampleCohortsHasSample2CreateFieldInput = {
-  node: CohortCreateInput;
-};
-
-export type SampleCohortsHasSample2DeleteFieldInput = {
-  delete?: InputMaybe<CohortDeleteInput>;
-  where?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-};
-
-export type SampleCohortsHasSample2DisconnectFieldInput = {
-  disconnect?: InputMaybe<CohortDisconnectInput>;
-  where?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-};
-
-export type SampleCohortsHasSample2FieldInput = {
-  connect?: InputMaybe<Array<SampleCohortsHasSample2ConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleCohortsHasSample2CreateFieldInput>>;
-};
-
-export type SampleCohortsHasSample2NodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<SampleCohortsHasSample2NodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<SampleCohortsHasSample2NodeAggregationWhereInput>>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   cohortId_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   cohortId_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
   cohortId_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
@@ -6580,18 +5959,12 @@ export type SampleCohortsHasSample2NodeAggregationWhereInput = {
   cohortId_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleRelationship = {
   __typename?: "SampleCohortsHasCohortSampleRelationship";
-=======
-export type SampleCohortsHasSample2Relationship = {
-  __typename?: "SampleCohortsHasSample2Relationship";
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   cursor: Scalars["String"];
   node: Cohort;
 };
 
-<<<<<<< HEAD
 export type SampleCohortsHasCohortSampleUpdateConnectionInput = {
   node?: InputMaybe<CohortUpdateInput>;
 };
@@ -6610,24 +5983,6 @@ export type SampleCohortsHasCohortSampleUpdateFieldInput = {
 export type SampleConnectInput = {
   cohortsHasCohortSample?: InputMaybe<
     Array<SampleCohortsHasCohortSampleConnectFieldInput>
-=======
-export type SampleCohortsHasSample2UpdateConnectionInput = {
-  node?: InputMaybe<CohortUpdateInput>;
-};
-
-export type SampleCohortsHasSample2UpdateFieldInput = {
-  connect?: InputMaybe<Array<SampleCohortsHasSample2ConnectFieldInput>>;
-  create?: InputMaybe<Array<SampleCohortsHasSample2CreateFieldInput>>;
-  delete?: InputMaybe<Array<SampleCohortsHasSample2DeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<SampleCohortsHasSample2DisconnectFieldInput>>;
-  update?: InputMaybe<SampleCohortsHasSample2UpdateConnectionInput>;
-  where?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-};
-
-export type SampleConnectInput = {
-  cohortsHasSample2?: InputMaybe<
-    Array<SampleCohortsHasSample2ConnectFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataConnectFieldInput>
@@ -6649,11 +6004,7 @@ export type SampleConnectWhere = {
 };
 
 export type SampleCreateInput = {
-<<<<<<< HEAD
   cohortsHasCohortSample?: InputMaybe<SampleCohortsHasCohortSampleFieldInput>;
-=======
-  cohortsHasSample2?: InputMaybe<SampleCohortsHasSample2FieldInput>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   datasource: Scalars["String"];
   hasMetadataSampleMetadata?: InputMaybe<SampleHasMetadataSampleMetadataFieldInput>;
   hasTempoTempos?: InputMaybe<SampleHasTempoTemposFieldInput>;
@@ -6667,13 +6018,8 @@ export type SampleCreateInput = {
 };
 
 export type SampleDeleteInput = {
-<<<<<<< HEAD
   cohortsHasCohortSample?: InputMaybe<
     Array<SampleCohortsHasCohortSampleDeleteFieldInput>
-=======
-  cohortsHasSample2?: InputMaybe<
-    Array<SampleCohortsHasSample2DeleteFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataDeleteFieldInput>
@@ -6691,13 +6037,8 @@ export type SampleDeleteInput = {
 };
 
 export type SampleDisconnectInput = {
-<<<<<<< HEAD
   cohortsHasCohortSample?: InputMaybe<
     Array<SampleCohortsHasCohortSampleDisconnectFieldInput>
-=======
-  cohortsHasSample2?: InputMaybe<
-    Array<SampleCohortsHasSample2DisconnectFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataDisconnectFieldInput>
@@ -8361,13 +7702,8 @@ export type SamplePatientsHasSampleUpdateFieldInput = {
 };
 
 export type SampleRelationInput = {
-<<<<<<< HEAD
   cohortsHasCohortSample?: InputMaybe<
     Array<SampleCohortsHasCohortSampleCreateFieldInput>
-=======
-  cohortsHasSample2?: InputMaybe<
-    Array<SampleCohortsHasSample2CreateFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   hasMetadataSampleMetadata?: InputMaybe<
     Array<SampleHasMetadataSampleMetadataCreateFieldInput>
@@ -9054,13 +8390,8 @@ export type SampleTempoHasTempoTemposAggregationSelection = {
 };
 
 export type SampleUpdateInput = {
-<<<<<<< HEAD
   cohortsHasCohortSample?: InputMaybe<
     Array<SampleCohortsHasCohortSampleUpdateFieldInput>
-=======
-  cohortsHasSample2?: InputMaybe<
-    Array<SampleCohortsHasSample2UpdateFieldInput>
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   >;
   datasource?: InputMaybe<Scalars["String"]>;
   hasMetadataSampleMetadata?: InputMaybe<
@@ -9085,7 +8416,6 @@ export type SampleUpdateInput = {
 export type SampleWhere = {
   AND?: InputMaybe<Array<SampleWhere>>;
   OR?: InputMaybe<Array<SampleWhere>>;
-<<<<<<< HEAD
   cohortsHasCohortSampleAggregate?: InputMaybe<SampleCohortsHasCohortSampleAggregateInput>;
   cohortsHasCohortSampleConnection_ALL?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
   cohortsHasCohortSampleConnection_NONE?: InputMaybe<SampleCohortsHasCohortSampleConnectionWhere>;
@@ -9099,21 +8429,6 @@ export type SampleWhere = {
   cohortsHasCohortSample_SINGLE?: InputMaybe<CohortWhere>;
   /** Return Samples where some of the related Cohorts match this filter */
   cohortsHasCohortSample_SOME?: InputMaybe<CohortWhere>;
-=======
-  cohortsHasSample2Aggregate?: InputMaybe<SampleCohortsHasSample2AggregateInput>;
-  cohortsHasSample2Connection_ALL?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-  cohortsHasSample2Connection_NONE?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-  cohortsHasSample2Connection_SINGLE?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-  cohortsHasSample2Connection_SOME?: InputMaybe<SampleCohortsHasSample2ConnectionWhere>;
-  /** Return Samples where all of the related Cohorts match this filter */
-  cohortsHasSample2_ALL?: InputMaybe<CohortWhere>;
-  /** Return Samples where none of the related Cohorts match this filter */
-  cohortsHasSample2_NONE?: InputMaybe<CohortWhere>;
-  /** Return Samples where one of the related Cohorts match this filter */
-  cohortsHasSample2_SINGLE?: InputMaybe<CohortWhere>;
-  /** Return Samples where some of the related Cohorts match this filter */
-  cohortsHasSample2_SOME?: InputMaybe<CohortWhere>;
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
   datasource?: InputMaybe<Scalars["String"]>;
   datasource_CONTAINS?: InputMaybe<Scalars["String"]>;
   datasource_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -10230,8 +9545,6 @@ export type StringAggregateSelectionNullable = {
   shortest?: Maybe<Scalars["String"]>;
 };
 
-<<<<<<< HEAD
-=======
 export type Tempo = {
   __typename?: "Tempo";
   hasEventBamCompletes: Array<BamComplete>;
@@ -11107,7 +10420,6 @@ export type UpdateBamCompletesMutationResponse = {
   info: UpdateInfo;
 };
 
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
 export type UpdateCohortCompletesMutationResponse = {
   __typename?: "UpdateCohortCompletesMutationResponse";
   cohortCompletes: Array<CohortComplete>;
@@ -11252,7 +10564,7 @@ export type PatientsListQuery = {
   patientAliases: Array<{
     __typename?: "PatientAlias";
     namespace: string;
-    value?: string | null;
+    value: string;
     isAliasPatients: Array<{
       __typename?: "Patient";
       smilePatientId: string;
@@ -11273,7 +10585,7 @@ export type PatientsListQuery = {
       patientAliasesIsAlias: Array<{
         __typename?: "PatientAlias";
         namespace: string;
-        value?: string | null;
+        value: string;
       }>;
     }>;
   }>;
@@ -11353,7 +10665,7 @@ export type RequestWithSamplesQuery = {
         patientAliasesIsAlias: Array<{
           __typename?: "PatientAlias";
           namespace: string;
-          value?: string | null;
+          value: string;
         }>;
       }>;
     }>;
@@ -11456,7 +10768,7 @@ export type FindSamplesByInputValueQuery = {
               patientAliasesIsAlias: Array<{
                 __typename?: "PatientAlias";
                 namespace: string;
-                value?: string | null;
+                value: string;
               }>;
             };
           }>;
@@ -11653,7 +10965,7 @@ export type FindCohortSamplesQuery = {
   cohorts: Array<{
     __typename?: "Cohort";
     cohortId: string;
-    hasSample2Samples: Array<{
+    hasCohortSampleSamples: Array<{
       __typename?: "Sample";
       datasource: string;
       revisable: boolean;
@@ -12011,7 +11323,7 @@ export const FindCohortSamplesDocument = gql`
   ) {
     cohorts {
       cohortId
-      hasSample2Samples {
+      hasCohortSampleSamples {
         ...SampleParts
         hasMetadataSampleMetadata(options: $options) {
           ...SampleMetadataParts

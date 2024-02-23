@@ -1849,11 +1849,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
-=======
-            "name": "hasMetadata2CohortCompletes",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -1914,11 +1910,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesAggregate",
-=======
-            "name": "hasMetadata2CohortCompletesAggregate",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -1948,22 +1940,14 @@
             ],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection",
-=======
-              "name": "CohortCohortCompleteHasMetadata2CohortCompletesAggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesConnection",
-=======
-            "name": "hasMetadata2CohortCompletesConnection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2013,11 +1997,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                       "name": "CohortHasCohortCompleteCohortCompletesConnectionSort",
-=======
-                      "name": "CohortHasMetadata2CohortCompletesConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                       "ofType": null
                     }
                   }
@@ -2031,11 +2011,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -2048,11 +2024,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-<<<<<<< HEAD
                 "name": "CohortHasCohortCompleteCohortCompletesConnection",
-=======
-                "name": "CohortHasMetadata2CohortCompletesConnection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                 "ofType": null
               }
             },
@@ -2060,11 +2032,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
-=======
-            "name": "hasSample2Samples",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2125,11 +2093,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesAggregate",
-=======
-            "name": "hasSample2SamplesAggregate",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2159,22 +2123,14 @@
             ],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "CohortSampleHasCohortSampleSamplesAggregationSelection",
-=======
-              "name": "CohortSampleHasSample2SamplesAggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesConnection",
-=======
-            "name": "hasSample2SamplesConnection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2224,11 +2180,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                       "name": "CohortHasCohortSampleSamplesConnectionSort",
-=======
-                      "name": "CohortHasSample2SamplesConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                       "ofType": null
                     }
                   }
@@ -2242,11 +2194,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-                  "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -2259,11 +2207,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-<<<<<<< HEAD
                 "name": "CohortHasCohortSampleSamplesConnection",
-=======
-                "name": "CohortHasSample2SamplesConnection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                 "ofType": null
               }
             },
@@ -2321,11 +2265,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelection",
-=======
-        "name": "CohortCohortCompleteHasMetadata2CohortCompletesAggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -2350,11 +2290,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection",
-=======
-              "name": "CohortCohortCompleteHasMetadata2CohortCompletesNodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
@@ -2368,11 +2304,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection",
-=======
-        "name": "CohortCohortCompleteHasMetadata2CohortCompletesNodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -2467,11 +2399,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
-=======
-            "name": "cohortsHasMetadata2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2532,11 +2460,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteAggregate",
-=======
-            "name": "cohortsHasMetadata2Aggregate",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2566,22 +2490,14 @@
             ],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection",
-=======
-              "name": "CohortCompleteCohortCohortsHasMetadata2AggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteConnection",
-=======
-            "name": "cohortsHasMetadata2Connection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -2631,11 +2547,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                       "name": "CohortCompleteCohortsHasCohortCompleteConnectionSort",
-=======
-                      "name": "CohortCompleteCohortsHasMetadata2ConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                       "ofType": null
                     }
                   }
@@ -2649,11 +2561,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -2666,11 +2574,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-<<<<<<< HEAD
                 "name": "CohortCompleteCohortsHasCohortCompleteConnection",
-=======
-                "name": "CohortCompleteCohortsHasMetadata2Connection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                 "ofType": null
               }
             },
@@ -2824,11 +2728,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection",
-=======
-        "name": "CohortCompleteCohortCohortsHasMetadata2AggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -2853,11 +2753,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortCohortsHasCohortCompleteNodeAggregateSelection",
-=======
-              "name": "CohortCompleteCohortCohortsHasMetadata2NodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
@@ -2871,11 +2767,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortCohortsHasCohortCompleteNodeAggregateSelection",
-=======
-        "name": "CohortCompleteCohortCohortsHasMetadata2NodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -2902,11 +2794,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteAggregateInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -2921,11 +2809,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteAggregateInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -2945,11 +2829,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteAggregateInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3023,11 +2903,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput",
-=======
-              "name": "CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -3041,11 +2917,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteConnectFieldInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3088,11 +2960,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteConnection",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2Connection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -3110,11 +2978,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-<<<<<<< HEAD
                     "name": "CohortCompleteCohortsHasCohortCompleteRelationship",
-=======
-                    "name": "CohortCompleteCohortsHasMetadata2Relationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                     "ofType": null
                   }
                 }
@@ -3163,11 +3027,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteConnectionSort",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2ConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3190,11 +3050,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3209,11 +3065,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3233,11 +3085,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3277,11 +3125,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteCreateFieldInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3308,11 +3152,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteDeleteFieldInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2DeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3333,11 +3173,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -3351,11 +3187,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2DisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3376,11 +3208,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -3394,11 +3222,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteFieldInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2FieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3413,11 +3237,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteConnectFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3437,11 +3257,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteCreateFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3457,11 +3273,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3476,11 +3288,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3500,11 +3308,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteNodeAggregationWhereInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3760,11 +3564,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteRelationship",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2Relationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -3807,11 +3607,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteUpdateConnectionInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2UpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3834,11 +3630,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortCompleteCohortsHasCohortCompleteUpdateFieldInput",
-=======
-        "name": "CohortCompleteCohortsHasMetadata2UpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -3853,11 +3645,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteConnectFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3877,11 +3665,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteCreateFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3901,11 +3685,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteDeleteFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2DeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3925,11 +3705,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2DisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -3943,11 +3719,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortsHasCohortCompleteUpdateConnectionInput",
-=======
-              "name": "CohortCompleteCohortsHasMetadata2UpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -3959,11 +3731,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -3982,11 +3750,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
-=======
-            "name": "cohortsHasMetadata2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -3996,11 +3760,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteConnectFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -4064,19 +3824,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortCompleteCohortsHasCohortCompleteFieldInput",
-=======
-            "name": "cohortsHasMetadata2",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortCompleteCohortsHasMetadata2FieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -4143,11 +3895,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
-=======
-            "name": "cohortsHasMetadata2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -4157,11 +3905,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteDeleteFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2DeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -4182,11 +3926,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
-=======
-            "name": "cohortsHasMetadata2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -4196,11 +3936,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteDisconnectFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2DisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -4319,11 +4055,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
-=======
-            "name": "cohortsHasMetadata2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -4333,11 +4065,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteCreateFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -4429,11 +4157,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete",
-=======
-            "name": "cohortsHasMetadata2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -4443,11 +4167,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortCompleteCohortsHasCohortCompleteUpdateFieldInput",
-=======
-                  "name": "CohortCompleteCohortsHasMetadata2UpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -4680,19 +4400,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteAggregate",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortCompleteCohortsHasCohortCompleteAggregateInput",
-=======
-            "name": "cohortsHasMetadata2Aggregate",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortCompleteCohortsHasMetadata2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -4700,19 +4412,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteConnection_ALL",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-            "name": "cohortsHasMetadata2Connection_ALL",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -4720,19 +4424,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteConnection_NONE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-            "name": "cohortsHasMetadata2Connection_NONE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -4740,19 +4436,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteConnection_SINGLE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-            "name": "cohortsHasMetadata2Connection_SINGLE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -4760,19 +4448,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortCompleteConnection_SOME",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortCompleteCohortsHasCohortCompleteConnectionWhere",
-=======
-            "name": "cohortsHasMetadata2Connection_SOME",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortCompleteCohortsHasMetadata2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -4780,11 +4460,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete_ALL",
-=======
-            "name": "cohortsHasMetadata2_ALL",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return CohortCompletes where all of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -4796,11 +4472,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete_NONE",
-=======
-            "name": "cohortsHasMetadata2_NONE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return CohortCompletes where none of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -4812,11 +4484,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete_SINGLE",
-=======
-            "name": "cohortsHasMetadata2_SINGLE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return CohortCompletes where one of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -4828,11 +4496,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortComplete_SOME",
-=======
-            "name": "cohortsHasMetadata2_SOME",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return CohortCompletes where some of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -5330,11 +4994,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
-=======
-            "name": "hasMetadata2CohortCompletes",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -5344,11 +5004,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesConnectFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5358,11 +5014,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
-=======
-            "name": "hasSample2Samples",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -5372,11 +5024,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesConnectFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5440,19 +5088,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortCompleteCohortCompletesFieldInput",
-=======
-            "name": "hasMetadata2CohortCompletes",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasMetadata2CohortCompletesFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -5460,19 +5100,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortSampleSamplesFieldInput",
-=======
-            "name": "hasSample2Samples",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasSample2SamplesFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -5491,11 +5123,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
-=======
-            "name": "hasMetadata2CohortCompletes",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -5505,11 +5133,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesDeleteFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesDeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5519,11 +5143,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
-=======
-            "name": "hasSample2Samples",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -5533,11 +5153,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesDeleteFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesDeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5558,11 +5174,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
-=======
-            "name": "hasMetadata2CohortCompletes",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -5572,11 +5184,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesDisconnectFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesDisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5586,11 +5194,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
-=======
-            "name": "hasSample2Samples",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -5600,11 +5204,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesDisconnectFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesDisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5663,11 +5263,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesAggregateInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5682,11 +5278,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesAggregateInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5706,11 +5298,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesAggregateInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5784,11 +5372,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput",
-=======
-              "name": "CohortHasMetadata2CohortCompletesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -5802,11 +5386,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesConnectFieldInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5849,11 +5429,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesConnection",
-=======
-        "name": "CohortHasMetadata2CohortCompletesConnection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -5871,11 +5447,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-<<<<<<< HEAD
                     "name": "CohortHasCohortCompleteCohortCompletesRelationship",
-=======
-                    "name": "CohortHasMetadata2CohortCompletesRelationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                     "ofType": null
                   }
                 }
@@ -5924,11 +5496,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesConnectionSort",
-=======
-        "name": "CohortHasMetadata2CohortCompletesConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5951,11 +5519,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-        "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -5970,11 +5534,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -5994,11 +5554,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -6038,11 +5594,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesCreateFieldInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -6069,11 +5621,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesDeleteFieldInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesDeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -6094,11 +5642,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -6112,11 +5656,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesDisconnectFieldInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesDisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -6137,11 +5677,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -6155,11 +5691,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesFieldInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -6174,11 +5706,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesConnectFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -6198,11 +5726,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesCreateFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -6218,11 +5742,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -6237,11 +5757,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -6261,11 +5777,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7241,11 +6753,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesRelationship",
-=======
-        "name": "CohortHasMetadata2CohortCompletesRelationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -7288,11 +6796,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesUpdateConnectionInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesUpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7315,11 +6819,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortCompleteCohortCompletesUpdateFieldInput",
-=======
-        "name": "CohortHasMetadata2CohortCompletesUpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7334,11 +6834,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesConnectFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7358,11 +6854,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesCreateFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7382,11 +6874,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesDeleteFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesDeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7406,11 +6894,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesDisconnectFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesDisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7424,11 +6908,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortCompleteCohortCompletesUpdateConnectionInput",
-=======
-              "name": "CohortHasMetadata2CohortCompletesUpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -7440,11 +6920,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -7458,11 +6934,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesAggregateInput",
-=======
-        "name": "CohortHasSample2SamplesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7477,11 +6949,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesAggregateInput",
-=======
-                  "name": "CohortHasSample2SamplesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7501,11 +6969,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesAggregateInput",
-=======
-                  "name": "CohortHasSample2SamplesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7579,11 +7043,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortSampleSamplesNodeAggregationWhereInput",
-=======
-              "name": "CohortHasSample2SamplesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -7597,11 +7057,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesConnectFieldInput",
-=======
-        "name": "CohortHasSample2SamplesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7644,11 +7100,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesConnection",
-=======
-        "name": "CohortHasSample2SamplesConnection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -7666,11 +7118,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-<<<<<<< HEAD
                     "name": "CohortHasCohortSampleSamplesRelationship",
-=======
-                    "name": "CohortHasSample2SamplesRelationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                     "ofType": null
                   }
                 }
@@ -7719,11 +7167,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesConnectionSort",
-=======
-        "name": "CohortHasSample2SamplesConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7746,11 +7190,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-        "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7765,11 +7205,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-                  "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7789,11 +7225,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-                  "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7833,11 +7265,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesCreateFieldInput",
-=======
-        "name": "CohortHasSample2SamplesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7864,11 +7292,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesDeleteFieldInput",
-=======
-        "name": "CohortHasSample2SamplesDeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7889,11 +7313,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -7907,11 +7327,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesDisconnectFieldInput",
-=======
-        "name": "CohortHasSample2SamplesDisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7932,11 +7348,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -7950,11 +7362,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesFieldInput",
-=======
-        "name": "CohortHasSample2SamplesFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -7969,11 +7377,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesConnectFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -7993,11 +7397,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesCreateFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -8013,11 +7413,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesNodeAggregationWhereInput",
-=======
-        "name": "CohortHasSample2SamplesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -8032,11 +7428,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesNodeAggregationWhereInput",
-=======
-                  "name": "CohortHasSample2SamplesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -8056,11 +7448,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesNodeAggregationWhereInput",
-=======
-                  "name": "CohortHasSample2SamplesNodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9036,11 +8424,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesRelationship",
-=======
-        "name": "CohortHasSample2SamplesRelationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -9083,11 +8467,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesUpdateConnectionInput",
-=======
-        "name": "CohortHasSample2SamplesUpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -9110,11 +8490,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "CohortHasCohortSampleSamplesUpdateFieldInput",
-=======
-        "name": "CohortHasSample2SamplesUpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -9129,11 +8505,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesConnectFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9153,11 +8525,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesCreateFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9177,11 +8545,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesDeleteFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesDeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9201,11 +8565,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesDisconnectFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesDisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9219,11 +8579,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortSampleSamplesUpdateConnectionInput",
-=======
-              "name": "CohortHasSample2SamplesUpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9235,11 +8591,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9313,11 +8665,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
-=======
-            "name": "hasMetadata2CohortCompletes",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -9327,11 +8675,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesCreateFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9341,11 +8685,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
-=======
-            "name": "hasSample2Samples",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -9355,11 +8695,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesCreateFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesCreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9375,11 +8711,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortSampleHasCohortSampleSamplesAggregationSelection",
-=======
-        "name": "CohortSampleHasSample2SamplesAggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -9404,11 +8736,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "CohortSampleHasCohortSampleSamplesNodeAggregateSelection",
-=======
-              "name": "CohortSampleHasSample2SamplesNodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
@@ -9422,11 +8750,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "CohortSampleHasCohortSampleSamplesNodeAggregateSelection",
-=======
-        "name": "CohortSampleHasSample2SamplesNodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -9541,11 +8865,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes",
-=======
-            "name": "hasMetadata2CohortCompletes",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -9555,11 +8875,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortCompleteCohortCompletesUpdateFieldInput",
-=======
-                  "name": "CohortHasMetadata2CohortCompletesUpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9569,11 +8885,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples",
-=======
-            "name": "hasSample2Samples",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -9583,11 +8895,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "CohortHasCohortSampleSamplesUpdateFieldInput",
-=======
-                  "name": "CohortHasSample2SamplesUpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -9784,19 +9092,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesAggregate",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortCompleteCohortCompletesAggregateInput",
-=======
-            "name": "hasMetadata2CohortCompletesAggregate",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasMetadata2CohortCompletesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9804,19 +9104,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesConnection_ALL",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-            "name": "hasMetadata2CohortCompletesConnection_ALL",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9824,19 +9116,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesConnection_NONE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-            "name": "hasMetadata2CohortCompletesConnection_NONE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9844,19 +9128,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesConnection_SINGLE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-            "name": "hasMetadata2CohortCompletesConnection_SINGLE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9864,19 +9140,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletesConnection_SOME",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortCompleteCohortCompletesConnectionWhere",
-=======
-            "name": "hasMetadata2CohortCompletesConnection_SOME",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasMetadata2CohortCompletesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9884,11 +9152,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes_ALL",
-=======
-            "name": "hasMetadata2CohortCompletes_ALL",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where all of the related CohortCompletes match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -9900,11 +9164,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes_NONE",
-=======
-            "name": "hasMetadata2CohortCompletes_NONE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where none of the related CohortCompletes match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -9916,11 +9176,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes_SINGLE",
-=======
-            "name": "hasMetadata2CohortCompletes_SINGLE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where one of the related CohortCompletes match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -9932,11 +9188,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortCompleteCohortCompletes_SOME",
-=======
-            "name": "hasMetadata2CohortCompletes_SOME",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where some of the related CohortCompletes match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -9948,19 +9200,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesAggregate",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortSampleSamplesAggregateInput",
-=======
-            "name": "hasSample2SamplesAggregate",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasSample2SamplesAggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9968,19 +9212,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesConnection_ALL",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-            "name": "hasSample2SamplesConnection_ALL",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -9988,19 +9224,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesConnection_NONE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-            "name": "hasSample2SamplesConnection_NONE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -10008,19 +9236,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesConnection_SINGLE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-            "name": "hasSample2SamplesConnection_SINGLE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -10028,19 +9248,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamplesConnection_SOME",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "CohortHasCohortSampleSamplesConnectionWhere",
-=======
-            "name": "hasSample2SamplesConnection_SOME",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "CohortHasSample2SamplesConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -10048,11 +9260,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples_ALL",
-=======
-            "name": "hasSample2Samples_ALL",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where all of the related Samples match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -10064,11 +9272,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples_NONE",
-=======
-            "name": "hasSample2Samples_NONE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where none of the related Samples match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -10080,11 +9284,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples_SINGLE",
-=======
-            "name": "hasSample2Samples_SINGLE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where one of the related Samples match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -10096,11 +9296,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "hasCohortSampleSamples_SOME",
-=======
-            "name": "hasSample2Samples_SOME",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Cohorts where some of the related Samples match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -10185,8 +9381,6 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
-=======
         "name": "CreateBamCompletesMutationResponse",
         "description": null,
         "fields": [
@@ -10238,7 +9432,6 @@
       },
       {
         "kind": "OBJECT",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "name": "CreateCohortCompletesMutationResponse",
         "description": null,
         "fields": [
@@ -13104,8 +12297,6 @@
         "description": null,
         "fields": [
           {
-<<<<<<< HEAD
-=======
             "name": "createBamCompletes",
             "description": null,
             "args": [
@@ -13147,7 +12338,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "createCohortCompletes",
             "description": null,
             "args": [
@@ -13230,8 +12420,6 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
-=======
             "name": "createMafCompletes",
             "description": null,
             "args": [
@@ -13273,7 +12461,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "createPatientAliases",
             "description": null,
             "args": [
@@ -13684,8 +12871,6 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
-=======
             "name": "createTempos",
             "description": null,
             "args": [
@@ -13768,7 +12953,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "deleteCohortCompletes",
             "description": null,
             "args": [
@@ -13851,8 +13035,6 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
-=======
             "name": "deleteMafCompletes",
             "description": null,
             "args": [
@@ -13894,7 +13076,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "deletePatientAliases",
             "description": null,
             "args": [
@@ -14305,8 +13486,6 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
-=======
             "name": "deleteTempos",
             "description": null,
             "args": [
@@ -14437,7 +13616,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "updateCohortCompletes",
             "description": null,
             "args": [
@@ -14616,8 +13794,6 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
-=======
             "name": "updateMafCompletes",
             "description": null,
             "args": [
@@ -14707,7 +13883,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "updatePatientAliases",
             "description": null,
             "args": [
@@ -16404,9 +15579,13 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -16463,7 +15642,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "StringAggregateSelectionNullable",
+                "name": "StringAggregateSelectionNonNullable",
                 "ofType": null
               }
             },
@@ -16572,9 +15751,13 @@
             "name": "value",
             "description": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -18216,9 +17399,13 @@
               "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             },
             "defaultValue": null,
@@ -18268,9 +17455,13 @@
               "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             },
             "defaultValue": null,
@@ -20489,7 +19680,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "StringAggregateSelectionNullable",
+                "name": "StringAggregateSelectionNonNullable",
                 "ofType": null
               }
             },
@@ -31447,8 +30638,6 @@
         "description": null,
         "fields": [
           {
-<<<<<<< HEAD
-=======
             "name": "bamCompletes",
             "description": null,
             "args": [
@@ -31596,7 +30785,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "cohortCompletes",
             "description": null,
             "args": [
@@ -31891,8 +31079,6 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
-=======
             "name": "mafCompletes",
             "description": null,
             "args": [
@@ -32040,7 +31226,6 @@
             "deprecationReason": null
           },
           {
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "name": "patientAliases",
             "description": null,
             "args": [
@@ -52490,11 +51675,7 @@
         "description": null,
         "fields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
-=======
-            "name": "cohortsHasSample2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -52555,11 +51736,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleAggregate",
-=======
-            "name": "cohortsHasSample2Aggregate",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -52589,22 +51766,14 @@
             ],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortCohortsHasCohortSampleAggregationSelection",
-=======
-              "name": "SampleCohortCohortsHasSample2AggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleConnection",
-=======
-            "name": "cohortsHasSample2Connection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "args": [
               {
@@ -52654,11 +51823,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                       "name": "SampleCohortsHasCohortSampleConnectionSort",
-=======
-                      "name": "SampleCohortsHasSample2ConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                       "ofType": null
                     }
                   }
@@ -52672,11 +51837,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-                  "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 },
                 "defaultValue": null,
@@ -52689,11 +51850,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-<<<<<<< HEAD
                 "name": "SampleCohortsHasCohortSampleConnection",
-=======
-                "name": "SampleCohortsHasSample2Connection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                 "ofType": null
               }
             },
@@ -56736,11 +55893,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortCohortsHasCohortSampleAggregationSelection",
-=======
-        "name": "SampleCohortCohortsHasSample2AggregationSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -56765,11 +55918,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortCohortsHasCohortSampleNodeAggregateSelection",
-=======
-              "name": "SampleCohortCohortsHasSample2NodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "isDeprecated": false,
@@ -56783,11 +55932,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortCohortsHasCohortSampleNodeAggregateSelection",
-=======
-        "name": "SampleCohortCohortsHasSample2NodeAggregateSelection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -56814,11 +55959,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleAggregateInput",
-=======
-        "name": "SampleCohortsHasSample2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -56833,11 +55974,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleAggregateInput",
-=======
-                  "name": "SampleCohortsHasSample2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -56857,11 +55994,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleAggregateInput",
-=======
-                  "name": "SampleCohortsHasSample2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -56935,11 +56068,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortsHasCohortSampleNodeAggregationWhereInput",
-=======
-              "name": "SampleCohortsHasSample2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -56953,11 +56082,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleConnectFieldInput",
-=======
-        "name": "SampleCohortsHasSample2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57000,11 +56125,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleConnection",
-=======
-        "name": "SampleCohortsHasSample2Connection",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -57022,11 +56143,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-<<<<<<< HEAD
                     "name": "SampleCohortsHasCohortSampleRelationship",
-=======
-                    "name": "SampleCohortsHasSample2Relationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                     "ofType": null
                   }
                 }
@@ -57075,11 +56192,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleConnectionSort",
-=======
-        "name": "SampleCohortsHasSample2ConnectionSort",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57102,11 +56215,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-        "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57121,11 +56230,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-                  "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57145,11 +56250,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-                  "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57189,11 +56290,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleCreateFieldInput",
-=======
-        "name": "SampleCohortsHasSample2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57220,11 +56317,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleDeleteFieldInput",
-=======
-        "name": "SampleCohortsHasSample2DeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57245,11 +56338,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -57263,11 +56352,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleDisconnectFieldInput",
-=======
-        "name": "SampleCohortsHasSample2DisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57288,11 +56373,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -57306,11 +56387,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleFieldInput",
-=======
-        "name": "SampleCohortsHasSample2FieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57325,11 +56402,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleConnectFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57349,11 +56422,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleCreateFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57369,11 +56438,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleNodeAggregationWhereInput",
-=======
-        "name": "SampleCohortsHasSample2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57388,11 +56453,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleNodeAggregationWhereInput",
-=======
-                  "name": "SampleCohortsHasSample2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57412,11 +56473,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleNodeAggregationWhereInput",
-=======
-                  "name": "SampleCohortsHasSample2NodeAggregationWhereInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57672,11 +56729,7 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleRelationship",
-=======
-        "name": "SampleCohortsHasSample2Relationship",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": [
           {
@@ -57719,11 +56772,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleUpdateConnectionInput",
-=======
-        "name": "SampleCohortsHasSample2UpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57746,11 +56795,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
         "name": "SampleCohortsHasCohortSampleUpdateFieldInput",
-=======
-        "name": "SampleCohortsHasSample2UpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "description": null,
         "fields": null,
         "inputFields": [
@@ -57765,11 +56810,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleConnectFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57789,11 +56830,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleCreateFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57813,11 +56850,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleDeleteFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2DeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57837,11 +56870,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleDisconnectFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2DisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -57855,11 +56884,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortsHasCohortSampleUpdateConnectionInput",
-=======
-              "name": "SampleCohortsHasSample2UpdateConnectionInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -57871,11 +56896,7 @@
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -57894,11 +56915,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
-=======
-            "name": "cohortsHasSample2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -57908,11 +56925,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleConnectFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2ConnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -58060,19 +57073,11 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SampleCohortsHasCohortSampleFieldInput",
-=======
-            "name": "cohortsHasSample2",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SampleCohortsHasSample2FieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -58231,11 +57236,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
-=======
-            "name": "cohortsHasSample2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -58245,11 +57246,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleDeleteFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2DeleteFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -58370,11 +57367,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
-=======
-            "name": "cohortsHasSample2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -58384,11 +57377,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleDisconnectFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2DisconnectFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -76438,11 +75427,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
-=======
-            "name": "cohortsHasSample2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -76452,11 +75437,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleCreateFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2CreateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -84039,11 +83020,7 @@
         "fields": null,
         "inputFields": [
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample",
-=======
-            "name": "cohortsHasSample2",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": null,
             "type": {
               "kind": "LIST",
@@ -84053,11 +83030,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "INPUT_OBJECT",
-<<<<<<< HEAD
                   "name": "SampleCohortsHasCohortSampleUpdateFieldInput",
-=======
-                  "name": "SampleCohortsHasSample2UpdateFieldInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
                   "ofType": null
                 }
               }
@@ -84278,19 +83251,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleAggregate",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SampleCohortsHasCohortSampleAggregateInput",
-=======
-            "name": "cohortsHasSample2Aggregate",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SampleCohortsHasSample2AggregateInput",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -84298,19 +83263,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleConnection_ALL",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-            "name": "cohortsHasSample2Connection_ALL",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -84318,19 +83275,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleConnection_NONE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-            "name": "cohortsHasSample2Connection_NONE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -84338,19 +83287,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleConnection_SINGLE",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-            "name": "cohortsHasSample2Connection_SINGLE",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -84358,19 +83299,11 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSampleConnection_SOME",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "SampleCohortsHasCohortSampleConnectionWhere",
-=======
-            "name": "cohortsHasSample2Connection_SOME",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "SampleCohortsHasSample2ConnectionWhere",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
               "ofType": null
             },
             "defaultValue": null,
@@ -84378,11 +83311,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample_ALL",
-=======
-            "name": "cohortsHasSample2_ALL",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Samples where all of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -84394,11 +83323,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample_NONE",
-=======
-            "name": "cohortsHasSample2_NONE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Samples where none of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -84410,11 +83335,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample_SINGLE",
-=======
-            "name": "cohortsHasSample2_SINGLE",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Samples where one of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -84426,11 +83347,7 @@
             "deprecationReason": null
           },
           {
-<<<<<<< HEAD
             "name": "cohortsHasCohortSample_SOME",
-=======
-            "name": "cohortsHasSample2_SOME",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
             "description": "Return Samples where some of the related Cohorts match this filter",
             "type": {
               "kind": "INPUT_OBJECT",
@@ -96132,8 +95049,6 @@
       },
       {
         "kind": "OBJECT",
-<<<<<<< HEAD
-=======
         "name": "Tempo",
         "description": null,
         "fields": [
@@ -104496,7 +103411,6 @@
       },
       {
         "kind": "OBJECT",
->>>>>>> ae79a5e (Generate new types (e.g. Cohort) and define a query for finding cohort samples)
         "name": "UpdateCohortCompletesMutationResponse",
         "description": null,
         "fields": [
