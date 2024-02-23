@@ -406,7 +406,7 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   },
 ];
 
-function setEditableConfigs(colDef: ColDef<SampleMetadataExtended>) {
+SampleDetailsColumns.forEach((colDef) => {
   colDef.cellClassRules = {
     unsubmittedChange: (params: any) => {
       const changes = params.context.getChanges();
@@ -475,9 +475,7 @@ function setEditableConfigs(colDef: ColDef<SampleMetadataExtended>) {
       };
     }
   };
-}
-
-SampleDetailsColumns.forEach((colDef) => setEditableConfigs(colDef));
+});
 
 export const CohortDetailsColumns: ColDef[] = [
   {
@@ -485,66 +483,42 @@ export const CohortDetailsColumns: ColDef[] = [
     headerName: "Primary ID",
   },
   {
-    field: "revisable",
-    headerName: "Status",
-    cellRenderer: (params: ICellRendererParams) => {
-      if (params.data?.revisable) {
-        return params.data?.hasStatusStatuses[0]?.validationStatus ? (
-          <div>
-            <strong>&#10003;</strong>
-          </div>
-        ) : (
-          <div>
-            <WarningIcon />
-          </div>
-        );
-      } else {
-        return (
-          <div className="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        );
-      }
-    },
-    cellRendererParams: {
-      colDef: {
-        tooltipComponent: StatusTooltip,
-        tooltipValueGetter: (params: ITooltipParams) =>
-          params.data.hasStatusStatuses[0]?.validationReport ??
-          params.data.hasStatusStatuses,
-      },
-    },
-  },
-  {
     headerName: "BAM Complete Date",
-    valueGetter: ({ data }) => data.bamComplete.date,
+    valueGetter: ({ data }) => data.bamComplete?.date,
   },
   {
     headerName: "BAM Complete Status",
-    valueGetter: ({ data }) => data.bamComplete.status,
+    valueGetter: ({ data }) => data.bamComplete?.status,
   },
   {
     headerName: "MAF Complete Date",
-    valueGetter: ({ data }) => data.mafComplete.date,
+    valueGetter: ({ data }) => data.mafComplete?.date,
+  },
+  {
+    headerName: "MAF Complete Normal Primary ID",
+    valueGetter: ({ data }) => data.mafComplete?.normalPrimaryId,
   },
   {
     headerName: "MAF Complete Status",
-    valueGetter: ({ data }) => data.mafComplete.status,
+    valueGetter: ({ data }) => data.mafComplete?.status,
   },
   {
     headerName: "QC Complete Date",
-    valueGetter: ({ data }) => data.qcComplete.date,
+    valueGetter: ({ data }) => data.qcComplete?.date,
+  },
+  {
+    headerName: "QC Complete Result",
+    valueGetter: ({ data }) => data.qcComplete?.result,
+  },
+  {
+    headerName: "QC Complete Reason",
+    valueGetter: ({ data }) => data.qcComplete?.reason,
   },
   {
     headerName: "QC Complete Status",
-    valueGetter: ({ data }) => data.qcComplete.status,
+    valueGetter: ({ data }) => data.qcComplete?.status,
   },
 ];
-
-CohortDetailsColumns.forEach((colDef) => setEditableConfigs(colDef));
 
 export const defaultSamplesColDef: ColDef = {
   sortable: true,

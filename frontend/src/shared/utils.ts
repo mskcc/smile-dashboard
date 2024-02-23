@@ -20,7 +20,6 @@ export function getMetadataFromSamples(samples: Sample[]) {
 }
 
 export function getCohortDataFromSamples(samples: Sample[]) {
-  console.log(samples);
   return samples.map((s: any) => {
     return {
       ...s.hasMetadataSampleMetadata[0],
