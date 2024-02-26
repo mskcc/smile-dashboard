@@ -11032,6 +11032,18 @@ export type FindCohortSamplesQuery = {
   }>;
 };
 
+export type CohortsListQueryVariables = Exact<{
+  where?: InputMaybe<CohortWhere>;
+  options?: InputMaybe<CohortOptions>;
+  cohortsConnectionWhere2?: InputMaybe<CohortWhere>;
+}>;
+
+export type CohortsListQuery = {
+  __typename?: "Query";
+  cohorts: Array<{ __typename?: "Cohort"; cohortId: string }>;
+  cohortsConnection: { __typename?: "CohortsConnection"; totalCount: number };
+};
+
 export const RequestPartsFragmentDoc = gql`
   fragment RequestParts on Request {
     igoRequestId
@@ -11358,4 +11370,22 @@ export const FindCohortSamplesDocument = gql`
 export type FindCohortSamplesQueryResult = Apollo.QueryResult<
   FindCohortSamplesQuery,
   FindCohortSamplesQueryVariables
+>;
+export const CohortsListDocument = gql`
+  query CohortsList(
+    $where: CohortWhere
+    $options: CohortOptions
+    $cohortsConnectionWhere2: CohortWhere
+  ) {
+    cohorts(where: $where, options: $options) {
+      cohortId
+    }
+    cohortsConnection(where: $cohortsConnectionWhere2) {
+      totalCount
+    }
+  }
+`;
+export type CohortsListQueryResult = Apollo.QueryResult<
+  CohortsListQuery,
+  CohortsListQueryVariables
 >;

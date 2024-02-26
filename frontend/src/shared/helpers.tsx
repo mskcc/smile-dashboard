@@ -477,6 +477,34 @@ SampleDetailsColumns.forEach((colDef) => {
   };
 });
 
+export const CohortsListColumns: ColDef[] = [
+  {
+    headerName: "View",
+    cellRenderer: (params: CellClassParams<any>) => {
+      return (
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => {
+            if (params.data.cohortId !== undefined) {
+              params.context.navigateFunction(
+                `/requests/${params.data.cohortId}`
+              );
+            }
+          }}
+        >
+          View
+        </Button>
+      );
+    },
+    sortable: false,
+  },
+  {
+    field: "cohortId",
+    headerName: "Cohort ID",
+  },
+];
+
 export const CohortDetailsColumns: ColDef[] = [
   {
     field: "primaryId",

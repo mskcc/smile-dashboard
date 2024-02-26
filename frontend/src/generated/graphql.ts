@@ -11033,6 +11033,18 @@ export type FindCohortSamplesQuery = {
   }>;
 };
 
+export type CohortsListQueryVariables = Exact<{
+  where?: InputMaybe<CohortWhere>;
+  options?: InputMaybe<CohortOptions>;
+  cohortsConnectionWhere2?: InputMaybe<CohortWhere>;
+}>;
+
+export type CohortsListQuery = {
+  __typename?: "Query";
+  cohorts: Array<{ __typename?: "Cohort"; cohortId: string }>;
+  cohortsConnection: { __typename?: "CohortsConnection"; totalCount: number };
+};
+
 export const RequestPartsFragmentDoc = gql`
   fragment RequestParts on Request {
     igoRequestId
@@ -11730,4 +11742,69 @@ export type FindCohortSamplesLazyQueryHookResult = ReturnType<
 export type FindCohortSamplesQueryResult = Apollo.QueryResult<
   FindCohortSamplesQuery,
   FindCohortSamplesQueryVariables
+>;
+export const CohortsListDocument = gql`
+  query CohortsList(
+    $where: CohortWhere
+    $options: CohortOptions
+    $cohortsConnectionWhere2: CohortWhere
+  ) {
+    cohorts(where: $where, options: $options) {
+      cohortId
+    }
+    cohortsConnection(where: $cohortsConnectionWhere2) {
+      totalCount
+    }
+  }
+`;
+
+/**
+ * __useCohortsListQuery__
+ *
+ * To run a query within a React component, call `useCohortsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCohortsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCohortsListQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *      options: // value for 'options'
+ *      cohortsConnectionWhere2: // value for 'cohortsConnectionWhere2'
+ *   },
+ * });
+ */
+export function useCohortsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    CohortsListQuery,
+    CohortsListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<CohortsListQuery, CohortsListQueryVariables>(
+    CohortsListDocument,
+    options
+  );
+}
+export function useCohortsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    CohortsListQuery,
+    CohortsListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<CohortsListQuery, CohortsListQueryVariables>(
+    CohortsListDocument,
+    options
+  );
+}
+export type CohortsListQueryHookResult = ReturnType<typeof useCohortsListQuery>;
+export type CohortsListLazyQueryHookResult = ReturnType<
+  typeof useCohortsListLazyQuery
+>;
+export type CohortsListQueryResult = Apollo.QueryResult<
+  CohortsListQuery,
+  CohortsListQueryVariables
 >;

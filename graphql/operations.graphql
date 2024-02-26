@@ -265,3 +265,16 @@ query FindCohortSamples(
     }
   }
 }
+
+query CohortsList(
+  $where: CohortWhere
+  $options: CohortOptions
+  $cohortsConnectionWhere2: CohortWhere
+) {
+  cohorts(where: $where, options: $options) {
+    cohortId
+  }
+  cohortsConnection(where: $cohortsConnectionWhere2) {
+    totalCount
+  }
+}
