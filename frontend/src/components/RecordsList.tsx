@@ -13,17 +13,10 @@ import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { useHookLazyGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
-import {
-  SampleWhere,
-  useFindSamplesByInputValueQuery,
-} from "../generated/graphql";
+import { Sample, SampleWhere } from "../generated/graphql";
 import { SampleDetailsColumns, defaultRecordsColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
-import {
-  getAllSamplesFromQueryData,
-  getMetadataFromSamples,
-} from "../shared/utils";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookLazyGeneric;
@@ -35,6 +28,10 @@ export interface IRecordsListProps {
   conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
+  useSampleRecordsQuery: any;
+  getSamplesFromQueryData: (data: any) => Sample[];
+  getRowData: (samples: Sample[]) => any[];
+  sampleColDefs: ColDef[];
   searchVariables: SampleWhere;
   customFilterUI?: JSX.Element;
   setCustomFilterVals?: (vals: PatientIdsTriplet[]) => void;
@@ -58,6 +55,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   conditionBuilder,
   sampleQueryParamValue,
   sampleQueryParamFieldName,
+  useSampleRecordsQuery,
+  getSamplesFromQueryData,
+  getRowData,
+  sampleColDefs,
   searchVariables,
   customFilterUI,
   setCustomFilterVals,
@@ -209,10 +210,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               <Modal.Body>
                 <div style={{ height: 600 }}>
                   <SamplesList
-                    columnDefs={SampleDetailsColumns}
-                    useSampleRecordsQuery={useFindSamplesByInputValueQuery}
-                    getSamplesFromQueryData={getAllSamplesFromQueryData}
-                    getRowData={getMetadataFromSamples}
+                    columnDefs={sampleColDefs}
+                    useSampleRecordsQuery={useSampleRecordsQuery}
+                    getSamplesFromQueryData={getSamplesFromQueryData}
+                    getRowData={getRowData}
                     height={height * 11}
                     searchVariables={searchVariables}
                     setUnsavedChanges={setUnsavedChanges}

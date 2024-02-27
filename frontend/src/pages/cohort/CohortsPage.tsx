@@ -27,13 +27,21 @@ import {
   CohortWhere,
   SampleWhere,
   useCohortsListLazyQuery,
+  useFindCohortSamplesQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
-import { CohortsListColumns } from "../../shared/helpers";
+import {
+  CohortSamplesDetailsColumns,
+  CohortsListColumns,
+} from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
+import {
+  getCohortDataFromSamples,
+  getCohortSamplesFromQueryData,
+} from "../../shared/utils";
 
 function cohortFilterWhereVariables(uniqueQueries: string[]): CohortWhere[] {
   if (uniqueQueries.length > 1) {
@@ -71,6 +79,10 @@ export default function CohortsPage() {
         conditionBuilder={cohortFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
+        useSampleRecordsQuery={useFindCohortSamplesQuery}
+        getSamplesFromQueryData={getCohortSamplesFromQueryData}
+        getRowData={getCohortDataFromSamples}
+        sampleColDefs={CohortSamplesDetailsColumns}
         searchVariables={
           {
             hasMetadataSampleMetadata_SOME: {

@@ -488,7 +488,7 @@ export const CohortsListColumns: ColDef[] = [
           onClick={() => {
             if (params.data.cohortId !== undefined) {
               params.context.navigateFunction(
-                `/requests/${params.data.cohortId}`
+                `/cohorts/${params.data.cohortId}`
               );
             }
           }}
@@ -505,7 +505,7 @@ export const CohortsListColumns: ColDef[] = [
   },
 ];
 
-export const CohortDetailsColumns: ColDef[] = [
+export const CohortSamplesDetailsColumns: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",

@@ -1,6 +1,7 @@
 import {
   PatientAliasWhere,
   SampleWhere,
+  useFindSamplesByInputValueQuery,
   useGetPatientIdsTripletsLazyQuery,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
@@ -14,8 +15,15 @@ import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
-import { PatientsListColumns } from "../../shared/helpers";
+import {
+  PatientsListColumns,
+  SampleDetailsColumns,
+} from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
+import {
+  getAllSamplesFromQueryData,
+  getMetadataFromSamples,
+} from "../../shared/utils";
 
 // Mirror the field types in the CRDB, where CMO_ID is stored without the "C-" prefix
 export type PatientIdsTriplet = {
@@ -265,6 +273,10 @@ export default function PatientsPage({
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
+        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
+        getSamplesFromQueryData={getAllSamplesFromQueryData}
+        getRowData={getMetadataFromSamples}
+        sampleColDefs={SampleDetailsColumns}
         searchVariables={
           {
             OR: [

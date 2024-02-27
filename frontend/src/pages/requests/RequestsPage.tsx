@@ -1,14 +1,22 @@
 import {
   RequestWhere,
   SampleWhere,
+  useFindSamplesByInputValueQuery,
   useRequestsListLazyQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
-import { RequestsListColumns } from "../../shared/helpers";
+import {
+  RequestsListColumns,
+  SampleDetailsColumns,
+} from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
+import {
+  getAllSamplesFromQueryData,
+  getMetadataFromSamples,
+} from "../../shared/utils";
 
 function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
   if (uniqueQueries.length > 1) {
@@ -76,6 +84,10 @@ export default function RequestsPage() {
         conditionBuilder={requestFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
+        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
+        getSamplesFromQueryData={getAllSamplesFromQueryData}
+        getRowData={getMetadataFromSamples}
+        sampleColDefs={SampleDetailsColumns}
         searchVariables={
           {
             hasMetadataSampleMetadata_SOME: {
