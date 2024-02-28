@@ -14,7 +14,7 @@ import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { useHookLazyGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
 import { Sample, SampleWhere } from "../generated/graphql";
-import { SampleDetailsColumns, defaultRecordsColDef } from "../shared/helpers";
+import { defaultReadOnlyColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
@@ -30,6 +30,7 @@ export interface IRecordsListProps {
   sampleQueryParamFieldName: string;
   useSampleRecordsQuery: any;
   getSamplesFromQueryData: (data: any) => Sample[];
+  sampleDefaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
   sampleColDefs: ColDef[];
   searchVariables: SampleWhere;
@@ -57,6 +58,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   sampleQueryParamFieldName,
   useSampleRecordsQuery,
   getSamplesFromQueryData,
+  sampleDefaultColDef,
   getRowData,
   sampleColDefs,
   searchVariables,
@@ -211,6 +213,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
                 <div style={{ height: 600 }}>
                   <SamplesList
                     columnDefs={sampleColDefs}
+                    defaultColDef={sampleDefaultColDef}
                     useSampleRecordsQuery={useSampleRecordsQuery}
                     getSamplesFromQueryData={getSamplesFromQueryData}
                     getRowData={getRowData}
@@ -260,7 +263,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               context={{
                 navigateFunction: navigate,
               }}
-              defaultColDef={defaultRecordsColDef}
+              defaultColDef={defaultReadOnlyColDef}
               onGridReady={(params) => {
                 params.api.sizeColumnsToFit();
               }}

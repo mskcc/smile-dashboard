@@ -33,6 +33,7 @@ import { useState } from "react";
 import {
   CohortSamplesDetailsColumns,
   CohortsListColumns,
+  defaultReadOnlyColDef,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
@@ -81,6 +82,7 @@ export default function CohortsPage() {
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
         useSampleRecordsQuery={useFindCohortSamplesQuery}
         getSamplesFromQueryData={getCohortSamplesFromQueryData}
+        sampleDefaultColDef={defaultReadOnlyColDef}
         getRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}
         searchVariables={

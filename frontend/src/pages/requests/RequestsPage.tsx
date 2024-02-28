@@ -8,6 +8,7 @@ import { useState } from "react";
 import {
   RequestsListColumns,
   SampleDetailsColumns,
+  defaultEditableColDef,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
@@ -86,6 +87,7 @@ export default function RequestsPage() {
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
         useSampleRecordsQuery={useFindSamplesByInputValueQuery}
         getSamplesFromQueryData={getAllSamplesFromQueryData}
+        sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
         searchVariables={

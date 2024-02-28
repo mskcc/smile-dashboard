@@ -18,6 +18,7 @@ import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
 import {
   PatientsListColumns,
   SampleDetailsColumns,
+  defaultEditableColDef,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
 import {
@@ -275,6 +276,7 @@ export default function PatientsPage({
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
         useSampleRecordsQuery={useFindSamplesByInputValueQuery}
         getSamplesFromQueryData={getAllSamplesFromQueryData}
+        sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
         searchVariables={

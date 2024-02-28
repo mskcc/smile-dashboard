@@ -5,7 +5,10 @@ import {
   getAllSamplesFromQueryData,
   getMetadataFromSamples,
 } from "../../shared/utils";
-import { SampleDetailsColumns } from "../../shared/helpers";
+import {
+  SampleDetailsColumns,
+  defaultEditableColDef,
+} from "../../shared/helpers";
 
 export default function SamplesPage() {
   return (
@@ -14,6 +17,7 @@ export default function SamplesPage() {
 
       <SamplesList
         columnDefs={SampleDetailsColumns}
+        defaultColDef={defaultEditableColDef}
         useSampleRecordsQuery={useFindSamplesByInputValueQuery}
         getSamplesFromQueryData={getAllSamplesFromQueryData}
         getRowData={getMetadataFromSamples}

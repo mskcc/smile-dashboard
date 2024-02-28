@@ -12,7 +12,6 @@ import { AlertModal } from "./AlertModal";
 import { CSVFormulate } from "../utils/CSVExport";
 import {
   SampleDetailsColumns,
-  defaultSamplesColDef,
   SampleChange,
   SampleMetadataExtended,
 } from "../shared/helpers";
@@ -30,6 +29,7 @@ const max_rows = 500;
 
 interface ISampleListProps {
   columnDefs: ColDef[];
+  defaultColDef: ColDef;
   useSampleRecordsQuery: any;
   getSamplesFromQueryData: (data: any) => Sample[];
   getRowData: (samples: Sample[]) => any[];
@@ -93,6 +93,7 @@ function sampleFilterWhereVariables(
 
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
   columnDefs,
+  defaultColDef,
   useSampleRecordsQuery,
   getSamplesFromQueryData,
   getRowData,
@@ -315,7 +316,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
               rowData={getRowData(samples)}
               onCellEditRequest={onCellValueChanged}
               readOnlyEdit={true}
-              defaultColDef={defaultSamplesColDef}
+              defaultColDef={defaultColDef}
               ref={gridRef}
               context={{
                 getChanges: () => changes,
