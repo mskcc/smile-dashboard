@@ -1,9 +1,4 @@
-import {
-  SortDirection,
-  Sample,
-  SampleMetadataWhere,
-  SampleWhere,
-} from "../generated/graphql";
+import { SortDirection, Sample, SampleWhere } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
 import { FunctionComponent, useEffect, useRef } from "react";
@@ -11,11 +6,7 @@ import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
 import { CSVFormulate } from "../utils/CSVExport";
-import {
-  SampleDetailsColumns,
-  SampleChange,
-  SampleMetadataExtended,
-} from "../shared/helpers";
+import { SampleChange, SampleMetadataExtended } from "../shared/helpers";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -160,7 +151,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
         <DownloadModal
           loader={() => {
             return Promise.resolve(
-              CSVFormulate(getRowData(samples), SampleDetailsColumns)
+              CSVFormulate(getRowData(samples), columnDefs)
             );
           }}
           onComplete={() => {
