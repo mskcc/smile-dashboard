@@ -19,6 +19,7 @@ import {
   PatientsListColumns,
   SampleDetailsColumns,
   defaultEditableColDef,
+  sampleFilter,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
 import {
@@ -279,7 +280,7 @@ export default function PatientsPage({
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
-        searchVariables={
+        sampleSearchVariables={
           {
             OR: [
               {
@@ -293,6 +294,14 @@ export default function PatientsPage({
               },
             ],
           } as SampleWhere
+        }
+        sampleFilter={(searchVal: string) =>
+          sampleFilter(
+            "hasMetadataSampleMetadata_SOME",
+            searchVal,
+            params,
+            sampleQueryParamFieldName
+          )
         }
         customFilterUI={
           <>

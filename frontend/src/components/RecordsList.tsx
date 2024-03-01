@@ -33,7 +33,8 @@ export interface IRecordsListProps {
   sampleDefaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
   sampleColDefs: ColDef[];
-  searchVariables: SampleWhere;
+  sampleSearchVariables: SampleWhere;
+  sampleFilter: (searchVal: string) => SampleWhere;
   customFilterUI?: JSX.Element;
   setCustomFilterVals?: (vals: PatientIdsTriplet[]) => void;
   searchVal: string[];
@@ -61,7 +62,8 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   sampleDefaultColDef,
   getRowData,
   sampleColDefs,
-  searchVariables,
+  sampleSearchVariables,
+  sampleFilter,
   customFilterUI,
   setCustomFilterVals,
   searchVal,
@@ -218,11 +220,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
                     getSamplesFromQueryData={getSamplesFromQueryData}
                     getRowData={getRowData}
                     height={height * 11}
-                    searchVariables={searchVariables}
+                    searchVariables={sampleSearchVariables}
+                    filter={sampleFilter}
                     setUnsavedChanges={setUnsavedChanges}
                     exportFileName={`${sampleQueryParamFieldName}_${sampleQueryParamValue}.tsv`}
-                    sampleQueryParamFieldName={sampleQueryParamFieldName}
-                    sampleQueryParamValue={sampleQueryParamValue}
                   />
                 </div>
               </Modal.Body>

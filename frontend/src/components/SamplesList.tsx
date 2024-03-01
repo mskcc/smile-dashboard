@@ -2,6 +2,7 @@ import {
   SortDirection,
   Sample,
   SampleMetadataWhere,
+  SampleWhere,
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
@@ -21,7 +22,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { CellValueChangedEvent, ColDef } from "ag-grid-community";
-import { parseSearchQueries } from "../utils/parseSearchQueries";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
 const POLLING_INTERVAL = 2000;
@@ -35,60 +35,9 @@ interface ISampleListProps {
   getRowData: (samples: Sample[]) => any[];
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
-  searchVariables?: SampleMetadataWhere;
+  searchVariables?: SampleWhere;
+  filter: (searchVal: string) => SampleWhere;
   exportFileName?: string;
-  sampleQueryParamFieldName?: string;
-  sampleQueryParamValue?: string;
-}
-
-function sampleFilterWhereVariables(
-  uniqueQueries: string[]
-): SampleMetadataWhere[] {
-  if (uniqueQueries.length > 1) {
-    return [
-      { cmoSampleName_IN: uniqueQueries },
-      { importDate_IN: uniqueQueries },
-      { investigatorSampleId_IN: uniqueQueries },
-      { primaryId_IN: uniqueQueries },
-      { sampleClass_IN: uniqueQueries },
-      { cmoPatientId_IN: uniqueQueries },
-      { cmoSampleIdFields_IN: uniqueQueries },
-      { sampleName_IN: uniqueQueries },
-      { preservation_IN: uniqueQueries },
-      { tumorOrNormal_IN: uniqueQueries },
-      { oncotreeCode_IN: uniqueQueries },
-      { collectionYear_IN: uniqueQueries },
-      { sampleOrigin_IN: uniqueQueries },
-      { tissueLocation_IN: uniqueQueries },
-      { sex_IN: uniqueQueries },
-      { libraries_IN: uniqueQueries },
-      { sampleType_IN: uniqueQueries },
-      { species_IN: uniqueQueries },
-      { genePanel_IN: uniqueQueries },
-    ];
-  } else {
-    return [
-      { cmoSampleName_CONTAINS: uniqueQueries[0] },
-      { importDate_CONTAINS: uniqueQueries[0] },
-      { investigatorSampleId_CONTAINS: uniqueQueries[0] },
-      { primaryId_CONTAINS: uniqueQueries[0] },
-      { sampleClass_CONTAINS: uniqueQueries[0] },
-      { cmoPatientId_CONTAINS: uniqueQueries[0] },
-      { cmoSampleIdFields_CONTAINS: uniqueQueries[0] },
-      { sampleName_CONTAINS: uniqueQueries[0] },
-      { preservation_CONTAINS: uniqueQueries[0] },
-      { tumorOrNormal_CONTAINS: uniqueQueries[0] },
-      { oncotreeCode_CONTAINS: uniqueQueries[0] },
-      { collectionYear_CONTAINS: uniqueQueries[0] },
-      { sampleOrigin_CONTAINS: uniqueQueries[0] },
-      { tissueLocation_CONTAINS: uniqueQueries[0] },
-      { sex_CONTAINS: uniqueQueries[0] },
-      { libraries_CONTAINS: uniqueQueries[0] },
-      { sampleType_CONTAINS: uniqueQueries[0] },
-      { species_CONTAINS: uniqueQueries[0] },
-      { genePanel_CONTAINS: uniqueQueries[0] },
-    ];
-  }
 }
 
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
@@ -98,11 +47,10 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
   getSamplesFromQueryData,
   getRowData,
   searchVariables,
+  filter,
   height,
   setUnsavedChanges,
   exportFileName,
-  sampleQueryParamFieldName,
-  sampleQueryParamValue,
 }) => {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useSampleRecordsQuery({
@@ -137,16 +85,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
     gridRef.current?.api?.showLoadingOverlay();
     async function refetchSearchVal() {
       await refetch({
-        where: {
-          hasMetadataSampleMetadata_SOME: {
-            OR: sampleFilterWhereVariables(parseSearchQueries(searchVal)),
-            ...(sampleQueryParamFieldName && sampleQueryParamValue
-              ? {
-                  [sampleQueryParamFieldName]: sampleQueryParamValue,
-                }
-              : {}),
-          },
-        },
+        where: filter(searchVal),
       });
     }
     refetchSearchVal().then(() => {

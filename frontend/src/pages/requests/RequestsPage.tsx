@@ -9,6 +9,7 @@ import {
   RequestsListColumns,
   SampleDetailsColumns,
   defaultEditableColDef,
+  sampleFilter,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
@@ -90,12 +91,20 @@ export default function RequestsPage() {
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
-        searchVariables={
+        sampleSearchVariables={
           {
             hasMetadataSampleMetadata_SOME: {
               [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
             },
           } as SampleWhere
+        }
+        sampleFilter={(searchVal: string) =>
+          sampleFilter(
+            "hasMetadataSampleMetadata_SOME",
+            searchVal,
+            params,
+            sampleQueryParamFieldName
+          )
         }
         handleSearch={handleSearch}
         searchVal={searchVal}

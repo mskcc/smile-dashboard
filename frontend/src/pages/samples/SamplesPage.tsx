@@ -8,6 +8,7 @@ import {
 import {
   SampleDetailsColumns,
   defaultEditableColDef,
+  sampleFilter,
 } from "../../shared/helpers";
 
 export default function SamplesPage() {
@@ -22,6 +23,9 @@ export default function SamplesPage() {
         getSamplesFromQueryData={getAllSamplesFromQueryData}
         getRowData={getMetadataFromSamples}
         height={540}
+        filter={(searchVal: string) =>
+          sampleFilter("hasMetadataSampleMetadata_SOME", searchVal)
+        }
       />
     </>
   );

@@ -86,7 +86,6 @@ query FindSamplesByInputValue(
   $where: SampleWhere
   $first: Int
   $options: SampleMetadataOptions
-  $patientAliasesIsAliasWhere2: PatientAliasWhere
 ) {
   samplesConnection(where: $where, first: $first) {
     edges {
@@ -110,11 +109,35 @@ query FindSamplesByInputValue(
           edges {
             node {
               smilePatientId
-              patientAliasesIsAlias(where: $patientAliasesIsAliasWhere2) {
+              patientAliasesIsAlias {
                 namespace
                 value
               }
             }
+          }
+        }
+        cohortsHasCohortSampleConnection {
+          edges {
+            node {
+              cohortId
+            }
+          }
+        }
+        hasTempoTempos {
+          hasEventBamCompletes {
+            date
+            status
+          }
+          hasEventMafCompletes {
+            date
+            normalPrimaryId
+            status
+          }
+          hasEventQcCompletes {
+            date
+            reason
+            result
+            status
           }
         }
       }
@@ -229,12 +252,13 @@ query GetPatientIdsTriplets($patientIds: [String!]!) {
 }
 
 query FindCohortSamples(
+  $where: CohortWhere
   $options: SampleMetadataOptions
   $bamCompleteOptions: BamCompleteOptions
   $mafCompleteOptions: MafCompleteOptions
   $qcCompleteOptions: QcCompleteOptions
 ) {
-  cohorts {
+  cohorts(where: $where) {
     cohortId
     hasCohortSampleSamples {
       ...SampleParts

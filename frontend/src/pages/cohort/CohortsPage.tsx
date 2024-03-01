@@ -1,45 +1,24 @@
-// import { SamplesList } from "../../components/SamplesList";
-// import { useFindCohortSamplesQuery } from "../../generated/graphql";
-// import PageHeader from "../../shared/components/PageHeader";
-// import { CohortDetailsColumns } from "../../shared/helpers";
-// import {
-//   getCohortDataFromSamples,
-//   getCohortSamplesFromQueryData,
-// } from "../../shared/utils";
-
-// export default function CohortsPage() {
-//   return (
-//     <>
-//       <PageHeader pageTitle={"cohorts"} pageRoute="/cohorts" />
-
-//       <SamplesList
-//         columnDefs={CohortDetailsColumns}
-//         useSampleRecordsQuery={useFindCohortSamplesQuery}
-//         getSamplesFromQueryData={getCohortSamplesFromQueryData}
-//         getRowData={getCohortDataFromSamples}
-//         height={540}
-//       />
-//     </>
-//   );
-// }
-
 import {
   CohortWhere,
   SampleWhere,
   useCohortsListLazyQuery,
   useFindCohortSamplesQuery,
+  useFindSamplesByInputValueQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
 import {
   CohortSamplesDetailsColumns,
   CohortsListColumns,
+  cohortSampleFilterWhereVariables,
   defaultReadOnlyColDef,
+  sampleFilter,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
 import {
+  getAllSamplesFromQueryData,
   getCohortDataFromSamples,
   getCohortSamplesFromQueryData,
 } from "../../shared/utils";
@@ -80,18 +59,30 @@ export default function CohortsPage() {
         conditionBuilder={cohortFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
-        useSampleRecordsQuery={useFindCohortSamplesQuery}
-        getSamplesFromQueryData={getCohortSamplesFromQueryData}
+        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
+        getSamplesFromQueryData={getAllSamplesFromQueryData}
         sampleDefaultColDef={defaultReadOnlyColDef}
         getRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}
-        searchVariables={
+        sampleSearchVariables={
           {
-            hasMetadataSampleMetadata_SOME: {
-              [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+            cohortsHasCohortSampleConnection_SOME: {
+              node: {
+                [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+              },
             },
           } as SampleWhere
         }
+        sampleFilter={(searchVal: string) => {
+          return {
+            cohortsHasCohortSampleConnection_SOME: {
+              node: {
+                [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+              },
+            },
+            OR: cohortSampleFilterWhereVariables(parseSearchQueries(searchVal)),
+          } as SampleWhere;
+        }}
         handleSearch={handleSearch}
         searchVal={searchVal}
         setSearchVal={setSearchVal}

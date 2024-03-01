@@ -10680,7 +10680,6 @@ export type FindSamplesByInputValueQueryVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   first?: InputMaybe<Scalars["Int"]>;
   options?: InputMaybe<SampleMetadataOptions>;
-  patientAliasesIsAliasWhere2?: InputMaybe<PatientAliasWhere>;
 }>;
 
 export type FindSamplesByInputValueQuery = {
@@ -10773,6 +10772,34 @@ export type FindSamplesByInputValueQuery = {
             };
           }>;
         };
+        cohortsHasCohortSampleConnection: {
+          __typename?: "SampleCohortsHasCohortSampleConnection";
+          edges: Array<{
+            __typename?: "SampleCohortsHasCohortSampleRelationship";
+            node: { __typename?: "Cohort"; cohortId: string };
+          }>;
+        };
+        hasTempoTempos: Array<{
+          __typename?: "Tempo";
+          hasEventBamCompletes: Array<{
+            __typename?: "BamComplete";
+            date: string;
+            status: string;
+          }>;
+          hasEventMafCompletes: Array<{
+            __typename?: "MafComplete";
+            date: string;
+            normalPrimaryId: string;
+            status: string;
+          }>;
+          hasEventQcCompletes: Array<{
+            __typename?: "QcComplete";
+            date: string;
+            reason: string;
+            result: string;
+            status: string;
+          }>;
+        }>;
       };
     }>;
   };
@@ -10954,6 +10981,7 @@ export type GetPatientIdsTripletsQuery = {
 };
 
 export type FindCohortSamplesQueryVariables = Exact<{
+  where?: InputMaybe<CohortWhere>;
   options?: InputMaybe<SampleMetadataOptions>;
   bamCompleteOptions?: InputMaybe<BamCompleteOptions>;
   mafCompleteOptions?: InputMaybe<MafCompleteOptions>;
@@ -11213,7 +11241,6 @@ export const FindSamplesByInputValueDocument = gql`
     $where: SampleWhere
     $first: Int
     $options: SampleMetadataOptions
-    $patientAliasesIsAliasWhere2: PatientAliasWhere
   ) {
     samplesConnection(where: $where, first: $first) {
       edges {
@@ -11237,11 +11264,35 @@ export const FindSamplesByInputValueDocument = gql`
             edges {
               node {
                 smilePatientId
-                patientAliasesIsAlias(where: $patientAliasesIsAliasWhere2) {
+                patientAliasesIsAlias {
                   namespace
                   value
                 }
               }
+            }
+          }
+          cohortsHasCohortSampleConnection {
+            edges {
+              node {
+                cohortId
+              }
+            }
+          }
+          hasTempoTempos {
+            hasEventBamCompletes {
+              date
+              status
+            }
+            hasEventMafCompletes {
+              date
+              normalPrimaryId
+              status
+            }
+            hasEventQcCompletes {
+              date
+              reason
+              result
+              status
             }
           }
         }
@@ -11328,12 +11379,13 @@ export type GetPatientIdsTripletsQueryResult = Apollo.QueryResult<
 >;
 export const FindCohortSamplesDocument = gql`
   query FindCohortSamples(
+    $where: CohortWhere
     $options: SampleMetadataOptions
     $bamCompleteOptions: BamCompleteOptions
     $mafCompleteOptions: MafCompleteOptions
     $qcCompleteOptions: QcCompleteOptions
   ) {
-    cohorts {
+    cohorts(where: $where) {
       cohortId
       hasCohortSampleSamples {
         ...SampleParts
