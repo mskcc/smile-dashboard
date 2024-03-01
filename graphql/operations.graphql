@@ -46,42 +46,6 @@ query PatientsList(
   }
 }
 
-query RequestWithSamples(
-  $options: RequestOptions
-  $where: RequestWhere
-  $hasSampleSamplesWhere2: SampleWhere
-  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
-  $hasSampleSamplesConnectionWhere2: RequestHasSampleSamplesConnectionWhere
-  $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
-) {
-  requests(where: $where, options: $options) {
-    ...RequestParts
-    hasSampleSamples(where: $hasSampleSamplesWhere2) {
-      smileSampleId
-      sampleCategory
-      sampleClass
-      datasource
-      revisable
-      hasMetadataSampleMetadata(
-        where: $hasMetadataSampleMetadataWhere2
-        options: $hasMetadataSampleMetadataOptions2
-      ) {
-        ...SampleMetadataParts
-      }
-      patientsHasSample {
-        smilePatientId
-        patientAliasesIsAlias {
-          namespace
-          value
-        }
-      }
-    }
-    hasSampleSamplesConnection(where: $hasSampleSamplesConnectionWhere2) {
-      totalCount
-    }
-  }
-}
-
 query FindSamplesByInputValue(
   $where: SampleWhere
   $first: Int
@@ -204,26 +168,6 @@ fragment SampleMetadataParts on SampleMetadata {
   tumorOrNormal
 }
 
-query Samples(
-  $where: SampleWhere
-  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
-  $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
-) {
-  samples(where: $where) {
-    smileSampleId
-    revisable
-    sampleCategory
-    sampleClass
-    datasource
-    hasMetadataSampleMetadata(
-      where: $hasMetadataSampleMetadataWhere2
-      options: $hasMetadataSampleMetadataOptions2
-    ) {
-      ...SampleMetadataParts
-    }
-  }
-}
-
 mutation UpdateSamples(
   $where: SampleWhere
   $update: SampleUpdateInput
@@ -251,54 +195,15 @@ query GetPatientIdsTriplets($patientIds: [String!]!) {
   }
 }
 
-query FindCohortSamples(
-  $where: CohortWhere
-  $options: SampleMetadataOptions
-  $bamCompleteOptions: BamCompleteOptions
-  $mafCompleteOptions: MafCompleteOptions
-  $qcCompleteOptions: QcCompleteOptions
-) {
-  cohorts(where: $where) {
-    cohortId
-    hasCohortSampleSamples {
-      ...SampleParts
-      hasMetadataSampleMetadata(options: $options) {
-        ...SampleMetadataParts
-        hasStatusStatuses {
-          validationReport
-          validationStatus
-        }
-      }
-      hasTempoTempos {
-        hasEventBamCompletes(options: $bamCompleteOptions) {
-          date
-          status
-        }
-        hasEventMafCompletes(options: $mafCompleteOptions) {
-          date
-          normalPrimaryId
-          status
-        }
-        hasEventQcCompletes(options: $qcCompleteOptions) {
-          date
-          reason
-          result
-          status
-        }
-      }
-    }
-  }
-}
-
 query CohortsList(
   $where: CohortWhere
   $options: CohortOptions
   $cohortsConnectionWhere2: CohortWhere
 ) {
-  cohorts(where: $where, options: $options) {
-    cohortId
-  }
   cohortsConnection(where: $cohortsConnectionWhere2) {
     totalCount
+  }
+  cohorts(where: $where, options: $options) {
+    cohortId
   }
 }
