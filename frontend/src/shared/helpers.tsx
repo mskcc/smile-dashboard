@@ -17,7 +17,7 @@ import {
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./components/StatusToolTip";
 import { ITooltipParams } from "ag-grid-community";
-import { Params, useParams } from "react-router-dom";
+import { Params } from "react-router-dom";
 import { parseSearchQueries } from "../utils/parseSearchQueries";
 
 export interface SampleMetadataExtended extends SampleMetadata {
@@ -520,6 +520,10 @@ export const CohortSamplesDetailsColumns: ColDef[] = [
     headerName: "Primary ID",
   },
   {
+    field: "cmoSampleName",
+    headerName: "CMO Sample Name",
+  },
+  {
     headerName: "BAM Complete Date",
     valueGetter: ({ data }) => data.bamComplete?.date,
   },
@@ -742,9 +746,15 @@ export function cohortSampleFilterWhereVariables(
 
   let sampleMetadataWhere: SampleMetadataWhere[] = [];
   if (uniqueQueries.length > 1) {
-    sampleMetadataWhere = [{ primaryId_IN: uniqueQueries }];
+    sampleMetadataWhere = [
+      { primaryId_IN: uniqueQueries },
+      { cmoSampleName_IN: uniqueQueries },
+    ];
   } else {
-    sampleMetadataWhere = [{ primaryId_CONTAINS: uniqueQueries[0] }];
+    sampleMetadataWhere = [
+      { primaryId_CONTAINS: uniqueQueries[0] },
+      { cmoSampleName_CONTAINS: uniqueQueries[0] },
+    ];
   }
 
   return [
