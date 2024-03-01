@@ -10857,7 +10857,14 @@ export type CohortsListQueryVariables = Exact<{
 export type CohortsListQuery = {
   __typename?: "Query";
   cohortsConnection: { __typename?: "CohortsConnection"; totalCount: number };
-  cohorts: Array<{ __typename?: "Cohort"; cohortId: string }>;
+  cohorts: Array<{
+    __typename?: "Cohort";
+    cohortId: string;
+    hasCohortSampleSamplesConnection: {
+      __typename?: "CohortHasCohortSampleSamplesConnection";
+      totalCount: number;
+    };
+  }>;
 };
 
 export const RequestPartsFragmentDoc = gql`
@@ -11336,6 +11343,9 @@ export const CohortsListDocument = gql`
     }
     cohorts(where: $where, options: $options) {
       cohortId
+      hasCohortSampleSamplesConnection {
+        totalCount
+      }
     }
   }
 `;

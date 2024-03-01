@@ -40,7 +40,7 @@ export type ChangeForSubmit = {
 
 export const RequestsListColumns: ColDef[] = [
   {
-    headerName: "View",
+    headerName: "View Samples",
     cellRenderer: (params: CellClassParams<any>) => {
       return (
         <Button
@@ -69,7 +69,6 @@ export const RequestsListColumns: ColDef[] = [
     headerName: "IGO Project ID",
   },
   {
-    field: "hasSampleSamplesConnection",
     headerName: "# Samples",
     valueGetter: function ({ data }) {
       return data["hasSampleSamplesConnection"]?.totalCount;
@@ -142,7 +141,7 @@ export const RequestsListColumns: ColDef[] = [
 
 export const PatientsListColumns: ColDef[] = [
   {
-    headerName: "View",
+    headerName: "View Samples",
     cellRenderer: (params: CellClassParams<any>) => {
       return (
         <Button
@@ -188,7 +187,6 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    field: "hasSampleSamplesConnection",
     headerName: "# Samples",
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
@@ -488,7 +486,7 @@ SampleDetailsColumns.forEach((colDef) => {
 
 export const CohortsListColumns: ColDef[] = [
   {
-    headerName: "View",
+    headerName: "View Samples",
     cellRenderer: (params: CellClassParams<any>) => {
       return (
         <Button
@@ -511,6 +509,13 @@ export const CohortsListColumns: ColDef[] = [
   {
     field: "cohortId",
     headerName: "Cohort ID",
+  },
+  {
+    headerName: "# Samples",
+    valueGetter: function ({ data }) {
+      return data["hasCohortSampleSamplesConnection"].totalCount;
+    },
+    sortable: false,
   },
 ];
 

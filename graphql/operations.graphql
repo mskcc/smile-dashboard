@@ -205,5 +205,8 @@ query CohortsList(
   }
   cohorts(where: $where, options: $options) {
     cohortId
+    hasCohortSampleSamplesConnection {
+      totalCount
+    }
   }
 }
