@@ -10595,7 +10595,10 @@ export type PatientsListQuery = {
 export type FindSamplesByInputValueQueryVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   first?: InputMaybe<Scalars["Int"]>;
-  options?: InputMaybe<SampleMetadataOptions>;
+  sampleMetadataOptions?: InputMaybe<SampleMetadataOptions>;
+  bamCompletesOptions?: InputMaybe<BamCompleteOptions>;
+  mafCompletesOptions?: InputMaybe<MafCompleteOptions>;
+  qcCompletesOptions?: InputMaybe<QcCompleteOptions>;
 }>;
 
 export type FindSamplesByInputValueQuery = {
@@ -11090,13 +11093,16 @@ export const FindSamplesByInputValueDocument = gql`
   query FindSamplesByInputValue(
     $where: SampleWhere
     $first: Int
-    $options: SampleMetadataOptions
+    $sampleMetadataOptions: SampleMetadataOptions
+    $bamCompletesOptions: BamCompleteOptions
+    $mafCompletesOptions: MafCompleteOptions
+    $qcCompletesOptions: QcCompleteOptions
   ) {
     samplesConnection(where: $where, first: $first) {
       edges {
         node {
           ...SampleParts
-          hasMetadataSampleMetadata(options: $options) {
+          hasMetadataSampleMetadata(options: $sampleMetadataOptions) {
             ...SampleMetadataParts
             hasStatusStatuses {
               validationReport
@@ -11129,16 +11135,16 @@ export const FindSamplesByInputValueDocument = gql`
             }
           }
           hasTempoTempos {
-            hasEventBamCompletes {
+            hasEventBamCompletes(options: $bamCompletesOptions) {
               date
               status
             }
-            hasEventMafCompletes {
+            hasEventMafCompletes(options: $mafCompletesOptions) {
               date
               normalPrimaryId
               status
             }
-            hasEventQcCompletes {
+            hasEventQcCompletes(options: $qcCompletesOptions) {
               date
               reason
               result
@@ -11168,7 +11174,10 @@ export const FindSamplesByInputValueDocument = gql`
  *   variables: {
  *      where: // value for 'where'
  *      first: // value for 'first'
- *      options: // value for 'options'
+ *      sampleMetadataOptions: // value for 'sampleMetadataOptions'
+ *      bamCompletesOptions: // value for 'bamCompletesOptions'
+ *      mafCompletesOptions: // value for 'mafCompletesOptions'
+ *      qcCompletesOptions: // value for 'qcCompletesOptions'
  *   },
  * });
  */

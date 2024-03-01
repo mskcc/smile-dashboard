@@ -64,8 +64,20 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           : {
               first: max_rows,
             }),
-        options: {
+        sampleMetadataOptions: {
           sort: [{ importDate: SortDirection.Desc }],
+          limit: 1,
+        },
+        bamCompletesOptions: {
+          sort: [{ date: SortDirection.Desc }],
+          limit: 1,
+        },
+        mafCompletesOptions: {
+          sort: [{ date: SortDirection.Desc }],
+          limit: 1,
+        },
+        qcCompletesOptions: {
+          sort: [{ date: SortDirection.Desc }],
           limit: 1,
         },
       },

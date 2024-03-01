@@ -49,13 +49,16 @@ query PatientsList(
 query FindSamplesByInputValue(
   $where: SampleWhere
   $first: Int
-  $options: SampleMetadataOptions
+  $sampleMetadataOptions: SampleMetadataOptions
+  $bamCompletesOptions: BamCompleteOptions
+  $mafCompletesOptions: MafCompleteOptions
+  $qcCompletesOptions: QcCompleteOptions
 ) {
   samplesConnection(where: $where, first: $first) {
     edges {
       node {
         ...SampleParts
-        hasMetadataSampleMetadata(options: $options) {
+        hasMetadataSampleMetadata(options: $sampleMetadataOptions) {
           ...SampleMetadataParts
           hasStatusStatuses {
             validationReport
@@ -88,16 +91,16 @@ query FindSamplesByInputValue(
           }
         }
         hasTempoTempos {
-          hasEventBamCompletes {
+          hasEventBamCompletes(options: $bamCompletesOptions) {
             date
             status
           }
-          hasEventMafCompletes {
+          hasEventMafCompletes(options: $mafCompletesOptions) {
             date
             normalPrimaryId
             status
           }
-          hasEventQcCompletes {
+          hasEventQcCompletes(options: $qcCompletesOptions) {
             date
             reason
             result
