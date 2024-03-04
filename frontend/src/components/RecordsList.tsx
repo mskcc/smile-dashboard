@@ -11,15 +11,15 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
-import { useHookGeneric } from "../shared/types";
+import { useHookLazyGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
-import { SampleWhere } from "../generated/graphql";
-import { defaultRecordsColDef } from "../shared/helpers";
+import { Sample, SampleWhere } from "../generated/graphql";
+import { defaultReadOnlyColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
 export interface IRecordsListProps {
-  lazyRecordsQuery: typeof useHookGeneric;
+  lazyRecordsQuery: typeof useHookLazyGeneric;
   nodeName: string;
   totalCountNodeName: string;
   pageRoute: string;
@@ -28,7 +28,11 @@ export interface IRecordsListProps {
   conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
-  searchVariables: SampleWhere;
+  sampleDefaultColDef: ColDef;
+  getRowData: (samples: Sample[]) => any[];
+  sampleColDefs: ColDef[];
+  sampleSearchVariables: SampleWhere;
+  sampleFilter: (searchVal: string) => SampleWhere;
   customFilterUI?: JSX.Element;
   setCustomFilterVals?: (vals: PatientIdsTriplet[]) => void;
   searchVal: string[];
@@ -51,7 +55,11 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   conditionBuilder,
   sampleQueryParamValue,
   sampleQueryParamFieldName,
-  searchVariables,
+  sampleDefaultColDef,
+  getRowData,
+  sampleColDefs,
+  sampleSearchVariables,
+  sampleFilter,
   customFilterUI,
   setCustomFilterVals,
   searchVal,
@@ -202,12 +210,14 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               <Modal.Body>
                 <div style={{ height: 600 }}>
                   <SamplesList
+                    columnDefs={sampleColDefs}
+                    defaultColDef={sampleDefaultColDef}
+                    getRowData={getRowData}
                     height={height * 11}
-                    searchVariables={searchVariables}
+                    searchVariables={sampleSearchVariables}
+                    filter={sampleFilter}
                     setUnsavedChanges={setUnsavedChanges}
                     exportFileName={`${sampleQueryParamFieldName}_${sampleQueryParamValue}.tsv`}
-                    sampleQueryParamFieldName={sampleQueryParamFieldName}
-                    sampleQueryParamValue={sampleQueryParamValue}
                   />
                 </div>
               </Modal.Body>
@@ -248,7 +258,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               context={{
                 navigateFunction: navigate,
               }}
-              defaultColDef={defaultRecordsColDef}
+              defaultColDef={defaultReadOnlyColDef}
               onGridReady={(params) => {
                 params.api.sizeColumnsToFit();
               }}

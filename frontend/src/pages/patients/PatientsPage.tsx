@@ -5,9 +5,6 @@ import {
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-enterprise";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
@@ -17,7 +14,13 @@ import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
-import { PatientsListColumns } from "../../shared/helpers";
+import {
+  PatientsListColumns,
+  SampleDetailsColumns,
+  defaultEditableColDef,
+  getMetadataFromSamples,
+  sampleFilter,
+} from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
 
 // Mirror the field types in the CRDB, where CMO_ID is stored without the "C-" prefix
@@ -268,7 +271,10 @@ export default function PatientsPage({
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
-        searchVariables={
+        sampleDefaultColDef={defaultEditableColDef}
+        getRowData={getMetadataFromSamples}
+        sampleColDefs={SampleDetailsColumns}
+        sampleSearchVariables={
           {
             OR: [
               {
@@ -282,6 +288,14 @@ export default function PatientsPage({
               },
             ],
           } as SampleWhere
+        }
+        sampleFilter={(searchVal: string) =>
+          sampleFilter(
+            "hasMetadataSampleMetadata_SOME",
+            searchVal,
+            params,
+            sampleQueryParamFieldName
+          )
         }
         customFilterUI={
           <>

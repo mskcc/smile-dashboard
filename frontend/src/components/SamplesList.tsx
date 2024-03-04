@@ -1,8 +1,8 @@
 import {
   SortDirection,
   Sample,
+  SampleWhere,
   useFindSamplesByInputValueQuery,
-  SampleMetadataWhere,
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
@@ -11,99 +11,38 @@ import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
 import { CSVFormulate } from "../utils/CSVExport";
-import {
-  SampleDetailsColumns,
-  defaultSamplesColDef,
-  SampleChange,
-  SampleMetadataExtended,
-} from "../shared/helpers";
+import { SampleChange, SampleMetadataExtended } from "../shared/helpers";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import { CellValueChangedEvent } from "ag-grid-community";
-import { parseSearchQueries } from "../utils/parseSearchQueries";
+import { CellValueChangedEvent, ColDef } from "ag-grid-community";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
 const POLLING_INTERVAL = 2000;
 const max_rows = 500;
 
 interface ISampleListProps {
+  columnDefs: ColDef[];
+  defaultColDef: ColDef;
+  getRowData: (samples: Sample[]) => any[];
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
-  searchVariables?: SampleMetadataWhere;
+  searchVariables?: SampleWhere;
+  filter: (searchVal: string) => SampleWhere;
   exportFileName?: string;
-  sampleQueryParamFieldName?: string;
-  sampleQueryParamValue?: string;
-}
-
-function sampleFilterWhereVariables(
-  uniqueQueries: string[]
-): SampleMetadataWhere[] {
-  if (uniqueQueries.length > 1) {
-    return [
-      { cmoSampleName_IN: uniqueQueries },
-      { importDate_IN: uniqueQueries },
-      { investigatorSampleId_IN: uniqueQueries },
-      { primaryId_IN: uniqueQueries },
-      { sampleClass_IN: uniqueQueries },
-      { cmoPatientId_IN: uniqueQueries },
-      { cmoSampleIdFields_IN: uniqueQueries },
-      { sampleName_IN: uniqueQueries },
-      { preservation_IN: uniqueQueries },
-      { tumorOrNormal_IN: uniqueQueries },
-      { oncotreeCode_IN: uniqueQueries },
-      { collectionYear_IN: uniqueQueries },
-      { sampleOrigin_IN: uniqueQueries },
-      { tissueLocation_IN: uniqueQueries },
-      { sex_IN: uniqueQueries },
-      { libraries_IN: uniqueQueries },
-      { sampleType_IN: uniqueQueries },
-      { species_IN: uniqueQueries },
-      { genePanel_IN: uniqueQueries },
-    ];
-  } else {
-    return [
-      { cmoSampleName_CONTAINS: uniqueQueries[0] },
-      { importDate_CONTAINS: uniqueQueries[0] },
-      { investigatorSampleId_CONTAINS: uniqueQueries[0] },
-      { primaryId_CONTAINS: uniqueQueries[0] },
-      { sampleClass_CONTAINS: uniqueQueries[0] },
-      { cmoPatientId_CONTAINS: uniqueQueries[0] },
-      { cmoSampleIdFields_CONTAINS: uniqueQueries[0] },
-      { sampleName_CONTAINS: uniqueQueries[0] },
-      { preservation_CONTAINS: uniqueQueries[0] },
-      { tumorOrNormal_CONTAINS: uniqueQueries[0] },
-      { oncotreeCode_CONTAINS: uniqueQueries[0] },
-      { collectionYear_CONTAINS: uniqueQueries[0] },
-      { sampleOrigin_CONTAINS: uniqueQueries[0] },
-      { tissueLocation_CONTAINS: uniqueQueries[0] },
-      { sex_CONTAINS: uniqueQueries[0] },
-      { libraries_CONTAINS: uniqueQueries[0] },
-      { sampleType_CONTAINS: uniqueQueries[0] },
-      { species_CONTAINS: uniqueQueries[0] },
-      { genePanel_CONTAINS: uniqueQueries[0] },
-    ];
-  }
-}
-
-function getSampleMetadata(samples: Sample[]) {
-  return samples.map((s: any) => {
-    return {
-      ...s.hasMetadataSampleMetadata[0],
-      revisable: s.revisable,
-    };
-  });
 }
 
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
+  columnDefs,
+  defaultColDef,
+  getRowData,
   searchVariables,
+  filter,
   height,
   setUnsavedChanges,
   exportFileName,
-  sampleQueryParamFieldName,
-  sampleQueryParamValue,
 }) => {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
@@ -117,8 +56,20 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
           : {
               first: max_rows,
             }),
-        options: {
+        sampleMetadataOptions: {
           sort: [{ importDate: SortDirection.Desc }],
+          limit: 1,
+        },
+        bamCompletesOptions: {
+          sort: [{ date: SortDirection.Desc }],
+          limit: 1,
+        },
+        mafCompletesOptions: {
+          sort: [{ date: SortDirection.Desc }],
+          limit: 1,
+        },
+        qcCompletesOptions: {
+          sort: [{ date: SortDirection.Desc }],
           limit: 1,
         },
       },
@@ -138,16 +89,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
     gridRef.current?.api?.showLoadingOverlay();
     async function refetchSearchVal() {
       await refetch({
-        where: {
-          hasMetadataSampleMetadata_SOME: {
-            OR: sampleFilterWhereVariables(parseSearchQueries(searchVal)),
-            ...(sampleQueryParamFieldName && sampleQueryParamValue
-              ? {
-                  [sampleQueryParamFieldName]: sampleQueryParamValue,
-                }
-              : {}),
-          },
-        },
+        where: filter(searchVal),
       });
     }
     refetchSearchVal().then(() => {
@@ -210,7 +152,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
         <DownloadModal
           loader={() => {
             return Promise.resolve(
-              CSVFormulate(getSampleMetadata(samples), SampleDetailsColumns)
+              CSVFormulate(getRowData(samples), columnDefs)
             );
           }}
           onComplete={() => {
@@ -300,7 +242,6 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
                 unlocked: function (params) {
                   return params.data?.revisable === true;
                 },
-
                 locked: function (params) {
                   return params.data?.revisable === false;
                 },
@@ -314,11 +255,11 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
                   );
                 },
               }}
-              columnDefs={SampleDetailsColumns}
-              rowData={getSampleMetadata(samples)}
+              columnDefs={columnDefs}
+              rowData={getRowData(samples)}
               onCellEditRequest={onCellValueChanged}
               readOnlyEdit={true}
-              defaultColDef={defaultSamplesColDef}
+              defaultColDef={defaultColDef}
               ref={gridRef}
               context={{
                 getChanges: () => changes,

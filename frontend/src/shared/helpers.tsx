@@ -7,10 +7,18 @@ import {
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
-import { Sample, SampleMetadata } from "../generated/graphql";
+import {
+  Sample,
+  SampleMetadata,
+  SampleMetadataWhere,
+  SampleWhere,
+  TempoWhere,
+} from "../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./components/StatusToolTip";
 import { ITooltipParams } from "ag-grid-community";
+import { Params } from "react-router-dom";
+import { parseSearchQueries } from "../utils/parseSearchQueries";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -32,7 +40,7 @@ export type ChangeForSubmit = {
 
 export const RequestsListColumns: ColDef[] = [
   {
-    headerName: "View",
+    headerName: "View Samples",
     cellRenderer: (params: CellClassParams<any>) => {
       return (
         <Button
@@ -61,7 +69,6 @@ export const RequestsListColumns: ColDef[] = [
     headerName: "IGO Project ID",
   },
   {
-    field: "hasSampleSamplesConnection",
     headerName: "# Samples",
     valueGetter: function ({ data }) {
       return data["hasSampleSamplesConnection"]?.totalCount;
@@ -134,7 +141,7 @@ export const RequestsListColumns: ColDef[] = [
 
 export const PatientsListColumns: ColDef[] = [
   {
-    headerName: "View",
+    headerName: "View Samples",
     cellRenderer: (params: CellClassParams<any>) => {
       return (
         <Button
@@ -180,7 +187,6 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    field: "hasSampleSamplesConnection",
     headerName: "# Samples",
     valueGetter: function ({ data }) {
       return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
@@ -406,6 +412,27 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   },
 ];
 
+const readOnlyHeader = {
+  template: `
+  <div class="ag-cell-label-container" role="presentation">
+    <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button" aria-hidden="true"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 -4 30 30" stroke="gray"
+      stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+    <div ref="eLabel" class="ag-header-cell-label" role="presentation">
+      <span ref="eText" class="ag-header-cell-text"></span>
+      <span ref="eFilter" class="ag-header-icon ag-header-label-icon ag-filter-icon" aria-hidden="true"></span>
+      <span ref="eSortOrder" class="ag-header-icon ag-header-label-icon ag-sort-order" aria-hidden="true"></span>
+      <span ref="eSortAsc" class="ag-header-icon ag-header-label-icon ag-sort-ascending-icon" aria-hidden="true"></span>
+      <span ref="eSortDesc" class="ag-header-icon ag-header-label-icon ag-sort-descending-icon" aria-hidden="true"></span>
+      <span ref="eSortNone" class="ag-header-icon ag-header-label-icon ag-sort-none-icon" aria-hidden="true"></span>
+    </div>
+    </div>
+  `,
+};
+
 SampleDetailsColumns.forEach((colDef) => {
   colDef.cellClassRules = {
     unsubmittedChange: (params: any) => {
@@ -452,40 +479,107 @@ SampleDetailsColumns.forEach((colDef) => {
   };
 
   colDef.headerComponentParams = (params: IHeaderParams) => {
-    if (protectedFields.includes(params.column.getColDef().field!)) {
-      return {
-        template: `
-        <div class="ag-cell-label-container" role="presentation">
-          <span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button" aria-hidden="true"></span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 -4 30 30" stroke="gray"
-            stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          <div ref="eLabel" class="ag-header-cell-label" role="presentation">
-            <span ref="eText" class="ag-header-cell-text"></span>
-            <span ref="eFilter" class="ag-header-icon ag-header-label-icon ag-filter-icon" aria-hidden="true"></span>
-            <span ref="eSortOrder" class="ag-header-icon ag-header-label-icon ag-sort-order" aria-hidden="true"></span>
-            <span ref="eSortAsc" class="ag-header-icon ag-header-label-icon ag-sort-ascending-icon" aria-hidden="true"></span>
-            <span ref="eSortDesc" class="ag-header-icon ag-header-label-icon ag-sort-descending-icon" aria-hidden="true"></span>
-            <span ref="eSortNone" class="ag-header-icon ag-header-label-icon ag-sort-none-icon" aria-hidden="true"></span>
-          </div>
-          </div>
-        `,
-      };
-    }
+    if (protectedFields.includes(params.column.getColDef().field!))
+      return readOnlyHeader;
   };
 });
 
-export const defaultSamplesColDef: ColDef = {
+export const CohortsListColumns: ColDef[] = [
+  {
+    headerName: "View Samples",
+    cellRenderer: (params: CellClassParams<any>) => {
+      return (
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => {
+            if (params.data.cohortId !== undefined) {
+              params.context.navigateFunction(
+                `/cohorts/${params.data.cohortId}`
+              );
+            }
+          }}
+        >
+          View
+        </Button>
+      );
+    },
+    sortable: false,
+  },
+  {
+    field: "cohortId",
+    headerName: "Cohort ID",
+  },
+  {
+    headerName: "# Samples",
+    valueGetter: function ({ data }) {
+      return data["hasCohortSampleSamplesConnection"].totalCount;
+    },
+    sortable: false,
+  },
+];
+
+export const CohortSamplesDetailsColumns: ColDef[] = [
+  {
+    field: "primaryId",
+    headerName: "Primary ID",
+  },
+  {
+    field: "cmoSampleName",
+    headerName: "CMO Sample Name",
+  },
+  {
+    headerName: "BAM Complete Date",
+    valueGetter: ({ data }) => data.bamComplete?.date,
+  },
+  {
+    headerName: "BAM Complete Status",
+    valueGetter: ({ data }) => data.bamComplete?.status,
+  },
+  {
+    headerName: "MAF Complete Date",
+    valueGetter: ({ data }) => data.mafComplete?.date,
+  },
+  {
+    headerName: "MAF Complete Normal Primary ID",
+    valueGetter: ({ data }) => data.mafComplete?.normalPrimaryId,
+  },
+  {
+    headerName: "MAF Complete Status",
+    valueGetter: ({ data }) => data.mafComplete?.status,
+  },
+  {
+    headerName: "QC Complete Date",
+    valueGetter: ({ data }) => data.qcComplete?.date,
+  },
+  {
+    headerName: "QC Complete Result",
+    valueGetter: ({ data }) => data.qcComplete?.result,
+  },
+  {
+    headerName: "QC Complete Reason",
+    valueGetter: ({ data }) => data.qcComplete?.reason,
+  },
+  {
+    headerName: "QC Complete Status",
+    valueGetter: ({ data }) => data.qcComplete?.status,
+  },
+];
+
+export const defaultColDef: ColDef = {
   sortable: true,
-  editable: true,
   resizable: true,
+  headerComponentParams: readOnlyHeader,
 };
 
-export const defaultRecordsColDef: ColDef = {
-  sortable: true,
-  resizable: true,
+export const defaultEditableColDef: ColDef = {
+  ...defaultColDef,
+  editable: true,
+};
+
+export const defaultReadOnlyColDef: ColDef = {
+  ...defaultColDef,
+  editable: false,
 };
 
 const protectedFields: string[] = [
@@ -502,3 +596,223 @@ const protectedFields: string[] = [
   "validationReport",
   "revisable",
 ];
+
+function sampleFilterWhereVariables(
+  uniqueQueries: string[]
+): SampleMetadataWhere[] {
+  if (uniqueQueries.length > 1) {
+    return [
+      { cmoSampleName_IN: uniqueQueries },
+      { importDate_IN: uniqueQueries },
+      { investigatorSampleId_IN: uniqueQueries },
+      { primaryId_IN: uniqueQueries },
+      { sampleClass_IN: uniqueQueries },
+      { cmoPatientId_IN: uniqueQueries },
+      { cmoSampleIdFields_IN: uniqueQueries },
+      { sampleName_IN: uniqueQueries },
+      { preservation_IN: uniqueQueries },
+      { tumorOrNormal_IN: uniqueQueries },
+      { oncotreeCode_IN: uniqueQueries },
+      { collectionYear_IN: uniqueQueries },
+      { sampleOrigin_IN: uniqueQueries },
+      { tissueLocation_IN: uniqueQueries },
+      { sex_IN: uniqueQueries },
+      { libraries_IN: uniqueQueries },
+      { sampleType_IN: uniqueQueries },
+      { species_IN: uniqueQueries },
+      { genePanel_IN: uniqueQueries },
+    ];
+  } else {
+    return [
+      { cmoSampleName_CONTAINS: uniqueQueries[0] },
+      { importDate_CONTAINS: uniqueQueries[0] },
+      { investigatorSampleId_CONTAINS: uniqueQueries[0] },
+      { primaryId_CONTAINS: uniqueQueries[0] },
+      { sampleClass_CONTAINS: uniqueQueries[0] },
+      { cmoPatientId_CONTAINS: uniqueQueries[0] },
+      { cmoSampleIdFields_CONTAINS: uniqueQueries[0] },
+      { sampleName_CONTAINS: uniqueQueries[0] },
+      { preservation_CONTAINS: uniqueQueries[0] },
+      { tumorOrNormal_CONTAINS: uniqueQueries[0] },
+      { oncotreeCode_CONTAINS: uniqueQueries[0] },
+      { collectionYear_CONTAINS: uniqueQueries[0] },
+      { sampleOrigin_CONTAINS: uniqueQueries[0] },
+      { tissueLocation_CONTAINS: uniqueQueries[0] },
+      { sex_CONTAINS: uniqueQueries[0] },
+      { libraries_CONTAINS: uniqueQueries[0] },
+      { sampleType_CONTAINS: uniqueQueries[0] },
+      { species_CONTAINS: uniqueQueries[0] },
+      { genePanel_CONTAINS: uniqueQueries[0] },
+    ];
+  }
+}
+
+export function cohortSampleFilterWhereVariables(
+  uniqueQueries: string[]
+): SampleWhere[] {
+  let tempoWhere: TempoWhere[] = [];
+  if (uniqueQueries.length > 1) {
+    tempoWhere = [
+      {
+        hasEventBamCompletes_SOME: {
+          date_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventBamCompletes_SOME: {
+          status_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventMafCompletes_SOME: {
+          date_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventMafCompletes_SOME: {
+          normalPrimaryId_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventMafCompletes_SOME: {
+          status_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          date_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          result_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          reason_IN: uniqueQueries,
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          status_IN: uniqueQueries,
+        },
+      },
+    ];
+  } else {
+    tempoWhere = [
+      {
+        hasEventBamCompletes_SOME: {
+          date_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventBamCompletes_SOME: {
+          status_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventMafCompletes_SOME: {
+          date_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventMafCompletes_SOME: {
+          normalPrimaryId_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventMafCompletes_SOME: {
+          status_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          date_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          result_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          reason_CONTAINS: uniqueQueries[0],
+        },
+      },
+      {
+        hasEventQcCompletes_SOME: {
+          status_CONTAINS: uniqueQueries[0],
+        },
+      },
+    ];
+  }
+
+  let sampleMetadataWhere: SampleMetadataWhere[] = [];
+  if (uniqueQueries.length > 1) {
+    sampleMetadataWhere = [
+      { primaryId_IN: uniqueQueries },
+      { cmoSampleName_IN: uniqueQueries },
+    ];
+  } else {
+    sampleMetadataWhere = [
+      { primaryId_CONTAINS: uniqueQueries[0] },
+      { cmoSampleName_CONTAINS: uniqueQueries[0] },
+    ];
+  }
+
+  return [
+    {
+      hasTempoTempos_SOME: {
+        OR: tempoWhere,
+      },
+    },
+    {
+      hasMetadataSampleMetadata_SOME: {
+        OR: sampleMetadataWhere,
+      },
+    },
+  ];
+}
+
+export function sampleFilter(
+  whereProperty: string,
+  searchVal: string,
+  params?: Readonly<Params<string>>,
+  sampleQueryParamFieldName?: string
+) {
+  return {
+    [whereProperty]: {
+      OR: sampleFilterWhereVariables(parseSearchQueries(searchVal)),
+      ...(sampleQueryParamFieldName &&
+      params &&
+      params[sampleQueryParamFieldName]
+        ? {
+            [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+          }
+        : {}),
+    },
+  };
+}
+
+export function getMetadataFromSamples(samples: Sample[]) {
+  return samples.map((s: any) => {
+    return {
+      ...s.hasMetadataSampleMetadata[0],
+      revisable: s.revisable,
+    };
+  });
+}
+
+export function getCohortDataFromSamples(samples: Sample[]) {
+  return samples.map((s: any) => {
+    return {
+      ...s.hasMetadataSampleMetadata[0],
+      revisable: s.revisable,
+      bamComplete: s.hasTempoTempos[0].hasEventBamCompletes[0],
+      mafComplete: s.hasTempoTempos[0].hasEventMafCompletes[0],
+      qcComplete: s.hasTempoTempos[0].hasEventQcCompletes[0],
+    };
+  });
+}
