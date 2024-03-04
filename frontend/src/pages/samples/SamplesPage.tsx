@@ -1,13 +1,9 @@
 import PageHeader from "../../shared/components/PageHeader";
 import { SamplesList } from "../../components/SamplesList";
-import { useFindSamplesByInputValueQuery } from "../../generated/graphql";
-import {
-  getAllSamplesFromQueryData,
-  getMetadataFromSamples,
-} from "../../shared/utils";
 import {
   SampleDetailsColumns,
   defaultEditableColDef,
+  getMetadataFromSamples,
   sampleFilter,
 } from "../../shared/helpers";
 
@@ -19,8 +15,6 @@ export default function SamplesPage() {
       <SamplesList
         columnDefs={SampleDetailsColumns}
         defaultColDef={defaultEditableColDef}
-        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
-        getSamplesFromQueryData={getAllSamplesFromQueryData}
         getRowData={getMetadataFromSamples}
         height={540}
         filter={(searchVal: string) =>

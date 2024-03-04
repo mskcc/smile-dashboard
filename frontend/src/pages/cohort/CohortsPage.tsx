@@ -2,7 +2,6 @@ import {
   CohortWhere,
   SampleWhere,
   useCohortsListLazyQuery,
-  useFindSamplesByInputValueQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
 import {
@@ -10,15 +9,12 @@ import {
   CohortsListColumns,
   cohortSampleFilterWhereVariables,
   defaultReadOnlyColDef,
+  getCohortDataFromSamples,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import PageHeader from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
-import {
-  getAllSamplesFromQueryData,
-  getCohortDataFromSamples,
-} from "../../shared/utils";
 
 function cohortFilterWhereVariables(uniqueQueries: string[]): CohortWhere[] {
   if (uniqueQueries.length > 1) {
@@ -56,8 +52,6 @@ export default function CohortsPage() {
         conditionBuilder={cohortFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
-        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
-        getSamplesFromQueryData={getAllSamplesFromQueryData}
         sampleDefaultColDef={defaultReadOnlyColDef}
         getRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}

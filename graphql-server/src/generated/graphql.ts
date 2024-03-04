@@ -10785,6 +10785,54 @@ export type SampleMetadataPartsFragment = {
   tumorOrNormal: string;
 };
 
+export type SamplesQueryVariables = Exact<{
+  where?: InputMaybe<SampleWhere>;
+  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
+  hasMetadataSampleMetadataOptions2?: InputMaybe<SampleMetadataOptions>;
+}>;
+
+export type SamplesQuery = {
+  __typename?: "Query";
+  samples: Array<{
+    __typename?: "Sample";
+    smileSampleId: string;
+    revisable: boolean;
+    sampleCategory: string;
+    sampleClass: string;
+    datasource: string;
+    hasMetadataSampleMetadata: Array<{
+      __typename?: "SampleMetadata";
+      additionalProperties: string;
+      baitSet?: string | null;
+      cfDNA2dBarcode?: string | null;
+      cmoInfoIgoId?: string | null;
+      cmoPatientId?: string | null;
+      cmoSampleIdFields: string;
+      cmoSampleName?: string | null;
+      collectionYear: string;
+      genePanel: string;
+      igoComplete?: boolean | null;
+      igoRequestId?: string | null;
+      importDate: string;
+      investigatorSampleId?: string | null;
+      libraries: string;
+      oncotreeCode?: string | null;
+      preservation?: string | null;
+      primaryId: string;
+      qcReports: string;
+      sampleClass: string;
+      sampleName?: string | null;
+      sampleOrigin?: string | null;
+      sampleType: string;
+      sex: string;
+      species: string;
+      tissueLocation?: string | null;
+      tubeId?: string | null;
+      tumorOrNormal: string;
+    }>;
+  }>;
+};
+
 export type UpdateSamplesMutationVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   update?: InputMaybe<SampleUpdateInput>;
@@ -11063,6 +11111,32 @@ export const FindSamplesByInputValueDocument = gql`
 export type FindSamplesByInputValueQueryResult = Apollo.QueryResult<
   FindSamplesByInputValueQuery,
   FindSamplesByInputValueQueryVariables
+>;
+export const SamplesDocument = gql`
+  query Samples(
+    $where: SampleWhere
+    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+    $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
+  ) {
+    samples(where: $where) {
+      smileSampleId
+      revisable
+      sampleCategory
+      sampleClass
+      datasource
+      hasMetadataSampleMetadata(
+        where: $hasMetadataSampleMetadataWhere2
+        options: $hasMetadataSampleMetadataOptions2
+      ) {
+        ...SampleMetadataParts
+      }
+    }
+  }
+  ${SampleMetadataPartsFragmentDoc}
+`;
+export type SamplesQueryResult = Apollo.QueryResult<
+  SamplesQuery,
+  SamplesQueryVariables
 >;
 export const UpdateSamplesDocument = gql`
   mutation UpdateSamples(

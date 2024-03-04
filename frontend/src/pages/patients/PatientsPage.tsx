@@ -1,7 +1,6 @@
 import {
   PatientAliasWhere,
   SampleWhere,
-  useFindSamplesByInputValueQuery,
   useGetPatientIdsTripletsLazyQuery,
   usePatientsListLazyQuery,
 } from "../../generated/graphql";
@@ -19,13 +18,10 @@ import {
   PatientsListColumns,
   SampleDetailsColumns,
   defaultEditableColDef,
+  getMetadataFromSamples,
   sampleFilter,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
-import {
-  getAllSamplesFromQueryData,
-  getMetadataFromSamples,
-} from "../../shared/utils";
 
 // Mirror the field types in the CRDB, where CMO_ID is stored without the "C-" prefix
 export type PatientIdsTriplet = {
@@ -275,8 +271,6 @@ export default function PatientsPage({
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
-        useSampleRecordsQuery={useFindSamplesByInputValueQuery}
-        getSamplesFromQueryData={getAllSamplesFromQueryData}
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}

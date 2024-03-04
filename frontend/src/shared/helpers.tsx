@@ -795,3 +795,24 @@ export function sampleFilter(
     },
   };
 }
+
+export function getMetadataFromSamples(samples: Sample[]) {
+  return samples.map((s: any) => {
+    return {
+      ...s.hasMetadataSampleMetadata[0],
+      revisable: s.revisable,
+    };
+  });
+}
+
+export function getCohortDataFromSamples(samples: Sample[]) {
+  return samples.map((s: any) => {
+    return {
+      ...s.hasMetadataSampleMetadata[0],
+      revisable: s.revisable,
+      bamComplete: s.hasTempoTempos[0].hasEventBamCompletes[0],
+      mafComplete: s.hasTempoTempos[0].hasEventMafCompletes[0],
+      qcComplete: s.hasTempoTempos[0].hasEventQcCompletes[0],
+    };
+  });
+}

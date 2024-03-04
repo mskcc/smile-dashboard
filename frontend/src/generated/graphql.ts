@@ -10786,6 +10786,54 @@ export type SampleMetadataPartsFragment = {
   tumorOrNormal: string;
 };
 
+export type SamplesQueryVariables = Exact<{
+  where?: InputMaybe<SampleWhere>;
+  hasMetadataSampleMetadataWhere2?: InputMaybe<SampleMetadataWhere>;
+  hasMetadataSampleMetadataOptions2?: InputMaybe<SampleMetadataOptions>;
+}>;
+
+export type SamplesQuery = {
+  __typename?: "Query";
+  samples: Array<{
+    __typename?: "Sample";
+    smileSampleId: string;
+    revisable: boolean;
+    sampleCategory: string;
+    sampleClass: string;
+    datasource: string;
+    hasMetadataSampleMetadata: Array<{
+      __typename?: "SampleMetadata";
+      additionalProperties: string;
+      baitSet?: string | null;
+      cfDNA2dBarcode?: string | null;
+      cmoInfoIgoId?: string | null;
+      cmoPatientId?: string | null;
+      cmoSampleIdFields: string;
+      cmoSampleName?: string | null;
+      collectionYear: string;
+      genePanel: string;
+      igoComplete?: boolean | null;
+      igoRequestId?: string | null;
+      importDate: string;
+      investigatorSampleId?: string | null;
+      libraries: string;
+      oncotreeCode?: string | null;
+      preservation?: string | null;
+      primaryId: string;
+      qcReports: string;
+      sampleClass: string;
+      sampleName?: string | null;
+      sampleOrigin?: string | null;
+      sampleType: string;
+      sex: string;
+      species: string;
+      tissueLocation?: string | null;
+      tubeId?: string | null;
+      tumorOrNormal: string;
+    }>;
+  }>;
+};
+
 export type UpdateSamplesMutationVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   update?: InputMaybe<SampleUpdateInput>;
@@ -11214,6 +11262,71 @@ export type FindSamplesByInputValueLazyQueryHookResult = ReturnType<
 export type FindSamplesByInputValueQueryResult = Apollo.QueryResult<
   FindSamplesByInputValueQuery,
   FindSamplesByInputValueQueryVariables
+>;
+export const SamplesDocument = gql`
+  query Samples(
+    $where: SampleWhere
+    $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+    $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
+  ) {
+    samples(where: $where) {
+      smileSampleId
+      revisable
+      sampleCategory
+      sampleClass
+      datasource
+      hasMetadataSampleMetadata(
+        where: $hasMetadataSampleMetadataWhere2
+        options: $hasMetadataSampleMetadataOptions2
+      ) {
+        ...SampleMetadataParts
+      }
+    }
+  }
+  ${SampleMetadataPartsFragmentDoc}
+`;
+
+/**
+ * __useSamplesQuery__
+ *
+ * To run a query within a React component, call `useSamplesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSamplesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSamplesQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *      hasMetadataSampleMetadataWhere2: // value for 'hasMetadataSampleMetadataWhere2'
+ *      hasMetadataSampleMetadataOptions2: // value for 'hasMetadataSampleMetadataOptions2'
+ *   },
+ * });
+ */
+export function useSamplesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SamplesQuery, SamplesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SamplesQuery, SamplesQueryVariables>(
+    SamplesDocument,
+    options
+  );
+}
+export function useSamplesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SamplesQuery, SamplesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SamplesQuery, SamplesQueryVariables>(
+    SamplesDocument,
+    options
+  );
+}
+export type SamplesQueryHookResult = ReturnType<typeof useSamplesQuery>;
+export type SamplesLazyQueryHookResult = ReturnType<typeof useSamplesLazyQuery>;
+export type SamplesQueryResult = Apollo.QueryResult<
+  SamplesQuery,
+  SamplesQueryVariables
 >;
 export const UpdateSamplesDocument = gql`
   mutation UpdateSamples(

@@ -28,8 +28,6 @@ export interface IRecordsListProps {
   conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
   sampleQueryParamFieldName: string;
-  useSampleRecordsQuery: any;
-  getSamplesFromQueryData: (data: any) => Sample[];
   sampleDefaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
   sampleColDefs: ColDef[];
@@ -57,8 +55,6 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   conditionBuilder,
   sampleQueryParamValue,
   sampleQueryParamFieldName,
-  useSampleRecordsQuery,
-  getSamplesFromQueryData,
   sampleDefaultColDef,
   getRowData,
   sampleColDefs,
@@ -216,8 +212,6 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
                   <SamplesList
                     columnDefs={sampleColDefs}
                     defaultColDef={sampleDefaultColDef}
-                    useSampleRecordsQuery={useSampleRecordsQuery}
-                    getSamplesFromQueryData={getSamplesFromQueryData}
                     getRowData={getRowData}
                     height={height * 11}
                     searchVariables={sampleSearchVariables}

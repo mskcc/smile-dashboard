@@ -171,6 +171,26 @@ fragment SampleMetadataParts on SampleMetadata {
   tumorOrNormal
 }
 
+query Samples(
+  $where: SampleWhere
+  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
+  $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
+) {
+  samples(where: $where) {
+    smileSampleId
+    revisable
+    sampleCategory
+    sampleClass
+    datasource
+    hasMetadataSampleMetadata(
+      where: $hasMetadataSampleMetadataWhere2
+      options: $hasMetadataSampleMetadataOptions2
+    ) {
+      ...SampleMetadataParts
+    }
+  }
+}
+
 mutation UpdateSamples(
   $where: SampleWhere
   $update: SampleUpdateInput

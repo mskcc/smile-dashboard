@@ -1,4 +1,9 @@
-import { SortDirection, Sample, SampleWhere } from "../generated/graphql";
+import {
+  SortDirection,
+  Sample,
+  SampleWhere,
+  useFindSamplesByInputValueQuery,
+} from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
 import { FunctionComponent, useEffect, useRef } from "react";
@@ -21,8 +26,6 @@ const max_rows = 500;
 interface ISampleListProps {
   columnDefs: ColDef[];
   defaultColDef: ColDef;
-  useSampleRecordsQuery: any;
-  getSamplesFromQueryData: (data: any) => Sample[];
   getRowData: (samples: Sample[]) => any[];
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
@@ -34,8 +37,6 @@ interface ISampleListProps {
 export const SamplesList: FunctionComponent<ISampleListProps> = ({
   columnDefs,
   defaultColDef,
-  useSampleRecordsQuery,
-  getSamplesFromQueryData,
   getRowData,
   searchVariables,
   filter,
@@ -44,7 +45,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
   exportFileName,
 }) => {
   const { loading, error, data, startPolling, stopPolling, refetch } =
-    useSampleRecordsQuery({
+    useFindSamplesByInputValueQuery({
       variables: {
         ...(searchVariables
           ? {
@@ -101,7 +102,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
   if (error) return <ErrorMessage error={error} />;
 
-  const samples = getSamplesFromQueryData(data);
+  const samples = data!.samplesConnection.edges.map((e) => e.node) as Sample[];
 
   const remoteCount = samples.length;
 
