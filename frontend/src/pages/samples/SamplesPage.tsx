@@ -1,4 +1,4 @@
-import PageHeader from "../../shared/components/PageHeader";
+import { PageHeader } from "../../shared/components/PageHeader";
 import { SamplesList } from "../../components/SamplesList";
 import {
   SampleDetailsColumns,
@@ -10,7 +10,7 @@ import {
 export default function SamplesPage() {
   return (
     <>
-      <PageHeader pageTitle={"samples"} pageRoute={"/samples"} />
+      <PageHeader dataName={"samples"} />
 
       <SamplesList
         columnDefs={SampleDetailsColumns}

@@ -184,7 +184,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       />
 
       <Toolbar
-        searchTerm={"samples"}
+        dataName={"samples"}
         input={val}
         setInput={setVal}
         handleSearch={() => {

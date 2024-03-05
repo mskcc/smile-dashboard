@@ -7,7 +7,7 @@ import {
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
-import PageHeader from "../../shared/components/PageHeader";
+import { PageHeader } from "../../shared/components/PageHeader";
 import { Col, Form } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
 import { Tooltip } from "@material-ui/core";
@@ -254,19 +254,18 @@ export default function PatientsPage({
     });
   }, [phiEnabled, patientIdsTriplets, userEmail]);
 
-  const pageRoute = "/patients";
+  const dataName = "patients";
+  const nodeName = "patientAliases";
   const sampleQueryParamFieldName = "cmoPatientId";
 
   return (
     <>
-      <PageHeader pageTitle={"patients"} pageRoute={pageRoute} />
+      <PageHeader dataName={dataName} />
 
       <RecordsList
         lazyRecordsQuery={usePatientsListLazyQuery}
-        nodeName="patientAliases"
-        totalCountNodeName="patientAliasesConnection"
-        pageRoute={pageRoute}
-        searchTerm="patients"
+        dataName={dataName}
+        nodeName={nodeName}
         colDefs={ActiveColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}

@@ -13,7 +13,7 @@ import {
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
-import PageHeader from "../../shared/components/PageHeader";
+import { PageHeader } from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
 
 function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
@@ -60,7 +60,7 @@ export default function RequestsPage() {
   const [inputVal, setInputVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
-  const pageRoute = "/requests";
+  const dataName = "requests";
   const sampleQueryParamFieldName = "igoRequestId";
 
   const handleSearch = async () => {
@@ -70,14 +70,11 @@ export default function RequestsPage() {
 
   return (
     <>
-      <PageHeader pageTitle={"requests"} pageRoute={pageRoute} />
+      <PageHeader dataName={dataName} />
 
       <RecordsList
         lazyRecordsQuery={useRequestsListLazyQuery}
-        nodeName="requests"
-        totalCountNodeName="requestsConnection"
-        pageRoute={pageRoute}
-        searchTerm="requests"
+        dataName={dataName}
         colDefs={RequestsListColumns}
         conditionBuilder={requestFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}

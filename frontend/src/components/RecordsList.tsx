@@ -11,7 +11,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
-import { useHookLazyGeneric } from "../shared/types";
+import { DataName, useHookLazyGeneric } from "../shared/types";
 import { SamplesList } from "./SamplesList";
 import { Sample, SampleWhere } from "../generated/graphql";
 import { defaultReadOnlyColDef } from "../shared/helpers";
@@ -20,10 +20,8 @@ import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
 export interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookLazyGeneric;
-  nodeName: string;
-  totalCountNodeName: string;
-  pageRoute: string;
-  searchTerm: string;
+  dataName: DataName;
+  nodeName?: string;
   colDefs: ColDef[];
   conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParamValue: string | undefined;
@@ -47,10 +45,8 @@ export interface IRecordsListProps {
 
 const RecordsList: FunctionComponent<IRecordsListProps> = ({
   lazyRecordsQuery,
-  nodeName,
-  totalCountNodeName,
-  pageRoute,
-  searchTerm,
+  dataName,
+  nodeName = dataName,
   colDefs,
   conditionBuilder,
   sampleQueryParamValue,
@@ -83,6 +79,8 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         options: { limit: 20, offset: 0 },
       },
     });
+
+  const totalCountNodeName = `${nodeName}Connection`;
 
   const datasource = useMemo(() => {
     return {
@@ -134,7 +132,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
     if (unsavedChanges) {
       setShowClosingWarning(true);
     } else {
-      navigate(pageRoute);
+      navigate(`/${dataName}`);
     }
   };
 
@@ -191,7 +189,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
               onClick={() => {
                 setShowClosingWarning(false);
                 setUnsavedChanges(false);
-                navigate(pageRoute);
+                navigate(`/${dataName}`);
               }}
             >
               Continue Exiting
@@ -227,7 +225,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       )}
 
       <Toolbar
-        searchTerm={searchTerm}
+        dataName={dataName}
         input={inputVal}
         setInput={setInputVal}
         handleSearch={handleSearch}
@@ -236,7 +234,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           setSearchVal([]);
         }}
         matchingResultsCount={`${remoteCount?.toLocaleString()} matching ${
-          remoteCount > 1 ? searchTerm : searchTerm.slice(0, -1)
+          remoteCount > 1 ? dataName : dataName.slice(0, -1)
         }`}
         handleDownload={handleDownload}
         customUI={customFilterUI}

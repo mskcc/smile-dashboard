@@ -13,7 +13,7 @@ import {
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
-import PageHeader from "../../shared/components/PageHeader";
+import { PageHeader } from "../../shared/components/PageHeader";
 import { parseSearchQueries } from "../../utils/parseSearchQueries";
 
 function cohortFilterWhereVariables(uniqueQueries: string[]): CohortWhere[] {
@@ -30,7 +30,7 @@ export default function CohortsPage() {
   const [inputVal, setInputVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
-  const pageRoute = "/cohorts";
+  const dataName = "cohorts";
   const sampleQueryParamFieldName = "cohortId";
 
   const handleSearch = async () => {
@@ -40,14 +40,11 @@ export default function CohortsPage() {
 
   return (
     <>
-      <PageHeader pageTitle={"cohorts"} pageRoute={pageRoute} />
+      <PageHeader dataName={dataName} />
 
       <RecordsList
         lazyRecordsQuery={useCohortsListLazyQuery}
-        nodeName="cohorts"
-        totalCountNodeName="cohortsConnection"
-        pageRoute={pageRoute}
-        searchTerm="cohorts"
+        dataName={dataName}
         colDefs={CohortsListColumns}
         conditionBuilder={cohortFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}

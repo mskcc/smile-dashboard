@@ -4,6 +4,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import Spinner from "react-spinkit";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { Tooltip } from "@material-ui/core";
+import { DataName } from "./types";
 
 export function LoadingSpinner() {
   return (
@@ -22,7 +23,7 @@ export function ErrorMessage({ error }: { error: ApolloError }) {
 }
 
 export function Toolbar({
-  searchTerm,
+  dataName,
   input,
   setInput,
   handleSearch,
@@ -31,7 +32,7 @@ export function Toolbar({
   handleDownload,
   customUI,
 }: {
-  searchTerm: string;
+  dataName: DataName;
   input: string;
   setInput: (input: string) => void;
   handleSearch: () => void;
@@ -53,7 +54,7 @@ export function Toolbar({
           className={"d-inline-block"}
           style={{ width: "300px" }}
           type="search"
-          placeholder={"Search " + searchTerm}
+          placeholder={"Search " + dataName}
           aria-label="Search"
           value={input}
           onKeyDown={(event) => {
