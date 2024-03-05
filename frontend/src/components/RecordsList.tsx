@@ -246,7 +246,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         {({ width }) => (
           <div
             className="ag-theme-alpine"
-            style={{ height: 540, width: width }}
+            style={{ height: `calc(100vh - 230px)`, width: width }}
           >
             <AgGridReact
               rowModelType={"serverSide"}
