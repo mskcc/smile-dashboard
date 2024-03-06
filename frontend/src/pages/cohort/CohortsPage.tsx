@@ -32,6 +32,8 @@ export default function CohortsPage() {
 
   const dataName = "cohorts";
   const sampleQueryParamFieldName = "cohortId";
+  const sampleQueryParamHeaderName = "Cohort ID";
+  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   const handleSearch = async () => {
     const uniqueQueries = parseSearchQueries(inputVal);
@@ -47,7 +49,10 @@ export default function CohortsPage() {
         dataName={dataName}
         colDefs={CohortsListColumns}
         conditionBuilder={cohortFilterWhereVariables}
-        sampleQueryParam={`${sampleQueryParamFieldName} ${params[sampleQueryParamFieldName]}`}
+        sampleQueryParam={
+          sampleQueryParamValue &&
+          `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`
+        }
         sampleDefaultColDef={defaultReadOnlyColDef}
         getRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}
@@ -55,7 +60,7 @@ export default function CohortsPage() {
           {
             cohortsHasCohortSampleConnection_SOME: {
               node: {
-                [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+                [sampleQueryParamFieldName]: sampleQueryParamValue,
               },
             },
           } as SampleWhere
@@ -64,7 +69,7 @@ export default function CohortsPage() {
           return {
             cohortsHasCohortSampleConnection_SOME: {
               node: {
-                [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+                [sampleQueryParamFieldName]: sampleQueryParamValue,
               },
             },
             OR: cohortSampleFilterWhereVariables(parseSearchQueries(searchVal)),

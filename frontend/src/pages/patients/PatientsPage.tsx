@@ -257,6 +257,8 @@ export default function PatientsPage({
   const dataName = "patients";
   const nodeName = "patientAliases";
   const sampleQueryParamFieldName = "cmoPatientId";
+  const sampleQueryParamHeaderName = "CMO Patient ID";
+  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   return (
     <>
@@ -268,7 +270,10 @@ export default function PatientsPage({
         nodeName={nodeName}
         colDefs={ActivePatientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
-        sampleQueryParam={`${sampleQueryParamFieldName} ${params[sampleQueryParamFieldName]}`}
+        sampleQueryParam={
+          sampleQueryParamValue &&
+          `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
+        }
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
@@ -279,7 +284,7 @@ export default function PatientsPage({
                 patientsHasSampleConnection_SOME: {
                   node: {
                     patientAliasesIsAlias_SOME: {
-                      value: params[sampleQueryParamFieldName],
+                      value: sampleQueryParamValue,
                     },
                   },
                 },

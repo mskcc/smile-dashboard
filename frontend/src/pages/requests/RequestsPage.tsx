@@ -62,6 +62,8 @@ export default function RequestsPage() {
 
   const dataName = "requests";
   const sampleQueryParamFieldName = "igoRequestId";
+  const sampleQueryParamHeaderName = "IGO Request ID";
+  const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   const handleSearch = async () => {
     const uniqueQueries = parseSearchQueries(inputVal);
@@ -77,14 +79,17 @@ export default function RequestsPage() {
         dataName={dataName}
         colDefs={RequestsListColumns}
         conditionBuilder={requestFilterWhereVariables}
-        sampleQueryParam={`${sampleQueryParamFieldName} ${params[sampleQueryParamFieldName]}`}
+        sampleQueryParam={
+          sampleQueryParamValue &&
+          `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
+        }
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
         sampleSearchVariables={
           {
             hasMetadataSampleMetadata_SOME: {
-              [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
+              [sampleQueryParamFieldName]: sampleQueryParamValue,
             },
           } as SampleWhere
         }
