@@ -77,8 +77,7 @@ export default function RequestsPage() {
         dataName={dataName}
         colDefs={RequestsListColumns}
         conditionBuilder={requestFilterWhereVariables}
-        sampleQueryParamFieldName={sampleQueryParamFieldName}
-        sampleQueryParamValue={params[sampleQueryParamFieldName]}
+        sampleQueryParam={`${sampleQueryParamFieldName} ${params[sampleQueryParamFieldName]}`}
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}

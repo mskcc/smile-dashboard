@@ -47,8 +47,7 @@ export default function CohortsPage() {
         dataName={dataName}
         colDefs={CohortsListColumns}
         conditionBuilder={cohortFilterWhereVariables}
-        sampleQueryParamFieldName={sampleQueryParamFieldName}
-        sampleQueryParamValue={params[sampleQueryParamFieldName]}
+        sampleQueryParam={`${sampleQueryParamFieldName} ${params[sampleQueryParamFieldName]}`}
         sampleDefaultColDef={defaultReadOnlyColDef}
         getRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}

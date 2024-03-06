@@ -268,8 +268,7 @@ export default function PatientsPage({
         nodeName={nodeName}
         colDefs={ActivePatientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
-        sampleQueryParamFieldName={sampleQueryParamFieldName}
-        sampleQueryParamValue={params[sampleQueryParamFieldName]}
+        sampleQueryParam={`${sampleQueryParamFieldName} ${params[sampleQueryParamFieldName]}`}
         sampleDefaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}

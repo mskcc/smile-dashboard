@@ -24,8 +24,7 @@ export interface IRecordsListProps {
   nodeName?: string;
   colDefs: ColDef[];
   conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
-  sampleQueryParamValue: string | undefined;
-  sampleQueryParamFieldName: string;
+  sampleQueryParam: string | undefined;
   sampleDefaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
   sampleColDefs: ColDef[];
@@ -49,8 +48,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   nodeName = dataName,
   colDefs,
   conditionBuilder,
-  sampleQueryParamValue,
-  sampleQueryParamFieldName,
+  sampleQueryParam,
   sampleDefaultColDef,
   getRowData,
   sampleColDefs,
@@ -198,12 +196,12 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
         </Modal>
       )}
 
-      {sampleQueryParamValue && (
+      {sampleQueryParam && (
         <AutoSizer>
           {({ height, width }) => (
             <Modal show={true} dialogClassName="modal-90w" onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>{`Viewing ${sampleQueryParamValue}`}</Modal.Title>
+                <Modal.Title>{`Viewing ${sampleQueryParam}`}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <div style={{ height: 600 }}>
@@ -215,7 +213,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
                     searchVariables={sampleSearchVariables}
                     filter={sampleFilter}
                     setUnsavedChanges={setUnsavedChanges}
-                    exportFileName={`${sampleQueryParamFieldName}_${sampleQueryParamValue}.tsv`}
+                    exportFileName={`${sampleQueryParam}.tsv`}
                   />
                 </div>
               </Modal.Body>
