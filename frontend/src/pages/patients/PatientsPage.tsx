@@ -223,7 +223,7 @@ export default function PatientsPage({
     // eslint-disable-next-line
   }, [phiEnabled]);
 
-  let ActiveColumns = useMemo(() => {
+  let ActivePatientsListColumns = useMemo(() => {
     return PatientsListColumns.map((column) => {
       if (
         column.headerName === "Patient MRN" &&
@@ -266,7 +266,7 @@ export default function PatientsPage({
         lazyRecordsQuery={usePatientsListLazyQuery}
         dataName={dataName}
         nodeName={nodeName}
-        colDefs={ActiveColumns}
+        colDefs={ActivePatientsListColumns}
         conditionBuilder={patientAliasFilterWhereVariables}
         sampleQueryParamFieldName={sampleQueryParamFieldName}
         sampleQueryParamValue={params[sampleQueryParamFieldName]}
