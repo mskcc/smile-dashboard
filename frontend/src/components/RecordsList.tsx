@@ -23,7 +23,7 @@ export interface IRecordsListProps {
   dataName: DataName;
   nodeName?: string;
   colDefs: ColDef[];
-  conditionBuilder: (uniqueQueries: string[]) => Record<string, any>[];
+  queryFilterWhereVariables: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParam: string | undefined;
   sampleDefaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
@@ -47,7 +47,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   dataName,
   nodeName = dataName,
   colDefs,
-  conditionBuilder,
+  queryFilterWhereVariables,
   sampleQueryParam,
   sampleDefaultColDef,
   getRowData,
@@ -86,10 +86,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       getRows: (params: IServerSideGetRowsParams) => {
         const fetchInput = {
           where: {
-            OR: conditionBuilder(searchVal),
+            OR: queryFilterWhereVariables(searchVal),
           },
           [`${nodeName}ConnectionWhere2`]: {
-            OR: conditionBuilder(searchVal),
+            OR: queryFilterWhereVariables(searchVal),
           },
           options: {
             offset: params.request.startRow,
@@ -142,7 +142,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             return fetchMore({
               variables: {
                 where: {
-                  OR: conditionBuilder(searchVal),
+                  OR: queryFilterWhereVariables(searchVal),
                 },
                 options: {
                   offset: 0,

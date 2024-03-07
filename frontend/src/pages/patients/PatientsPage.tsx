@@ -269,7 +269,7 @@ export default function PatientsPage({
         dataName={dataName}
         nodeName={nodeName}
         colDefs={ActivePatientsListColumns}
-        conditionBuilder={patientAliasFilterWhereVariables}
+        queryFilterWhereVariables={patientAliasFilterWhereVariables}
         sampleQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`

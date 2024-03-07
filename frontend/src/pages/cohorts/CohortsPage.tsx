@@ -48,7 +48,7 @@ export default function CohortsPage() {
         lazyRecordsQuery={useCohortsListLazyQuery}
         dataName={dataName}
         colDefs={CohortsListColumns}
-        conditionBuilder={cohortFilterWhereVariables}
+        queryFilterWhereVariables={cohortFilterWhereVariables}
         sampleQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`

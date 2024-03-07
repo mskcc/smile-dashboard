@@ -78,7 +78,7 @@ export default function RequestsPage() {
         lazyRecordsQuery={useRequestsListLazyQuery}
         dataName={dataName}
         colDefs={RequestsListColumns}
-        conditionBuilder={requestFilterWhereVariables}
+        queryFilterWhereVariables={requestFilterWhereVariables}
         sampleQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
