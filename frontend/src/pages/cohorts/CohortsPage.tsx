@@ -54,7 +54,7 @@ export default function CohortsPage() {
           `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`
         }
         sampleDefaultColDef={defaultReadOnlyColDef}
-        getRowData={getCohortDataFromSamples}
+        getSampleRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}
         sampleSearchVariables={
           {

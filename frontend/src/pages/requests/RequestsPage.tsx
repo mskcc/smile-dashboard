@@ -84,7 +84,7 @@ export default function RequestsPage() {
           `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
         }
         sampleDefaultColDef={defaultEditableColDef}
-        getRowData={getMetadataFromSamples}
+        getSampleRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
         sampleSearchVariables={
           {

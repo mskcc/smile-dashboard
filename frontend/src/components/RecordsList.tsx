@@ -26,7 +26,7 @@ export interface IRecordsListProps {
   queryFilterWhereVariables: (uniqueQueries: string[]) => Record<string, any>[];
   sampleQueryParam: string | undefined;
   sampleDefaultColDef: ColDef;
-  getRowData: (samples: Sample[]) => any[];
+  getSampleRowData: (samples: Sample[]) => any[];
   sampleColDefs: ColDef[];
   sampleSearchVariables: SampleWhere;
   sampleFilter: (searchVal: string) => SampleWhere;
@@ -50,7 +50,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   queryFilterWhereVariables,
   sampleQueryParam,
   sampleDefaultColDef,
-  getRowData,
+  getSampleRowData: getRowData,
   sampleColDefs,
   sampleSearchVariables,
   sampleFilter,
