@@ -30,7 +30,7 @@ interface ISampleListProps {
   height: number;
   setUnsavedChanges?: (val: boolean) => void;
   searchVariables?: SampleWhere;
-  filter: (searchVal: string) => SampleWhere;
+  filter: (userSearchVal: string) => SampleWhere;
   exportFileName?: string;
 }
 
@@ -76,7 +76,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       pollInterval: POLLING_INTERVAL,
     });
 
-  const [val, setVal] = useState("");
+  const [userSearchVal, setUserSearchVal] = useState("");
   const [searchVal, setSearchVal] = useState("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
@@ -185,12 +185,12 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
 
       <Toolbar
         dataName={"samples"}
-        input={val}
-        setInput={setVal}
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
         handleSearch={() => {
-          setSearchVal(val);
+          setSearchVal(userSearchVal);
         }}
-        clearInput={() => {
+        clearUserSearchVal={() => {
           setSearchVal("");
         }}
         matchingResultsCount={

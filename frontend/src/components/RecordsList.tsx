@@ -1,6 +1,6 @@
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Container, Modal } from "react-bootstrap";
-import { FunctionComponent, useMemo } from "react";
+import { Dispatch, FunctionComponent, SetStateAction, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { DownloadModal } from "./DownloadModal";
 import { CSVFormulate } from "../utils/CSVExport";
@@ -18,7 +18,7 @@ import { defaultReadOnlyColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
-export interface IRecordsListProps {
+interface IRecordsListProps {
   lazyRecordsQuery: typeof useHookLazyGeneric;
   dataName: DataName;
   nodeName?: string;
@@ -31,14 +31,14 @@ export interface IRecordsListProps {
   sampleSearchVariables: SampleWhere;
   sampleFilter: (searchVal: string) => SampleWhere;
   customFilterUI?: JSX.Element;
-  setCustomFilterVals?: (vals: PatientIdsTriplet[]) => void;
-  searchVal: string[];
-  setSearchVal: (val: string[]) => void;
+  setCustomSearchVals?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
+  userSearchVal: string;
+  setUserSearchVal: Dispatch<SetStateAction<string>>;
+  parsedSearchVals: string[];
+  setParsedSearchVals: Dispatch<SetStateAction<string[]>>;
   handleSearch: () => void;
-  inputVal: string;
-  setInputVal: (val: string) => void;
   showDownloadModal: boolean;
-  setShowDownloadModal: (val: boolean) => void;
+  setShowDownloadModal: Dispatch<SetStateAction<boolean>>;
   handleDownload: () => void;
 }
 
@@ -50,17 +50,17 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   queryFilterWhereVariables,
   sampleQueryParam,
   sampleDefaultColDef,
-  getSampleRowData: getRowData,
+  getSampleRowData,
   sampleColDefs,
   sampleSearchVariables,
   sampleFilter,
   customFilterUI,
-  setCustomFilterVals,
-  searchVal,
-  setSearchVal,
+  setCustomSearchVals,
+  parsedSearchVals,
+  setParsedSearchVals,
   handleSearch,
-  inputVal,
-  setInputVal,
+  userSearchVal,
+  setUserSearchVal,
   showDownloadModal,
   setShowDownloadModal,
   handleDownload,
@@ -86,10 +86,10 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       getRows: (params: IServerSideGetRowsParams) => {
         const fetchInput = {
           where: {
-            OR: queryFilterWhereVariables(searchVal),
+            OR: queryFilterWhereVariables(parsedSearchVals),
           },
           [`${nodeName}ConnectionWhere2`]: {
-            OR: queryFilterWhereVariables(searchVal),
+            OR: queryFilterWhereVariables(parsedSearchVals),
           },
           options: {
             offset: params.request.startRow,
@@ -118,7 +118,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       },
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchVal]);
+  }, [parsedSearchVals]);
 
   if (loading) return <LoadingSpinner />;
 
@@ -142,7 +142,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
             return fetchMore({
               variables: {
                 where: {
-                  OR: queryFilterWhereVariables(searchVal),
+                  OR: queryFilterWhereVariables(parsedSearchVals),
                 },
                 options: {
                   offset: 0,
@@ -208,7 +208,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
                   <SamplesList
                     columnDefs={sampleColDefs}
                     defaultColDef={sampleDefaultColDef}
-                    getRowData={getRowData}
+                    getRowData={getSampleRowData}
                     height={height * 11}
                     searchVariables={sampleSearchVariables}
                     filter={sampleFilter}
@@ -224,12 +224,12 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
 
       <Toolbar
         dataName={dataName}
-        input={inputVal}
-        setInput={setInputVal}
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
         handleSearch={handleSearch}
-        clearInput={() => {
-          setCustomFilterVals && setCustomFilterVals([]);
-          setSearchVal([]);
+        clearUserSearchVal={() => {
+          setCustomSearchVals && setCustomSearchVals([]);
+          setParsedSearchVals([]);
         }}
         matchingResultsCount={`${remoteCount?.toLocaleString()} matching ${
           remoteCount > 1 ? dataName : dataName.slice(0, -1)

@@ -18,7 +18,7 @@ import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./components/StatusToolTip";
 import { ITooltipParams } from "ag-grid-community";
 import { Params } from "react-router-dom";
-import { parseSearchQueries } from "../utils/parseSearchQueries";
+import { parseUserSearchVal } from "../utils/parseSearchQueries";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -784,7 +784,7 @@ export function sampleFilter(
 ) {
   return {
     [whereProperty]: {
-      OR: sampleFilterWhereVariables(parseSearchQueries(searchVal)),
+      OR: sampleFilterWhereVariables(parseUserSearchVal(searchVal)),
       ...(sampleQueryParamFieldName &&
       params &&
       params[sampleQueryParamFieldName]

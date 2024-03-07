@@ -12,7 +12,7 @@ import { Col, Form } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
 import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
-import { parseSearchQueries } from "../../utils/parseSearchQueries";
+import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../../shared/constants";
 import {
   PatientsListColumns,
@@ -113,8 +113,8 @@ export default function PatientsPage({
 }) {
   const params = useParams();
 
-  const [searchVal, setSearchVal] = useState<string[]>([]);
-  const [inputVal, setInputVal] = useState("");
+  const [userSearchVal, setUserSearchVal] = useState<string>("");
+  const [parsedSearchVals, setParsedSearchVals] = useState<string[]>([]);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [phiEnabled, setPhiEnabled] = useState(false);
   const [patientIdsTriplets, setPatientIdsTriplets] = useState<
@@ -176,30 +176,30 @@ export default function PatientsPage({
     }
   }
 
-  const handleSearch = async () => {
-    let uniqueQueries = parseSearchQueries(inputVal);
+  async function handleSearch() {
+    let parsedSearchVals = parseUserSearchVal(userSearchVal);
 
     if (phiEnabled) {
-      uniqueQueries = uniqueQueries.map((query) =>
+      parsedSearchVals = parsedSearchVals.map((query) =>
         query.startsWith("C-") ? query.slice(2) : query
       );
 
-      const newQueries = await fetchPatientIdsTriplets(uniqueQueries);
+      const customSearchVals = await fetchPatientIdsTriplets(parsedSearchVals);
 
-      if (newQueries.length > 0) {
-        setSearchVal(newQueries);
+      if (customSearchVals.length > 0) {
+        setParsedSearchVals(customSearchVals);
       } else if (userEmail) {
         setAlertModal({
           show: true,
           ...NO_PHI_SEARCH_RESULTS,
         });
 
-        setSearchVal([]);
+        setParsedSearchVals([]);
       }
     } else {
-      setSearchVal(uniqueQueries);
+      setParsedSearchVals(parsedSearchVals);
     }
-  };
+  }
 
   useEffect(() => {
     window.addEventListener("message", handleLogin);
@@ -335,12 +335,12 @@ export default function PatientsPage({
             </Col>
           </>
         }
-        setCustomFilterVals={setPatientIdsTriplets}
+        setCustomSearchVals={setPatientIdsTriplets}
         handleSearch={handleSearch}
-        searchVal={searchVal}
-        setSearchVal={setSearchVal}
-        inputVal={inputVal}
-        setInputVal={setInputVal}
+        parsedSearchVals={parsedSearchVals}
+        setParsedSearchVals={setParsedSearchVals}
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
         showDownloadModal={showDownloadModal}
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={() => {

@@ -5,6 +5,7 @@ import Spinner from "react-spinkit";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { Tooltip } from "@material-ui/core";
 import { DataName } from "./types";
+import { Dispatch, SetStateAction } from "react";
 
 export function LoadingSpinner() {
   return (
@@ -24,19 +25,19 @@ export function ErrorMessage({ error }: { error: ApolloError }) {
 
 export function Toolbar({
   dataName,
-  input,
-  setInput,
+  userSearchVal,
+  setUserSearchVal,
   handleSearch,
-  clearInput,
+  clearUserSearchVal,
   matchingResultsCount,
   handleDownload,
   customUI,
 }: {
   dataName: DataName;
-  input: string;
-  setInput: (input: string) => void;
+  userSearchVal: string;
+  setUserSearchVal: Dispatch<SetStateAction<string>>;
   handleSearch: () => void;
-  clearInput: () => void;
+  clearUserSearchVal: () => void;
   matchingResultsCount: string;
   handleDownload: () => void;
   customUI?: JSX.Element;
@@ -56,18 +57,18 @@ export function Toolbar({
           type="search"
           placeholder={"Search " + dataName}
           aria-label="Search"
-          value={input}
+          value={userSearchVal}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               handleSearch();
             }
           }}
           onInput={(event) => {
-            const currInput = event.currentTarget.value;
-            if (currInput === "") {
-              clearInput();
+            const userSearchVal = event.currentTarget.value;
+            if (userSearchVal === "") {
+              clearUserSearchVal();
             }
-            setInput(currInput);
+            setUserSearchVal(userSearchVal);
           }}
         />
       </Col>

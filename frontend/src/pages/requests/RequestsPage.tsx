@@ -14,7 +14,7 @@ import {
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import { PageHeader } from "../../shared/components/PageHeader";
-import { parseSearchQueries } from "../../utils/parseSearchQueries";
+import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 
 function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
   if (uniqueQueries.length > 1) {
@@ -56,8 +56,8 @@ function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
 
 export default function RequestsPage() {
   const params = useParams();
-  const [searchVal, setSearchVal] = useState<string[]>([]);
-  const [inputVal, setInputVal] = useState("");
+  const [userSearchVal, setUserSearchVal] = useState<string>("");
+  const [parsedSearchVals, setParsedSearchVals] = useState<string[]>([]);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const dataName = "requests";
@@ -65,10 +65,10 @@ export default function RequestsPage() {
   const sampleQueryParamHeaderName = "IGO Request ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
-  const handleSearch = async () => {
-    const uniqueQueries = parseSearchQueries(inputVal);
-    setSearchVal(uniqueQueries);
-  };
+  async function handleSearch() {
+    const parsedSearchVals = parseUserSearchVal(userSearchVal);
+    setParsedSearchVals(parsedSearchVals);
+  }
 
   return (
     <>
@@ -102,10 +102,10 @@ export default function RequestsPage() {
           )
         }
         handleSearch={handleSearch}
-        searchVal={searchVal}
-        setSearchVal={setSearchVal}
-        inputVal={inputVal}
-        setInputVal={setInputVal}
+        parsedSearchVals={parsedSearchVals}
+        setParsedSearchVals={setParsedSearchVals}
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
         showDownloadModal={showDownloadModal}
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={() => setShowDownloadModal(true)}

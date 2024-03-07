@@ -14,7 +14,7 @@ import {
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import { PageHeader } from "../../shared/components/PageHeader";
-import { parseSearchQueries } from "../../utils/parseSearchQueries";
+import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 
 function cohortFilterWhereVariables(uniqueQueries: string[]): CohortWhere[] {
   if (uniqueQueries.length > 1) {
@@ -26,8 +26,8 @@ function cohortFilterWhereVariables(uniqueQueries: string[]): CohortWhere[] {
 
 export default function CohortsPage() {
   const params = useParams();
-  const [searchVal, setSearchVal] = useState<string[]>([]);
-  const [inputVal, setInputVal] = useState("");
+  const [userSearchVal, setUserSearchVal] = useState<string>("");
+  const [parsedSearchVals, setParsedSearchVals] = useState<string[]>([]);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   const dataName = "cohorts";
@@ -35,10 +35,10 @@ export default function CohortsPage() {
   const sampleQueryParamHeaderName = "Cohort ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
-  const handleSearch = async () => {
-    const uniqueQueries = parseSearchQueries(inputVal);
-    setSearchVal(uniqueQueries);
-  };
+  async function handleSearch() {
+    const parsedSearchVals = parseUserSearchVal(userSearchVal);
+    setParsedSearchVals(parsedSearchVals);
+  }
 
   return (
     <>
@@ -72,14 +72,14 @@ export default function CohortsPage() {
                 [sampleQueryParamFieldName]: sampleQueryParamValue,
               },
             },
-            OR: cohortSampleFilterWhereVariables(parseSearchQueries(searchVal)),
+            OR: cohortSampleFilterWhereVariables(parseUserSearchVal(searchVal)),
           } as SampleWhere;
         }}
         handleSearch={handleSearch}
-        searchVal={searchVal}
-        setSearchVal={setSearchVal}
-        inputVal={inputVal}
-        setInputVal={setInputVal}
+        parsedSearchVals={parsedSearchVals}
+        setParsedSearchVals={setParsedSearchVals}
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
         showDownloadModal={showDownloadModal}
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={() => setShowDownloadModal(true)}
