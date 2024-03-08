@@ -10,6 +10,7 @@ import {
   cohortSampleFilterWhereVariables,
   defaultReadOnlyColDef,
   getCohortDataFromSamples,
+  handleSearch,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
@@ -35,11 +36,6 @@ export default function CohortsPage() {
   const sampleQueryParamHeaderName = "Cohort ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
-  async function handleSearch() {
-    const parsedSearchVals = parseUserSearchVal(userSearchVal);
-    setParsedSearchVals(parsedSearchVals);
-  }
-
   return (
     <>
       <PageHeader dataName={dataName} />
@@ -56,7 +52,7 @@ export default function CohortsPage() {
         sampleDefaultColDef={defaultReadOnlyColDef}
         getSampleRowData={getCohortDataFromSamples}
         sampleColDefs={CohortSamplesDetailsColumns}
-        sampleSearchVariables={
+        sampleParentWhereVariables={
           {
             cohortsHasCohortSampleConnection_SOME: {
               node: {
@@ -65,17 +61,17 @@ export default function CohortsPage() {
             },
           } as SampleWhere
         }
-        sampleFilter={(searchVal: string) => {
+        sampleRefetchWhereVariables={(searchVals: string[]) => {
           return {
             cohortsHasCohortSampleConnection_SOME: {
               node: {
                 [sampleQueryParamFieldName]: sampleQueryParamValue,
               },
             },
-            OR: cohortSampleFilterWhereVariables(parseUserSearchVal(searchVal)),
+            OR: cohortSampleFilterWhereVariables(searchVals),
           } as SampleWhere;
         }}
-        handleSearch={handleSearch}
+        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
         parsedSearchVals={parsedSearchVals}
         setParsedSearchVals={setParsedSearchVals}
         userSearchVal={userSearchVal}

@@ -30,8 +30,8 @@ interface IRecordsListProps {
   sampleDefaultColDef: ColDef;
   getSampleRowData: (samples: Sample[]) => any[];
   sampleColDefs: ColDef[];
-  sampleSearchVariables: SampleWhere;
-  sampleFilter: (searchVal: string) => SampleWhere;
+  sampleParentWhereVariables: SampleWhere;
+  sampleRefetchWhereVariables: (parsedSearchVals: string[]) => SampleWhere;
   customToolbarUI?: JSX.Element;
   setCustomSearchVals?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
   userSearchVal: string;
@@ -54,8 +54,8 @@ export default function RecordsList({
   sampleDefaultColDef,
   getSampleRowData,
   sampleColDefs,
-  sampleSearchVariables,
-  sampleFilter,
+  sampleParentWhereVariables,
+  sampleRefetchWhereVariables,
   customToolbarUI,
   setCustomSearchVals,
   parsedSearchVals,
@@ -211,8 +211,8 @@ export default function RecordsList({
                     columnDefs={sampleColDefs}
                     defaultColDef={sampleDefaultColDef}
                     getRowData={getSampleRowData}
-                    searchVariables={sampleSearchVariables}
-                    filter={sampleFilter}
+                    parentWhereVariables={sampleParentWhereVariables}
+                    refetchWhereVariables={sampleRefetchWhereVariables}
                     setUnsavedChanges={setUnsavedChanges}
                     exportFileName={`${sampleQueryParam}.tsv`}
                   />

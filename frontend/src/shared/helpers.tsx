@@ -19,6 +19,7 @@ import { StatusTooltip } from "./components/StatusToolTip";
 import { ITooltipParams } from "ag-grid-community";
 import { Params } from "react-router-dom";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
+import { Dispatch, SetStateAction } from "react";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -597,7 +598,7 @@ const protectedFields: string[] = [
   "revisable",
 ];
 
-function sampleFilterWhereVariables(
+export function sampleFilterWhereVariables(
   parsedSearchVals: string[]
 ): SampleMetadataWhere[] {
   if (parsedSearchVals.length > 1) {
@@ -776,26 +777,6 @@ export function cohortSampleFilterWhereVariables(
   ];
 }
 
-export function sampleFilter(
-  whereProperty: string,
-  searchVal: string,
-  params?: Readonly<Params<string>>,
-  sampleQueryParamFieldName?: string
-) {
-  return {
-    [whereProperty]: {
-      OR: sampleFilterWhereVariables(parseUserSearchVal(searchVal)),
-      ...(sampleQueryParamFieldName &&
-      params &&
-      params[sampleQueryParamFieldName]
-        ? {
-            [sampleQueryParamFieldName]: params[sampleQueryParamFieldName],
-          }
-        : {}),
-    },
-  };
-}
-
 export function getMetadataFromSamples(samples: Sample[]) {
   return samples.map((s: any) => {
     return {
@@ -815,4 +796,12 @@ export function getCohortDataFromSamples(samples: Sample[]) {
       qcComplete: s.hasTempoTempos[0].hasEventQcCompletes[0],
     };
   });
+}
+
+export function handleSearch(
+  userSearchVal: string,
+  setParsedSearchVals: Dispatch<SetStateAction<string[]>>
+) {
+  const parsedSearchVals = parseUserSearchVal(userSearchVal);
+  setParsedSearchVals(parsedSearchVals);
 }

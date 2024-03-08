@@ -9,12 +9,12 @@ import {
   SampleDetailsColumns,
   defaultEditableColDef,
   getMetadataFromSamples,
-  sampleFilter,
+  handleSearch,
+  sampleFilterWhereVariables,
 } from "../../shared/helpers";
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import { PageHeader } from "../../shared/components/PageHeader";
-import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 
 function requestFilterWhereVariables(
   parsedSearchVals: string[]
@@ -67,11 +67,6 @@ export default function RequestsPage() {
   const sampleQueryParamHeaderName = "IGO Request ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
-  async function handleSearch() {
-    const parsedSearchVals = parseUserSearchVal(userSearchVal);
-    setParsedSearchVals(parsedSearchVals);
-  }
-
   return (
     <>
       <PageHeader dataName={dataName} />
@@ -88,22 +83,27 @@ export default function RequestsPage() {
         sampleDefaultColDef={defaultEditableColDef}
         getSampleRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
-        sampleSearchVariables={
+        sampleParentWhereVariables={
           {
             hasMetadataSampleMetadata_SOME: {
               [sampleQueryParamFieldName]: sampleQueryParamValue,
             },
           } as SampleWhere
         }
-        sampleFilter={(searchVal: string) =>
-          sampleFilter(
-            "hasMetadataSampleMetadata_SOME",
-            searchVal,
-            params,
-            sampleQueryParamFieldName
-          )
-        }
-        handleSearch={handleSearch}
+        sampleRefetchWhereVariables={(parsedSearchVals) => {
+          return {
+            hasMetadataSampleMetadata_SOME: {
+              OR: sampleFilterWhereVariables(parsedSearchVals),
+              ...(params[sampleQueryParamFieldName]
+                ? {
+                    [sampleQueryParamFieldName]:
+                      params[sampleQueryParamFieldName],
+                  }
+                : {}),
+            },
+          } as SampleWhere;
+        }}
+        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
         parsedSearchVals={parsedSearchVals}
         setParsedSearchVals={setParsedSearchVals}
         userSearchVal={userSearchVal}

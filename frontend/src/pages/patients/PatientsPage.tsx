@@ -19,7 +19,7 @@ import {
   SampleDetailsColumns,
   defaultEditableColDef,
   getMetadataFromSamples,
-  sampleFilter,
+  sampleFilterWhereVariables,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
 
@@ -178,7 +178,7 @@ export default function PatientsPage({
     }
   }
 
-  async function handleSearch() {
+  async function handlePatientSearch() {
     let parsedSearchVals = parseUserSearchVal(userSearchVal);
 
     if (phiEnabled) {
@@ -216,7 +216,7 @@ export default function PatientsPage({
         ...PHI_WARNING,
       });
 
-      handleSearch();
+      handlePatientSearch();
     }
 
     return () => {
@@ -279,7 +279,7 @@ export default function PatientsPage({
         sampleDefaultColDef={defaultEditableColDef}
         getSampleRowData={getMetadataFromSamples}
         sampleColDefs={SampleDetailsColumns}
-        sampleSearchVariables={
+        sampleParentWhereVariables={
           {
             OR: [
               {
@@ -294,14 +294,19 @@ export default function PatientsPage({
             ],
           } as SampleWhere
         }
-        sampleFilter={(searchVal: string) =>
-          sampleFilter(
-            "hasMetadataSampleMetadata_SOME",
-            searchVal,
-            params,
-            sampleQueryParamFieldName
-          )
-        }
+        sampleRefetchWhereVariables={(parsedSearchVals) => {
+          return {
+            hasMetadataSampleMetadata_SOME: {
+              OR: sampleFilterWhereVariables(parsedSearchVals),
+              ...(params[sampleQueryParamFieldName]
+                ? {
+                    [sampleQueryParamFieldName]:
+                      params[sampleQueryParamFieldName],
+                  }
+                : {}),
+            },
+          } as SampleWhere;
+        }}
         customToolbarUI={
           <>
             <Col md="auto" className="mt-1">
@@ -338,7 +343,7 @@ export default function PatientsPage({
           </>
         }
         setCustomSearchVals={setPatientIdsTriplets}
-        handleSearch={handleSearch}
+        handleSearch={handlePatientSearch}
         parsedSearchVals={parsedSearchVals}
         setParsedSearchVals={setParsedSearchVals}
         userSearchVal={userSearchVal}

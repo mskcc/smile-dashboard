@@ -4,8 +4,9 @@ import {
   SampleDetailsColumns,
   defaultEditableColDef,
   getMetadataFromSamples,
-  sampleFilter,
+  sampleFilterWhereVariables,
 } from "../../shared/helpers";
+import { SampleWhere } from "../../generated/graphql";
 
 export default function SamplesPage() {
   return (
@@ -16,9 +17,13 @@ export default function SamplesPage() {
         columnDefs={SampleDetailsColumns}
         defaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
-        filter={(searchVal: string) =>
-          sampleFilter("hasMetadataSampleMetadata_SOME", searchVal)
-        }
+        refetchWhereVariables={(parsedSearchVals) => {
+          return {
+            hasMetadataSampleMetadata_SOME: {
+              OR: sampleFilterWhereVariables(parsedSearchVals),
+            },
+          } as SampleWhere;
+        }}
       />
     </>
   );
