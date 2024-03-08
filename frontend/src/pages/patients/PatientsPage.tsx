@@ -31,17 +31,17 @@ export type PatientIdsTriplet = {
 };
 
 function patientAliasFilterWhereVariables(
-  uniqueQueries: string[]
+  parsedSearchVals: string[]
 ): PatientAliasWhere[] {
-  if (uniqueQueries.length > 1) {
+  if (parsedSearchVals.length > 1) {
     return [
-      { value_IN: uniqueQueries },
-      { namespace_IN: uniqueQueries },
+      { value_IN: parsedSearchVals },
+      { namespace_IN: parsedSearchVals },
       {
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              cmoSampleName_IN: uniqueQueries,
+              cmoSampleName_IN: parsedSearchVals,
             },
           },
         },
@@ -50,7 +50,7 @@ function patientAliasFilterWhereVariables(
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              primaryId_IN: uniqueQueries,
+              primaryId_IN: parsedSearchVals,
             },
           },
         },
@@ -58,13 +58,13 @@ function patientAliasFilterWhereVariables(
     ];
   } else {
     return [
-      { value_CONTAINS: uniqueQueries[0] },
-      { namespace_CONTAINS: uniqueQueries[0] },
+      { value_CONTAINS: parsedSearchVals[0] },
+      { namespace_CONTAINS: parsedSearchVals[0] },
       {
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              cmoSampleName_CONTAINS: uniqueQueries[0],
+              cmoSampleName_CONTAINS: parsedSearchVals[0],
             },
           },
         },
@@ -73,7 +73,7 @@ function patientAliasFilterWhereVariables(
         isAliasPatients_SOME: {
           hasSampleSamples_SOME: {
             hasMetadataSampleMetadata_SOME: {
-              primaryId_CONTAINS: uniqueQueries[0],
+              primaryId_CONTAINS: parsedSearchVals[0],
             },
           },
         },

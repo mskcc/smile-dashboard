@@ -16,40 +16,42 @@ import { useParams } from "react-router-dom";
 import { PageHeader } from "../../shared/components/PageHeader";
 import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 
-function requestFilterWhereVariables(uniqueQueries: string[]): RequestWhere[] {
-  if (uniqueQueries.length > 1) {
+function requestFilterWhereVariables(
+  parsedSearchVals: string[]
+): RequestWhere[] {
+  if (parsedSearchVals.length > 1) {
     return [
-      { igoProjectId_IN: uniqueQueries },
-      { igoRequestId_IN: uniqueQueries },
-      { projectManagerName_IN: uniqueQueries },
-      { investigatorName_IN: uniqueQueries },
-      { investigatorEmail_IN: uniqueQueries },
-      { piEmail_IN: uniqueQueries },
-      { dataAnalystName_IN: uniqueQueries },
-      { dataAnalystEmail_IN: uniqueQueries },
-      { genePanel_IN: uniqueQueries },
-      { labHeadName_IN: uniqueQueries },
-      { labHeadEmail_IN: uniqueQueries },
-      { qcAccessEmails_IN: uniqueQueries },
-      { dataAccessEmails_IN: uniqueQueries },
-      { otherContactEmails_IN: uniqueQueries },
+      { igoProjectId_IN: parsedSearchVals },
+      { igoRequestId_IN: parsedSearchVals },
+      { projectManagerName_IN: parsedSearchVals },
+      { investigatorName_IN: parsedSearchVals },
+      { investigatorEmail_IN: parsedSearchVals },
+      { piEmail_IN: parsedSearchVals },
+      { dataAnalystName_IN: parsedSearchVals },
+      { dataAnalystEmail_IN: parsedSearchVals },
+      { genePanel_IN: parsedSearchVals },
+      { labHeadName_IN: parsedSearchVals },
+      { labHeadEmail_IN: parsedSearchVals },
+      { qcAccessEmails_IN: parsedSearchVals },
+      { dataAccessEmails_IN: parsedSearchVals },
+      { otherContactEmails_IN: parsedSearchVals },
     ];
   } else {
     return [
-      { igoProjectId_CONTAINS: uniqueQueries[0] },
-      { igoRequestId_CONTAINS: uniqueQueries[0] },
-      { projectManagerName_CONTAINS: uniqueQueries[0] },
-      { investigatorName_CONTAINS: uniqueQueries[0] },
-      { investigatorEmail_CONTAINS: uniqueQueries[0] },
-      { piEmail_CONTAINS: uniqueQueries[0] },
-      { dataAnalystName_CONTAINS: uniqueQueries[0] },
-      { dataAnalystEmail_CONTAINS: uniqueQueries[0] },
-      { genePanel_CONTAINS: uniqueQueries[0] },
-      { labHeadName_CONTAINS: uniqueQueries[0] },
-      { labHeadEmail_CONTAINS: uniqueQueries[0] },
-      { qcAccessEmails_CONTAINS: uniqueQueries[0] },
-      { dataAccessEmails_CONTAINS: uniqueQueries[0] },
-      { otherContactEmails_CONTAINS: uniqueQueries[0] },
+      { igoProjectId_CONTAINS: parsedSearchVals[0] },
+      { igoRequestId_CONTAINS: parsedSearchVals[0] },
+      { projectManagerName_CONTAINS: parsedSearchVals[0] },
+      { investigatorName_CONTAINS: parsedSearchVals[0] },
+      { investigatorEmail_CONTAINS: parsedSearchVals[0] },
+      { piEmail_CONTAINS: parsedSearchVals[0] },
+      { dataAnalystName_CONTAINS: parsedSearchVals[0] },
+      { dataAnalystEmail_CONTAINS: parsedSearchVals[0] },
+      { genePanel_CONTAINS: parsedSearchVals[0] },
+      { labHeadName_CONTAINS: parsedSearchVals[0] },
+      { labHeadEmail_CONTAINS: parsedSearchVals[0] },
+      { qcAccessEmails_CONTAINS: parsedSearchVals[0] },
+      { dataAccessEmails_CONTAINS: parsedSearchVals[0] },
+      { otherContactEmails_CONTAINS: parsedSearchVals[0] },
     ];
   }
 }

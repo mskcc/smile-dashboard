@@ -598,104 +598,104 @@ const protectedFields: string[] = [
 ];
 
 function sampleFilterWhereVariables(
-  uniqueQueries: string[]
+  parsedSearchVals: string[]
 ): SampleMetadataWhere[] {
-  if (uniqueQueries.length > 1) {
+  if (parsedSearchVals.length > 1) {
     return [
-      { cmoSampleName_IN: uniqueQueries },
-      { importDate_IN: uniqueQueries },
-      { investigatorSampleId_IN: uniqueQueries },
-      { primaryId_IN: uniqueQueries },
-      { sampleClass_IN: uniqueQueries },
-      { cmoPatientId_IN: uniqueQueries },
-      { cmoSampleIdFields_IN: uniqueQueries },
-      { sampleName_IN: uniqueQueries },
-      { preservation_IN: uniqueQueries },
-      { tumorOrNormal_IN: uniqueQueries },
-      { oncotreeCode_IN: uniqueQueries },
-      { collectionYear_IN: uniqueQueries },
-      { sampleOrigin_IN: uniqueQueries },
-      { tissueLocation_IN: uniqueQueries },
-      { sex_IN: uniqueQueries },
-      { libraries_IN: uniqueQueries },
-      { sampleType_IN: uniqueQueries },
-      { species_IN: uniqueQueries },
-      { genePanel_IN: uniqueQueries },
+      { cmoSampleName_IN: parsedSearchVals },
+      { importDate_IN: parsedSearchVals },
+      { investigatorSampleId_IN: parsedSearchVals },
+      { primaryId_IN: parsedSearchVals },
+      { sampleClass_IN: parsedSearchVals },
+      { cmoPatientId_IN: parsedSearchVals },
+      { cmoSampleIdFields_IN: parsedSearchVals },
+      { sampleName_IN: parsedSearchVals },
+      { preservation_IN: parsedSearchVals },
+      { tumorOrNormal_IN: parsedSearchVals },
+      { oncotreeCode_IN: parsedSearchVals },
+      { collectionYear_IN: parsedSearchVals },
+      { sampleOrigin_IN: parsedSearchVals },
+      { tissueLocation_IN: parsedSearchVals },
+      { sex_IN: parsedSearchVals },
+      { libraries_IN: parsedSearchVals },
+      { sampleType_IN: parsedSearchVals },
+      { species_IN: parsedSearchVals },
+      { genePanel_IN: parsedSearchVals },
     ];
   } else {
     return [
-      { cmoSampleName_CONTAINS: uniqueQueries[0] },
-      { importDate_CONTAINS: uniqueQueries[0] },
-      { investigatorSampleId_CONTAINS: uniqueQueries[0] },
-      { primaryId_CONTAINS: uniqueQueries[0] },
-      { sampleClass_CONTAINS: uniqueQueries[0] },
-      { cmoPatientId_CONTAINS: uniqueQueries[0] },
-      { cmoSampleIdFields_CONTAINS: uniqueQueries[0] },
-      { sampleName_CONTAINS: uniqueQueries[0] },
-      { preservation_CONTAINS: uniqueQueries[0] },
-      { tumorOrNormal_CONTAINS: uniqueQueries[0] },
-      { oncotreeCode_CONTAINS: uniqueQueries[0] },
-      { collectionYear_CONTAINS: uniqueQueries[0] },
-      { sampleOrigin_CONTAINS: uniqueQueries[0] },
-      { tissueLocation_CONTAINS: uniqueQueries[0] },
-      { sex_CONTAINS: uniqueQueries[0] },
-      { libraries_CONTAINS: uniqueQueries[0] },
-      { sampleType_CONTAINS: uniqueQueries[0] },
-      { species_CONTAINS: uniqueQueries[0] },
-      { genePanel_CONTAINS: uniqueQueries[0] },
+      { cmoSampleName_CONTAINS: parsedSearchVals[0] },
+      { importDate_CONTAINS: parsedSearchVals[0] },
+      { investigatorSampleId_CONTAINS: parsedSearchVals[0] },
+      { primaryId_CONTAINS: parsedSearchVals[0] },
+      { sampleClass_CONTAINS: parsedSearchVals[0] },
+      { cmoPatientId_CONTAINS: parsedSearchVals[0] },
+      { cmoSampleIdFields_CONTAINS: parsedSearchVals[0] },
+      { sampleName_CONTAINS: parsedSearchVals[0] },
+      { preservation_CONTAINS: parsedSearchVals[0] },
+      { tumorOrNormal_CONTAINS: parsedSearchVals[0] },
+      { oncotreeCode_CONTAINS: parsedSearchVals[0] },
+      { collectionYear_CONTAINS: parsedSearchVals[0] },
+      { sampleOrigin_CONTAINS: parsedSearchVals[0] },
+      { tissueLocation_CONTAINS: parsedSearchVals[0] },
+      { sex_CONTAINS: parsedSearchVals[0] },
+      { libraries_CONTAINS: parsedSearchVals[0] },
+      { sampleType_CONTAINS: parsedSearchVals[0] },
+      { species_CONTAINS: parsedSearchVals[0] },
+      { genePanel_CONTAINS: parsedSearchVals[0] },
     ];
   }
 }
 
 export function cohortSampleFilterWhereVariables(
-  uniqueQueries: string[]
+  parsedSearchVals: string[]
 ): SampleWhere[] {
   let tempoWhere: TempoWhere[] = [];
-  if (uniqueQueries.length > 1) {
+  if (parsedSearchVals.length > 1) {
     tempoWhere = [
       {
         hasEventBamCompletes_SOME: {
-          date_IN: uniqueQueries,
+          date_IN: parsedSearchVals,
         },
       },
       {
         hasEventBamCompletes_SOME: {
-          status_IN: uniqueQueries,
+          status_IN: parsedSearchVals,
         },
       },
       {
         hasEventMafCompletes_SOME: {
-          date_IN: uniqueQueries,
+          date_IN: parsedSearchVals,
         },
       },
       {
         hasEventMafCompletes_SOME: {
-          normalPrimaryId_IN: uniqueQueries,
+          normalPrimaryId_IN: parsedSearchVals,
         },
       },
       {
         hasEventMafCompletes_SOME: {
-          status_IN: uniqueQueries,
+          status_IN: parsedSearchVals,
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          date_IN: uniqueQueries,
+          date_IN: parsedSearchVals,
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          result_IN: uniqueQueries,
+          result_IN: parsedSearchVals,
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          reason_IN: uniqueQueries,
+          reason_IN: parsedSearchVals,
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          status_IN: uniqueQueries,
+          status_IN: parsedSearchVals,
         },
       },
     ];
@@ -703,62 +703,62 @@ export function cohortSampleFilterWhereVariables(
     tempoWhere = [
       {
         hasEventBamCompletes_SOME: {
-          date_CONTAINS: uniqueQueries[0],
+          date_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventBamCompletes_SOME: {
-          status_CONTAINS: uniqueQueries[0],
+          status_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventMafCompletes_SOME: {
-          date_CONTAINS: uniqueQueries[0],
+          date_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventMafCompletes_SOME: {
-          normalPrimaryId_CONTAINS: uniqueQueries[0],
+          normalPrimaryId_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventMafCompletes_SOME: {
-          status_CONTAINS: uniqueQueries[0],
+          status_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          date_CONTAINS: uniqueQueries[0],
+          date_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          result_CONTAINS: uniqueQueries[0],
+          result_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          reason_CONTAINS: uniqueQueries[0],
+          reason_CONTAINS: parsedSearchVals[0],
         },
       },
       {
         hasEventQcCompletes_SOME: {
-          status_CONTAINS: uniqueQueries[0],
+          status_CONTAINS: parsedSearchVals[0],
         },
       },
     ];
   }
 
   let sampleMetadataWhere: SampleMetadataWhere[] = [];
-  if (uniqueQueries.length > 1) {
+  if (parsedSearchVals.length > 1) {
     sampleMetadataWhere = [
-      { primaryId_IN: uniqueQueries },
-      { cmoSampleName_IN: uniqueQueries },
+      { primaryId_IN: parsedSearchVals },
+      { cmoSampleName_IN: parsedSearchVals },
     ];
   } else {
     sampleMetadataWhere = [
-      { primaryId_CONTAINS: uniqueQueries[0] },
-      { cmoSampleName_CONTAINS: uniqueQueries[0] },
+      { primaryId_CONTAINS: parsedSearchVals[0] },
+      { cmoSampleName_CONTAINS: parsedSearchVals[0] },
     ];
   }
 

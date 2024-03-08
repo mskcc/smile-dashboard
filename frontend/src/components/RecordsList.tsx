@@ -23,7 +23,9 @@ interface IRecordsListProps {
   dataName: DataName;
   nodeName?: string;
   colDefs: ColDef[];
-  queryFilterWhereVariables: (uniqueQueries: string[]) => Record<string, any>[];
+  queryFilterWhereVariables: (
+    parsedSearchVals: string[]
+  ) => Record<string, any>[];
   sampleQueryParam: string | undefined;
   sampleDefaultColDef: ColDef;
   getSampleRowData: (samples: Sample[]) => any[];

@@ -16,11 +16,11 @@ import { useParams } from "react-router-dom";
 import { PageHeader } from "../../shared/components/PageHeader";
 import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 
-function cohortFilterWhereVariables(uniqueQueries: string[]): CohortWhere[] {
-  if (uniqueQueries.length > 1) {
-    return [{ cohortId_IN: uniqueQueries }];
+function cohortFilterWhereVariables(parsedSearchVals: string[]): CohortWhere[] {
+  if (parsedSearchVals.length > 1) {
+    return [{ cohortId_IN: parsedSearchVals }];
   } else {
-    return [{ cohortId_CONTAINS: uniqueQueries[0] }];
+    return [{ cohortId_CONTAINS: parsedSearchVals[0] }];
   }
 }
 
