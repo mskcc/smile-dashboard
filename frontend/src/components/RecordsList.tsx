@@ -204,12 +204,11 @@ export default function RecordsList({
                 <Modal.Title>{`Viewing ${sampleQueryParam}`}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div style={{ height: 600 }}>
+                <div className={styles.popupHeight}>
                   <SamplesList
                     columnDefs={sampleColDefs}
                     defaultColDef={sampleDefaultColDef}
                     getRowData={getSampleRowData}
-                    height={height * 11}
                     searchVariables={sampleSearchVariables}
                     filter={sampleFilter}
                     setUnsavedChanges={setUnsavedChanges}
@@ -241,8 +240,8 @@ export default function RecordsList({
       <AutoSizer>
         {({ width }) => (
           <div
-            className="ag-theme-alpine"
-            style={{ height: `calc(100vh - 230px)`, width: width }}
+            className={`ag-theme-alpine ${styles.tableHeight}`}
+            style={{ width: width }}
           >
             <AgGridReact
               rowModelType={"serverSide"}

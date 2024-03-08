@@ -19,6 +19,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { CellValueChangedEvent, ColDef } from "ag-grid-community";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
+import styles from "./records.module.scss";
 
 const POLLING_INTERVAL = 2000;
 const max_rows = 500;
@@ -27,8 +28,7 @@ interface ISampleListProps {
   columnDefs: ColDef[];
   defaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
-  height: number;
-  setUnsavedChanges?: (val: boolean) => void;
+  setUnsavedChanges?: (unsavedChanges: boolean) => void;
   searchVariables?: SampleWhere;
   filter: (userSearchVal: string) => SampleWhere;
   exportFileName?: string;
@@ -40,7 +40,6 @@ export default function SamplesList({
   getRowData,
   searchVariables,
   filter,
-  height,
   setUnsavedChanges,
   exportFileName,
 }: ISampleListProps) {
@@ -231,8 +230,8 @@ export default function SamplesList({
       <AutoSizer>
         {({ width }) => (
           <div
-            className="ag-theme-alpine"
-            style={{ height: height, width: width }}
+            className={`ag-theme-alpine ${styles.tableHeight}`}
+            style={{ width: width }}
           >
             <AgGridReact<SampleMetadataExtended>
               getRowId={(d) => {

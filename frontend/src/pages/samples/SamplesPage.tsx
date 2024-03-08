@@ -1,5 +1,5 @@
 import { PageHeader } from "../../shared/components/PageHeader";
-import { SamplesList } from "../../components/SamplesList";
+import SamplesList from "../../components/SamplesList";
 import {
   SampleDetailsColumns,
   defaultEditableColDef,
@@ -16,7 +16,6 @@ export default function SamplesPage() {
         columnDefs={SampleDetailsColumns}
         defaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
-        height={540}
         filter={(searchVal: string) =>
           sampleFilter("hasMetadataSampleMetadata_SOME", searchVal)
         }
