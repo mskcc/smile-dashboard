@@ -300,7 +300,7 @@ export default function PatientsPage({
             sampleQueryParamFieldName
           )
         }
-        customFilterUI={
+        customToolbarUI={
           <>
             <Col md="auto" className="mt-1">
               <div className="vr"></div>

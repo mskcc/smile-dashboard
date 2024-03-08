@@ -30,7 +30,7 @@ interface IRecordsListProps {
   sampleColDefs: ColDef[];
   sampleSearchVariables: SampleWhere;
   sampleFilter: (searchVal: string) => SampleWhere;
-  customFilterUI?: JSX.Element;
+  customToolbarUI?: JSX.Element;
   setCustomSearchVals?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
   userSearchVal: string;
   setUserSearchVal: Dispatch<SetStateAction<string>>;
@@ -54,7 +54,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   sampleColDefs,
   sampleSearchVariables,
   sampleFilter,
-  customFilterUI,
+  customToolbarUI,
   setCustomSearchVals,
   parsedSearchVals,
   setParsedSearchVals,
@@ -235,7 +235,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
           remoteCount > 1 ? dataName : dataName.slice(0, -1)
         }`}
         handleDownload={handleDownload}
-        customUI={customFilterUI}
+        customUI={customToolbarUI}
       />
 
       <AutoSizer>
