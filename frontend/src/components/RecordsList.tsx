@@ -19,21 +19,13 @@ import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 
 interface IRecordsListProps {
-  lazyRecordsQuery: typeof useHookLazyGeneric;
+  colDefs: ColDef[];
   dataName: DataName;
   nodeName?: string;
-  colDefs: ColDef[];
+  lazyRecordsQuery: typeof useHookLazyGeneric;
   queryFilterWhereVariables: (
     parsedSearchVals: string[]
   ) => Record<string, any>[];
-  sampleQueryParam: string | undefined;
-  sampleDefaultColDef: ColDef;
-  getSampleRowData: (samples: Sample[]) => any[];
-  sampleColDefs: ColDef[];
-  sampleParentWhereVariables: SampleWhere;
-  sampleRefetchWhereVariables: (parsedSearchVals: string[]) => SampleWhere;
-  customToolbarUI?: JSX.Element;
-  setCustomSearchVals?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
   userSearchVal: string;
   setUserSearchVal: Dispatch<SetStateAction<string>>;
   parsedSearchVals: string[];
@@ -42,30 +34,40 @@ interface IRecordsListProps {
   showDownloadModal: boolean;
   setShowDownloadModal: Dispatch<SetStateAction<boolean>>;
   handleDownload: () => void;
+  samplesQueryParam: string | undefined;
+  samplesDefaultColDef: ColDef;
+  getSamplesRowData: (samples: Sample[]) => any[];
+  samplesColDefs: ColDef[];
+  samplesParentWhereVariables: SampleWhere;
+  samplesRefetchWhereVariables: (
+    samplesParsedSearchVals: string[]
+  ) => SampleWhere;
+  setCustomSearchVals?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
+  customToolbarUI?: JSX.Element;
 }
 
 export default function RecordsList({
-  lazyRecordsQuery,
+  colDefs,
   dataName,
   nodeName = dataName,
-  colDefs,
+  lazyRecordsQuery,
   queryFilterWhereVariables,
-  sampleQueryParam,
-  sampleDefaultColDef,
-  getSampleRowData,
-  sampleColDefs,
-  sampleParentWhereVariables,
-  sampleRefetchWhereVariables,
-  customToolbarUI,
-  setCustomSearchVals,
+  userSearchVal,
+  setUserSearchVal,
   parsedSearchVals,
   setParsedSearchVals,
   handleSearch,
-  userSearchVal,
-  setUserSearchVal,
   showDownloadModal,
   setShowDownloadModal,
   handleDownload,
+  samplesQueryParam,
+  samplesDefaultColDef,
+  getSamplesRowData,
+  samplesColDefs,
+  samplesParentWhereVariables,
+  samplesRefetchWhereVariables,
+  customToolbarUI,
+  setCustomSearchVals,
 }: IRecordsListProps) {
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -198,23 +200,23 @@ export default function RecordsList({
         </Modal>
       )}
 
-      {sampleQueryParam && (
+      {samplesQueryParam && (
         <AutoSizer>
           {({ height, width }) => (
             <Modal show={true} dialogClassName="modal-90w" onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>{`Viewing ${sampleQueryParam}`}</Modal.Title>
+                <Modal.Title>{`Viewing ${samplesQueryParam}`}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <div className={styles.popupHeight}>
                   <SamplesList
-                    columnDefs={sampleColDefs}
-                    defaultColDef={sampleDefaultColDef}
-                    getRowData={getSampleRowData}
-                    parentWhereVariables={sampleParentWhereVariables}
-                    refetchWhereVariables={sampleRefetchWhereVariables}
+                    columnDefs={samplesColDefs}
+                    defaultColDef={samplesDefaultColDef}
+                    getRowData={getSamplesRowData}
+                    parentWhereVariables={samplesParentWhereVariables}
+                    refetchWhereVariables={samplesRefetchWhereVariables}
                     setUnsavedChanges={setUnsavedChanges}
-                    exportFileName={`${sampleQueryParam}.tsv`}
+                    exportFileName={`${samplesQueryParam}.tsv`}
                   />
                 </div>
               </Modal.Body>

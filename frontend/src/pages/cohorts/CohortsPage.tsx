@@ -15,7 +15,6 @@ import {
 import RecordsList from "../../components/RecordsList";
 import { useParams } from "react-router-dom";
 import { PageHeader } from "../../shared/components/PageHeader";
-import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 
 function cohortFilterWhereVariables(parsedSearchVals: string[]): CohortWhere[] {
   if (parsedSearchVals.length > 1) {
@@ -41,18 +40,26 @@ export default function CohortsPage() {
       <PageHeader dataName={dataName} />
 
       <RecordsList
-        lazyRecordsQuery={useCohortsListLazyQuery}
-        dataName={dataName}
         colDefs={CohortsListColumns}
+        dataName={dataName}
+        lazyRecordsQuery={useCohortsListLazyQuery}
         queryFilterWhereVariables={cohortFilterWhereVariables}
-        sampleQueryParam={
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
+        parsedSearchVals={parsedSearchVals}
+        setParsedSearchVals={setParsedSearchVals}
+        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
+        showDownloadModal={showDownloadModal}
+        setShowDownloadModal={setShowDownloadModal}
+        handleDownload={() => setShowDownloadModal(true)}
+        samplesColDefs={CohortSamplesDetailsColumns}
+        samplesDefaultColDef={defaultReadOnlyColDef}
+        samplesQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`
         }
-        sampleDefaultColDef={defaultReadOnlyColDef}
-        getSampleRowData={getCohortDataFromSamples}
-        sampleColDefs={CohortSamplesDetailsColumns}
-        sampleParentWhereVariables={
+        getSamplesRowData={getCohortDataFromSamples}
+        samplesParentWhereVariables={
           {
             cohortsHasCohortSampleConnection_SOME: {
               node: {
@@ -61,24 +68,16 @@ export default function CohortsPage() {
             },
           } as SampleWhere
         }
-        sampleRefetchWhereVariables={(searchVals: string[]) => {
+        samplesRefetchWhereVariables={(samplesParsedSearchVals: string[]) => {
           return {
             cohortsHasCohortSampleConnection_SOME: {
               node: {
                 [sampleQueryParamFieldName]: sampleQueryParamValue,
               },
             },
-            OR: cohortSampleFilterWhereVariables(searchVals),
+            OR: cohortSampleFilterWhereVariables(samplesParsedSearchVals),
           } as SampleWhere;
         }}
-        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
-        parsedSearchVals={parsedSearchVals}
-        setParsedSearchVals={setParsedSearchVals}
-        userSearchVal={userSearchVal}
-        setUserSearchVal={setUserSearchVal}
-        showDownloadModal={showDownloadModal}
-        setShowDownloadModal={setShowDownloadModal}
-        handleDownload={() => setShowDownloadModal(true)}
       />
     </>
   );

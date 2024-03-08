@@ -72,45 +72,44 @@ export default function RequestsPage() {
       <PageHeader dataName={dataName} />
 
       <RecordsList
-        lazyRecordsQuery={useRequestsListLazyQuery}
-        dataName={dataName}
         colDefs={RequestsListColumns}
+        dataName={dataName}
+        lazyRecordsQuery={useRequestsListLazyQuery}
         queryFilterWhereVariables={requestFilterWhereVariables}
-        sampleQueryParam={
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
+        parsedSearchVals={parsedSearchVals}
+        setParsedSearchVals={setParsedSearchVals}
+        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
+        showDownloadModal={showDownloadModal}
+        setShowDownloadModal={setShowDownloadModal}
+        handleDownload={() => setShowDownloadModal(true)}
+        samplesColDefs={SampleDetailsColumns}
+        samplesDefaultColDef={defaultEditableColDef}
+        samplesQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
         }
-        sampleDefaultColDef={defaultEditableColDef}
-        getSampleRowData={getMetadataFromSamples}
-        sampleColDefs={SampleDetailsColumns}
-        sampleParentWhereVariables={
+        getSamplesRowData={getMetadataFromSamples}
+        samplesParentWhereVariables={
           {
             hasMetadataSampleMetadata_SOME: {
               [sampleQueryParamFieldName]: sampleQueryParamValue,
             },
           } as SampleWhere
         }
-        sampleRefetchWhereVariables={(parsedSearchVals) => {
+        samplesRefetchWhereVariables={(sampleParsedSearchVals) => {
           return {
             hasMetadataSampleMetadata_SOME: {
-              OR: sampleFilterWhereVariables(parsedSearchVals),
-              ...(params[sampleQueryParamFieldName]
+              OR: sampleFilterWhereVariables(sampleParsedSearchVals),
+              ...(sampleQueryParamValue
                 ? {
-                    [sampleQueryParamFieldName]:
-                      params[sampleQueryParamFieldName],
+                    [sampleQueryParamFieldName]: sampleQueryParamValue,
                   }
                 : {}),
             },
           } as SampleWhere;
         }}
-        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
-        parsedSearchVals={parsedSearchVals}
-        setParsedSearchVals={setParsedSearchVals}
-        userSearchVal={userSearchVal}
-        setUserSearchVal={setUserSearchVal}
-        showDownloadModal={showDownloadModal}
-        setShowDownloadModal={setShowDownloadModal}
-        handleDownload={() => setShowDownloadModal(true)}
       />
     </>
   );

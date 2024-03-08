@@ -267,19 +267,33 @@ export default function PatientsPage({
       <PageHeader dataName={dataName} />
 
       <RecordsList
-        lazyRecordsQuery={usePatientsListLazyQuery}
+        colDefs={ActivePatientsListColumns}
         dataName={dataName}
         nodeName={nodeName}
-        colDefs={ActivePatientsListColumns}
+        lazyRecordsQuery={usePatientsListLazyQuery}
         queryFilterWhereVariables={patientAliasFilterWhereVariables}
-        sampleQueryParam={
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
+        parsedSearchVals={parsedSearchVals}
+        setParsedSearchVals={setParsedSearchVals}
+        handleSearch={handlePatientSearch}
+        showDownloadModal={showDownloadModal}
+        setShowDownloadModal={setShowDownloadModal}
+        handleDownload={() => {
+          setAlertModal({
+            show: true,
+            ...PHI_WARNING,
+          });
+          setShowDownloadModal(true);
+        }}
+        samplesColDefs={SampleDetailsColumns}
+        samplesDefaultColDef={defaultEditableColDef}
+        samplesQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
         }
-        sampleDefaultColDef={defaultEditableColDef}
-        getSampleRowData={getMetadataFromSamples}
-        sampleColDefs={SampleDetailsColumns}
-        sampleParentWhereVariables={
+        getSamplesRowData={getMetadataFromSamples}
+        samplesParentWhereVariables={
           {
             OR: [
               {
@@ -294,7 +308,7 @@ export default function PatientsPage({
             ],
           } as SampleWhere
         }
-        sampleRefetchWhereVariables={(parsedSearchVals) => {
+        samplesRefetchWhereVariables={(parsedSearchVals) => {
           return {
             hasMetadataSampleMetadata_SOME: {
               OR: sampleFilterWhereVariables(parsedSearchVals),
@@ -307,6 +321,7 @@ export default function PatientsPage({
             },
           } as SampleWhere;
         }}
+        setCustomSearchVals={setPatientIdsTriplets}
         customToolbarUI={
           <>
             <Col md="auto" className="mt-1">
@@ -342,21 +357,6 @@ export default function PatientsPage({
             </Col>
           </>
         }
-        setCustomSearchVals={setPatientIdsTriplets}
-        handleSearch={handlePatientSearch}
-        parsedSearchVals={parsedSearchVals}
-        setParsedSearchVals={setParsedSearchVals}
-        userSearchVal={userSearchVal}
-        setUserSearchVal={setUserSearchVal}
-        showDownloadModal={showDownloadModal}
-        setShowDownloadModal={setShowDownloadModal}
-        handleDownload={() => {
-          setAlertModal({
-            show: true,
-            ...PHI_WARNING,
-          });
-          setShowDownloadModal(true);
-        }}
       />
 
       <AlertModal
