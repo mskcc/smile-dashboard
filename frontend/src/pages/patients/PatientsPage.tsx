@@ -104,13 +104,15 @@ const NO_PHI_SEARCH_RESULTS = {
     "No results were found for your search. No patient IDs in your search exist in either the SMILE or CRDB databases.",
 };
 
+interface IPatientsPageProps {
+  userEmail: string | null;
+  setUserEmail: Dispatch<SetStateAction<string | null>>;
+}
+
 export default function PatientsPage({
   userEmail,
   setUserEmail,
-}: {
-  userEmail: string | null;
-  setUserEmail: Dispatch<SetStateAction<string | null>>;
-}) {
+}: IPatientsPageProps) {
   const params = useParams();
 
   const [userSearchVal, setUserSearchVal] = useState<string>("");

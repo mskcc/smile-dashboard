@@ -1,6 +1,6 @@
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Container, Modal } from "react-bootstrap";
-import { Dispatch, FunctionComponent, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { DownloadModal } from "./DownloadModal";
 import { CSVFormulate } from "../utils/CSVExport";
@@ -12,7 +12,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { DataName, useHookLazyGeneric } from "../shared/types";
-import { SamplesList } from "./SamplesList";
+import SamplesList from "./SamplesList";
 import { Sample, SampleWhere } from "../generated/graphql";
 import { defaultReadOnlyColDef } from "../shared/helpers";
 import { PatientIdsTriplet } from "../pages/patients/PatientsPage";
@@ -42,7 +42,7 @@ interface IRecordsListProps {
   handleDownload: () => void;
 }
 
-const RecordsList: FunctionComponent<IRecordsListProps> = ({
+export default function RecordsList({
   lazyRecordsQuery,
   dataName,
   nodeName = dataName,
@@ -64,7 +64,7 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
   showDownloadModal,
   setShowDownloadModal,
   handleDownload,
-}) => {
+}: IRecordsListProps) {
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const navigate = useNavigate();
@@ -268,6 +268,4 @@ const RecordsList: FunctionComponent<IRecordsListProps> = ({
       </AutoSizer>
     </Container>
   );
-};
-
-export default RecordsList;
+}

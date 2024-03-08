@@ -8,7 +8,7 @@ import LoginSuccessPage from "./pages/auth/LoginSuccessPage";
 import SmileNavBar from "./shared/components/SmileNavBar";
 import { getUserEmail } from "./utils/getUserEmail";
 
-function App() {
+export default function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,5 +44,3 @@ function App() {
     </main>
   );
 }
-
-export default App;

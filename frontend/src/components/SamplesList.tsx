@@ -6,7 +6,7 @@ import {
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
-import { FunctionComponent, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
@@ -34,7 +34,7 @@ interface ISampleListProps {
   exportFileName?: string;
 }
 
-export const SamplesList: FunctionComponent<ISampleListProps> = ({
+export default function SamplesList({
   columnDefs,
   defaultColDef,
   getRowData,
@@ -43,7 +43,7 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
   height,
   setUnsavedChanges,
   exportFileName,
-}) => {
+}: ISampleListProps) {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
       variables: {
@@ -284,4 +284,4 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       </AutoSizer>
     </>
   );
-};
+}
