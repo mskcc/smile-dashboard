@@ -1,25 +1,29 @@
-import PageHeader from "../../shared/components/PageHeader";
-import { SamplesList } from "../../components/SamplesList";
+import { PageHeader } from "../../shared/components/PageHeader";
+import SamplesList from "../../components/SamplesList";
 import {
   SampleDetailsColumns,
   defaultEditableColDef,
   getMetadataFromSamples,
-  sampleFilter,
+  sampleFilterWhereVariables,
 } from "../../shared/helpers";
+import { SampleWhere } from "../../generated/graphql";
 
 export default function SamplesPage() {
   return (
     <>
-      <PageHeader pageTitle={"samples"} pageRoute={"/samples"} />
+      <PageHeader dataName={"samples"} />
 
       <SamplesList
         columnDefs={SampleDetailsColumns}
         defaultColDef={defaultEditableColDef}
         getRowData={getMetadataFromSamples}
-        height={540}
-        filter={(searchVal: string) =>
-          sampleFilter("hasMetadataSampleMetadata_SOME", searchVal)
-        }
+        refetchWhereVariables={(parsedSearchVals) => {
+          return {
+            hasMetadataSampleMetadata_SOME: {
+              OR: sampleFilterWhereVariables(parsedSearchVals),
+            },
+          } as SampleWhere;
+        }}
       />
     </>
   );

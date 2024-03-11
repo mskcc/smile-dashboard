@@ -6,12 +6,16 @@ import {
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
-import { FunctionComponent, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
 import { CSVFormulate } from "../utils/CSVExport";
-import { SampleChange, SampleMetadataExtended } from "../shared/helpers";
+import {
+  SampleChange,
+  SampleMetadataExtended,
+  handleSearch,
+} from "../shared/helpers";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -19,6 +23,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
 import { CellValueChangedEvent, ColDef } from "ag-grid-community";
 import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
+import styles from "./records.module.scss";
 
 const POLLING_INTERVAL = 2000;
 const max_rows = 500;
@@ -27,30 +32,28 @@ interface ISampleListProps {
   columnDefs: ColDef[];
   defaultColDef: ColDef;
   getRowData: (samples: Sample[]) => any[];
-  height: number;
-  setUnsavedChanges?: (val: boolean) => void;
-  searchVariables?: SampleWhere;
-  filter: (searchVal: string) => SampleWhere;
+  setUnsavedChanges?: (unsavedChanges: boolean) => void;
+  parentWhereVariables?: SampleWhere;
+  refetchWhereVariables: (parsedSearchVals: string[]) => SampleWhere;
   exportFileName?: string;
 }
 
-export const SamplesList: FunctionComponent<ISampleListProps> = ({
+export default function SamplesList({
   columnDefs,
   defaultColDef,
   getRowData,
-  searchVariables,
-  filter,
-  height,
+  parentWhereVariables,
+  refetchWhereVariables,
   setUnsavedChanges,
   exportFileName,
-}) => {
+}: ISampleListProps) {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
       variables: {
-        ...(searchVariables
+        ...(parentWhereVariables
           ? {
               where: {
-                ...searchVariables,
+                ...parentWhereVariables,
               },
             }
           : {
@@ -76,8 +79,8 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       pollInterval: POLLING_INTERVAL,
     });
 
-  const [val, setVal] = useState("");
-  const [searchVal, setSearchVal] = useState("");
+  const [userSearchVal, setUserSearchVal] = useState<string>("");
+  const [parsedSearchVals, setParsedSearchVals] = useState<string[]>([]);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -89,14 +92,14 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
     gridRef.current?.api?.showLoadingOverlay();
     async function refetchSearchVal() {
       await refetch({
-        where: filter(searchVal),
+        where: refetchWhereVariables(parsedSearchVals),
       });
     }
     refetchSearchVal().then(() => {
       gridRef.current?.api?.hideOverlay();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchVal]);
+  }, [parsedSearchVals]);
 
   if (loading) return <LoadingSpinner />;
 
@@ -184,14 +187,13 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       />
 
       <Toolbar
-        searchTerm={"samples"}
-        input={val}
-        setInput={setVal}
-        handleSearch={() => {
-          setSearchVal(val);
-        }}
-        clearInput={() => {
-          setSearchVal("");
+        dataName={"samples"}
+        userSearchVal={userSearchVal}
+        setUserSearchVal={setUserSearchVal}
+        handleSearch={() => handleSearch(userSearchVal, setParsedSearchVals)}
+        clearUserSearchVal={() => {
+          setUserSearchVal("");
+          setParsedSearchVals([]);
         }}
         matchingResultsCount={
           remoteCount === max_rows
@@ -231,8 +233,8 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       <AutoSizer>
         {({ width }) => (
           <div
-            className="ag-theme-alpine"
-            style={{ height: height, width: width }}
+            className={`ag-theme-alpine ${styles.tableHeight}`}
+            style={{ width: width }}
           >
             <AgGridReact<SampleMetadataExtended>
               getRowId={(d) => {
@@ -284,4 +286,4 @@ export const SamplesList: FunctionComponent<ISampleListProps> = ({
       </AutoSizer>
     </>
   );
-};
+}

@@ -3,12 +3,12 @@ import { Routes, Route } from "react-router-dom";
 import RequestsPage from "./pages/requests/RequestsPage";
 import PatientsPage from "./pages/patients/PatientsPage";
 import SamplesPage from "./pages/samples/SamplesPage";
-import CohortsPage from "./pages/cohort/CohortsPage";
+import CohortsPage from "./pages/cohorts/CohortsPage";
 import LoginSuccessPage from "./pages/auth/LoginSuccessPage";
 import SmileNavBar from "./shared/components/SmileNavBar";
 import { getUserEmail } from "./utils/getUserEmail";
 
-function App() {
+export default function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,5 +44,3 @@ function App() {
     </main>
   );
 }
-
-export default App;
