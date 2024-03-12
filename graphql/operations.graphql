@@ -228,6 +228,15 @@ query CohortsList(
   }
   cohorts(where: $where, options: $options) {
     cohortId
+    hasCohortCompleteCohortCompletes {
+      type
+      endUsers
+      pmUsers
+      projectTitle
+      projectSubtitle
+      status
+      date
+    }
     hasCohortSampleSamplesConnection {
       totalCount
     }
