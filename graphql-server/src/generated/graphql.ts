@@ -10992,6 +10992,7 @@ export type CohortsListQueryVariables = Exact<{
   where?: InputMaybe<CohortWhere>;
   options?: InputMaybe<CohortOptions>;
   cohortsConnectionWhere2?: InputMaybe<CohortWhere>;
+  hasCohortCompleteCohortCompletesOptions2?: InputMaybe<CohortCompleteOptions>;
 }>;
 
 export type CohortsListQuery = {
@@ -11287,13 +11288,16 @@ export const CohortsListDocument = gql`
     $where: CohortWhere
     $options: CohortOptions
     $cohortsConnectionWhere2: CohortWhere
+    $hasCohortCompleteCohortCompletesOptions2: CohortCompleteOptions
   ) {
     cohortsConnection(where: $cohortsConnectionWhere2) {
       totalCount
     }
     cohorts(where: $where, options: $options) {
       cohortId
-      hasCohortCompleteCohortCompletes {
+      hasCohortCompleteCohortCompletes(
+        options: $hasCohortCompleteCohortCompletesOptions2
+      ) {
         type
         endUsers
         pmUsers

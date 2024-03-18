@@ -1,6 +1,8 @@
 import {
+  CohortCompleteOptions,
   CohortWhere,
   SampleWhere,
+  SortDirection,
   useCohortsListLazyQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
@@ -43,6 +45,14 @@ export default function CohortsPage() {
         colDefs={CohortsListColumns}
         dataName={dataName}
         lazyRecordsQuery={useCohortsListLazyQuery}
+        lazyRecordsQueryAddlVariables={
+          {
+            hasCohortCompleteCohortCompletesOptions2: {
+              sort: [{ date: SortDirection.Desc }],
+              limit: 1,
+            },
+          } as CohortCompleteOptions
+        }
         queryFilterWhereVariables={cohortFilterWhereVariables}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
