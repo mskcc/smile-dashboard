@@ -222,12 +222,24 @@ query CohortsList(
   $where: CohortWhere
   $options: CohortOptions
   $cohortsConnectionWhere2: CohortWhere
+  $hasCohortCompleteCohortCompletesOptions2: CohortCompleteOptions
 ) {
   cohortsConnection(where: $cohortsConnectionWhere2) {
     totalCount
   }
   cohorts(where: $where, options: $options) {
     cohortId
+    hasCohortCompleteCohortCompletes(
+      options: $hasCohortCompleteCohortCompletesOptions2
+    ) {
+      type
+      endUsers
+      pmUsers
+      projectTitle
+      projectSubtitle
+      status
+      date
+    }
     hasCohortSampleSamplesConnection {
       totalCount
     }

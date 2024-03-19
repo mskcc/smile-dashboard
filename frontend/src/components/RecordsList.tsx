@@ -23,6 +23,7 @@ interface IRecordsListProps {
   dataName: DataName;
   nodeName?: string;
   lazyRecordsQuery: typeof useHookLazyGeneric;
+  lazyRecordsQueryAddlVariables?: Record<string, any>;
   queryFilterWhereVariables: (
     parsedSearchVals: string[]
   ) => Record<string, any>[];
@@ -51,6 +52,7 @@ export default function RecordsList({
   dataName,
   nodeName = dataName,
   lazyRecordsQuery,
+  lazyRecordsQueryAddlVariables,
   queryFilterWhereVariables,
   userSearchVal,
   setUserSearchVal,
@@ -79,6 +81,7 @@ export default function RecordsList({
     lazyRecordsQuery({
       variables: {
         options: { limit: 20, offset: 0 },
+        ...lazyRecordsQueryAddlVariables,
       },
     });
 

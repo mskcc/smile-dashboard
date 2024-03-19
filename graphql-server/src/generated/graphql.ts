@@ -293,19 +293,25 @@ export type CohortCohortCompleteHasCohortCompleteCohortCompletesAggregationSelec
 export type CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection =
   {
     __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection";
-    analyst: StringAggregateSelectionNonNullable;
+    analyst: StringAggregateSelectionNullable;
     date: StringAggregateSelectionNonNullable;
+    projectSubtitle: StringAggregateSelectionNullable;
+    projectTitle: StringAggregateSelectionNullable;
     status: StringAggregateSelectionNonNullable;
     type: StringAggregateSelectionNonNullable;
   };
 
 export type CohortComplete = {
   __typename?: "CohortComplete";
-  analyst: Scalars["String"];
+  analyst?: Maybe<Scalars["String"]>;
   cohortsHasCohortComplete: Array<Cohort>;
   cohortsHasCohortCompleteAggregate?: Maybe<CohortCompleteCohortCohortsHasCohortCompleteAggregationSelection>;
   cohortsHasCohortCompleteConnection: CohortCompleteCohortsHasCohortCompleteConnection;
   date: Scalars["String"];
+  endUsers?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  pmUsers?: Maybe<Array<Maybe<Scalars["String"]>>>;
+  projectSubtitle?: Maybe<Scalars["String"]>;
+  projectTitle?: Maybe<Scalars["String"]>;
   status: Scalars["String"];
   type: Scalars["String"];
 };
@@ -333,9 +339,11 @@ export type CohortCompleteCohortsHasCohortCompleteConnectionArgs = {
 
 export type CohortCompleteAggregateSelection = {
   __typename?: "CohortCompleteAggregateSelection";
-  analyst: StringAggregateSelectionNonNullable;
+  analyst: StringAggregateSelectionNullable;
   count: Scalars["Int"];
   date: StringAggregateSelectionNonNullable;
+  projectSubtitle: StringAggregateSelectionNullable;
+  projectTitle: StringAggregateSelectionNullable;
   status: StringAggregateSelectionNonNullable;
   type: StringAggregateSelectionNonNullable;
 };
@@ -478,9 +486,13 @@ export type CohortCompleteConnectWhere = {
 };
 
 export type CohortCompleteCreateInput = {
-  analyst: Scalars["String"];
+  analyst?: InputMaybe<Scalars["String"]>;
   cohortsHasCohortComplete?: InputMaybe<CohortCompleteCohortsHasCohortCompleteFieldInput>;
   date: Scalars["String"];
+  endUsers?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  pmUsers?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  projectSubtitle?: InputMaybe<Scalars["String"]>;
+  projectTitle?: InputMaybe<Scalars["String"]>;
   status: Scalars["String"];
   type: Scalars["String"];
 };
@@ -520,6 +532,8 @@ export type CohortCompleteRelationInput = {
 export type CohortCompleteSort = {
   analyst?: InputMaybe<SortDirection>;
   date?: InputMaybe<SortDirection>;
+  projectSubtitle?: InputMaybe<SortDirection>;
+  projectTitle?: InputMaybe<SortDirection>;
   status?: InputMaybe<SortDirection>;
   type?: InputMaybe<SortDirection>;
 };
@@ -530,6 +544,14 @@ export type CohortCompleteUpdateInput = {
     Array<CohortCompleteCohortsHasCohortCompleteUpdateFieldInput>
   >;
   date?: InputMaybe<Scalars["String"]>;
+  endUsers?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  endUsers_POP?: InputMaybe<Scalars["Int"]>;
+  endUsers_PUSH?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  pmUsers?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  pmUsers_POP?: InputMaybe<Scalars["Int"]>;
+  pmUsers_PUSH?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  projectSubtitle?: InputMaybe<Scalars["String"]>;
+  projectTitle?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<Scalars["String"]>;
   type?: InputMaybe<Scalars["String"]>;
 };
@@ -540,11 +562,11 @@ export type CohortCompleteWhere = {
   analyst?: InputMaybe<Scalars["String"]>;
   analyst_CONTAINS?: InputMaybe<Scalars["String"]>;
   analyst_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  analyst_IN?: InputMaybe<Array<Scalars["String"]>>;
+  analyst_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   analyst_NOT?: InputMaybe<Scalars["String"]>;
   analyst_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
   analyst_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  analyst_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
+  analyst_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   analyst_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   analyst_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   cohortsHasCohortCompleteAggregate?: InputMaybe<CohortCompleteCohortsHasCohortCompleteAggregateInput>;
@@ -570,6 +592,34 @@ export type CohortCompleteWhere = {
   date_NOT_IN?: InputMaybe<Array<Scalars["String"]>>;
   date_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   date_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  endUsers?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  endUsers_INCLUDES?: InputMaybe<Scalars["String"]>;
+  endUsers_NOT?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  endUsers_NOT_INCLUDES?: InputMaybe<Scalars["String"]>;
+  pmUsers?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  pmUsers_INCLUDES?: InputMaybe<Scalars["String"]>;
+  pmUsers_NOT?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  pmUsers_NOT_INCLUDES?: InputMaybe<Scalars["String"]>;
+  projectSubtitle?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_CONTAINS?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  projectSubtitle_NOT?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  projectSubtitle_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  projectTitle?: InputMaybe<Scalars["String"]>;
+  projectTitle_CONTAINS?: InputMaybe<Scalars["String"]>;
+  projectTitle_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  projectTitle_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  projectTitle_NOT?: InputMaybe<Scalars["String"]>;
+  projectTitle_NOT_CONTAINS?: InputMaybe<Scalars["String"]>;
+  projectTitle_NOT_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  projectTitle_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  projectTitle_NOT_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  projectTitle_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   status?: InputMaybe<Scalars["String"]>;
   status_CONTAINS?: InputMaybe<Scalars["String"]>;
   status_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -748,6 +798,46 @@ export type CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput = {
   date_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
   date_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
   date_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  projectSubtitle_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  projectSubtitle_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  projectSubtitle_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  projectSubtitle_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  projectSubtitle_EQUAL?: InputMaybe<Scalars["String"]>;
+  projectSubtitle_GT?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_GTE?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LT?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_LTE?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  projectSubtitle_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
+  projectTitle_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
+  projectTitle_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
+  projectTitle_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
+  projectTitle_AVERAGE_LT?: InputMaybe<Scalars["Float"]>;
+  projectTitle_AVERAGE_LTE?: InputMaybe<Scalars["Float"]>;
+  projectTitle_EQUAL?: InputMaybe<Scalars["String"]>;
+  projectTitle_GT?: InputMaybe<Scalars["Int"]>;
+  projectTitle_GTE?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LONGEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LONGEST_GT?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LONGEST_GTE?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LONGEST_LT?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LONGEST_LTE?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LT?: InputMaybe<Scalars["Int"]>;
+  projectTitle_LTE?: InputMaybe<Scalars["Int"]>;
+  projectTitle_SHORTEST_EQUAL?: InputMaybe<Scalars["Int"]>;
+  projectTitle_SHORTEST_GT?: InputMaybe<Scalars["Int"]>;
+  projectTitle_SHORTEST_GTE?: InputMaybe<Scalars["Int"]>;
+  projectTitle_SHORTEST_LT?: InputMaybe<Scalars["Int"]>;
+  projectTitle_SHORTEST_LTE?: InputMaybe<Scalars["Int"]>;
   status_AVERAGE_EQUAL?: InputMaybe<Scalars["Float"]>;
   status_AVERAGE_GT?: InputMaybe<Scalars["Float"]>;
   status_AVERAGE_GTE?: InputMaybe<Scalars["Float"]>;
@@ -10902,6 +10992,7 @@ export type CohortsListQueryVariables = Exact<{
   where?: InputMaybe<CohortWhere>;
   options?: InputMaybe<CohortOptions>;
   cohortsConnectionWhere2?: InputMaybe<CohortWhere>;
+  hasCohortCompleteCohortCompletesOptions2?: InputMaybe<CohortCompleteOptions>;
 }>;
 
 export type CohortsListQuery = {
@@ -10910,6 +11001,16 @@ export type CohortsListQuery = {
   cohorts: Array<{
     __typename?: "Cohort";
     cohortId: string;
+    hasCohortCompleteCohortCompletes: Array<{
+      __typename?: "CohortComplete";
+      type: string;
+      endUsers?: Array<string | null> | null;
+      pmUsers?: Array<string | null> | null;
+      projectTitle?: string | null;
+      projectSubtitle?: string | null;
+      status: string;
+      date: string;
+    }>;
     hasCohortSampleSamplesConnection: {
       __typename?: "CohortHasCohortSampleSamplesConnection";
       totalCount: number;
@@ -11187,12 +11288,24 @@ export const CohortsListDocument = gql`
     $where: CohortWhere
     $options: CohortOptions
     $cohortsConnectionWhere2: CohortWhere
+    $hasCohortCompleteCohortCompletesOptions2: CohortCompleteOptions
   ) {
     cohortsConnection(where: $cohortsConnectionWhere2) {
       totalCount
     }
     cohorts(where: $where, options: $options) {
       cohortId
+      hasCohortCompleteCohortCompletes(
+        options: $hasCohortCompleteCohortCompletesOptions2
+      ) {
+        type
+        endUsers
+        pmUsers
+        projectTitle
+        projectSubtitle
+        status
+        date
+      }
       hasCohortSampleSamplesConnection {
         totalCount
       }

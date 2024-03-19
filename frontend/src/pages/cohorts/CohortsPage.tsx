@@ -1,6 +1,8 @@
 import {
+  CohortCompleteOptions,
   CohortWhere,
   SampleWhere,
+  SortDirection,
   useCohortsListLazyQuery,
 } from "../../generated/graphql";
 import { useState } from "react";
@@ -18,9 +20,83 @@ import { PageHeader } from "../../shared/components/PageHeader";
 
 function cohortFilterWhereVariables(parsedSearchVals: string[]): CohortWhere[] {
   if (parsedSearchVals.length > 1) {
-    return [{ cohortId_IN: parsedSearchVals }];
+    return [
+      { cohortId_IN: parsedSearchVals },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          type_IN: parsedSearchVals,
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          endUsers_INCLUDES: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          pmUsers_INCLUDES: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          projectTitle_IN: parsedSearchVals,
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          projectSubtitle_IN: parsedSearchVals,
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          status_IN: parsedSearchVals,
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          date_IN: parsedSearchVals,
+        },
+      },
+    ];
   } else {
-    return [{ cohortId_CONTAINS: parsedSearchVals[0] }];
+    return [
+      { cohortId_CONTAINS: parsedSearchVals[0] },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          type_CONTAINS: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          endUsers_INCLUDES: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          pmUsers_INCLUDES: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          projectTitle_CONTAINS: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          projectSubtitle_CONTAINS: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          status_CONTAINS: parsedSearchVals[0],
+        },
+      },
+      {
+        hasCohortCompleteCohortCompletes_SOME: {
+          date_CONTAINS: parsedSearchVals[0],
+        },
+      },
+    ];
   }
 }
 
@@ -43,6 +119,14 @@ export default function CohortsPage() {
         colDefs={CohortsListColumns}
         dataName={dataName}
         lazyRecordsQuery={useCohortsListLazyQuery}
+        lazyRecordsQueryAddlVariables={
+          {
+            hasCohortCompleteCohortCompletesOptions2: {
+              sort: [{ date: SortDirection.Desc }],
+              limit: 1,
+            },
+          } as CohortCompleteOptions
+        }
         queryFilterWhereVariables={cohortFilterWhereVariables}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
