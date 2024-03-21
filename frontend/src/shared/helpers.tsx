@@ -834,9 +834,19 @@ export function getMetadataFromSamples(samples: Sample[]) {
 
 export function getCohortDataFromSamples(samples: Sample[]) {
   return samples.map((s: any) => {
+    const cohorts = s.hasCohortSampleSamplesConnection.edges;
+    const cohortDates = cohorts
+      .flatMap((c: any) => {
+        return c.node.hasCohortCompleteCohortCompletes.map((cc: any) => {
+          return cc.date;
+        });
+      })
+      .sort();
+
     return {
       ...s.hasMetadataSampleMetadata[0],
       revisable: s.revisable,
+      deliveryDate: cohortDates[0],
       bamComplete: s.hasTempoTempos[0].hasEventBamCompletes[0],
       mafComplete: s.hasTempoTempos[0].hasEventMafCompletes[0],
       qcComplete: s.hasTempoTempos[0].hasEventQcCompletes[0],
