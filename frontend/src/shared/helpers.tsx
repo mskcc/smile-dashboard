@@ -827,8 +827,8 @@ export function cohortSampleFilterWhereVariables(
   ];
 }
 
-export function getMetadataFromSamples(samples: Sample[]) {
-  return samples.map((s: any) => {
+export function getSampleMetadataFromSamplesQuery(samples: Sample[]) {
+  return samples.map((s) => {
     return {
       ...s.hasMetadataSampleMetadata[0],
       revisable: s.revisable,
@@ -836,7 +836,7 @@ export function getMetadataFromSamples(samples: Sample[]) {
   });
 }
 
-export function getCohortDataFromSamples(samples: Sample[]) {
+export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
   return samples.map((s) => {
     const cohorts = s.cohortsHasCohortSampleConnection?.edges;
     const cohortDates = cohorts
