@@ -576,6 +576,10 @@ export const CohortSamplesDetailsColumns: ColDef[] = [
     headerName: "CMO Sample Name",
   },
   {
+    field: "deliveryDate",
+    headerName: "Delivery Date",
+  },
+  {
     headerName: "BAM Complete Date",
     valueGetter: ({ data }) => data.bamComplete?.date,
   },
@@ -833,11 +837,11 @@ export function getMetadataFromSamples(samples: Sample[]) {
 }
 
 export function getCohortDataFromSamples(samples: Sample[]) {
-  return samples.map((s: any) => {
-    const cohorts = s.hasCohortSampleSamplesConnection.edges;
+  return samples.map((s) => {
+    const cohorts = s.cohortsHasCohortSampleConnection?.edges;
     const cohortDates = cohorts
-      .flatMap((c: any) => {
-        return c.node.hasCohortCompleteCohortCompletes.map((cc: any) => {
+      ?.flatMap((c) => {
+        return c.node.hasCohortCompleteCohortCompletes.map((cc) => {
           return cc.date;
         });
       })
