@@ -580,40 +580,40 @@ export const CohortSamplesDetailsColumns: ColDef[] = [
     headerName: "Delivery Date",
   },
   {
+    field: "bamCompleteDate",
     headerName: "BAM Complete Date",
-    valueGetter: ({ data }) => data.bamComplete?.date,
   },
   {
+    field: "bamCompleteStatus",
     headerName: "BAM Complete Status",
-    valueGetter: ({ data }) => data.bamComplete?.status,
   },
   {
+    field: "mafCompleteDate",
     headerName: "MAF Complete Date",
-    valueGetter: ({ data }) => data.mafComplete?.date,
   },
   {
+    field: "mafCompleteNormalPrimaryId",
     headerName: "MAF Complete Normal Primary ID",
-    valueGetter: ({ data }) => data.mafComplete?.normalPrimaryId,
   },
   {
+    field: "mafCompleteStatus",
     headerName: "MAF Complete Status",
-    valueGetter: ({ data }) => data.mafComplete?.status,
   },
   {
+    field: "qcCompleteDate",
     headerName: "QC Complete Date",
-    valueGetter: ({ data }) => data.qcComplete?.date,
   },
   {
+    field: "qcCompleteResult",
     headerName: "QC Complete Result",
-    valueGetter: ({ data }) => data.qcComplete?.result,
   },
   {
+    field: "qcCompleteReason",
     headerName: "QC Complete Reason",
-    valueGetter: ({ data }) => data.qcComplete?.reason,
   },
   {
+    field: "qcCompleteStatus",
     headerName: "QC Complete Status",
-    valueGetter: ({ data }) => data.qcComplete?.status,
   },
 ];
 
@@ -839,21 +839,45 @@ export function getSampleMetadataFromSamplesQuery(samples: Sample[]) {
 export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
   return samples.map((s) => {
     const cohorts = s.cohortsHasCohortSampleConnection?.edges;
-    const cohortDates = cohorts
-      ?.flatMap((c) => {
-        return c.node.hasCohortCompleteCohortCompletes.map((cc) => {
-          return cc.date;
-        });
-      })
-      .sort();
+    const cohortDates = cohorts?.flatMap((c) => {
+      return c.node.hasCohortCompleteCohortCompletes.map((cc) => {
+        return cc.date;
+      });
+    });
+    const deliveryDate = cohortDates?.sort()[0]; // earliest cohort date
+
+    const tempo = s.hasTempoTempos?.[0];
+    const bamComplete = tempo?.hasEventBamCompletes?.[0];
+    const { date: bamCompleteDate, status: bamCompleteStatus } =
+      bamComplete ?? {};
+
+    const mafComplete = tempo?.hasEventMafCompletes?.[0];
+    const {
+      date: mafCompleteDate,
+      status: mafCompleteStatus,
+      normalPrimaryId: mafCompleteNormalPrimaryId,
+    } = mafComplete ?? {};
+
+    const qcComplete = tempo?.hasEventQcCompletes?.[0];
+    const {
+      date: qcCompleteDate,
+      result: qcCompleteResult,
+      reason: qcCompleteReason,
+      status: qcCompleteStatus,
+    } = qcComplete ?? {};
 
     return {
       ...s.hasMetadataSampleMetadata[0],
-      revisable: s.revisable,
-      deliveryDate: cohortDates[0],
-      bamComplete: s.hasTempoTempos[0].hasEventBamCompletes[0],
-      mafComplete: s.hasTempoTempos[0].hasEventMafCompletes[0],
-      qcComplete: s.hasTempoTempos[0].hasEventQcCompletes[0],
+      deliveryDate,
+      bamCompleteDate,
+      bamCompleteStatus,
+      mafCompleteDate,
+      mafCompleteStatus,
+      mafCompleteNormalPrimaryId,
+      qcCompleteDate,
+      qcCompleteResult,
+      qcCompleteReason,
+      qcCompleteStatus,
     };
   });
 }
