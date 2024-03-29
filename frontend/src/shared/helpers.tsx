@@ -587,14 +587,17 @@ export const CohortSampleDetailsColumns: ColDef[] = [
     headerName: "Initial Pipeline Run Date",
   },
   {
+    field: "billed",
     headerName: "Billed",
     editable: true,
   },
   {
+    field: "costCenter",
     headerName: "Cost Center",
     editable: true,
   },
   {
+    field: "billedBy",
     headerName: "Billed By",
   },
   {
@@ -865,6 +868,8 @@ export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
     const deliveryDate = cohortDates?.sort()[0]; // earliest cohort date
 
     const tempo = s.hasTempoTempos?.[0];
+    const { billed, billedBy, costCenter } = tempo ?? {};
+
     const bamComplete = tempo?.hasEventBamCompletes?.[0];
     const { date: bamCompleteDate, status: bamCompleteStatus } =
       bamComplete ?? {};
@@ -887,6 +892,9 @@ export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
     return {
       ...s.hasMetadataSampleMetadata[0],
       deliveryDate: formatCohortRelatedDate(deliveryDate),
+      billed,
+      billedBy,
+      costCenter,
       bamCompleteDate: formatCohortRelatedDate(bamCompleteDate),
       bamCompleteStatus,
       mafCompleteDate: formatCohortRelatedDate(mafCompleteDate),
