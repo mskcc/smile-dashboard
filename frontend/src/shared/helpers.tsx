@@ -517,6 +517,9 @@ export const CohortsListColumns: ColDef[] = [
     sortable: false,
   },
   {
+    headerName: "Billed",
+  },
+  {
     headerName: "Delivery Date",
     valueGetter: ({ data }) =>
       data["hasCohortCompleteCohortCompletes"]?.slice(-1)[0]?.date,
@@ -566,7 +569,7 @@ export const CohortsListColumns: ColDef[] = [
   },
 ];
 
-export const CohortSamplesDetailsColumns: ColDef[] = [
+export const CohortSampleDetailsColumns: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
@@ -578,6 +581,17 @@ export const CohortSamplesDetailsColumns: ColDef[] = [
   {
     field: "deliveryDate",
     headerName: "Delivery Date",
+  },
+  {
+    headerName: "Billed",
+    editable: true,
+  },
+  {
+    headerName: "Cost Center",
+    editable: true,
+  },
+  {
+    headerName: "Billed By",
   },
   {
     field: "bamCompleteDate",

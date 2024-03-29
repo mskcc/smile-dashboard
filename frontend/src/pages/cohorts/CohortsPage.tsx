@@ -7,7 +7,7 @@ import {
 } from "../../generated/graphql";
 import { useState } from "react";
 import {
-  CohortSamplesDetailsColumns,
+  CohortSampleDetailsColumns,
   CohortsListColumns,
   cohortSampleFilterWhereVariables,
   defaultReadOnlyColDef,
@@ -135,7 +135,7 @@ export default function CohortsPage() {
         showDownloadModal={showDownloadModal}
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={() => setShowDownloadModal(true)}
-        samplesColDefs={CohortSamplesDetailsColumns}
+        samplesColDefs={CohortSampleDetailsColumns}
         samplesDefaultColDef={defaultReadOnlyColDef}
         samplesQueryParam={
           sampleQueryParamValue &&
