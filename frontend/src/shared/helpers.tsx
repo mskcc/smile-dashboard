@@ -521,8 +521,11 @@ export const CohortsListColumns: ColDef[] = [
   },
   {
     headerName: "Initial Pipeline Run Date",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"]?.slice(-1)[0]?.date,
+    valueGetter: ({ data }) => {
+      const earliestCohortCompleteDate =
+        data["hasCohortCompleteCohortCompletes"]?.slice(-1)[0]?.date;
+      return formatCohortRelatedDate(earliestCohortCompleteDate);
+    },
     sortable: false,
   },
   {
@@ -883,13 +886,13 @@ export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
 
     return {
       ...s.hasMetadataSampleMetadata[0],
-      deliveryDate,
-      bamCompleteDate,
+      deliveryDate: formatCohortRelatedDate(deliveryDate),
+      bamCompleteDate: formatCohortRelatedDate(bamCompleteDate),
       bamCompleteStatus,
-      mafCompleteDate,
+      mafCompleteDate: formatCohortRelatedDate(mafCompleteDate),
       mafCompleteStatus,
       mafCompleteNormalPrimaryId,
-      qcCompleteDate,
+      qcCompleteDate: formatCohortRelatedDate(qcCompleteDate),
       qcCompleteResult,
       qcCompleteReason,
       qcCompleteStatus,
@@ -903,4 +906,8 @@ export function handleSearch(
 ) {
   const parsedSearchVals = parseUserSearchVal(userSearchVal);
   setParsedSearchVals(parsedSearchVals);
+}
+
+function formatCohortRelatedDate(date: string) {
+  return date?.split(" ")[0];
 }
