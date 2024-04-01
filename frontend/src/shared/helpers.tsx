@@ -4,6 +4,7 @@ import {
   ICellRendererParams,
   IHeaderParams,
   RowNode,
+  ITooltipParams,
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
@@ -16,7 +17,6 @@ import {
 } from "../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
 import { StatusTooltip } from "./components/StatusToolTip";
-import { ITooltipParams } from "ag-grid-community";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 import { Dispatch, SetStateAction } from "react";
 
@@ -590,6 +590,12 @@ export const CohortSampleDetailsColumns: ColDef[] = [
     field: "billed",
     headerName: "Billed",
     editable: true,
+    cellEditor: "agRichSelectCellEditor",
+    cellEditorPopup: true,
+    cellEditorParams: {
+      values: ["true", "false"],
+    },
+    valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
   },
   {
     field: "costCenter",
