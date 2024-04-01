@@ -433,56 +433,58 @@ const readOnlyHeader = {
   `,
 };
 
-SampleDetailsColumns.forEach((colDef) => {
-  colDef.cellClassRules = {
-    unsubmittedChange: (params: any) => {
-      const changes = params.context.getChanges();
-      const changedValue = changes?.find((change: any) => {
-        return (
-          change.fieldName === params.colDef.field &&
-          change.primaryId === params.data.primaryId
-        );
-      });
-      return changedValue !== undefined;
-    },
-  };
-
-  if (colDef.valueGetter === undefined) {
-    colDef.valueGetter = (params) => {
-      const changes = params.context?.getChanges();
-
-      const changedValue = changes?.find((change: any) => {
-        return (
-          change.fieldName === params.colDef.field &&
-          change.primaryId === params.data?.primaryId
-        );
-      });
-      if (changedValue) {
-        return changedValue.newValue;
-      } else {
-        if (params?.colDef?.field! in params.data!) {
-          return params.data?.[
-            params.colDef?.field! as keyof SampleMetadataExtended
-          ];
-        } else {
-          return "N/A";
-        }
-      }
+function setupEditableSampleFields(samplesColDefs: ColDef[]) {
+  samplesColDefs.forEach((colDef) => {
+    colDef.cellClassRules = {
+      unsubmittedChange: (params: any) => {
+        const changes = params.context.getChanges();
+        const changedValue = changes?.find((change: any) => {
+          return (
+            change.fieldName === params.colDef.field &&
+            change.primaryId === params.data.primaryId
+          );
+        });
+        return changedValue !== undefined;
+      },
     };
-  }
 
-  colDef.editable = (params) => {
-    return (
-      !protectedFields.includes(params.colDef.field!) &&
-      params.data?.revisable === true
-    );
-  };
+    if (colDef.valueGetter === undefined) {
+      colDef.valueGetter = (params) => {
+        const changes = params.context?.getChanges();
 
-  colDef.headerComponentParams = (params: IHeaderParams) => {
-    if (protectedFields.includes(params.column.getColDef().field!))
-      return readOnlyHeader;
-  };
-});
+        const changedValue = changes?.find((change: any) => {
+          return (
+            change.fieldName === params.colDef.field &&
+            change.primaryId === params.data?.primaryId
+          );
+        });
+        if (changedValue) {
+          return changedValue.newValue;
+        } else {
+          if (params?.colDef?.field! in params.data!) {
+            return params.data?.[
+              params.colDef?.field! as keyof SampleMetadataExtended
+            ];
+          } else {
+            return "N/A";
+          }
+        }
+      };
+    }
+
+    colDef.editable = (params) => {
+      return (
+        editableSampleFields.includes(params.colDef.field!) &&
+        params.data?.revisable === true
+      );
+    };
+
+    colDef.headerComponentParams = (params: IHeaderParams) => {
+      if (!editableSampleFields.includes(params.column.getColDef().field!))
+        return readOnlyHeader;
+    };
+  });
+}
 
 export const CohortsListColumns: ColDef[] = [
   {
@@ -650,35 +652,30 @@ export const CohortSampleDetailsColumns: ColDef[] = [
   },
 ];
 
+setupEditableSampleFields(SampleDetailsColumns);
+setupEditableSampleFields(CohortSampleDetailsColumns);
+
 export const defaultColDef: ColDef = {
   sortable: true,
   resizable: true,
+  editable: false,
   headerComponentParams: readOnlyHeader,
 };
 
-export const defaultEditableColDef: ColDef = {
-  ...defaultColDef,
-  editable: true,
-};
-
-export const defaultReadOnlyColDef: ColDef = {
-  ...defaultColDef,
-  editable: false,
-};
-
-const protectedFields: string[] = [
-  "cmoSampleName",
-  "igoComplete",
-  "importDate",
-  "primaryId",
-  "cmoSampleIdFields",
-  "libraries",
-  "genePanel",
-  "baitSet",
-  "species",
-  "validationStatus",
-  "validationReport",
-  "revisable",
+const editableSampleFields = [
+  "cmoPatientId",
+  "investigatorSampleId",
+  "sampleType",
+  "preservation",
+  "tumorOrNormal",
+  "sampleClass",
+  "oncotreeCode",
+  "collectionYear",
+  "sampleOrigin",
+  "tissueLocation",
+  "sex",
+  "billed",
+  "costCenter",
 ];
 
 export function sampleFilterWhereVariables(
@@ -903,6 +900,7 @@ export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
 
     return {
       ...s.hasMetadataSampleMetadata[0],
+      revisable: s.revisable,
       deliveryDate: formatCohortRelatedDate(deliveryDate),
       billed,
       billedBy,

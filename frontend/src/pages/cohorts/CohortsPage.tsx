@@ -10,7 +10,6 @@ import {
   CohortSampleDetailsColumns,
   CohortsListColumns,
   cohortSampleFilterWhereVariables,
-  defaultReadOnlyColDef,
   getSampleCohortDataFromSamplesQuery,
   handleSearch,
 } from "../../shared/helpers";
@@ -136,7 +135,6 @@ export default function CohortsPage() {
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={() => setShowDownloadModal(true)}
         samplesColDefs={CohortSampleDetailsColumns}
-        samplesDefaultColDef={defaultReadOnlyColDef}
         samplesQueryParam={
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`
