@@ -518,6 +518,12 @@ export const CohortsListColumns: ColDef[] = [
   },
   {
     headerName: "Billed",
+    valueGetter: ({ data }) => {
+      return data["hasCohortSampleSamples"]?.every((sample: Sample) => {
+        return sample.hasTempoTempos?.[0]?.billed === true;
+      });
+    },
+    valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
   },
   {
     headerName: "Initial Pipeline Run Date",
@@ -593,7 +599,7 @@ export const CohortSampleDetailsColumns: ColDef[] = [
     cellEditor: "agRichSelectCellEditor",
     cellEditorPopup: true,
     cellEditorParams: {
-      values: ["true", "false"],
+      values: [true, false],
     },
     valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
   },

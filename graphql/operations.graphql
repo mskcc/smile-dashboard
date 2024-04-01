@@ -249,5 +249,11 @@ query CohortsList(
     hasCohortSampleSamplesConnection {
       totalCount
     }
+    hasCohortSampleSamples {
+      smileSampleId
+      hasTempoTempos {
+        billed
+      }
+    }
   }
 }

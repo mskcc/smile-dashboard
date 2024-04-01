@@ -11499,6 +11499,11 @@ export type CohortsListQuery = {
       __typename?: "CohortHasCohortSampleSamplesConnection";
       totalCount: number;
     };
+    hasCohortSampleSamples: Array<{
+      __typename?: "Sample";
+      smileSampleId: string;
+      hasTempoTempos: Array<{ __typename?: "Tempo"; billed: boolean }>;
+    }>;
   }>;
 };
 
@@ -12069,6 +12074,12 @@ export const CohortsListDocument = gql`
       }
       hasCohortSampleSamplesConnection {
         totalCount
+      }
+      hasCohortSampleSamples {
+        smileSampleId
+        hasTempoTempos {
+          billed
+        }
       }
     }
   }
