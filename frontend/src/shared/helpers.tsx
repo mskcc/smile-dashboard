@@ -16,6 +16,7 @@ import {
   TempoWhere,
 } from "../generated/graphql";
 import WarningIcon from "@material-ui/icons/Warning";
+import CheckIcon from "@material-ui/icons/Check";
 import { StatusTooltip } from "./components/StatusToolTip";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 import { Dispatch, SetStateAction } from "react";
@@ -235,6 +236,39 @@ export const PatientsListColumns: ColDef[] = [
   },
 ];
 
+function LoadingIcon() {
+  return (
+    <div className="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  );
+}
+
+const statusCellRendererProps: ColDef = {
+  cellRenderer: (params: ICellRendererParams) => {
+    if (params.data?.revisable) {
+      return params.data?.hasStatusStatuses[0]?.validationStatus ? (
+        <CheckIcon />
+      ) : (
+        <WarningIcon />
+      );
+    } else {
+      return <LoadingIcon />;
+    }
+  },
+  cellRendererParams: {
+    colDef: {
+      tooltipComponent: StatusTooltip,
+      tooltipValueGetter: (params: ITooltipParams) =>
+        params.data.hasStatusStatuses[0]?.validationReport ??
+        params.data.hasStatusStatuses,
+    },
+  },
+};
+
 export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "primaryId",
@@ -243,36 +277,7 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "revisable",
     headerName: "Status",
-    cellRenderer: (params: ICellRendererParams<SampleMetadataExtended>) => {
-      if (params.data?.revisable) {
-        return params.data?.hasStatusStatuses[0]?.validationStatus ? (
-          <div>
-            <strong>&#10003;</strong>
-          </div>
-        ) : (
-          <div>
-            <WarningIcon />
-          </div>
-        );
-      } else {
-        return (
-          <div className="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        );
-      }
-    },
-    cellRendererParams: {
-      colDef: {
-        tooltipComponent: StatusTooltip,
-        tooltipValueGetter: (params: ITooltipParams) =>
-          params.data.hasStatusStatuses[0]?.validationReport ??
-          params.data.hasStatusStatuses,
-      },
-    },
+    ...statusCellRendererProps,
   },
   {
     field: "cmoSampleName",
@@ -585,6 +590,11 @@ export const CohortSampleDetailsColumns: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
+  },
+  {
+    field: "revisable",
+    headerName: "Status",
+    ...statusCellRendererProps,
   },
   {
     field: "cmoSampleName",
