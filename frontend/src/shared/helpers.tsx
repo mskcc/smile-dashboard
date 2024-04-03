@@ -745,6 +745,12 @@ export function cohortSampleFilterWhereVariables(
   if (parsedSearchVals.length > 1) {
     tempoWhere = [
       {
+        billedBy_IN: parsedSearchVals,
+      },
+      {
+        costCenter_IN: parsedSearchVals,
+      },
+      {
         hasEventBamCompletes_SOME: {
           date_IN: parsedSearchVals,
         },
@@ -792,6 +798,12 @@ export function cohortSampleFilterWhereVariables(
     ];
   } else {
     tempoWhere = [
+      {
+        billedBy_CONTAINS: parsedSearchVals[0],
+      },
+      {
+        costCenter_CONTAINS: parsedSearchVals[0],
+      },
       {
         hasEventBamCompletes_SOME: {
           date_CONTAINS: parsedSearchVals[0],
