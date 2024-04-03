@@ -533,7 +533,7 @@ export const CohortsListColumns: ColDef[] = [
     valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
   },
   {
-    headerName: "Initial Pipeline Run Date",
+    headerName: "Initial Cohort Delivery Date",
     valueGetter: ({ data }) => {
       const earliestCohortCompleteDate =
         data["hasCohortCompleteCohortCompletes"]?.slice(-1)[0]?.date;
