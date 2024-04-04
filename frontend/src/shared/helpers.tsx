@@ -247,28 +247,6 @@ function LoadingIcon() {
   );
 }
 
-const statusCellRendererProps: ColDef = {
-  cellRenderer: (params: ICellRendererParams) => {
-    if (params.data?.revisable) {
-      return params.data?.hasStatusStatuses[0]?.validationStatus ? (
-        <CheckIcon />
-      ) : (
-        <WarningIcon />
-      );
-    } else {
-      return <LoadingIcon />;
-    }
-  },
-  cellRendererParams: {
-    colDef: {
-      tooltipComponent: StatusTooltip,
-      tooltipValueGetter: (params: ITooltipParams) =>
-        params.data.hasStatusStatuses[0]?.validationReport ??
-        params.data.hasStatusStatuses,
-    },
-  },
-};
-
 export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "primaryId",
@@ -277,7 +255,25 @@ export const SampleDetailsColumns: ColDef<SampleMetadataExtended>[] = [
   {
     field: "revisable",
     headerName: "Status",
-    ...statusCellRendererProps,
+    cellRenderer: (params: ICellRendererParams) => {
+      if (params.data?.revisable) {
+        return params.data?.hasStatusStatuses[0]?.validationStatus ? (
+          <CheckIcon />
+        ) : (
+          <WarningIcon />
+        );
+      } else {
+        return <LoadingIcon />;
+      }
+    },
+    cellRendererParams: {
+      colDef: {
+        tooltipComponent: StatusTooltip,
+        tooltipValueGetter: (params: ITooltipParams) =>
+          params.data.hasStatusStatuses[0]?.validationReport ??
+          params.data.hasStatusStatuses,
+      },
+    },
   },
   {
     field: "cmoSampleName",
@@ -590,11 +586,6 @@ export const CohortSampleDetailsColumns: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
-  },
-  {
-    field: "revisable",
-    headerName: "Status",
-    ...statusCellRendererProps,
   },
   {
     field: "cmoSampleName",
