@@ -5,7 +5,12 @@ import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { props } from "../utils/constants";
-import { SamplesDocument, SortDirection } from "../generated/graphql";
+import {
+  FindSamplesByInputValueDocument,
+  Sample,
+  SamplesDocument,
+  SortDirection,
+} from "../generated/graphql";
 import { connect, headers, StringCodec } from "nats";
 const fetch = require("node-fetch");
 const request = require("request-promise-native");
@@ -47,68 +52,166 @@ export async function buildNeo4jDbSchema() {
   return neo4jDbSchema;
 }
 
+async function updateSampleMetadata(
+  sampleManifest: any,
+  changesToSubmit: any,
+  ogm: OGM,
+  apolloClient: typeof ApolloClient
+) {
+  Object.keys(changesToSubmit).forEach((key: string) => {
+    sampleManifest[key] = changesToSubmit[key];
+  });
+
+  // remove 'status' from sample metadata to ensure validator and label
+  // generator use latest status data added during validation process
+  delete sampleManifest["status"];
+
+  // add isCmoSample to sample's 'additionalProperties' if not already present
+  // this is to ensure that cmo samples get sent to the label generator after validation
+  // since some of the older SMILE samples do not have this additionalProperty set
+  if (sampleManifest["additionalProperties"]["isCmoSample"] == null) {
+    const requestId = sampleManifest["additionalProperties"]["igoRequestId"];
+    let req = ogm.model("Request");
+    const rd = await req.find({
+      where: { igoRequestId: requestId },
+    });
+    sampleManifest["additionalProperties"]["isCmoSample"] =
+      rd[0]["isCmoRequest"].toString();
+  }
+
+  // fire and forget
+  publishNatsMessage(
+    props.pub_validate_sample_update,
+    JSON.stringify(sampleManifest)
+  );
+
+  let sample = ogm.model("Sample");
+
+  await sample.update({
+    where: { smileSampleId: sampleManifest.smileSampleId },
+    update: { revisable: false },
+  });
+
+  const updatedSamples = await apolloClient.query({
+    query: SamplesDocument,
+    variables: {
+      where: {
+        smileSampleId: sampleManifest.smileSampleId,
+      },
+      hasMetadataSampleMetadataOptions2: {
+        sort: [{ importDate: SortDirection.Desc }],
+        limit: 1,
+      },
+    },
+  });
+
+  Object.keys(changesToSubmit).forEach((key: string) => {
+    updatedSamples.data.samples[0].hasMetadataSampleMetadata[0][key] =
+      changesToSubmit[key];
+  });
+
+  return updatedSamples;
+}
+
+async function updateTempoBilling(
+  sampleManifest: any,
+  primaryId: string,
+  changesToSubmit: any,
+  apolloClient: typeof ApolloClient
+) {
+  const sampleData = await apolloClient.query({
+    query: FindSamplesByInputValueDocument,
+    variables: {
+      where: {
+        smileSampleId: sampleManifest.smileSampleId,
+      },
+      sampleMetadataOptions: {
+        sort: [{ importDate: SortDirection.Desc }],
+        limit: 1,
+      },
+      bamCompletesOptions: {
+        sort: [{ date: SortDirection.Desc }],
+        limit: 1,
+      },
+      mafCompletesOptions: {
+        sort: [{ date: SortDirection.Desc }],
+        limit: 1,
+      },
+      qcCompletesOptions: {
+        sort: [{ date: SortDirection.Desc }],
+        limit: 1,
+      },
+    },
+  });
+
+  const { billed, billedBy, costCenter } =
+    sampleData.data.samplesConnection.edges[0].node.hasTempoTempos[0];
+
+  const dataForTempoBillingUpdate = {
+    primaryId,
+    billed,
+    billedBy,
+    costCenter,
+  };
+
+  for (const key in changesToSubmit) {
+    dataForTempoBillingUpdate[key as keyof typeof dataForTempoBillingUpdate] =
+      changesToSubmit[key];
+  }
+
+  publishNatsMessage(
+    props.pub_tempo_sample_billing,
+    JSON.stringify(dataForTempoBillingUpdate)
+  );
+
+  const updatedSamples = await apolloClient.query({
+    query: SamplesDocument,
+    variables: {
+      where: {
+        smileSampleId: sampleManifest.smileSampleId,
+      },
+      hasMetadataSampleMetadataOptions2: {
+        sort: [{ importDate: SortDirection.Desc }],
+        limit: 1,
+      },
+    },
+  });
+
+  return updatedSamples;
+}
+
 function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
   return {
     Mutation: {
       async updateSamples(_source: any, { where, update }: any) {
-        const data = await request(
-          props.smile_sample_endpoint +
-            where.hasMetadataSampleMetadataConnection_SOME.node.primaryId,
-          { json: true }
+        const primaryId =
+          where.hasMetadataSampleMetadataConnection_SOME.node.primaryId;
+
+        const sampleManifest = await request(
+          props.smile_sample_endpoint + primaryId,
+          {
+            json: true,
+          }
         );
 
-        const smdataupdates = update.hasMetadataSampleMetadata[0].update.node;
-        Object.keys(smdataupdates).forEach((key: string) => {
-          data[key] = smdataupdates[key];
-        });
+        const changesToSubmit = update.hasMetadataSampleMetadata[0].update.node;
 
-        // remove 'status' from sample metadata to ensure validator and label
-        // generator use latest status data added during validation process
-        delete data["status"];
-
-        // add isCmoSample to sample's 'additionalProperties' if not already present
-        // this is to ensure that cmo samples get sent to the label generator after validation
-        // since some of the older SMILE samples do not have this additionalProperty set
-        if (data["additionalProperties"]["isCmoSample"] == null) {
-          const requestId = data["additionalProperties"]["igoRequestId"];
-          let req = ogm.model("Request");
-          const rd = await req.find({
-            where: { igoRequestId: requestId },
-          });
-          data["additionalProperties"]["isCmoSample"] =
-            rd[0]["isCmoRequest"].toString();
+        let updatedSamples: any;
+        if ("hasMetadataSampleMetadata" in update) {
+          updatedSamples = await updateSampleMetadata(
+            sampleManifest,
+            changesToSubmit,
+            ogm,
+            apolloClient
+          );
+        } else {
+          updatedSamples = await updateTempoBilling(
+            sampleManifest,
+            primaryId,
+            changesToSubmit,
+            apolloClient
+          );
         }
-
-        // fire and forget
-        publishNatsMessage(
-          props.pub_validate_sample_update,
-          JSON.stringify(data)
-        );
-
-        let sample = ogm.model("Sample");
-
-        await sample.update({
-          where: { smileSampleId: data.smileSampleId },
-          update: { revisable: false },
-        });
-
-        const updatedSamples = await apolloClient.query({
-          query: SamplesDocument,
-          variables: {
-            where: {
-              smileSampleId: data.smileSampleId,
-            },
-            hasMetadataSampleMetadataOptions2: {
-              sort: [{ importDate: SortDirection.Desc }],
-              limit: 1,
-            },
-          },
-        });
-
-        Object.keys(smdataupdates).forEach((key: string) => {
-          updatedSamples.data.samples[0].hasMetadataSampleMetadata[0][key] =
-            smdataupdates[key];
-        });
 
         return {
           samples: updatedSamples.data.samples,

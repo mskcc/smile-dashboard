@@ -33,12 +33,6 @@ export type SampleChange = {
   rowNode: RowNode<any>;
 };
 
-export type ChangeForSubmit = {
-  [primaryId: string]: {
-    [fieldName: string]: string;
-  };
-};
-
 export const RequestsListColumns: ColDef[] = [
   {
     headerName: "View Samples",

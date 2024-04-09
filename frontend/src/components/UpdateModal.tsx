@@ -1,4 +1,4 @@
-import { useState, FunctionComponent, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { AgGridReact } from "ag-grid-react";
@@ -6,17 +6,27 @@ import "ag-grid-enterprise";
 import styles from "./records.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { SampleChange, ChangeForSubmit } from "../shared/helpers";
+import { SampleChange } from "../shared/helpers";
 import { Sample, useUpdateSamplesMutation } from "../generated/graphql";
 import _ from "lodash";
 
-export const UpdateModal: FunctionComponent<{
+interface UpdateModalProps {
   changes: SampleChange[];
   onSuccess: () => void;
   onHide: () => void;
   samples: Sample[];
   onOpen?: () => void;
-}> = ({ changes, onHide, onSuccess, onOpen, samples }) => {
+  sampleKeyForUpdate: keyof Sample;
+}
+
+export function UpdateModal({
+  changes,
+  onHide,
+  onSuccess,
+  onOpen,
+  samples,
+  sampleKeyForUpdate,
+}: UpdateModalProps) {
   const [rowData, setRowData] = useState(changes);
   const [columnDefs] = useState([
     { field: "primaryId", rowGroup: true, hide: true },
@@ -44,29 +54,31 @@ export const UpdateModal: FunctionComponent<{
     useUpdateSamplesMutation();
 
   const handleSubmitUpdates = () => {
-    const changesForSubmit: ChangeForSubmit = {};
+    const changesToSubmitByPrimaryId: {
+      [primaryId: string]: {
+        [fieldName: string]: string;
+      };
+    } = {};
     for (const c of changes) {
-      if (changesForSubmit[c.primaryId]) {
-        changesForSubmit[c.primaryId][c.fieldName] = c.newValue;
+      if (changesToSubmitByPrimaryId[c.primaryId]) {
+        changesToSubmitByPrimaryId[c.primaryId][c.fieldName] = c.newValue;
       } else {
-        changesForSubmit[c.primaryId] = { [c.fieldName]: c.newValue };
+        changesToSubmitByPrimaryId[c.primaryId] = { [c.fieldName]: c.newValue };
       }
     }
 
     const updatedSamples = _.cloneDeep(samples);
     updatedSamples?.forEach((s) => {
       const primaryId = s.hasMetadataSampleMetadata[0].primaryId;
-      if (primaryId in changesForSubmit) {
-        s.revisable = false;
-
-        _.forEach(changesForSubmit[primaryId], (v, k) => {
+      if (primaryId in changesToSubmitByPrimaryId) {
+        _.forEach(changesToSubmitByPrimaryId[primaryId], (v, k) => {
           /* @ts-ignore */
-          s.hasMetadataSampleMetadata[0][k] = v;
+          s[sampleKeyForUpdate][0][k] = v;
         });
       }
     });
 
-    for (const [key, value] of Object.entries(changesForSubmit)) {
+    for (const [key, value] of Object.entries(changesToSubmitByPrimaryId)) {
       updateSamplesMutation({
         variables: {
           where: {
@@ -77,8 +89,7 @@ export const UpdateModal: FunctionComponent<{
             },
           },
           update: {
-            revisable: false,
-            hasMetadataSampleMetadata: [
+            [sampleKeyForUpdate]: [
               {
                 update: {
                   node: value!,
@@ -136,4 +147,4 @@ export const UpdateModal: FunctionComponent<{
       </Modal.Footer>
     </Modal>
   );
-};
+}

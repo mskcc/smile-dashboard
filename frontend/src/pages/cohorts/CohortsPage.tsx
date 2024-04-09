@@ -109,6 +109,7 @@ export default function CohortsPage() {
   const sampleQueryParamFieldName = "cohortId";
   const sampleQueryParamHeaderName = "Cohort ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
+  const sampleKeyForUpdate = "hasTempoTempos";
 
   return (
     <>
@@ -159,6 +160,7 @@ export default function CohortsPage() {
             OR: cohortSampleFilterWhereVariables(samplesParsedSearchVals),
           } as SampleWhere;
         }}
+        sampleKeyForUpdate={sampleKeyForUpdate}
       />
     </>
   );
