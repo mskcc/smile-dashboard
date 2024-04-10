@@ -37,6 +37,7 @@ export function UpdateModal({
 
   useEffect(() => {
     onOpen && onOpen();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -50,8 +51,7 @@ export function UpdateModal({
     };
   }, []);
 
-  const [updateSamplesMutation, { data, loading, error }] =
-    useUpdateSamplesMutation();
+  const [updateSamplesMutation] = useUpdateSamplesMutation();
 
   const handleSubmitUpdates = () => {
     const changesToSubmitByPrimaryId: {

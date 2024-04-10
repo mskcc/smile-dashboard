@@ -194,7 +194,9 @@ function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
           }
         );
 
-        const changesToSubmit = update.hasMetadataSampleMetadata[0].update.node;
+        const sampleKeyForUpdate = Object.keys(update)[0];
+
+        const changesToSubmit = update[sampleKeyForUpdate][0].update.node;
 
         let updatedSamples: any;
         if ("hasMetadataSampleMetadata" in update) {
