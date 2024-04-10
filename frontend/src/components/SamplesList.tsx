@@ -37,6 +37,7 @@ interface ISampleListProps {
   refetchWhereVariables: (parsedSearchVals: string[]) => SampleWhere;
   exportFileName?: string;
   sampleKeyForUpdate?: keyof Sample;
+  useRevisableForUpdate?: boolean;
 }
 
 export default function SamplesList({
@@ -47,6 +48,7 @@ export default function SamplesList({
   setUnsavedChanges,
   exportFileName,
   sampleKeyForUpdate = "hasMetadataSampleMetadata",
+  useRevisableForUpdate = true,
 }: ISampleListProps) {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
@@ -174,6 +176,7 @@ export default function SamplesList({
           onHide={() => setShowUpdateModal(false)}
           onOpen={() => stopPolling()}
           sampleKeyForUpdate={sampleKeyForUpdate}
+          useRevisableForUpdate={useRevisableForUpdate}
         />
       )}
 

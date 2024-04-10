@@ -110,6 +110,7 @@ export default function CohortsPage() {
   const sampleQueryParamHeaderName = "Cohort ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
   const sampleKeyForUpdate = "hasTempoTempos";
+  const useRevisableForSampleUpdate = false;
 
   return (
     <>
@@ -161,6 +162,7 @@ export default function CohortsPage() {
           } as SampleWhere;
         }}
         sampleKeyForUpdate={sampleKeyForUpdate}
+        useRevisableForSampleUpdate={useRevisableForSampleUpdate}
       />
     </>
   );

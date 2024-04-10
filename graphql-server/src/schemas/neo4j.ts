@@ -52,6 +52,49 @@ export async function buildNeo4jDbSchema() {
   return neo4jDbSchema;
 }
 
+function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
+  return {
+    Mutation: {
+      async updateSamples(_source: any, { where, update }: any) {
+        const primaryId =
+          where.hasMetadataSampleMetadataConnection_SOME.node.primaryId;
+
+        const sampleManifest = await request(
+          props.smile_sample_endpoint + primaryId,
+          {
+            json: true,
+          }
+        );
+
+        const sampleKeyForUpdate = Object.keys(update)[0];
+
+        const changesToSubmit = update[sampleKeyForUpdate][0].update.node;
+
+        let updatedSamples: any;
+        if ("hasMetadataSampleMetadata" in update) {
+          updatedSamples = await updateSampleMetadata(
+            sampleManifest,
+            changesToSubmit,
+            ogm,
+            apolloClient
+          );
+        } else {
+          updatedSamples = await updateSampleBilling(
+            sampleManifest,
+            primaryId,
+            changesToSubmit,
+            apolloClient
+          );
+        }
+
+        return {
+          samples: updatedSamples.data.samples,
+        };
+      },
+    },
+  };
+}
+
 async function updateSampleMetadata(
   sampleManifest: any,
   changesToSubmit: any,
@@ -113,7 +156,7 @@ async function updateSampleMetadata(
   return updatedSamples;
 }
 
-async function updateTempoBilling(
+async function updateSampleBilling(
   sampleManifest: any,
   primaryId: string,
   changesToSubmit: any,
@@ -178,49 +221,6 @@ async function updateTempoBilling(
   });
 
   return updatedSamples;
-}
-
-function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
-  return {
-    Mutation: {
-      async updateSamples(_source: any, { where, update }: any) {
-        const primaryId =
-          where.hasMetadataSampleMetadataConnection_SOME.node.primaryId;
-
-        const sampleManifest = await request(
-          props.smile_sample_endpoint + primaryId,
-          {
-            json: true,
-          }
-        );
-
-        const sampleKeyForUpdate = Object.keys(update)[0];
-
-        const changesToSubmit = update[sampleKeyForUpdate][0].update.node;
-
-        let updatedSamples: any;
-        if ("hasMetadataSampleMetadata" in update) {
-          updatedSamples = await updateSampleMetadata(
-            sampleManifest,
-            changesToSubmit,
-            ogm,
-            apolloClient
-          );
-        } else {
-          updatedSamples = await updateTempoBilling(
-            sampleManifest,
-            primaryId,
-            changesToSubmit,
-            apolloClient
-          );
-        }
-
-        return {
-          samples: updatedSamples.data.samples,
-        };
-      },
-    },
-  };
 }
 
 async function publishNatsMessage(topic: string, message: any) {

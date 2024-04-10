@@ -43,6 +43,7 @@ interface IRecordsListProps {
     samplesParsedSearchVals: string[]
   ) => SampleWhere;
   sampleKeyForUpdate?: keyof Sample;
+  useRevisableForSampleUpdate?: boolean;
   setCustomSearchVals?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
   customToolbarUI?: JSX.Element;
 }
@@ -68,6 +69,7 @@ export default function RecordsList({
   samplesParentWhereVariables,
   samplesRefetchWhereVariables,
   sampleKeyForUpdate,
+  useRevisableForSampleUpdate,
   customToolbarUI,
   setCustomSearchVals,
 }: IRecordsListProps) {
@@ -220,6 +222,7 @@ export default function RecordsList({
                     setUnsavedChanges={setUnsavedChanges}
                     exportFileName={`${samplesQueryParam}.tsv`}
                     sampleKeyForUpdate={sampleKeyForUpdate}
+                    useRevisableForUpdate={useRevisableForSampleUpdate}
                   />
                 </div>
               </Modal.Body>

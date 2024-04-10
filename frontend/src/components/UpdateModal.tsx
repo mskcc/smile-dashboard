@@ -17,6 +17,7 @@ interface UpdateModalProps {
   samples: Sample[];
   onOpen?: () => void;
   sampleKeyForUpdate: keyof Sample;
+  useRevisableForUpdate: boolean;
 }
 
 export function UpdateModal({
@@ -26,6 +27,7 @@ export function UpdateModal({
   onOpen,
   samples,
   sampleKeyForUpdate,
+  useRevisableForUpdate,
 }: UpdateModalProps) {
   const [rowData, setRowData] = useState(changes);
   const [columnDefs] = useState([
@@ -71,6 +73,8 @@ export function UpdateModal({
     updatedSamples?.forEach((s) => {
       const primaryId = s.hasMetadataSampleMetadata[0].primaryId;
       if (primaryId in changesToSubmitByPrimaryId) {
+        if (useRevisableForUpdate) s.revisable = false;
+
         _.forEach(changesToSubmitByPrimaryId[primaryId], (v, k) => {
           /* @ts-ignore */
           s[sampleKeyForUpdate][0][k] = v;
