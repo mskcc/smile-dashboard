@@ -54,33 +54,34 @@ export function UpdateModal({
   const [updateSamplesMutation] = useUpdateSamplesMutation();
 
   const handleSubmitUpdates = () => {
-    const changesToSubmitByPrimaryId: {
+    const changesByPrimaryId: {
       [primaryId: string]: {
         [fieldName: string]: string;
       };
     } = {};
     for (const c of changes) {
-      if (changesToSubmitByPrimaryId[c.primaryId]) {
-        changesToSubmitByPrimaryId[c.primaryId][c.fieldName] = c.newValue;
+      const { primaryId, fieldName, newValue } = c;
+      if (changesByPrimaryId[primaryId]) {
+        changesByPrimaryId[primaryId][fieldName] = newValue;
       } else {
-        changesToSubmitByPrimaryId[c.primaryId] = { [c.fieldName]: c.newValue };
+        changesByPrimaryId[primaryId] = { [fieldName]: newValue };
       }
     }
 
     const updatedSamples = _.cloneDeep(samples);
     updatedSamples?.forEach((s) => {
       const primaryId = s.hasMetadataSampleMetadata[0].primaryId;
-      if (primaryId in changesToSubmitByPrimaryId) {
+      if (primaryId in changesByPrimaryId) {
         s.revisable = false;
 
-        _.forEach(changesToSubmitByPrimaryId[primaryId], (v, k) => {
+        _.forEach(changesByPrimaryId[primaryId], (v, k) => {
           /* @ts-ignore */
           s[sampleKeyForUpdate][0][k] = v;
         });
       }
     });
 
-    for (const [key, value] of Object.entries(changesToSubmitByPrimaryId)) {
+    for (const [key, value] of Object.entries(changesByPrimaryId)) {
       updateSamplesMutation({
         variables: {
           where: {

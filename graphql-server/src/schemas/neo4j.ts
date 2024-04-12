@@ -7,7 +7,6 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { props } from "../utils/constants";
 import {
   FindSamplesByInputValueDocument,
-  Sample,
   SamplesDocument,
   SortDirection,
 } from "../generated/graphql";
@@ -68,13 +67,13 @@ function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
 
         const sampleKeyForUpdate = Object.keys(update)[0];
 
-        const changesToSubmit = update[sampleKeyForUpdate][0].update.node;
+        const changesByPrimaryId = update[sampleKeyForUpdate][0].update.node;
 
         let updatedSamples: any;
         if ("hasMetadataSampleMetadata" in update) {
           updatedSamples = await updateSampleMetadata(
             sampleManifest,
-            changesToSubmit,
+            changesByPrimaryId,
             ogm,
             apolloClient
           );
@@ -82,7 +81,7 @@ function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
           updatedSamples = await updateSampleBilling(
             sampleManifest,
             primaryId,
-            changesToSubmit,
+            changesByPrimaryId,
             apolloClient
           );
         }
@@ -97,12 +96,12 @@ function buildResolvers(ogm: OGM, apolloClient: typeof ApolloClient) {
 
 async function updateSampleMetadata(
   sampleManifest: any,
-  changesToSubmit: any,
+  changesByPrimaryId: any,
   ogm: OGM,
   apolloClient: typeof ApolloClient
 ) {
-  Object.keys(changesToSubmit).forEach((key: string) => {
-    sampleManifest[key] = changesToSubmit[key];
+  Object.keys(changesByPrimaryId).forEach((primaryId: string) => {
+    sampleManifest[primaryId] = changesByPrimaryId[primaryId];
   });
 
   // remove 'status' from sample metadata to ensure validator and label
@@ -148,9 +147,9 @@ async function updateSampleMetadata(
     },
   });
 
-  Object.keys(changesToSubmit).forEach((key: string) => {
+  Object.keys(changesByPrimaryId).forEach((key: string) => {
     updatedSamples.data.samples[0].hasMetadataSampleMetadata[0][key] =
-      changesToSubmit[key];
+      changesByPrimaryId[key];
   });
 
   return updatedSamples;
@@ -159,7 +158,7 @@ async function updateSampleMetadata(
 async function updateSampleBilling(
   sampleManifest: any,
   primaryId: string,
-  changesToSubmit: any,
+  changesByPrimaryId: any,
   apolloClient: typeof ApolloClient
 ) {
   const sampleData = await apolloClient.query({
@@ -197,9 +196,10 @@ async function updateSampleBilling(
     costCenter,
   };
 
-  for (const key in changesToSubmit) {
-    dataForTempoBillingUpdate[key as keyof typeof dataForTempoBillingUpdate] =
-      changesToSubmit[key];
+  for (const primaryId in changesByPrimaryId) {
+    dataForTempoBillingUpdate[
+      primaryId as keyof typeof dataForTempoBillingUpdate
+    ] = changesByPrimaryId[primaryId];
   }
 
   publishNatsMessage(
