@@ -12,7 +12,11 @@ export default function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    getUserEmail(setUserEmail);
+    async function getAndSetUserEmail() {
+      const userEmail = await getUserEmail();
+      setUserEmail(userEmail);
+    }
+    getAndSetUserEmail();
   }, []);
 
   return (

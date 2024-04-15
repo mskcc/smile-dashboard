@@ -205,10 +205,11 @@ export default function PatientsPage({
   useEffect(() => {
     window.addEventListener("message", handleLogin);
 
-    function handleLogin(event: MessageEvent) {
+    async function handleLogin(event: MessageEvent) {
       if (event.data !== `success`) return;
 
-      getUserEmail(setUserEmail);
+      const userEmail = await getUserEmail();
+      setUserEmail(userEmail);
 
       setAlertModal({
         show: true,
