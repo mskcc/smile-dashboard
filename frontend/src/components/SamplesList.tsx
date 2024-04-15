@@ -6,7 +6,7 @@ import {
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col } from "react-bootstrap";
-import { useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
@@ -37,6 +37,8 @@ interface ISampleListProps {
   refetchWhereVariables: (parsedSearchVals: string[]) => SampleWhere;
   exportFileName?: string;
   sampleKeyForUpdate?: keyof Sample;
+  userEmail?: string | null;
+  setUserEmail?: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function SamplesList({
@@ -47,6 +49,8 @@ export default function SamplesList({
   setUnsavedChanges,
   exportFileName,
   sampleKeyForUpdate = "hasMetadataSampleMetadata",
+  userEmail,
+  setUserEmail,
 }: ISampleListProps) {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
@@ -174,6 +178,8 @@ export default function SamplesList({
           onHide={() => setShowUpdateModal(false)}
           onOpen={() => stopPolling()}
           sampleKeyForUpdate={sampleKeyForUpdate}
+          userEmail={userEmail}
+          setUserEmail={setUserEmail}
         />
       )}
 

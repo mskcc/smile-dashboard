@@ -39,7 +39,12 @@ export default function App() {
             <Route path=":cmoPatientId" />
           </Route>
           <Route path="/samples" element={<SamplesPage />} />
-          <Route path="/cohorts/" element={<CohortsPage />}>
+          <Route
+            path="/cohorts/"
+            element={
+              <CohortsPage userEmail={userEmail} setUserEmail={setUserEmail} />
+            }
+          >
             <Route path=":cohortId" />
           </Route>
           <Route path="/auth/login-success" element={<LoginSuccessPage />} />
