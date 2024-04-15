@@ -18,6 +18,7 @@ import { Sample, useUpdateSamplesMutation } from "../generated/graphql";
 import _ from "lodash";
 import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../shared/constants";
 import { getUserEmail } from "../utils/getUserEmail";
+import { openLoginPopup } from "../utils/openLoginPopup";
 
 interface UpdateModalProps {
   changes: SampleChange[];
@@ -59,7 +60,7 @@ export function UpdateModal({
 
   const [updateSamplesMutation] = useUpdateSamplesMutation();
 
-  const handleSubmitUpdates = useCallback(() => {
+  const handleSubmitUpdates = () => {
     const changesByPrimaryId: {
       [primaryId: string]: {
         [fieldName: string]: string;
@@ -83,17 +84,7 @@ export function UpdateModal({
           }
         }
       } else {
-        const width = 800;
-        const height = 800;
-        const left = (window.screen.width - width) / 2;
-        const top = (window.screen.height - height) / 2;
-
-        window.open(
-          `${REACT_APP_EXPRESS_SERVER_ORIGIN}/auth/login`,
-          "_blank",
-          `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
-        );
-
+        openLoginPopup();
         return;
       }
     }
@@ -141,15 +132,7 @@ export function UpdateModal({
 
     onSuccess();
     onHide();
-  }, [
-    changes,
-    onHide,
-    onSuccess,
-    sampleKeyForUpdate,
-    samples,
-    updateSamplesMutation,
-    userEmail,
-  ]);
+  };
 
   useEffect(() => {
     window.addEventListener("message", handleLogin);
@@ -168,7 +151,8 @@ export function UpdateModal({
     return () => {
       window.removeEventListener("message", handleLogin);
     };
-  }, [handleSubmitUpdates, setUserEmail]);
+    // eslint-disable-next-line
+  }, [userEmail]);
 
   const autoGroupColumnDef = useMemo(() => {
     return {
