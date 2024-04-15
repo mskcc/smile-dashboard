@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { AgGridReact } from "ag-grid-react";
@@ -17,6 +17,8 @@ interface UpdateModalProps {
   samples: Sample[];
   onOpen?: () => void;
   sampleKeyForUpdate: keyof Sample;
+  userEmail?: string | null;
+  setUserEmail?: Dispatch<SetStateAction<string | null>>;
 }
 
 export function UpdateModal({
@@ -26,6 +28,8 @@ export function UpdateModal({
   onOpen,
   samples,
   sampleKeyForUpdate,
+  userEmail,
+  setUserEmail,
 }: UpdateModalProps) {
   const [rowData, setRowData] = useState(changes);
   const [columnDefs] = useState([
@@ -65,6 +69,20 @@ export function UpdateModal({
         changesByPrimaryId[primaryId][fieldName] = newValue;
       } else {
         changesByPrimaryId[primaryId] = { [fieldName]: newValue };
+      }
+    }
+
+    const changesIncludeBilled = changes.some((c) => c.fieldName === "billed");
+    if (changesIncludeBilled) {
+      if (userEmail) {
+        // eslint-disable-next-line
+        for (const [primaryId, changes] of Object.entries(changesByPrimaryId)) {
+          if ("billed" in changes) {
+            changes["billedBy"] = userEmail.split("@")[0];
+          }
+        }
+      } else {
+        // TODO: login popup
       }
     }
 
