@@ -1,4 +1,11 @@
-import { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+} from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { AgGridReact } from "ag-grid-react";
@@ -9,6 +16,8 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { SampleChange } from "../shared/helpers";
 import { Sample, useUpdateSamplesMutation } from "../generated/graphql";
 import _ from "lodash";
+import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../shared/constants";
+import { getUserEmail } from "../utils/getUserEmail";
 
 interface UpdateModalProps {
   changes: SampleChange[];
@@ -48,16 +57,9 @@ export function UpdateModal({
     setRowData(changes);
   }, [changes]);
 
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: "Primary Id",
-      field: "primaryId",
-    };
-  }, []);
-
   const [updateSamplesMutation] = useUpdateSamplesMutation();
 
-  const handleSubmitUpdates = () => {
+  const handleSubmitUpdates = useCallback(() => {
     const changesByPrimaryId: {
       [primaryId: string]: {
         [fieldName: string]: string;
@@ -75,14 +77,24 @@ export function UpdateModal({
     const changesIncludeBilled = changes.some((c) => c.fieldName === "billed");
     if (changesIncludeBilled) {
       if (userEmail) {
-        // eslint-disable-next-line
-        for (const [primaryId, changes] of Object.entries(changesByPrimaryId)) {
+        for (const [, changes] of Object.entries(changesByPrimaryId)) {
           if ("billed" in changes) {
             changes["billedBy"] = userEmail.split("@")[0];
           }
         }
       } else {
-        // TODO: login popup
+        const width = 800;
+        const height = 800;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+
+        window.open(
+          `${REACT_APP_EXPRESS_SERVER_ORIGIN}/auth/login`,
+          "_blank",
+          `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`
+        );
+
+        return;
       }
     }
 
@@ -129,7 +141,41 @@ export function UpdateModal({
 
     onSuccess();
     onHide();
-  };
+  }, [
+    changes,
+    onHide,
+    onSuccess,
+    sampleKeyForUpdate,
+    samples,
+    updateSamplesMutation,
+    userEmail,
+  ]);
+
+  useEffect(() => {
+    window.addEventListener("message", handleLogin);
+
+    async function handleLogin(event: MessageEvent) {
+      if (setUserEmail) {
+        if (event.data !== "success") return;
+
+        const userEmail = await getUserEmail();
+        setUserEmail(userEmail);
+
+        handleSubmitUpdates();
+      }
+    }
+
+    return () => {
+      window.removeEventListener("message", handleLogin);
+    };
+  }, [handleSubmitUpdates, setUserEmail]);
+
+  const autoGroupColumnDef = useMemo(() => {
+    return {
+      headerName: "Primary Id",
+      field: "primaryId",
+    };
+  }, []);
 
   return (
     <Modal

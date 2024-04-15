@@ -206,7 +206,7 @@ export default function PatientsPage({
     window.addEventListener("message", handleLogin);
 
     async function handleLogin(event: MessageEvent) {
-      if (event.data !== `success`) return;
+      if (event.data !== "success") return;
 
       const userEmail = await getUserEmail();
       setUserEmail(userEmail);
