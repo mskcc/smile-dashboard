@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useMemo,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-} from "react";
+import { useState, useEffect, useMemo, Dispatch, SetStateAction } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { AgGridReact } from "ag-grid-react";
@@ -13,12 +6,22 @@ import "ag-grid-enterprise";
 import styles from "./records.module.scss";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { SampleChange } from "../shared/helpers";
+import { ChangesByPrimaryId, SampleChange } from "../shared/helpers";
 import { Sample, useUpdateSamplesMutation } from "../generated/graphql";
 import _ from "lodash";
-import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "../shared/constants";
 import { getUserEmail } from "../utils/getUserEmail";
 import { openLoginPopup } from "../utils/openLoginPopup";
+
+function populateBilledBy(
+  changesByPrimaryId: ChangesByPrimaryId,
+  userEmail: string
+) {
+  for (const [, changes] of Object.entries(changesByPrimaryId)) {
+    if ("billed" in changes) {
+      changes["billedBy"] = userEmail!.split("@")[0];
+    }
+  }
+}
 
 interface UpdateModalProps {
   changes: SampleChange[];
@@ -60,12 +63,8 @@ export function UpdateModal({
 
   const [updateSamplesMutation] = useUpdateSamplesMutation();
 
-  const handleSubmitUpdates = () => {
-    const changesByPrimaryId: {
-      [primaryId: string]: {
-        [fieldName: string]: string;
-      };
-    } = {};
+  async function handleSubmitUpdates() {
+    const changesByPrimaryId: ChangesByPrimaryId = {};
     for (const c of changes) {
       const { primaryId, fieldName, newValue } = c;
       if (changesByPrimaryId[primaryId]) {
@@ -75,17 +74,32 @@ export function UpdateModal({
       }
     }
 
-    const changesIncludeBilled = changes.some((c) => c.fieldName === "billed");
-    if (changesIncludeBilled) {
-      if (userEmail) {
-        for (const [, changes] of Object.entries(changesByPrimaryId)) {
-          if ("billed" in changes) {
-            changes["billedBy"] = userEmail.split("@")[0];
+    if (setUserEmail) {
+      if (!changes.some((c) => c.fieldName === "billed")) return;
+
+      if (!userEmail) {
+        const logInUser = new Promise<string | null>((resolve) => {
+          window.addEventListener("message", handleLogin);
+          openLoginPopup();
+
+          async function handleLogin(event: MessageEvent) {
+            if (event.data === "success") {
+              const userEmail = await getUserEmail();
+              window.removeEventListener("message", handleLogin);
+              resolve(userEmail);
+            }
           }
+        });
+
+        const userEmail = await logInUser;
+        if (userEmail) {
+          setUserEmail(userEmail);
+          populateBilledBy(changesByPrimaryId, userEmail);
+        } else {
+          return;
         }
       } else {
-        openLoginPopup();
-        return;
+        populateBilledBy(changesByPrimaryId, userEmail);
       }
     }
 
@@ -132,27 +146,7 @@ export function UpdateModal({
 
     onSuccess();
     onHide();
-  };
-
-  useEffect(() => {
-    window.addEventListener("message", handleLogin);
-
-    async function handleLogin(event: MessageEvent) {
-      if (setUserEmail) {
-        if (event.data !== "success") return;
-
-        const userEmail = await getUserEmail();
-        setUserEmail(userEmail);
-
-        handleSubmitUpdates();
-      }
-    }
-
-    return () => {
-      window.removeEventListener("message", handleLogin);
-    };
-    // eslint-disable-next-line
-  }, [userEmail]);
+  }
 
   const autoGroupColumnDef = useMemo(() => {
     return {
