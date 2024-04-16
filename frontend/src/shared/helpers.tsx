@@ -617,7 +617,7 @@ export const CohortSampleDetailsColumns: ColDef[] = [
   },
   {
     field: "bamCompleteDate",
-    headerName: "BAM Complete Date",
+    headerName: "Latest BAM Complete Date",
   },
   {
     field: "bamCompleteStatus",
@@ -625,7 +625,7 @@ export const CohortSampleDetailsColumns: ColDef[] = [
   },
   {
     field: "mafCompleteDate",
-    headerName: "MAF Complete Date",
+    headerName: "Latest MAF Complete Date",
   },
   {
     field: "mafCompleteNormalPrimaryId",
@@ -637,7 +637,7 @@ export const CohortSampleDetailsColumns: ColDef[] = [
   },
   {
     field: "qcCompleteDate",
-    headerName: "QC Complete Date",
+    headerName: "Latest QC Complete Date",
   },
   {
     field: "qcCompleteResult",
