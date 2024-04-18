@@ -9,19 +9,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ChangesByPrimaryId, SampleChange } from "../shared/helpers";
 import { Sample, useUpdateSamplesMutation } from "../generated/graphql";
 import _ from "lodash";
-import { getUserEmail } from "../utils/getUserEmail";
-import { openLoginPopup } from "../utils/openLoginPopup";
-
-function populateBilledBy(
-  changesByPrimaryId: ChangesByPrimaryId,
-  userEmail: string
-) {
-  for (const [, changes] of Object.entries(changesByPrimaryId)) {
-    if ("billed" in changes) {
-      changes["billedBy"] = userEmail!.split("@")[0];
-    }
-  }
-}
 
 interface UpdateModalProps {
   changes: SampleChange[];
@@ -65,41 +52,11 @@ export function UpdateModal({
 
   async function handleSubmitUpdates() {
     const changesByPrimaryId: ChangesByPrimaryId = {};
-    for (const c of changes) {
-      const { primaryId, fieldName, newValue } = c;
+    for (const { primaryId, fieldName, newValue } of changes) {
       if (changesByPrimaryId[primaryId]) {
         changesByPrimaryId[primaryId][fieldName] = newValue;
       } else {
         changesByPrimaryId[primaryId] = { [fieldName]: newValue };
-      }
-    }
-
-    if (setUserEmail) {
-      if (!changes.some((c) => c.fieldName === "billed")) return;
-
-      if (!userEmail) {
-        const logInUser = new Promise<string | null>((resolve) => {
-          window.addEventListener("message", handleLogin);
-          openLoginPopup();
-
-          async function handleLogin(event: MessageEvent) {
-            if (event.data === "success") {
-              const userEmail = await getUserEmail();
-              window.removeEventListener("message", handleLogin);
-              resolve(userEmail);
-            }
-          }
-        });
-
-        const userEmail = await logInUser;
-        if (userEmail) {
-          setUserEmail(userEmail);
-          populateBilledBy(changesByPrimaryId, userEmail);
-        } else {
-          return;
-        }
-      } else {
-        populateBilledBy(changesByPrimaryId, userEmail);
       }
     }
 
