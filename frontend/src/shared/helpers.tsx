@@ -878,7 +878,7 @@ export function cohortSampleFilterWhereVariables(
   ];
 }
 
-export function getSampleMetadataFromSamplesQuery(samples: Sample[]) {
+export function prepareSampleMetadataForAgGrid(samples: Sample[]) {
   return samples.map((s) => {
     return {
       ...s.hasMetadataSampleMetadata[0],
@@ -887,7 +887,7 @@ export function getSampleMetadataFromSamplesQuery(samples: Sample[]) {
   });
 }
 
-export function getSampleCohortDataFromSamplesQuery(samples: Sample[]) {
+export function prepareSampleCohortDataForAgGrid(samples: Sample[]) {
   return samples.map((s) => {
     const cohorts = s.cohortsHasCohortSampleConnection?.edges;
     const cohortDates = cohorts?.flatMap((c) => {

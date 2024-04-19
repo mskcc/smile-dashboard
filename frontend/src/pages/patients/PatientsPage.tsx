@@ -16,7 +16,7 @@ import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 import {
   PatientsListColumns,
   SampleDetailsColumns,
-  getSampleMetadataFromSamplesQuery,
+  prepareSampleMetadataForAgGrid,
   sampleFilterWhereVariables,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
@@ -282,7 +282,6 @@ export default function PatientsPage({
           sampleQueryParamValue &&
           `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
         }
-        getSamplesRowData={getSampleMetadataFromSamplesQuery}
         samplesParentWhereVariables={
           {
             OR: [
