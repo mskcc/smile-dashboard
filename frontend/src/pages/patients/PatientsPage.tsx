@@ -1,5 +1,5 @@
 import {
-  PatientAliasWhere,
+  PatientWhere,
   SampleWhere,
   useGetPatientIdsTripletsLazyQuery,
   usePatientsListLazyQuery,
@@ -16,7 +16,6 @@ import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 import {
   PatientsListColumns,
   SampleDetailsColumns,
-  prepareSampleMetadataForAgGrid,
   sampleFilterWhereVariables,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
@@ -29,51 +28,35 @@ export type PatientIdsTriplet = {
   DMP_ID: string | null;
 };
 
-function patientAliasFilterWhereVariables(
+function patientFilterWhereVariables(
   parsedSearchVals: string[]
-): PatientAliasWhere[] {
+): PatientWhere[] {
   if (parsedSearchVals.length > 1) {
     return [
-      { value_IN: parsedSearchVals },
-      { namespace_IN: parsedSearchVals },
       {
-        isAliasPatients_SOME: {
-          hasSampleSamples_SOME: {
-            hasMetadataSampleMetadata_SOME: {
-              cmoSampleName_IN: parsedSearchVals,
-            },
-          },
+        patientAliasesIsAlias_SOME: {
+          value_IN: parsedSearchVals,
         },
       },
       {
-        isAliasPatients_SOME: {
-          hasSampleSamples_SOME: {
-            hasMetadataSampleMetadata_SOME: {
-              primaryId_IN: parsedSearchVals,
-            },
+        hasSampleSamples_SOME: {
+          hasMetadataSampleMetadata_SOME: {
+            cmoSampleName_IN: parsedSearchVals,
           },
         },
       },
     ];
   } else {
     return [
-      { value_CONTAINS: parsedSearchVals[0] },
-      { namespace_CONTAINS: parsedSearchVals[0] },
       {
-        isAliasPatients_SOME: {
-          hasSampleSamples_SOME: {
-            hasMetadataSampleMetadata_SOME: {
-              cmoSampleName_CONTAINS: parsedSearchVals[0],
-            },
-          },
+        patientAliasesIsAlias_SOME: {
+          value_CONTAINS: parsedSearchVals[0],
         },
       },
       {
-        isAliasPatients_SOME: {
-          hasSampleSamples_SOME: {
-            hasMetadataSampleMetadata_SOME: {
-              primaryId_CONTAINS: parsedSearchVals[0],
-            },
+        hasSampleSamples_SOME: {
+          hasMetadataSampleMetadata_SOME: {
+            cmoSampleName_CONTAINS: parsedSearchVals[0],
           },
         },
       },
@@ -248,7 +231,7 @@ export default function PatientsPage({
   }, [phiEnabled, patientIdsTriplets, userEmail]);
 
   const dataName = "patients";
-  const nodeName = "patientAliases";
+  // const nodeName = "patientAliases"; TODO: remove nodeName prop from RecordsList
   const sampleQueryParamFieldName = "cmoPatientId";
   const sampleQueryParamHeaderName = "CMO Patient ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
@@ -260,9 +243,9 @@ export default function PatientsPage({
       <RecordsList
         colDefs={ActivePatientsListColumns}
         dataName={dataName}
-        nodeName={nodeName}
+        nodeName={dataName}
         lazyRecordsQuery={usePatientsListLazyQuery}
-        queryFilterWhereVariables={patientAliasFilterWhereVariables}
+        queryFilterWhereVariables={patientFilterWhereVariables}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
         parsedSearchVals={parsedSearchVals}

@@ -9,6 +9,7 @@ import {
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import {
+  PatientAlias,
   Sample,
   SampleMetadata,
   SampleMetadataWhere,
@@ -171,8 +172,8 @@ export const PatientsListColumns: ColDef[] = [
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
     valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0]["patientAliasesIsAlias"].find(
-        (patientAlias: any) => patientAlias.namespace === "cmoId"
+      return data.patientAliasesIsAlias.find(
+        (patientAlias: PatientAlias) => patientAlias.namespace === "cmoId"
       )?.value;
     },
     sortable: false,
@@ -181,8 +182,8 @@ export const PatientsListColumns: ColDef[] = [
     field: "dmpPatientId",
     headerName: "DMP Patient ID",
     valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0]["patientAliasesIsAlias"].find(
-        (patientAlias: any) => patientAlias.namespace === "dmpId"
+      return data.patientAliasesIsAlias.find(
+        (patientAlias: PatientAlias) => patientAlias.namespace === "dmpId"
       )?.value;
     },
     sortable: false,
@@ -190,7 +191,7 @@ export const PatientsListColumns: ColDef[] = [
   {
     headerName: "# Samples",
     valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].hasSampleSamplesConnection.totalCount;
+      return data.hasSampleSamplesConnection.totalCount;
     },
     sortable: false,
   },
@@ -198,7 +199,7 @@ export const PatientsListColumns: ColDef[] = [
     field: "cmoSampleIds",
     headerName: "CMO Sample IDs",
     valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].hasSampleSamples.map(
+      return data.hasSampleSamples.map(
         (sample: Sample) =>
           sample.hasMetadataSampleMetadata[0].cmoSampleName ||
           sample.hasMetadataSampleMetadata[0].primaryId
@@ -210,8 +211,8 @@ export const PatientsListColumns: ColDef[] = [
     headerName: "12-245 Part A",
     valueGetter: function ({ data }) {
       return JSON.parse(
-        data["isAliasPatients"][0].hasSampleSamples[0]
-          ?.hasMetadataSampleMetadata[0]?.additionalProperties
+        data.hasSampleSamples[0]?.hasMetadataSampleMetadata[0]
+          ?.additionalProperties
       )["consent-parta"];
     },
     sortable: false,
@@ -220,8 +221,8 @@ export const PatientsListColumns: ColDef[] = [
     headerName: "12-245 Part C",
     valueGetter: function ({ data }) {
       return JSON.parse(
-        data["isAliasPatients"][0].hasSampleSamples[0]
-          ?.hasMetadataSampleMetadata[0]?.additionalProperties
+        data.hasSampleSamples[0]?.hasMetadataSampleMetadata[0]
+          ?.additionalProperties
       )["consent-partc"];
     },
     sortable: false,
@@ -230,7 +231,7 @@ export const PatientsListColumns: ColDef[] = [
     field: "smilePatientId",
     headerName: "SMILE Patient ID",
     valueGetter: function ({ data }) {
-      return data["isAliasPatients"][0].smilePatientId;
+      return data.smilePatientId;
     },
     hide: true,
   },
