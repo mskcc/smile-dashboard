@@ -86,7 +86,7 @@ export default function RequestsPage() {
         samplesColDefs={SampleDetailsColumns}
         samplesQueryParam={
           sampleQueryParamValue &&
-          `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
+          `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`
         }
         prepareSamplesDataForAgGrid={prepareSampleMetadataForAgGrid}
         samplesParentWhereVariables={

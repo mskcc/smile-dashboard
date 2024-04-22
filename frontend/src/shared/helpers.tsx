@@ -144,15 +144,15 @@ export const RequestsListColumns: ColDef[] = [
 export const PatientsListColumns: ColDef[] = [
   {
     headerName: "View Samples",
-    cellRenderer: (params: CellClassParams<any>) => {
+    cellRenderer: (params: ICellRendererParams) => {
       return (
         <Button
           variant="outline-secondary"
           size="sm"
           onClick={() => {
-            if (params.data.value !== undefined) {
-              params.context.navigateFunction(`/patients/${params.data.value}`);
-            }
+            params.context.navigateFunction(
+              `/patients/${params.data.smilePatientId}`
+            );
           }}
         >
           View

@@ -158,7 +158,7 @@ export default function CohortsPage({
             },
           } as SampleWhere
         }
-        samplesRefetchWhereVariables={(samplesParsedSearchVals: string[]) => {
+        samplesRefetchWhereVariables={(samplesParsedSearchVals) => {
           return {
             cohortsHasCohortSampleConnection_SOME: {
               node: {

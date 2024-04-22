@@ -231,8 +231,8 @@ export default function PatientsPage({
   }, [phiEnabled, patientIdsTriplets, userEmail]);
 
   const dataName = "patients";
-  const sampleQueryParamFieldName = "cmoPatientId";
-  const sampleQueryParamHeaderName = "CMO Patient ID";
+  const sampleQueryParamFieldName = "smilePatientId";
+  const sampleQueryParamHeaderName = "Smile Patient ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
 
   return (
@@ -261,7 +261,7 @@ export default function PatientsPage({
         samplesColDefs={SampleDetailsColumns}
         samplesQueryParam={
           sampleQueryParamValue &&
-          `${sampleQueryParamHeaderName} ${sampleQueryParamValue}`
+          `${sampleQueryParamHeaderName} "${sampleQueryParamValue}"`
         }
         samplesParentWhereVariables={
           {
@@ -269,26 +269,21 @@ export default function PatientsPage({
               {
                 patientsHasSampleConnection_SOME: {
                   node: {
-                    patientAliasesIsAlias_SOME: {
-                      value: sampleQueryParamValue,
-                    },
+                    [sampleQueryParamFieldName]: sampleQueryParamValue,
                   },
                 },
               },
             ],
           } as SampleWhere
         }
-        samplesRefetchWhereVariables={(parsedSearchVals) => {
+        samplesRefetchWhereVariables={(sampleParsedSearchVals) => {
           return {
-            hasMetadataSampleMetadata_SOME: {
-              OR: sampleFilterWhereVariables(parsedSearchVals),
-              ...(params[sampleQueryParamFieldName]
-                ? {
-                    [sampleQueryParamFieldName]:
-                      params[sampleQueryParamFieldName],
-                  }
-                : {}),
+            patientsHasSampleConnection_SOME: {
+              node: {
+                [sampleQueryParamFieldName]: sampleQueryParamValue,
+              },
             },
+            OR: sampleFilterWhereVariables(sampleParsedSearchVals),
           } as SampleWhere;
         }}
         setCustomSearchVals={setPatientIdsTriplets}
