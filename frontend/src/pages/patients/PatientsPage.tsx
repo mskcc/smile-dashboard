@@ -231,7 +231,6 @@ export default function PatientsPage({
   }, [phiEnabled, patientIdsTriplets, userEmail]);
 
   const dataName = "patients";
-  // const nodeName = "patientAliases"; TODO: remove nodeName prop from RecordsList
   const sampleQueryParamFieldName = "cmoPatientId";
   const sampleQueryParamHeaderName = "CMO Patient ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
@@ -243,7 +242,6 @@ export default function PatientsPage({
       <RecordsList
         colDefs={ActivePatientsListColumns}
         dataName={dataName}
-        nodeName={dataName}
         lazyRecordsQuery={usePatientsListLazyQuery}
         queryFilterWhereVariables={patientFilterWhereVariables}
         userSearchVal={userSearchVal}

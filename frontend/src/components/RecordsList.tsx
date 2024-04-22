@@ -28,7 +28,6 @@ import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 interface IRecordsListProps {
   colDefs: ColDef[];
   dataName: DataName;
-  nodeName?: string;
   lazyRecordsQuery: typeof useHookLazyGeneric;
   lazyRecordsQueryAddlVariables?: Record<string, any>;
   prepareDataForAgGrid?: (data: any) => any;
@@ -60,7 +59,6 @@ interface IRecordsListProps {
 export default function RecordsList({
   colDefs,
   dataName,
-  nodeName = dataName,
   lazyRecordsQuery,
   lazyRecordsQueryAddlVariables,
   prepareDataForAgGrid,
@@ -98,7 +96,7 @@ export default function RecordsList({
       },
     });
 
-  const totalCountNodeName = `${nodeName}Connection`;
+  const totalCountNodeName = `${dataName}Connection`;
 
   const datasource: IServerSideDatasource = useMemo(() => {
     return {
@@ -108,7 +106,7 @@ export default function RecordsList({
           where: {
             OR: queryFilterWhereVariables(parsedSearchVals),
           },
-          [`${nodeName}ConnectionWhere2`]: {
+          [`${dataName}ConnectionWhere2`]: {
             OR: queryFilterWhereVariables(parsedSearchVals),
           },
           options: {
@@ -133,7 +131,7 @@ export default function RecordsList({
           const data = d.data;
           prepareDataForAgGrid && prepareDataForAgGrid(data);
           params.success({
-            rowData: data[nodeName],
+            rowData: data[dataName],
             rowCount: data[totalCountNodeName].totalCount,
           });
         });
@@ -172,11 +170,11 @@ export default function RecordsList({
                 },
               },
             }).then(({ data }: any) => {
-              return CSVFormulate(data[nodeName], colDefs);
+              return CSVFormulate(data[dataName], colDefs);
             });
           }}
           onComplete={() => setShowDownloadModal(false)}
-          exportFileName={`${nodeName}.tsv`}
+          exportFileName={`${dataName}.tsv`}
         />
       )}
 
