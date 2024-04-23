@@ -211,8 +211,14 @@ export default function PatientsPage({
         return {
           ...column,
           hide: false,
-          valueGetter: (params: any) => {
-            const cmoId = params.data.value;
+          valueGetter: ({
+            data,
+          }: {
+            data: ReturnType<
+              typeof preparePatientDataForAgGrid
+            >["patients"][number];
+          }) => {
+            const cmoId = data.cmoPatientId;
 
             const patientIdsTriplet = patientIdsTriplets.find(
               (triplet) => addCDashToCMOId(triplet.CMO_ID) === cmoId
