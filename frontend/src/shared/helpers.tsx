@@ -1,5 +1,4 @@
 import {
-  CellClassParams,
   ColDef,
   ICellRendererParams,
   IHeaderParams,
@@ -31,7 +30,7 @@ export type SampleChange = {
   fieldName: string;
   oldValue: string;
   newValue: string;
-  rowNode: RowNode<any>;
+  rowNode: RowNode;
 };
 
 export type ChangesByPrimaryId = {
@@ -43,7 +42,7 @@ export type ChangesByPrimaryId = {
 export const RequestsListColumns: ColDef[] = [
   {
     headerName: "View Samples",
-    cellRenderer: (params: CellClassParams<any>) => {
+    cellRenderer: (params: ICellRendererParams) => {
       return (
         <Button
           variant="outline-secondary"
@@ -516,7 +515,7 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
 export const CohortsListColumns: ColDef[] = [
   {
     headerName: "View Samples",
-    cellRenderer: (params: CellClassParams<any>) => {
+    cellRenderer: (params: ICellRendererParams) => {
       return (
         <Button
           variant="outline-secondary"
