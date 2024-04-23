@@ -16,6 +16,7 @@ import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 import {
   PatientsListColumns,
   SampleDetailsColumns,
+  preparePatientDataForAgGrid,
   sampleFilterWhereVariables,
 } from "../../shared/helpers";
 import { getUserEmail } from "../../utils/getUserEmail";
@@ -243,6 +244,7 @@ export default function PatientsPage({
         colDefs={ActivePatientsListColumns}
         dataName={dataName}
         lazyRecordsQuery={usePatientsListLazyQuery}
+        prepareDataForAgGrid={preparePatientDataForAgGrid}
         queryFilterWhereVariables={patientFilterWhereVariables}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}

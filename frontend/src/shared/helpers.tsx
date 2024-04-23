@@ -9,7 +9,7 @@ import {
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import {
-  PatientAlias,
+  PatientsListQuery,
   Sample,
   SampleMetadata,
   SampleMetadataWhere,
@@ -141,6 +141,57 @@ export const RequestsListColumns: ColDef[] = [
   },
 ];
 
+export function preparePatientDataForAgGrid(
+  patientsListQueryResult: PatientsListQuery
+) {
+  const { patientsConnection, patients } = patientsListQueryResult;
+
+  const newPatients = patients.map((p) => {
+    const {
+      smilePatientId,
+      patientAliasesIsAlias: patientAliases,
+      hasSampleSamplesConnection: samplesConnection,
+      hasSampleSamples: samples,
+    } = p;
+    const cmoPatientId = patientAliases?.find(
+      (pa) => pa.namespace === "cmoId"
+    )?.value;
+    const dmpPatientId = patientAliases?.find(
+      (pa) => pa.namespace === "dmpId"
+    )?.value;
+
+    const totalSamples = samplesConnection?.totalCount;
+
+    const cmoSampleIds = samples?.map((s) => {
+      const sampleMetadata = s.hasMetadataSampleMetadata[0];
+      return sampleMetadata?.cmoSampleName || sampleMetadata?.primaryId;
+    });
+
+    const additionalProperties =
+      samples[0]?.hasMetadataSampleMetadata[0]?.additionalProperties;
+    const additionalPropertiesJson = additionalProperties
+      ? JSON.parse(additionalProperties)
+      : {};
+    const consentPartA = additionalPropertiesJson["consent-parta"];
+    const consentPartC = additionalPropertiesJson["consent-partc"];
+
+    return {
+      cmoPatientId,
+      dmpPatientId,
+      totalSamples,
+      cmoSampleIds,
+      consentPartA,
+      consentPartC,
+      smilePatientId,
+    };
+  });
+
+  return {
+    patientsConnection,
+    patients: newPatients,
+  };
+}
+
 export const PatientsListColumns: ColDef[] = [
   {
     headerName: "View Samples",
@@ -171,68 +222,36 @@ export const PatientsListColumns: ColDef[] = [
   {
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
-    valueGetter: function ({ data }) {
-      return data.patientAliasesIsAlias.find(
-        (patientAlias: PatientAlias) => patientAlias.namespace === "cmoId"
-      )?.value;
-    },
     sortable: false,
   },
   {
     field: "dmpPatientId",
     headerName: "DMP Patient ID",
-    valueGetter: function ({ data }) {
-      return data.patientAliasesIsAlias.find(
-        (patientAlias: PatientAlias) => patientAlias.namespace === "dmpId"
-      )?.value;
-    },
     sortable: false,
   },
   {
+    field: "totalSamples",
     headerName: "# Samples",
-    valueGetter: function ({ data }) {
-      return data.hasSampleSamplesConnection.totalCount;
-    },
     sortable: false,
   },
   {
     field: "cmoSampleIds",
     headerName: "CMO Sample IDs",
-    valueGetter: function ({ data }) {
-      return data.hasSampleSamples.map(
-        (sample: Sample) =>
-          sample.hasMetadataSampleMetadata[0].cmoSampleName ||
-          sample.hasMetadataSampleMetadata[0].primaryId
-      );
-    },
     sortable: false,
   },
   {
+    field: "consentPartA",
     headerName: "12-245 Part A",
-    valueGetter: function ({ data }) {
-      return JSON.parse(
-        data.hasSampleSamples[0]?.hasMetadataSampleMetadata[0]
-          ?.additionalProperties
-      )["consent-parta"];
-    },
     sortable: false,
   },
   {
+    field: "consentPartC",
     headerName: "12-245 Part C",
-    valueGetter: function ({ data }) {
-      return JSON.parse(
-        data.hasSampleSamples[0]?.hasMetadataSampleMetadata[0]
-          ?.additionalProperties
-      )["consent-partc"];
-    },
     sortable: false,
   },
   {
     field: "smilePatientId",
     headerName: "SMILE Patient ID",
-    valueGetter: function ({ data }) {
-      return data.smilePatientId;
-    },
     hide: true,
   },
 ];

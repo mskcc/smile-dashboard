@@ -128,8 +128,8 @@ export default function RecordsList({
               });
 
         return thisFetch.then((d) => {
-          const data = d.data;
-          prepareDataForAgGrid && prepareDataForAgGrid(data);
+          let data = d.data;
+          if (prepareDataForAgGrid) data = prepareDataForAgGrid(data);
           params.success({
             rowData: data[dataName],
             rowCount: data[totalCountNodeName].totalCount,
