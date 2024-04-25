@@ -4,6 +4,7 @@ import {
   IHeaderParams,
   RowNode,
   ITooltipParams,
+  ValueFormatterParams,
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
@@ -630,6 +631,12 @@ export const CohortSampleDetailsColumns: ColDef[] = [
       values: [true, false],
     },
     valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
+    filter: true,
+    filterParams: {
+      valueFormatter: (params: ValueFormatterParams) =>
+        params.value === "true" ? "Yes" : "No",
+      suppressMiniFilter: true,
+    },
   },
   {
     field: "costCenter",
