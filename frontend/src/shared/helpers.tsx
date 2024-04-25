@@ -9,6 +9,8 @@ import {
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import {
+  Cohort,
+  CohortsListQuery,
   PatientsListQuery,
   Sample,
   SampleMetadata,
@@ -513,6 +515,63 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
   });
 }
 
+export function prepareCohortDataForAgGrid(
+  cohortsListQueryResult: CohortsListQuery
+) {
+  const { cohorts, cohortsConnection } = cohortsListQueryResult;
+  const newCohorts = cohorts.map((cohort) => {
+    const {
+      cohortId,
+      hasCohortSampleSamplesConnection: samplesConnection,
+      hasCohortSampleSamples: samples,
+      hasCohortCompleteCohortCompletes: cohortCompletes,
+    } = cohort;
+
+    const totalSamples = samplesConnection?.totalCount;
+
+    const allSamplesBilled =
+      samples.length > 0 &&
+      samples?.every((sample) => {
+        return sample.hasTempoTempos?.[0].billed === true;
+      });
+    const billed = allSamplesBilled === true ? "Yes" : "No";
+
+    const initialCohortDeliveryDate = cohortCompletes?.slice(-1)[0]?.date;
+
+    const latestCohortDeliveryDate = cohortCompletes?.[0];
+    const {
+      date: completeDate,
+      endUsers,
+      pmUsers,
+      projectTitle,
+      projectSubtitle,
+      status,
+      type,
+    } = latestCohortDeliveryDate ?? {};
+
+    return {
+      cohortId,
+      totalSamples,
+      billed,
+      initialCohortDeliveryDate: formatCohortRelatedDate(
+        initialCohortDeliveryDate
+      ),
+      completeDate: formatCohortRelatedDate(completeDate),
+      endUsers,
+      pmUsers,
+      projectTitle,
+      projectSubtitle,
+      status,
+      type,
+    };
+  });
+
+  return {
+    cohortsConnection,
+    cohorts: newCohorts,
+  };
+}
+
 export const CohortsListColumns: ColDef[] = [
   {
     headerName: "View Samples",
@@ -540,70 +599,55 @@ export const CohortsListColumns: ColDef[] = [
     headerName: "Cohort ID",
   },
   {
+    field: "totalSamples",
     headerName: "# Samples",
-    valueGetter: ({ data }) =>
-      data["hasCohortSampleSamplesConnection"].totalCount,
     sortable: false,
   },
   {
+    field: "billed",
     headerName: "Billed",
-    valueGetter: ({ data }) => {
-      return data["hasCohortSampleSamples"]?.every((sample: Sample) => {
-        return sample.hasTempoTempos?.[0]?.billed === true;
-      });
-    },
-    valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
-  },
-  {
-    headerName: "Initial Cohort Delivery Date",
-    valueGetter: ({ data }) => {
-      const earliestCohortCompleteDate =
-        data["hasCohortCompleteCohortCompletes"]?.slice(-1)[0]?.date;
-      return formatCohortRelatedDate(earliestCohortCompleteDate);
-    },
+    filter: true,
     sortable: false,
   },
   {
+    field: "initialCohortDeliveryDate",
+    headerName: "Initial Cohort Delivery Date",
+    sortable: false,
+  },
+  {
+    field: "completeDate",
     headerName: "Complete Date",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.date,
     sortable: false,
     hide: true,
   },
   {
+    field: "endUsers",
     headerName: "End Users",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.endUsers,
     sortable: false,
   },
   {
+    field: "pmUsers",
     headerName: "PM Users",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.pmUsers,
     sortable: false,
   },
   {
+    field: "projectTitle",
     headerName: "Project Title",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.projectTitle,
     sortable: false,
   },
   {
+    field: "projectSubtitle",
     headerName: "Project Subtitle",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.projectSubtitle,
     sortable: false,
   },
   {
+    field: "status",
     headerName: "Status",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.status,
     sortable: false,
   },
   {
+    field: "type",
     headerName: "Type",
-    valueGetter: ({ data }) =>
-      data["hasCohortCompleteCohortCompletes"][0]?.type,
     sortable: false,
   },
 ];
