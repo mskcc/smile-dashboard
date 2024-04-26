@@ -517,7 +517,7 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
 
 export function prepareCohortDataForAgGrid(
   cohortsListQueryResult: CohortsListQuery,
-  filter: IServerSideGetRowsRequest["filterModel"]
+  filterModel: IServerSideGetRowsRequest["filterModel"]
 ) {
   const { cohorts, cohortsConnection } = cohortsListQueryResult;
 
@@ -570,15 +570,17 @@ export function prepareCohortDataForAgGrid(
 
   let newCohortsConnection = { ...cohortsConnection };
 
-  const selectedAll = JSON.stringify(filter) === "{}";
+  const selectedAll = JSON.stringify(filterModel) === "{}";
   if (!selectedAll) {
-    const selectedNone = filter.billed.values.length === 0;
+    const selectedValues = filterModel.billed.values;
+    const selectedNone = selectedValues.length === 0;
+
     if (selectedNone) {
       newCohorts = [];
       newCohortsConnection.totalCount = 0;
     } else {
       newCohorts = newCohorts.filter(
-        (cohort) => cohort.billed === filter.billed.values[0]
+        (cohort) => cohort.billed === selectedValues[0]
       );
       newCohortsConnection.totalCount = newCohorts.length;
     }
