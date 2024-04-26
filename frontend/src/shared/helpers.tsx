@@ -630,6 +630,7 @@ export const CohortsListColumns: ColDef[] = [
     filter: true,
     filterParams: {
       values: ["Yes", "No"],
+      suppressMiniFilter: true,
     },
   },
   {
