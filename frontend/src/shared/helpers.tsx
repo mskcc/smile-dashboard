@@ -5,11 +5,11 @@ import {
   RowNode,
   ITooltipParams,
   ValueFormatterParams,
+  IServerSideGetRowsRequest,
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import {
-  Cohort,
   CohortsListQuery,
   PatientsListQuery,
   Sample,
@@ -516,10 +516,12 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
 }
 
 export function prepareCohortDataForAgGrid(
-  cohortsListQueryResult: CohortsListQuery
+  cohortsListQueryResult: CohortsListQuery,
+  filter: IServerSideGetRowsRequest["filterModel"]
 ) {
   const { cohorts, cohortsConnection } = cohortsListQueryResult;
-  const newCohorts = cohorts.map((cohort) => {
+
+  let newCohorts = cohorts.map((cohort) => {
     const {
       cohortId,
       hasCohortSampleSamplesConnection: samplesConnection,
@@ -566,9 +568,25 @@ export function prepareCohortDataForAgGrid(
     };
   });
 
+  let newCohortsConnection = { ...cohortsConnection };
+
+  const selectedAll = JSON.stringify(filter) === "{}";
+  if (!selectedAll) {
+    const selectedNone = filter.billed.values.length === 0;
+    if (selectedNone) {
+      newCohorts = [];
+      newCohortsConnection.totalCount = 0;
+    } else {
+      newCohorts = newCohorts.filter(
+        (cohort) => cohort.billed === filter.billed.values[0]
+      );
+      newCohortsConnection.totalCount = newCohorts.length;
+    }
+  }
+
   return {
-    cohortsConnection,
     cohorts: newCohorts,
+    cohortsConnection: newCohortsConnection,
   };
 }
 
@@ -606,8 +624,11 @@ export const CohortsListColumns: ColDef[] = [
   {
     field: "billed",
     headerName: "Billed",
-    filter: true,
     sortable: false,
+    filter: true,
+    filterParams: {
+      values: ["Yes", "No"],
+    },
   },
   {
     field: "initialCohortDeliveryDate",
