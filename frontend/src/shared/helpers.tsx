@@ -6,8 +6,7 @@ import {
   ITooltipParams,
   ValueFormatterParams,
   IServerSideGetRowsRequest,
-  ICellEditorParams,
-  NewValueParams,
+  CellClassParams,
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
@@ -26,7 +25,6 @@ import { StatusTooltip } from "./components/StatusToolTip";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 import { Dispatch, SetStateAction } from "react";
 import moment from "moment";
-import { createElement } from "react";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -467,9 +465,9 @@ const toolTipIcon =
 function setupEditableSampleFields(samplesColDefs: ColDef[]) {
   samplesColDefs.forEach((colDef) => {
     colDef.cellClassRules = {
-      unsubmittedChange: (params: any) => {
-        const changes = params.context.getChanges();
-        const changedValue = changes?.find((change: any) => {
+      unsubmittedChange: (params: CellClassParams) => {
+        const changes: SampleChange[] = params.context.getChanges();
+        const changedValue = changes?.find((change) => {
           return (
             change.fieldName === params.colDef.field &&
             change.primaryId === params.data.primaryId
@@ -481,9 +479,8 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
 
     if (colDef.valueGetter === undefined) {
       colDef.valueGetter = (params) => {
-        const changes = params.context?.getChanges();
-
-        const changedValue = changes?.find((change: any) => {
+        const changes: SampleChange[] = params.context?.getChanges();
+        const changedValue = changes?.find((change) => {
           return (
             change.fieldName === params.colDef.field &&
             change.primaryId === params.data?.primaryId
