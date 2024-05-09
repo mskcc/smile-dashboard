@@ -16,6 +16,7 @@ import {
   SampleMetadataExtended,
   defaultColDef,
   handleSearch,
+  isValidCostCenter,
 } from "../shared/helpers";
 import { AgGridReact } from "ag-grid-react";
 import { useState } from "react";
@@ -30,6 +31,10 @@ import { openLoginPopup } from "../utils/openLoginPopup";
 
 const POLLING_INTERVAL = 2000;
 const max_rows = 500;
+const defaultAlertContent =
+  "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples.";
+const costCenterAlertContent =
+  "Please update your Cost Center input as #####-##### (5 digits, a dash, then 5 digits). For example: 12345-12345.";
 
 interface ISampleListProps {
   columnDefs: ColDef[];
@@ -93,6 +98,8 @@ export default function SamplesList({
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [changes, setChanges] = useState<SampleChange[]>([]);
   const [editMode, setEditMode] = useState(true);
+  const [alertContent, setAlertContent] = useState(defaultAlertContent);
+
   const gridRef = useRef<any>(null);
 
   useEffect(() => {
@@ -124,6 +131,19 @@ export default function SamplesList({
     const primaryId = params.data.primaryId;
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
+
+    // validate Cost Center inputs
+    if (fieldName === "costCenter") {
+      // prevent alerting when users click into an empty cell & exit it without editing
+      if (oldValue === null && newValue === undefined) return;
+
+      if (isValidCostCenter(newValue)) {
+        setAlertContent(defaultAlertContent);
+      } else {
+        setAlertContent(costCenterAlertContent);
+        setShowAlertModal(true);
+      }
+    }
 
     // add/update the billedBy cell to/in the changes array
     if (fieldName === "billed" && setUserEmail) {
@@ -224,8 +244,6 @@ export default function SamplesList({
           onHide={() => setShowUpdateModal(false)}
           onOpen={() => stopPolling()}
           sampleKeyForUpdate={sampleKeyForUpdate}
-          userEmail={userEmail}
-          setUserEmail={setUserEmail}
         />
       )}
 
@@ -234,10 +252,8 @@ export default function SamplesList({
         onHide={() => {
           setShowAlertModal(false);
         }}
-        title={"Limit reached"}
-        content={
-          "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples."
-        }
+        title={"Warning"}
+        content={alertContent}
       />
 
       <Toolbar
@@ -271,6 +287,7 @@ export default function SamplesList({
               <Col className={"text-start"}>
                 <Button
                   className={"btn btn-success"}
+                  disabled={alertContent === costCenterAlertContent}
                   onClick={() => {
                     setShowUpdateModal(true);
                   }}

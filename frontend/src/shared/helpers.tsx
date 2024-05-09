@@ -1061,7 +1061,7 @@ function formatCohortRelatedDate(date: string) {
   return date?.split(" ")[0];
 }
 
-function isValidCostCenter(costCenter: string): boolean {
+export function isValidCostCenter(costCenter: string): boolean {
   if (!costCenter || costCenter.length !== 11) {
     return false;
   }
