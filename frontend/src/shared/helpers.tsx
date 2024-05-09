@@ -477,7 +477,8 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
       },
       "costCenter-validation-error": (params: CellClassParams) => {
         if (params.colDef.field === "costCenter") {
-          return !isValidCostCenter(params.value);
+          const val = params.value;
+          return !isValidCostCenter(val) && val !== undefined && val !== null;
         }
         return false;
       },
