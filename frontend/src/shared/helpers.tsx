@@ -1063,9 +1063,8 @@ function formatCohortRelatedDate(date: string) {
 }
 
 export function isValidCostCenter(costCenter: string): boolean {
-  if (!costCenter || costCenter.length !== 11) {
-    return false;
-  }
+  if (costCenter === "") return true;
+  if (costCenter && costCenter.length !== 11) return false;
   const validCostCenter = new RegExp("^\\d{5}-\\d{5}$");
   return validCostCenter.test(costCenter);
 }
