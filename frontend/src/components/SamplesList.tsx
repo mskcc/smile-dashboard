@@ -123,9 +123,7 @@ export default function SamplesList({
 
   const remoteCount = samples.length;
 
-  async function onCellValueChanged(
-    params: CellValueChangedEvent<SampleMetadataExtended>
-  ) {
+  async function onCellValueChanged(params: CellValueChangedEvent) {
     if (!editMode) return;
 
     const primaryId = params.data.primaryId;
@@ -137,11 +135,17 @@ export default function SamplesList({
       // prevent alerting when users click into an empty cell & exit it without editing
       if (oldValue === null && newValue === undefined) return;
 
-      if (isValidCostCenter(newValue)) {
-        setAlertContent(defaultAlertContent);
-      } else {
+      if (!isValidCostCenter(newValue)) {
         setAlertContent(costCenterAlertContent);
         setShowAlertModal(true);
+      } else {
+        const allRowNodesInView = rowNode.parent?.allLeafChildren;
+        const allRowsHaveValidCostCenter = allRowNodesInView?.every(
+          (rowNode) =>
+            rowNode.data?.costCenter &&
+            isValidCostCenter(rowNode.data.costCenter)
+        );
+        if (allRowsHaveValidCostCenter) setAlertContent(defaultAlertContent);
       }
     }
 

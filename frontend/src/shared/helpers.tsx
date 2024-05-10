@@ -724,10 +724,6 @@ export const CohortSampleDetailsColumns: ColDef[] = [
     field: "costCenter",
     headerName: "Cost Center/Fund Number",
     editable: true,
-    // NOTE FOR QUAN
-    // TODO: still need to work on getting the cell styling to cooperate. it seems that the unsubmitted changes styling
-    // takes priority over the styling i was trying to add when the cost center entry is invalid
-    cellEditor: CostCenterCellEditor,
   },
   {
     field: "billedBy",
