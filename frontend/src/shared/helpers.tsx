@@ -25,7 +25,7 @@ import { StatusTooltip } from "./components/StatusToolTip";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 import { Dispatch, SetStateAction } from "react";
 import moment from "moment";
-import { createElement } from "react";
+import _ from "lodash";
 
 export interface SampleMetadataExtended extends SampleMetadata {
   revisable: boolean;
@@ -478,8 +478,7 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
       },
       "costCenter-validation-error": (params: CellClassParams) => {
         if (params.colDef.field === "costCenter") {
-          const val = params.value;
-          return !isValidCostCenter(val) && val !== undefined && val !== null;
+          return !isValidCostCenter(params.value);
         }
         return false;
       },
@@ -1064,7 +1063,7 @@ function formatCohortRelatedDate(date: string) {
 }
 
 export function isValidCostCenter(costCenter: string): boolean {
-  if (costCenter === "") return true;
+  if (_.isEmpty(costCenter)) return true;
   if (costCenter && costCenter.length !== 11) return false;
   const validCostCenter = new RegExp("^\\d{5}-\\d{5}$");
   return validCostCenter.test(costCenter);

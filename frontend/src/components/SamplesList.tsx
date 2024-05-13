@@ -28,6 +28,7 @@ import { ErrorMessage, LoadingSpinner, Toolbar } from "../shared/tableElements";
 import styles from "./records.module.scss";
 import { getUserEmail } from "../utils/getUserEmail";
 import { openLoginPopup } from "../utils/openLoginPopup";
+import _ from "lodash";
 
 const POLLING_INTERVAL = 2000;
 const max_rows = 500;
@@ -130,11 +131,21 @@ export default function SamplesList({
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
 
+    // prevent registering a change if no actual changes are made
+    const noChangeInVal = rowNode.data[fieldName] === newValue;
+    const noChangeInEmptyCell =
+      _.isEmpty(rowNode.data[fieldName]) && _.isEmpty(newValue);
+    if (noChangeInVal || noChangeInEmptyCell) {
+      const updatedChanges = changes.filter(
+        (c) => !(c.primaryId === primaryId && c.fieldName === fieldName)
+      );
+      setChanges(updatedChanges);
+      if (updatedChanges.length === 0) setUnsavedChanges?.(false);
+      return;
+    }
+
     // validate Cost Center inputs
     if (fieldName === "costCenter") {
-      // prevent alerting when users click into an empty cell & exit it without editing
-      if (oldValue === null && newValue === undefined) return;
-
       if (!isValidCostCenter(newValue)) {
         setAlertContent(costCenterAlertContent);
         setShowAlertModal(true);
