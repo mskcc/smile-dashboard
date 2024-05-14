@@ -35,7 +35,7 @@ const max_rows = 500;
 const defaultAlertContent =
   "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples.";
 const costCenterAlertContent =
-  "Please update your Cost Center input as #####-##### (5 digits, a dash, then 5 digits). For example: 12345-12345.";
+  "Please update your Cost Center/Fund Number input as #####/##### (5 digits, a forward slash, then 5 digits). For example: 12345/12345.";
 
 interface ISampleListProps {
   columnDefs: ColDef[];
