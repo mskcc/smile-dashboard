@@ -113,6 +113,11 @@ export default function RecordsList({
           [`${dataName}ConnectionWhere2`]: {
             OR: queryFilterWhereVariables(parsedSearchVals),
           },
+          hasCohortSampleSamplesWhere2: {
+            hasMetadataSampleMetadata_SOME: {
+              primaryId_IN: parsedSearchVals,
+            },
+          },
           options: {
             offset: params.request.startRow,
             limit: params.request.endRow,
