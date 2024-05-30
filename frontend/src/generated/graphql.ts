@@ -11555,6 +11555,8 @@ export type CohortsListQueryVariables = Exact<{
   options?: InputMaybe<CohortOptions>;
   cohortsConnectionWhere2?: InputMaybe<CohortWhere>;
   hasCohortCompleteCohortCompletesOptions2?: InputMaybe<CohortCompleteOptions>;
+  hasCohortSampleSamplesWhere2?: InputMaybe<SampleWhere>;
+  hasCohortSampleSamplesConnectionWhere2?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
 }>;
 
 export type CohortsListQuery = {
@@ -12146,6 +12148,8 @@ export const CohortsListDocument = gql`
     $options: CohortOptions
     $cohortsConnectionWhere2: CohortWhere
     $hasCohortCompleteCohortCompletesOptions2: CohortCompleteOptions
+    $hasCohortSampleSamplesWhere2: SampleWhere
+    $hasCohortSampleSamplesConnectionWhere2: CohortHasCohortSampleSamplesConnectionWhere
   ) {
     cohortsConnection(where: $cohortsConnectionWhere2) {
       totalCount
@@ -12163,10 +12167,12 @@ export const CohortsListDocument = gql`
         status
         date
       }
-      hasCohortSampleSamplesConnection {
+      hasCohortSampleSamplesConnection(
+        where: $hasCohortSampleSamplesConnectionWhere2
+      ) {
         totalCount
       }
-      hasCohortSampleSamples {
+      hasCohortSampleSamples(where: $hasCohortSampleSamplesWhere2) {
         smileSampleId
         hasTempoTempos {
           smileTempoId
@@ -12193,6 +12199,8 @@ export const CohortsListDocument = gql`
  *      options: // value for 'options'
  *      cohortsConnectionWhere2: // value for 'cohortsConnectionWhere2'
  *      hasCohortCompleteCohortCompletesOptions2: // value for 'hasCohortCompleteCohortCompletesOptions2'
+ *      hasCohortSampleSamplesWhere2: // value for 'hasCohortSampleSamplesWhere2'
+ *      hasCohortSampleSamplesConnectionWhere2: // value for 'hasCohortSampleSamplesConnectionWhere2'
  *   },
  * });
  */
