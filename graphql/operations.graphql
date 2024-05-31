@@ -234,8 +234,6 @@ query CohortsList(
   $options: CohortOptions
   $cohortsConnectionWhere2: CohortWhere
   $hasCohortCompleteCohortCompletesOptions2: CohortCompleteOptions
-  $hasCohortSampleSamplesWhere2: SampleWhere
-  $hasCohortSampleSamplesConnectionWhere2: CohortHasCohortSampleSamplesConnectionWhere
 ) {
   cohortsConnection(where: $cohortsConnectionWhere2) {
     totalCount
@@ -253,12 +251,10 @@ query CohortsList(
       status
       date
     }
-    hasCohortSampleSamplesConnection(
-      where: $hasCohortSampleSamplesConnectionWhere2
-    ) {
+    hasCohortSampleSamplesConnection {
       totalCount
     }
-    hasCohortSampleSamples(where: $hasCohortSampleSamplesWhere2) {
+    hasCohortSampleSamples {
       smileSampleId
       hasTempoTempos {
         smileTempoId

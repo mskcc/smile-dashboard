@@ -10088,7 +10088,7 @@ export type StringAggregateSelectionNullable = {
 export type Tempo = {
   __typename?: "Tempo";
   accessLevel: Scalars["String"];
-  billed?: Maybe<Scalars["Boolean"]>;
+  billed: Scalars["Boolean"];
   billedBy?: Maybe<Scalars["String"]>;
   costCenter?: Maybe<Scalars["String"]>;
   custodianInformation: Scalars["String"];
@@ -10224,7 +10224,7 @@ export type TempoConnectWhere = {
 
 export type TempoCreateInput = {
   accessLevel: Scalars["String"];
-  billed?: InputMaybe<Scalars["Boolean"]>;
+  billed: Scalars["Boolean"];
   billedBy?: InputMaybe<Scalars["String"]>;
   costCenter?: InputMaybe<Scalars["String"]>;
   custodianInformation: Scalars["String"];
@@ -11318,7 +11318,7 @@ export type FindSamplesByInputValueQuery = {
         hasTempoTempos: Array<{
           __typename?: "Tempo";
           smileTempoId: string;
-          billed?: boolean | null;
+          billed: boolean;
           billedBy?: string | null;
           costCenter?: string | null;
           custodianInformation: string;
@@ -11412,7 +11412,7 @@ export type SampleMetadataPartsFragment = {
 export type TempoPartsFragment = {
   __typename?: "Tempo";
   smileTempoId: string;
-  billed?: boolean | null;
+  billed: boolean;
   billedBy?: string | null;
   costCenter?: string | null;
   custodianInformation: string;
@@ -11467,7 +11467,7 @@ export type SamplesQuery = {
     hasTempoTempos: Array<{
       __typename?: "Tempo";
       smileTempoId: string;
-      billed?: boolean | null;
+      billed: boolean;
       billedBy?: string | null;
       costCenter?: string | null;
       custodianInformation: string;
@@ -11526,7 +11526,7 @@ export type UpdateSamplesMutation = {
       hasTempoTempos: Array<{
         __typename?: "Tempo";
         smileTempoId: string;
-        billed?: boolean | null;
+        billed: boolean;
         billedBy?: string | null;
         costCenter?: string | null;
         custodianInformation: string;
@@ -11555,8 +11555,6 @@ export type CohortsListQueryVariables = Exact<{
   options?: InputMaybe<CohortOptions>;
   cohortsConnectionWhere2?: InputMaybe<CohortWhere>;
   hasCohortCompleteCohortCompletesOptions2?: InputMaybe<CohortCompleteOptions>;
-  hasCohortSampleSamplesWhere2?: InputMaybe<SampleWhere>;
-  hasCohortSampleSamplesConnectionWhere2?: InputMaybe<CohortHasCohortSampleSamplesConnectionWhere>;
 }>;
 
 export type CohortsListQuery = {
@@ -11585,7 +11583,7 @@ export type CohortsListQuery = {
       hasTempoTempos: Array<{
         __typename?: "Tempo";
         smileTempoId: string;
-        billed?: boolean | null;
+        billed: boolean;
       }>;
     }>;
   }>;
@@ -12148,8 +12146,6 @@ export const CohortsListDocument = gql`
     $options: CohortOptions
     $cohortsConnectionWhere2: CohortWhere
     $hasCohortCompleteCohortCompletesOptions2: CohortCompleteOptions
-    $hasCohortSampleSamplesWhere2: SampleWhere
-    $hasCohortSampleSamplesConnectionWhere2: CohortHasCohortSampleSamplesConnectionWhere
   ) {
     cohortsConnection(where: $cohortsConnectionWhere2) {
       totalCount
@@ -12167,12 +12163,10 @@ export const CohortsListDocument = gql`
         status
         date
       }
-      hasCohortSampleSamplesConnection(
-        where: $hasCohortSampleSamplesConnectionWhere2
-      ) {
+      hasCohortSampleSamplesConnection {
         totalCount
       }
-      hasCohortSampleSamples(where: $hasCohortSampleSamplesWhere2) {
+      hasCohortSampleSamples {
         smileSampleId
         hasTempoTempos {
           smileTempoId
@@ -12199,8 +12193,6 @@ export const CohortsListDocument = gql`
  *      options: // value for 'options'
  *      cohortsConnectionWhere2: // value for 'cohortsConnectionWhere2'
  *      hasCohortCompleteCohortCompletesOptions2: // value for 'hasCohortCompleteCohortCompletesOptions2'
- *      hasCohortSampleSamplesWhere2: // value for 'hasCohortSampleSamplesWhere2'
- *      hasCohortSampleSamplesConnectionWhere2: // value for 'hasCohortSampleSamplesConnectionWhere2'
  *   },
  * });
  */
