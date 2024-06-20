@@ -806,10 +806,28 @@ export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(
 setupEditableSampleFields(SampleMetadataDetailsColumns);
 setupEditableSampleFields(CohortSampleDetailsColumns);
 
-export const combinedSampleDetailsColumns = _.uniqBy(
-  [...SampleMetadataDetailsColumns, ...ReadOnlyCohortSampleDetailsColumns],
-  "field"
-);
+export const combinedSampleDetailsColumns = [
+  {
+    marryChildren: true,
+    children: SampleMetadataDetailsColumns.filter((col) => {
+      return col.field === "primaryId" || col.field === "revisable";
+    }),
+  },
+  {
+    headerName: "SampleMetadata",
+    marryChildren: true,
+    children: SampleMetadataDetailsColumns.filter(
+      (col) => col.field !== "primaryId" && col.field !== "revisable"
+    ),
+  },
+  {
+    headerName: "Tempo",
+    marryChildren: true,
+    children: ReadOnlyCohortSampleDetailsColumns.filter(
+      (col) => col.field !== "primaryId" && col.field !== "cmoSampleName"
+    ),
+  },
+];
 
 export const defaultColDef: ColDef = {
   sortable: true,
