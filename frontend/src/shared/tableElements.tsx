@@ -5,7 +5,13 @@ import Spinner from "react-spinkit";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { Tooltip } from "@material-ui/core";
 import { DataName } from "./types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
+import { AgGridReact } from "ag-grid-react";
+import {
+  CohortSampleDetailsColumns,
+  SampleMetadataDetailsColumns,
+  combinedSampleDetailsColumns,
+} from "./helpers";
 
 export function LoadingSpinner() {
   return (
@@ -23,6 +29,18 @@ export function ErrorMessage({ error }: { error: ApolloError }) {
   );
 }
 
+interface IToolbarProps {
+  dataName: DataName;
+  userSearchVal: string;
+  setUserSearchVal: Dispatch<SetStateAction<string>>;
+  handleSearch: () => void;
+  clearUserSearchVal: () => void;
+  matchingResultsCount: string;
+  handleDownload: () => void;
+  customUI?: JSX.Element;
+  setColumnDefs?: Dispatch<SetStateAction<any[]>>;
+}
+
 export function Toolbar({
   dataName,
   userSearchVal,
@@ -32,23 +50,45 @@ export function Toolbar({
   matchingResultsCount,
   handleDownload,
   customUI,
-}: {
-  dataName: DataName;
-  userSearchVal: string;
-  setUserSearchVal: Dispatch<SetStateAction<string>>;
-  handleSearch: () => void;
-  clearUserSearchVal: () => void;
-  matchingResultsCount: string;
-  handleDownload: () => void;
-  customUI?: JSX.Element;
-}) {
+  setColumnDefs,
+}: IToolbarProps) {
   return (
-    <Row
-      className={classNames(
-        "d-flex justify-content-between align-items-center tableControlsRow"
-      )}
-    >
-      <Col></Col>
+    <Row className={classNames("d-flex align-items-center tableControlsRow")}>
+      <Col>
+        <Button
+          onClick={() => {
+            if (setColumnDefs) {
+              setColumnDefs(SampleMetadataDetailsColumns);
+            }
+          }}
+          size="sm"
+          variant="outline-secondary"
+        >
+          View SampleMetadata
+        </Button>{" "}
+        <Button
+          onClick={() => {
+            if (setColumnDefs) {
+              setColumnDefs(CohortSampleDetailsColumns);
+            }
+          }}
+          size="sm"
+          variant="outline-secondary"
+        >
+          View Tempo
+        </Button>{" "}
+        <Button
+          onClick={() => {
+            if (setColumnDefs) {
+              setColumnDefs(combinedSampleDetailsColumns);
+            }
+          }}
+          size="sm"
+          variant="outline-secondary"
+        >
+          View all
+        </Button>
+      </Col>
 
       <Col md="auto">
         <Form.Control

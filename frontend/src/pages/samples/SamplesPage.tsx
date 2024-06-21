@@ -7,14 +7,18 @@ import {
   sampleFilterWhereVariables,
 } from "../../shared/helpers";
 import { SampleWhere } from "../../generated/graphql";
+import { useState } from "react";
 
 export default function SamplesPage() {
+  const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
+
   return (
     <>
       <PageHeader dataName={"samples"} />
 
       <SamplesList
-        columnDefs={combinedSampleDetailsColumns}
+        columnDefs={columnDefs}
+        setColumnDefs={setColumnDefs}
         prepareDataForAgGrid={prepareCombinedSampleDataForAgGrid}
         refetchWhereVariables={(parsedSearchVals) => {
           return {

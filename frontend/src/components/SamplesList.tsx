@@ -39,6 +39,7 @@ const costCenterAlertContent =
 
 interface ISampleListProps {
   columnDefs: ColDef[];
+  setColumnDefs?: Dispatch<SetStateAction<ColDef[]>>;
   prepareDataForAgGrid: (samples: Sample[]) => any[];
   setUnsavedChanges?: (unsavedChanges: boolean) => void;
   parentWhereVariables?: SampleWhere;
@@ -51,6 +52,7 @@ interface ISampleListProps {
 
 export default function SamplesList({
   columnDefs,
+  setColumnDefs,
   prepareDataForAgGrid,
   parentWhereVariables,
   refetchWhereVariables,
@@ -318,6 +320,7 @@ export default function SamplesList({
             </>
           ) : undefined
         }
+        setColumnDefs={setColumnDefs}
       />
 
       <AutoSizer>
