@@ -1,6 +1,8 @@
 import { PageHeader } from "../../shared/components/PageHeader";
 import SamplesList from "../../components/SamplesList";
 import {
+  ReadOnlyCohortSampleDetailsColumns,
+  SampleMetadataDetailsColumns,
   cohortSampleFilterWhereVariables,
   combinedSampleDetailsColumns,
   prepareCombinedSampleDataForAgGrid,
@@ -8,6 +10,7 @@ import {
 } from "../../shared/helpers";
 import { SampleWhere } from "../../generated/graphql";
 import { useState } from "react";
+import { Button } from "react-bootstrap";
 
 export default function SamplesPage() {
   const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
@@ -18,7 +21,6 @@ export default function SamplesPage() {
 
       <SamplesList
         columnDefs={columnDefs}
-        setColumnDefs={setColumnDefs}
         prepareDataForAgGrid={prepareCombinedSampleDataForAgGrid}
         refetchWhereVariables={(parsedSearchVals) => {
           return {
@@ -29,6 +31,37 @@ export default function SamplesPage() {
             }),
           } as SampleWhere;
         }}
+        customToolbarUI={
+          <>
+            <Button
+              onClick={() => {
+                setColumnDefs(SampleMetadataDetailsColumns);
+              }}
+              size="sm"
+              variant="outline-secondary"
+            >
+              View SampleMetadata
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                setColumnDefs(ReadOnlyCohortSampleDetailsColumns);
+              }}
+              size="sm"
+              variant="outline-secondary"
+            >
+              View Tempo
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                setColumnDefs(combinedSampleDetailsColumns);
+              }}
+              size="sm"
+              variant="outline-secondary"
+            >
+              View all
+            </Button>
+          </>
+        }
       />
     </>
   );

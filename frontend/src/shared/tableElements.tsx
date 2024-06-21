@@ -5,13 +5,7 @@ import Spinner from "react-spinkit";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { Tooltip } from "@material-ui/core";
 import { DataName } from "./types";
-import { Dispatch, RefObject, SetStateAction } from "react";
-import { AgGridReact } from "ag-grid-react";
-import {
-  CohortSampleDetailsColumns,
-  SampleMetadataDetailsColumns,
-  combinedSampleDetailsColumns,
-} from "./helpers";
+import { Dispatch, SetStateAction } from "react";
 
 export function LoadingSpinner() {
   return (
@@ -37,8 +31,8 @@ interface IToolbarProps {
   clearUserSearchVal: () => void;
   matchingResultsCount: string;
   handleDownload: () => void;
-  customUI?: JSX.Element;
-  setColumnDefs?: Dispatch<SetStateAction<any[]>>;
+  customUILeft?: JSX.Element;
+  customUIRight?: JSX.Element;
 }
 
 export function Toolbar({
@@ -49,46 +43,12 @@ export function Toolbar({
   clearUserSearchVal,
   matchingResultsCount,
   handleDownload,
-  customUI,
-  setColumnDefs,
+  customUILeft,
+  customUIRight,
 }: IToolbarProps) {
   return (
     <Row className={classNames("d-flex align-items-center tableControlsRow")}>
-      <Col>
-        <Button
-          onClick={() => {
-            if (setColumnDefs) {
-              setColumnDefs(SampleMetadataDetailsColumns);
-            }
-          }}
-          size="sm"
-          variant="outline-secondary"
-        >
-          View SampleMetadata
-        </Button>{" "}
-        <Button
-          onClick={() => {
-            if (setColumnDefs) {
-              setColumnDefs(CohortSampleDetailsColumns);
-            }
-          }}
-          size="sm"
-          variant="outline-secondary"
-        >
-          View Tempo
-        </Button>{" "}
-        <Button
-          onClick={() => {
-            if (setColumnDefs) {
-              setColumnDefs(combinedSampleDetailsColumns);
-            }
-          }}
-          size="sm"
-          variant="outline-secondary"
-        >
-          View all
-        </Button>
-      </Col>
+      <Col>{customUILeft}</Col>
 
       <Col md="auto">
         <Form.Control
@@ -140,7 +100,7 @@ export function Toolbar({
 
       <Col md="auto">{matchingResultsCount}</Col>
 
-      {customUI}
+      {customUIRight}
 
       <Col className={"text-end"}>
         <Button onClick={handleDownload} size={"sm"}>

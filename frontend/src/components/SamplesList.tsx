@@ -39,7 +39,6 @@ const costCenterAlertContent =
 
 interface ISampleListProps {
   columnDefs: ColDef[];
-  setColumnDefs?: Dispatch<SetStateAction<ColDef[]>>;
   prepareDataForAgGrid: (samples: Sample[]) => any[];
   setUnsavedChanges?: (unsavedChanges: boolean) => void;
   parentWhereVariables?: SampleWhere;
@@ -48,11 +47,11 @@ interface ISampleListProps {
   sampleKeyForUpdate?: keyof Sample;
   userEmail?: string | null;
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
+  customToolbarUI?: JSX.Element;
 }
 
 export default function SamplesList({
   columnDefs,
-  setColumnDefs,
   prepareDataForAgGrid,
   parentWhereVariables,
   refetchWhereVariables,
@@ -61,6 +60,7 @@ export default function SamplesList({
   sampleKeyForUpdate = "hasMetadataSampleMetadata",
   userEmail,
   setUserEmail,
+  customToolbarUI,
 }: ISampleListProps) {
   const { loading, error, data, startPolling, stopPolling, refetch } =
     useFindSamplesByInputValueQuery({
@@ -292,20 +292,18 @@ export default function SamplesList({
             : `${rowCount} matching samples`
         }
         handleDownload={() => setShowDownloadModal(true)}
-        customUI={
+        customUILeft={customToolbarUI}
+        customUIRight={
           changes.length > 0 ? (
             <>
-              <Col className={"text-end"}>
+              <Col md="auto">
                 <Button
                   className={"btn btn-secondary"}
                   onClick={handleDiscardChanges}
                   size={"sm"}
                 >
                   Discard Changes
-                </Button>
-              </Col>
-
-              <Col className={"text-start"}>
+                </Button>{" "}
                 <Button
                   className={"btn btn-success"}
                   disabled={alertContent === costCenterAlertContent}
@@ -320,7 +318,6 @@ export default function SamplesList({
             </>
           ) : undefined
         }
-        setColumnDefs={setColumnDefs}
       />
 
       <AutoSizer>
