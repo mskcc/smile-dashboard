@@ -11,6 +11,7 @@ import {
 import { SampleWhere } from "../../generated/graphql";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
+import _ from "lodash";
 
 export default function SamplesPage() {
   const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
@@ -39,6 +40,7 @@ export default function SamplesPage() {
               }}
               size="sm"
               variant="outline-secondary"
+              active={_.isEqual(columnDefs, SampleMetadataDetailsColumns)}
             >
               View SampleMetadata
             </Button>{" "}
@@ -48,6 +50,7 @@ export default function SamplesPage() {
               }}
               size="sm"
               variant="outline-secondary"
+              active={_.isEqual(columnDefs, ReadOnlyCohortSampleDetailsColumns)}
             >
               View Tempo
             </Button>{" "}
@@ -57,6 +60,7 @@ export default function SamplesPage() {
               }}
               size="sm"
               variant="outline-secondary"
+              active={_.isEqual(columnDefs, combinedSampleDetailsColumns)}
             >
               View all
             </Button>
