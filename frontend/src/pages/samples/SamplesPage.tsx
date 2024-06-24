@@ -2,7 +2,6 @@ import { PageHeader } from "../../shared/components/PageHeader";
 import SamplesList from "../../components/SamplesList";
 import {
   ReadOnlyCohortSampleDetailsColumns,
-  SampleMetadataDetailsColumns,
   cohortSampleFilterWhereVariables,
   combinedSampleDetailsColumns,
   prepareCombinedSampleDataForAgGrid,
@@ -12,6 +11,7 @@ import { SampleWhere } from "../../generated/graphql";
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 import _ from "lodash";
+import { InfoToolTip } from "../../shared/components/InfoToolTip";
 
 export default function SamplesPage() {
   const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
@@ -34,26 +34,11 @@ export default function SamplesPage() {
         }}
         customToolbarUI={
           <>
-            <Button
-              onClick={() => {
-                setColumnDefs(SampleMetadataDetailsColumns);
-              }}
-              size="sm"
-              variant="outline-secondary"
-              active={_.isEqual(columnDefs, SampleMetadataDetailsColumns)}
-            >
-              View SampleMetadata
-            </Button>{" "}
-            <Button
-              onClick={() => {
-                setColumnDefs(ReadOnlyCohortSampleDetailsColumns);
-              }}
-              size="sm"
-              variant="outline-secondary"
-              active={_.isEqual(columnDefs, ReadOnlyCohortSampleDetailsColumns)}
-            >
-              View Tempo
-            </Button>{" "}
+            <InfoToolTip>
+              These tabs change the fields displayed in the table below. "View
+              All" shows all fields, including both SampleMetadata and Tempo
+              fields.
+            </InfoToolTip>{" "}
             <Button
               onClick={() => {
                 setColumnDefs(combinedSampleDetailsColumns);
@@ -63,6 +48,16 @@ export default function SamplesPage() {
               active={_.isEqual(columnDefs, combinedSampleDetailsColumns)}
             >
               View all
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                setColumnDefs(ReadOnlyCohortSampleDetailsColumns);
+              }}
+              size="sm"
+              variant="outline-secondary"
+              active={_.isEqual(columnDefs, ReadOnlyCohortSampleDetailsColumns)}
+            >
+              Tempo fields
             </Button>
           </>
         }
