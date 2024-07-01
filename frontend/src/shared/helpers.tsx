@@ -12,8 +12,6 @@ import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";
 import {
   CohortsListQuery,
-  PatientsListQuery,
-  RequestsListQuery,
   Sample,
   SampleMetadata,
   SampleMetadataWhere,
@@ -77,7 +75,7 @@ export const RequestsListColumns: ColDef[] = [
     headerName: "IGO Project ID",
   },
   {
-    field: "totalSamples",
+    field: "totalSampleCount",
     headerName: "# Samples",
     cellClass: (params) => {
       if (params.data.revisable === false) {
@@ -145,64 +143,6 @@ export const RequestsListColumns: ColDef[] = [
   },
 ];
 
-export function prepareRequestDataForAgGrid(
-  requestsListQueryResult: RequestsListQuery
-) {
-  const newRequests = requestsListQueryResult.requests.map((request) => {
-    return {
-      totalSamples: request.hasSampleSamplesConnection?.totalCount,
-      ...request,
-    };
-  });
-
-  return {
-    requestsConnection: requestsListQueryResult.requestsConnection,
-    requests: newRequests,
-  };
-}
-
-export function preparePatientDataForAgGrid(
-  patientsListQueryResult: PatientsListQuery
-) {
-  const newPatients = patientsListQueryResult.patients.map((patient) => {
-    const samples = patient.hasSampleSamples;
-    const patientAliases = patient.patientAliasesIsAlias;
-
-    const cmoPatientId = patientAliases?.find(
-      (pa) => pa.namespace === "cmoId"
-    )?.value;
-    const dmpPatientId = patientAliases?.find(
-      (pa) => pa.namespace === "dmpId"
-    )?.value;
-
-    const cmoSampleIds = samples?.map((s) => {
-      const sampleMetadata = s.hasMetadataSampleMetadata[0];
-      return sampleMetadata?.cmoSampleName || sampleMetadata?.primaryId;
-    });
-
-    const additionalProperties =
-      samples[0]?.hasMetadataSampleMetadata[0]?.additionalProperties;
-    const additionalPropertiesJson = additionalProperties
-      ? JSON.parse(additionalProperties)
-      : {};
-
-    return {
-      cmoPatientId,
-      dmpPatientId,
-      cmoSampleIds,
-      smilePatientId: patient.smilePatientId,
-      totalSamples: patient.hasSampleSamplesConnection?.totalCount,
-      consentPartA: additionalPropertiesJson["consent-parta"],
-      consentPartC: additionalPropertiesJson["consent-partc"],
-    };
-  });
-
-  return {
-    patientsConnection: patientsListQueryResult.patientsConnection,
-    patients: newPatients,
-  };
-}
-
 export const PatientsListColumns: ColDef[] = [
   {
     headerName: "View Samples",
@@ -241,7 +181,7 @@ export const PatientsListColumns: ColDef[] = [
     sortable: false,
   },
   {
-    field: "totalSamples",
+    field: "totalSampleCount",
     headerName: "# Samples",
     sortable: false,
   },
@@ -535,36 +475,7 @@ export function prepareCohortDataForAgGrid(
   cohortsListQueryResult: CohortsListQuery,
   filterModel: IServerSideGetRowsRequest["filterModel"]
 ) {
-  let newCohorts = cohortsListQueryResult.cohorts.map((cohort) => {
-    const samples = cohort.hasCohortSampleSamples;
-    const cohortCompletes = cohort.hasCohortCompleteCohortCompletes;
-
-    const allSamplesBilled =
-      samples.length > 0 &&
-      samples?.every((sample) => {
-        return sample.hasTempoTempos?.[0].billed === true;
-      });
-
-    const latestCohortDeliveryDate = cohortCompletes?.[0];
-
-    return {
-      cohortId: cohort.cohortId,
-      totalSamples: cohort.hasCohortSampleSamplesConnection.totalCount,
-      smileSampleIds: samples.map((s) => s.smileSampleId),
-      billed: allSamplesBilled === true ? "Yes" : "No",
-      initialCohortDeliveryDate: formatDate(
-        cohortCompletes?.slice(-1)[0]?.date
-      ),
-      completeDate: formatDate(latestCohortDeliveryDate?.date),
-      endUsers: latestCohortDeliveryDate?.endUsers,
-      pmUsers: latestCohortDeliveryDate?.pmUsers,
-      projectTitle: latestCohortDeliveryDate?.projectTitle,
-      projectSubtitle: latestCohortDeliveryDate?.projectSubtitle,
-      status: latestCohortDeliveryDate?.status,
-      type: latestCohortDeliveryDate?.type,
-    };
-  });
-
+  let newCohorts = [...cohortsListQueryResult.cohorts];
   let newCohortsConnection = { ...cohortsListQueryResult.cohortsConnection };
 
   if ("initialCohortDeliveryDate" in filterModel) {
@@ -596,8 +507,8 @@ export function prepareCohortDataForAgGrid(
 
   const uniqueSmileSampleIds: Set<string> = new Set();
   newCohorts.forEach((cohort) => {
-    cohort.smileSampleIds.forEach((id) => {
-      uniqueSmileSampleIds.add(id);
+    cohort.smileSampleIds?.forEach((id) => {
+      uniqueSmileSampleIds.add(id!);
     });
   });
 
@@ -635,7 +546,7 @@ export const CohortsListColumns: ColDef[] = [
     headerName: "Cohort ID",
   },
   {
-    field: "totalSamples",
+    field: "totalSampleCount",
     headerName: "# Samples",
     sortable: false,
   },
@@ -661,6 +572,7 @@ export const CohortsListColumns: ColDef[] = [
       minValidYear: 2016,
       maxValidYear: new Date().getFullYear(),
     },
+    valueFormatter: (params) => params.value && formatDate(params.value),
   },
   {
     field: "completeDate",

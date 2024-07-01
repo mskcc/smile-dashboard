@@ -6,6 +6,9 @@ import { createHttpLink } from "apollo-link-http";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import { props } from "../utils/constants";
 import {
+  CohortsListQuery,
+  PatientsListQuery,
+  RequestsListQuery,
   SampleHasMetadataSampleMetadataUpdateFieldInput,
   SampleHasTempoTemposUpdateFieldInput,
   SampleMetadata,
@@ -21,11 +24,13 @@ import { connect, headers, StringCodec } from "nats";
 const fetch = require("node-fetch");
 const request = require("request-promise-native");
 import { ApolloClient, ApolloQueryResult } from "apollo-client";
+import { gql } from "apollo-server";
 
 export async function buildNeo4jDbSchema() {
   const driver = neo4j.driver(
     props.neo4j_graphql_uri,
-    neo4j.auth.basic(props.neo4j_username, props.neo4j_password)
+    neo4j.auth.basic(props.neo4j_username, props.neo4j_password),
+    { disableLosslessIntegers: true } // maps Cypher Integer to JavaScript Number
   );
 
   const sessionFactory = () =>
@@ -42,9 +47,39 @@ export async function buildNeo4jDbSchema() {
   });
 
   const typeDefs = await toGraphQLTypeDefs(sessionFactory, false);
-  const ogm = new OGM({ typeDefs: typeDefs, driver });
+  const extendedTypeDefs = gql`
+    ${typeDefs}
+
+    extend type Request {
+      totalSampleCount: Int
+    }
+
+    extend type Patient {
+      cmoPatientId: String
+      dmpPatientId: String
+      totalSampleCount: Int
+      cmoSampleIds: [String]
+      consentPartA: String
+      consentPartC: String
+    }
+
+    extend type Cohort {
+      totalSampleCount: Int
+      smileSampleIds: [String]
+      billed: String
+      initialCohortDeliveryDate: String
+      endUsers: String
+      pmUsers: String
+      projectTitle: String
+      projectSubtitle: String
+      status: String
+      type: String
+    }
+  `;
+
+  const ogm = new OGM({ typeDefs: extendedTypeDefs, driver });
   const neoSchema = new Neo4jGraphQL({
-    typeDefs: typeDefs,
+    typeDefs: extendedTypeDefs,
     driver,
     config: {
       skipValidateTypeDefs: true,
@@ -140,6 +175,90 @@ function buildResolvers(
         return {
           samples: updatedSamples.data.samples,
         };
+      },
+    },
+    Request: {
+      totalSampleCount: (parent: RequestsListQuery["requests"][number]) => {
+        return parent.hasSampleSamplesConnection?.totalCount;
+      },
+    },
+    Patient: {
+      cmoPatientId: (parent: PatientsListQuery["patients"][number]) => {
+        return parent.patientAliasesIsAlias?.find(
+          (patientAlias) => patientAlias.namespace === "cmoId"
+        )?.value;
+      },
+      dmpPatientId: (parent: PatientsListQuery["patients"][number]) => {
+        return parent.patientAliasesIsAlias?.find(
+          (patientAlias) => patientAlias.namespace === "dmpId"
+        )?.value;
+      },
+      totalSampleCount: (parent: PatientsListQuery["patients"][number]) => {
+        return parent.hasSampleSamplesConnection?.totalCount;
+      },
+      cmoSampleIds: (parent: PatientsListQuery["patients"][number]) => {
+        return parent.hasSampleSamples?.map((s) => {
+          const sampleMetadata = s.hasMetadataSampleMetadata[0];
+          return sampleMetadata?.cmoSampleName || sampleMetadata?.primaryId;
+        });
+      },
+      consentPartA: (parent: PatientsListQuery["patients"][number]) => {
+        try {
+          return JSON.parse(
+            parent.hasSampleSamples[0].hasMetadataSampleMetadata[0]
+              .additionalProperties
+          )["consent-parta"];
+        } catch {
+          return undefined;
+        }
+      },
+      consentPartC: (parent: PatientsListQuery["patients"][number]) => {
+        try {
+          return JSON.parse(
+            parent.hasSampleSamples[0].hasMetadataSampleMetadata[0]
+              .additionalProperties
+          )["consent-partc"];
+        } catch {
+          return undefined;
+        }
+      },
+    },
+    Cohort: {
+      totalSampleCount: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortSampleSamplesConnection?.totalCount;
+      },
+      smileSampleIds: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortSampleSamples?.map((s) => s.smileSampleId);
+      },
+      billed: (parent: CohortsListQuery["cohorts"][number]) => {
+        const samples = parent.hasCohortSampleSamples;
+        const allSamplesBilled =
+          samples?.length > 0 &&
+          samples.every((sample) => sample.hasTempoTempos?.[0]?.billed);
+        return allSamplesBilled ? "Yes" : "No";
+      },
+      initialCohortDeliveryDate: (
+        parent: CohortsListQuery["cohorts"][number]
+      ) => {
+        return parent.hasCohortCompleteCohortCompletes?.slice(-1)[0]?.date;
+      },
+      endUsers: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortCompleteCohortCompletes?.[0]?.endUsers; // latest
+      },
+      pmUsers: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortCompleteCohortCompletes?.[0]?.pmUsers;
+      },
+      projectTitle: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortCompleteCohortCompletes?.[0]?.projectTitle;
+      },
+      projectSubtitle: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortCompleteCohortCompletes?.[0]?.projectSubtitle;
+      },
+      status: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortCompleteCohortCompletes?.[0]?.status;
+      },
+      type: (parent: CohortsListQuery["cohorts"][number]) => {
+        return parent.hasCohortCompleteCohortCompletes?.[0]?.type;
       },
     },
   };
