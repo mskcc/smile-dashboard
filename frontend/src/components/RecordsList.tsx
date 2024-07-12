@@ -18,7 +18,12 @@ import {
 } from "ag-grid-community";
 import { DataName, useHookLazyGeneric } from "../shared/types";
 import SamplesList from "./SamplesList";
-import { Sample, SampleWhere } from "../generated/graphql";
+import {
+  FindSamplesByInputValueQuery,
+  Sample,
+  SampleWhere,
+  SortDirection,
+} from "../generated/graphql";
 import {
   defaultColDef,
   prepareSampleMetadataForAgGrid,
@@ -39,6 +44,7 @@ interface IRecordsListProps {
   queryFilterWhereVariables: (
     parsedSearchVals: string[]
   ) => Record<string, any>[];
+  defaultSort?: { [key: string]: SortDirection }[];
   userSearchVal: string;
   setUserSearchVal: Dispatch<SetStateAction<string>>;
   parsedSearchVals: string[];
@@ -48,7 +54,9 @@ interface IRecordsListProps {
   setShowDownloadModal: Dispatch<SetStateAction<boolean>>;
   handleDownload: () => void;
   samplesQueryParam: string | undefined;
-  prepareSamplesDataForAgGrid?: (samples: Sample[]) => any[];
+  prepareSamplesDataForAgGrid?: (
+    samples: FindSamplesByInputValueQuery["samples"]
+  ) => any[];
   samplesColDefs: ColDef[];
   samplesParentWhereVariables: SampleWhere;
   samplesRefetchWhereVariables: (
@@ -69,6 +77,7 @@ export default function RecordsList({
   lazyRecordsQueryAddlVariables,
   prepareDataForAgGrid,
   queryFilterWhereVariables,
+  defaultSort,
   userSearchVal,
   setUserSearchVal,
   parsedSearchVals,
@@ -101,7 +110,11 @@ export default function RecordsList({
   const [initialFetch, { loading, error, data, fetchMore, refetch }] =
     lazyRecordsQuery({
       variables: {
-        options: { limit: 20, offset: 0 },
+        options: {
+          limit: 20,
+          offset: 0,
+          sort: defaultSort,
+        },
         ...lazyRecordsQueryAddlVariables,
       },
     });
@@ -119,9 +132,7 @@ export default function RecordsList({
           options: {
             offset: params.request.startRow,
             limit: params.request.endRow,
-            sort: params.request.sortModel.map((sortModel) => {
-              return { [sortModel.colId]: sortModel.sort?.toUpperCase() };
-            }),
+            sort: defaultSort,
           },
         };
 
@@ -180,6 +191,7 @@ export default function RecordsList({
                 options: {
                   offset: 0,
                   limit: undefined,
+                  sort: defaultSort,
                 },
               },
             }).then(({ data }) => {

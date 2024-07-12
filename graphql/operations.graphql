@@ -4,6 +4,11 @@ query RequestsList($options: RequestOptions, $where: RequestWhere) {
   }
   requests(where: $where, options: $options) {
     ...RequestParts
+    importDate
+    totalSampleCount
+    hasMetadataRequestMetadata {
+      importDate
+    }
     hasSampleSamplesConnection {
       totalCount
     }
@@ -42,65 +47,47 @@ query PatientsList($options: PatientOptions, $where: PatientWhere) {
 
 query FindSamplesByInputValue(
   $where: SampleWhere
-  $first: Int
+  $options: SampleOptions
   $sampleMetadataOptions: SampleMetadataOptions
   $bamCompletesOptions: BamCompleteOptions
   $mafCompletesOptions: MafCompleteOptions
   $qcCompletesOptions: QcCompleteOptions
 ) {
-  samplesConnection(where: $where, first: $first) {
-    edges {
-      node {
-        ...SampleParts
-        hasMetadataSampleMetadata(options: $sampleMetadataOptions) {
-          ...SampleMetadataParts
-          hasStatusStatuses {
-            validationReport
-            validationStatus
-          }
-        }
-        requestsHasSampleConnection {
-          edges {
-            node {
-              ...RequestParts
-            }
-          }
-        }
-        patientsHasSampleConnection {
-          edges {
-            node {
-              smilePatientId
-            }
-          }
-        }
-        cohortsHasCohortSampleConnection {
-          edges {
-            node {
-              cohortId
-              hasCohortCompleteCohortCompletes {
-                date
-              }
-            }
-          }
-        }
-        hasTempoTempos {
-          ...TempoParts
-          hasEventBamCompletes(options: $bamCompletesOptions) {
-            date
-            status
-          }
-          hasEventMafCompletes(options: $mafCompletesOptions) {
-            date
-            normalPrimaryId
-            status
-          }
-          hasEventQcCompletes(options: $qcCompletesOptions) {
-            date
-            reason
-            result
-            status
-          }
-        }
+  samplesConnection(where: $where) {
+    totalCount
+  }
+  samples(where: $where, options: $options) {
+    smileSampleId
+    revisable
+    hasMetadataSampleMetadata(options: $sampleMetadataOptions) {
+      ...SampleMetadataParts
+      hasStatusStatuses {
+        validationReport
+        validationStatus
+      }
+    }
+    cohortsHasCohortSample {
+      cohortId
+      hasCohortCompleteCohortCompletes {
+        date
+      }
+    }
+    hasTempoTempos {
+      ...TempoParts
+      hasEventBamCompletes(options: $bamCompletesOptions) {
+        date
+        status
+      }
+      hasEventMafCompletes(options: $mafCompletesOptions) {
+        date
+        normalPrimaryId
+        status
+      }
+      hasEventQcCompletes(options: $qcCompletesOptions) {
+        date
+        reason
+        result
+        status
       }
     }
   }
@@ -109,7 +96,6 @@ query FindSamplesByInputValue(
 fragment RequestParts on Request {
   igoRequestId
   igoProjectId
-  totalSampleCount
   genePanel
   dataAnalystName
   dataAnalystEmail
@@ -126,14 +112,6 @@ fragment RequestParts on Request {
   projectManagerName
   qcAccessEmails
   smileRequestId
-}
-
-fragment SampleParts on Sample {
-  datasource
-  revisable
-  sampleCategory
-  sampleClass
-  smileSampleId
 }
 
 fragment SampleMetadataParts on SampleMetadata {
@@ -183,9 +161,6 @@ query Samples(
   samples(where: $where) {
     smileSampleId
     revisable
-    sampleCategory
-    sampleClass
-    datasource
     hasMetadataSampleMetadata(
       where: $hasMetadataSampleMetadataWhere2
       options: $hasMetadataSampleMetadataOptions2
@@ -207,9 +182,6 @@ mutation UpdateSamples(
     samples {
       smileSampleId
       revisable
-      datasource
-      sampleCategory
-      sampleClass
       hasMetadataSampleMetadata {
         ...SampleMetadataParts
       }

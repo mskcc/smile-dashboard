@@ -144,6 +144,7 @@ export default function CohortsPage({
   const sampleQueryParamHeaderName = "Cohort ID";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
   const sampleKeyForUpdate = "hasTempoTempos";
+  const defaultSort = [{ initialCohortDeliveryDate: SortDirection.Desc }];
 
   return (
     <>
@@ -163,6 +164,7 @@ export default function CohortsPage({
         }
         prepareDataForAgGrid={prepareCohortDataForAgGrid}
         queryFilterWhereVariables={cohortFilterWhereVariables}
+        defaultSort={defaultSort}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
         parsedSearchVals={parsedSearchVals}
@@ -179,19 +181,15 @@ export default function CohortsPage({
         prepareSamplesDataForAgGrid={prepareSampleCohortDataForAgGrid}
         samplesParentWhereVariables={
           {
-            cohortsHasCohortSampleConnection_SOME: {
-              node: {
-                [sampleQueryParamFieldName]: sampleQueryParamValue,
-              },
+            cohortsHasCohortSample_SOME: {
+              [sampleQueryParamFieldName]: sampleQueryParamValue,
             },
           } as SampleWhere
         }
         samplesRefetchWhereVariables={(samplesParsedSearchVals) => {
           return {
-            cohortsHasCohortSampleConnection_SOME: {
-              node: {
-                [sampleQueryParamFieldName]: sampleQueryParamValue,
-              },
+            cohortsHasCohortSample_SOME: {
+              [sampleQueryParamFieldName]: sampleQueryParamValue,
             },
             OR: cohortSampleFilterWhereVariables(samplesParsedSearchVals),
           } as SampleWhere;
