@@ -98,7 +98,7 @@ Requirements:
 - `${SMILE_CONFIG_HOME}`: path to the dashboard configuration directory
 - `${SMILE_CONFIG_HOME}/resources/smile-dashboard`: path to application.properties and SSL cert files for the dashboard backend
 - `${SMILE_CONFIG_HOME}/nats`: path to NATS config, must contain rootCA.pem
-- `$REACT_APP_GRAPHQL_CLIENT_URI`: points to the apollo-graphql client url
+- `${REACT_APP_EXPRESS_SERVER_ORIGIN}`: points to the apollo-graphql client url
 
 See [./server/env/application.properties.EXAMPLE](./server/env/application.properties.EXAMPLE) for all of the application properties needed for running the dashboard.
 
@@ -145,7 +145,7 @@ services:
     image: cmometadb/smile-dashboard:[build version]
     restart: unless-stopped
     environment:
-      - REACT_APP_GRAPHQL_CLIENT_URI=${REACT_APP_GRAPHQL_CLIENT_URI}
+      - REACT_APP_EXPRESS_SERVER_ORIGIN=${REACT_APP_EXPRESS_SERVER_ORIGIN}
     links:
       - graphql-client
     ports:
