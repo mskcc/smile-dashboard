@@ -31,10 +31,7 @@ import {
   sortArrayByNestedField,
 } from "../utils/flattening";
 import { ApolloServerContext } from "../utils/servers";
-import {
-  CachedOncotreeData,
-  includeCancerTypeFieldsInSearch,
-} from "../utils/oncotree";
+import { includeCancerTypeFieldsInSearch } from "../utils/oncotree";
 import { querySamplesList } from "../utils/ogm";
 
 type SortOptions = { [key: string]: SortDirection }[];
@@ -290,7 +287,12 @@ function buildResolvers(
           const sortOrder = Object.values(sortOptions[0])[0];
 
           if (flattenedRequestFields.includes(sortField)) {
-            sortArrayByNestedField(requests, "Request", sortField, sortOrder);
+            await sortArrayByNestedField(
+              requests,
+              "Request",
+              sortField,
+              sortOrder
+            );
           }
         }
 
@@ -332,7 +334,12 @@ function buildResolvers(
           const sortOrder = Object.values(sortOptions[0])[0];
 
           if (flattenedPatientFields.includes(sortField)) {
-            sortArrayByNestedField(patients, "Patient", sortField, sortOrder);
+            await sortArrayByNestedField(
+              patients,
+              "Patient",
+              sortField,
+              sortOrder
+            );
           }
         }
 
@@ -343,27 +350,22 @@ function buildResolvers(
       },
       async samples(
         _source: undefined,
-        args: any,
+        { where }: any,
         { oncotreeCache }: ApolloServerContext
       ) {
-        let customWhere = includeCancerTypeFieldsInSearch(
-          args.where,
-          oncotreeCache
-        );
-        return await querySamplesList(ogm, customWhere, args.options);
+        let customWhere = includeCancerTypeFieldsInSearch(where, oncotreeCache);
+        const result = await querySamplesList(ogm, customWhere);
+        return result.data;
       },
       async samplesConnection(
         _source: undefined,
-        args: any,
+        { where }: any,
         { oncotreeCache }: ApolloServerContext
       ) {
-        let customWhere = includeCancerTypeFieldsInSearch(
-          args.where,
-          oncotreeCache
-        );
-        const samples = await querySamplesList(ogm, customWhere, args.options);
+        let customWhere = includeCancerTypeFieldsInSearch(where, oncotreeCache);
+        const result = await querySamplesList(ogm, customWhere);
         return {
-          totalCount: samples.length,
+          totalCount: result.totalCount,
         };
       },
       async cohorts(_source: undefined, args: any) {
@@ -402,7 +404,7 @@ function buildResolvers(
 
           // We don't check for other flattened fields here because the Cohorts AG Grid opts out of the Server-Side Row Model. We only need to sort by initialCohortDeliveryDate for the initial load
           if (sortField === "initialCohortDeliveryDate") {
-            sortArrayByNestedField(
+            await sortArrayByNestedField(
               cohorts,
               "Cohort",
               "initialCohortDeliveryDate",
