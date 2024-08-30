@@ -160,7 +160,10 @@ export async function buildNeo4jDbSchema() {
   await ogm.init();
   const neo4jDbSchema = await neoSchema.getSchema();
 
-  return neo4jDbSchema;
+  return {
+    neo4jDbSchema,
+    ogm,
+  };
 }
 
 function buildResolvers(
@@ -351,19 +354,17 @@ function buildResolvers(
       async samples(
         _source: undefined,
         { where }: any,
-        { oncotreeCache }: ApolloServerContext
+        { samplesLoader }: ApolloServerContext
       ) {
-        let customWhere = includeCancerTypeFieldsInSearch(where, oncotreeCache);
-        const result = await querySamplesList(ogm, customWhere);
+        const result = await samplesLoader.load(where);
         return result.data;
       },
       async samplesConnection(
         _source: undefined,
         { where }: any,
-        { oncotreeCache }: ApolloServerContext
+        { samplesLoader }: ApolloServerContext
       ) {
-        let customWhere = includeCancerTypeFieldsInSearch(where, oncotreeCache);
-        const result = await querySamplesList(ogm, customWhere);
+        const result = await samplesLoader.load(where);
         return {
           totalCount: result.totalCount,
         };
