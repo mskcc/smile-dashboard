@@ -40,13 +40,22 @@ export const driver = neo4j.driver(
   { disableLosslessIntegers: true } // maps Cypher Integer to JavaScript Number
 );
 
+async function customFetch(url: any, options: any) {
+  const { timeoutMS = 90000 } = options;
+
+  return await fetch(url, {
+    ...options,
+    signal: AbortSignal.timeout(timeoutMS),
+  });
+}
+
 export async function buildNeo4jDbSchema() {
   const sessionFactory = () =>
     driver.session({ defaultAccessMode: neo4j.session.WRITE });
 
   const httpLink = createHttpLink({
     uri: "https://localhost:4000/graphql",
-    fetch: fetch,
+    fetch: customFetch,
   });
 
   const client = new ApolloClient({
