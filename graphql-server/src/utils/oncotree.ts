@@ -7,7 +7,7 @@ import {
   SampleMetadataWhere,
   SampleWhere,
 } from "../generated/graphql";
-import { GraphQLWhereArg } from "@neo4j/graphql";
+import { GraphQLWhereArg } from "@neo4j/graphql/dist/types";
 
 /**
  * Source: https://oncotree.mskcc.org/#/home?tab=api
