@@ -1775,7 +1775,7 @@ export type DashboardSample = {
   sampleOrigin?: Maybe<Scalars["String"]>;
   sampleType?: Maybe<Scalars["String"]>;
   sex?: Maybe<Scalars["String"]>;
-  smileSampleId?: Maybe<Scalars["String"]>;
+  smileSampleId: Scalars["String"];
   species?: Maybe<Scalars["String"]>;
   tissueLocation?: Maybe<Scalars["String"]>;
   tumorOrNormal?: Maybe<Scalars["String"]>;
@@ -1798,6 +1798,7 @@ export type DashboardSampleInput = {
   billedBy?: InputMaybe<Scalars["String"]>;
   cancerType?: InputMaybe<Scalars["String"]>;
   cancerTypeDetailed?: InputMaybe<Scalars["String"]>;
+  changedFieldNames: Array<Scalars["String"]>;
   cmoPatientId?: InputMaybe<Scalars["String"]>;
   cmoSampleName?: InputMaybe<Scalars["String"]>;
   collectionYear?: InputMaybe<Scalars["String"]>;
@@ -1824,7 +1825,7 @@ export type DashboardSampleInput = {
   sampleOrigin?: InputMaybe<Scalars["String"]>;
   sampleType?: InputMaybe<Scalars["String"]>;
   sex?: InputMaybe<Scalars["String"]>;
-  smileSampleId?: InputMaybe<Scalars["String"]>;
+  smileSampleId: Scalars["String"];
   species?: InputMaybe<Scalars["String"]>;
   tissueLocation?: InputMaybe<Scalars["String"]>;
   tumorOrNormal?: InputMaybe<Scalars["String"]>;
@@ -12473,7 +12474,7 @@ export type DashboardSamplesQuery = {
   } | null;
   dashboardSamples?: Array<{
     __typename?: "DashboardSample";
-    smileSampleId?: string | null;
+    smileSampleId: string;
     revisable?: boolean | null;
     primaryId?: string | null;
     cmoSampleName?: string | null;
@@ -12518,7 +12519,7 @@ export type DashboardSamplesQuery = {
 
 export type DashboardSamplePartsFragment = {
   __typename?: "DashboardSample";
-  smileSampleId?: string | null;
+  smileSampleId: string;
   revisable?: boolean | null;
 };
 
@@ -12705,7 +12706,7 @@ export type UpdateDashboardSamplesMutation = {
   __typename?: "Mutation";
   updateDashboardSamples?: Array<{
     __typename?: "DashboardSample";
-    smileSampleId?: string | null;
+    smileSampleId: string;
     revisable?: boolean | null;
     primaryId?: string | null;
     cmoSampleName?: string | null;

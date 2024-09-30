@@ -5,211 +5,228 @@ import NodeCache from "node-cache";
 import { parseJsonSafely } from "../utils/json";
 import { gql } from "apollo-server";
 import { SampleContext, DashboardSampleInput } from "../generated/graphql";
+import { props } from "../utils/constants";
+import { connect, headers, StringCodec } from "nats";
+import { OGM } from "@neo4j/graphql-ogm";
+const request = require("request-promise-native");
 
-const resolvers = {
-  Query: {
-    async dashboardSamples(
-      _source: undefined,
-      {
-        searchVals,
-        sampleContext,
-      }: { searchVals: string[]; sampleContext: SampleContext },
-      { oncotreeCache }: ApolloServerContext
-    ) {
-      const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
-        searchVals,
-        oncotreeCache,
-      });
+export async function buildCustomSchema(ogm: OGM) {
+  const resolvers = {
+    Query: {
+      async dashboardSamples(
+        _source: undefined,
+        {
+          searchVals,
+          sampleContext,
+        }: { searchVals: string[]; sampleContext: SampleContext },
+        { oncotreeCache }: ApolloServerContext
+      ) {
+        const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
+          searchVals,
+          oncotreeCache,
+        });
 
-      return await queryDashboardSamples({
-        searchVals,
-        sampleContext,
-        oncotreeCache,
-        addlOncotreeCodes: Array.from(addlOncotreeCodes),
-      });
+        return await queryDashboardSamples({
+          searchVals,
+          sampleContext,
+          oncotreeCache,
+          addlOncotreeCodes: Array.from(addlOncotreeCodes),
+        });
+      },
+      async dashboardSampleCount(
+        _source: undefined,
+        {
+          searchVals,
+          sampleContext,
+        }: { searchVals: string[]; sampleContext: SampleContext },
+        { oncotreeCache }: ApolloServerContext
+      ) {
+        const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
+          searchVals,
+          oncotreeCache,
+        });
+
+        return await queryDashboardSampleCount({
+          searchVals,
+          sampleContext,
+          addlOncotreeCodes: Array.from(addlOncotreeCodes),
+        });
+      },
     },
-    async dashboardSampleCount(
-      _source: undefined,
-      {
-        searchVals,
-        sampleContext,
-      }: { searchVals: string[]; sampleContext: SampleContext },
-      { oncotreeCache }: ApolloServerContext
-    ) {
-      const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
-        searchVals,
-        oncotreeCache,
-      });
+    Mutation: {
+      async updateDashboardSamples(
+        _source: undefined,
+        { newDashboardSamples }: { newDashboardSamples: DashboardSampleInput[] }
+      ) {
+        await updateAllSamplesConcurrently(newDashboardSamples, ogm);
 
-      return await queryDashboardSampleCount({
-        searchVals,
-        sampleContext,
-        addlOncotreeCodes: Array.from(addlOncotreeCodes),
-      });
+        // Here, we're returning newDashboardSamples for simplicity. However, if we were to follow
+        // GraphQL's convention, we'd return the actual resulting data from the database update. This
+        // means we'd wait for SMILE services to finish processing the data changes, then query that
+        // data to return it to the frontend. For more context, see:
+        // https://www.apollographql.com/docs/react/performance/optimistic-ui/#optimistic-mutation-lifecycle
+        return newDashboardSamples;
+      },
     },
-  },
-  Mutation: {
-    async updateDashboardSamples(
-      _source: undefined,
-      { newDashboardSamples }: { newDashboardSamples: DashboardSampleInput[] }
-    ) {
-      return newDashboardSamples; // placeholder
-    },
-  },
-};
+  };
 
-const typeDefs = gql`
-  type DashboardSampleCount {
-    totalCount: Int
-  }
+  const typeDefs = gql`
+    type DashboardSampleCount {
+      totalCount: Int
+    }
 
-  type DashboardSample {
-    # (s:Sample)
-    smileSampleId: String
-    revisable: Boolean
+    type DashboardSample {
+      # (s:Sample)
+      smileSampleId: String!
+      revisable: Boolean
 
-    # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
-    ## Root-level fields
-    primaryId: String
-    cmoSampleName: String
-    importDate: String
-    cmoPatientId: String
-    investigatorSampleId: String
-    sampleType: String
-    species: String
-    genePanel: String
-    baitSet: String
-    preservation: String
-    tumorOrNormal: String
-    sampleClass: String
-    oncotreeCode: String
-    collectionYear: String
-    sampleOrigin: String
-    tissueLocation: String
-    sex: String
-    ## Custom fields
-    recipe: String
-    ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
-    validationReport: String
-    validationStatus: String
+      # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+      ## Root-level fields
+      primaryId: String
+      cmoSampleName: String
+      importDate: String
+      cmoPatientId: String
+      investigatorSampleId: String
+      sampleType: String
+      species: String
+      genePanel: String
+      baitSet: String
+      preservation: String
+      tumorOrNormal: String
+      sampleClass: String
+      oncotreeCode: String
+      collectionYear: String
+      sampleOrigin: String
+      tissueLocation: String
+      sex: String
+      ## Custom fields
+      recipe: String
+      ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
+      validationReport: String
+      validationStatus: String
 
-    # Oncotree API
-    cancerType: String
-    cancerTypeDetailed: String
+      # Oncotree API
+      cancerType: String
+      cancerTypeDetailed: String
 
-    ## (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
-    ## Root-level fields
-    billed: Boolean
-    costCenter: String
-    billedBy: String
-    custodianInformation: String
-    accessLevel: String
-    ## Custom fields
-    initialPipelineRunDate: String
-    embargoDate: String
-    ## (t:Tempo)-[:HAS_EVENT]->(bc:BamComplete)
-    bamCompleteDate: String
-    bamCompleteStatus: String
-    ## (t:Tempo)-[:HAS_EVENT]->(mc:MafComplete)
-    mafCompleteDate: String
-    mafCompleteNormalPrimaryId: String
-    mafCompleteStatus: String
-    # (t:Tempo)-[:HAS_EVENT]->(qc:QcComplete)
-    qcCompleteDate: String
-    qcCompleteResult: String
-    qcCompleteReason: String
-    qcCompleteStatus: String
-  }
+      ## (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
+      ## Root-level fields
+      billed: Boolean
+      costCenter: String
+      billedBy: String
+      custodianInformation: String
+      accessLevel: String
+      ## Custom fields
+      initialPipelineRunDate: String
+      embargoDate: String
+      ## (t:Tempo)-[:HAS_EVENT]->(bc:BamComplete)
+      bamCompleteDate: String
+      bamCompleteStatus: String
+      ## (t:Tempo)-[:HAS_EVENT]->(mc:MafComplete)
+      mafCompleteDate: String
+      mafCompleteNormalPrimaryId: String
+      mafCompleteStatus: String
+      # (t:Tempo)-[:HAS_EVENT]->(qc:QcComplete)
+      qcCompleteDate: String
+      qcCompleteResult: String
+      qcCompleteReason: String
+      qcCompleteStatus: String
+    }
 
-  type DashboardSampleCount {
-    count: Int
-  }
+    type DashboardSampleCount {
+      count: Int
+    }
 
-  input SampleContext {
-    fieldName: String
-    values: [String!]!
-  }
+    input SampleContext {
+      fieldName: String
+      values: [String!]!
+    }
 
-  type Query {
-    dashboardSamples(
-      searchVals: [String]
-      sampleContext: SampleContext
-    ): [DashboardSample]
-    dashboardSampleCount(
-      searchVals: [String]
-      sampleContext: SampleContext
-    ): DashboardSampleCount
-  }
+    type Query {
+      dashboardSamples(
+        searchVals: [String]
+        sampleContext: SampleContext
+      ): [DashboardSample]
+      dashboardSampleCount(
+        searchVals: [String]
+        sampleContext: SampleContext
+      ): DashboardSampleCount
+    }
 
-  input DashboardSampleInput {
-    # (s:Sample)
-    smileSampleId: String
-    revisable: Boolean
+    # We have to define a separate "input" type and can't reuse DashboardSample.
+    # For more context, see: https://stackoverflow.com/q/41743253
+    input DashboardSampleInput {
+      changedFieldNames: [String!]!
 
-    # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
-    ## Root-level fields
-    primaryId: String
-    cmoSampleName: String
-    importDate: String
-    cmoPatientId: String
-    investigatorSampleId: String
-    sampleType: String
-    species: String
-    genePanel: String
-    baitSet: String
-    preservation: String
-    tumorOrNormal: String
-    sampleClass: String
-    oncotreeCode: String
-    collectionYear: String
-    sampleOrigin: String
-    tissueLocation: String
-    sex: String
-    ## Custom fields
-    recipe: String
-    ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
-    validationReport: String
-    validationStatus: String
+      # (s:Sample)
+      smileSampleId: String!
+      revisable: Boolean
 
-    # Oncotree API
-    cancerType: String
-    cancerTypeDetailed: String
+      # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+      ## Root-level fields
+      primaryId: String
+      cmoSampleName: String
+      importDate: String
+      cmoPatientId: String
+      investigatorSampleId: String
+      sampleType: String
+      species: String
+      genePanel: String
+      baitSet: String
+      preservation: String
+      tumorOrNormal: String
+      sampleClass: String
+      oncotreeCode: String
+      collectionYear: String
+      sampleOrigin: String
+      tissueLocation: String
+      sex: String
+      ## Custom fields
+      recipe: String
+      ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
+      validationReport: String
+      validationStatus: String
 
-    ## (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
-    ## Root-level fields
-    billed: Boolean
-    costCenter: String
-    billedBy: String
-    custodianInformation: String
-    accessLevel: String
-    ## Custom fields
-    initialPipelineRunDate: String
-    embargoDate: String
-    ## (t:Tempo)-[:HAS_EVENT]->(bc:BamComplete)
-    bamCompleteDate: String
-    bamCompleteStatus: String
-    ## (t:Tempo)-[:HAS_EVENT]->(mc:MafComplete)
-    mafCompleteDate: String
-    mafCompleteNormalPrimaryId: String
-    mafCompleteStatus: String
-    # (t:Tempo)-[:HAS_EVENT]->(qc:QcComplete)
-    qcCompleteDate: String
-    qcCompleteResult: String
-    qcCompleteReason: String
-    qcCompleteStatus: String
-  }
+      # Oncotree API
+      cancerType: String
+      cancerTypeDetailed: String
 
-  type Mutation {
-    updateDashboardSamples(
-      newDashboardSamples: [DashboardSampleInput]
-    ): [DashboardSample]
-  }
-`;
+      ## (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
+      ## Root-level fields
+      billed: Boolean
+      costCenter: String
+      billedBy: String
+      custodianInformation: String
+      accessLevel: String
+      ## Custom fields
+      initialPipelineRunDate: String
+      embargoDate: String
+      ## (t:Tempo)-[:HAS_EVENT]->(bc:BamComplete)
+      bamCompleteDate: String
+      bamCompleteStatus: String
+      ## (t:Tempo)-[:HAS_EVENT]->(mc:MafComplete)
+      mafCompleteDate: String
+      mafCompleteNormalPrimaryId: String
+      mafCompleteStatus: String
+      # (t:Tempo)-[:HAS_EVENT]->(qc:QcComplete)
+      qcCompleteDate: String
+      qcCompleteResult: String
+      qcCompleteReason: String
+      qcCompleteStatus: String
+    }
 
-export const customSchema = makeExecutableSchema({
-  typeDefs: typeDefs,
-  resolvers: resolvers,
-});
+    type Mutation {
+      updateDashboardSamples(
+        newDashboardSamples: [DashboardSampleInput]
+      ): [DashboardSample]
+    }
+  `;
+
+  return makeExecutableSchema({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+  });
+}
 
 async function queryDashboardSamples({
   searchVals,
@@ -560,4 +577,161 @@ function getAddlOtCodesMatchingCtOrCtdVals({
     });
   }
   return addlOncotreeCodes;
+}
+
+async function updateTempo(newDashboardSample: DashboardSampleInput) {
+  return new Promise((resolve) => {
+    const dataForTempoBillingUpdate = {
+      primaryId: newDashboardSample.primaryId,
+      billed: newDashboardSample.billed,
+      billedBy: newDashboardSample.billedBy,
+      costCenter: newDashboardSample.costCenter,
+      accessLevel: newDashboardSample.accessLevel,
+      custodianInformation: newDashboardSample.custodianInformation,
+    };
+
+    publishNatsMessage(
+      props.pub_tempo_sample_billing,
+      JSON.stringify(dataForTempoBillingUpdate)
+    );
+
+    resolve(null);
+  });
+}
+
+async function updateSampleMetadata(
+  newDashboardSample: DashboardSampleInput,
+  ogm: OGM
+) {
+  return new Promise(async (resolve) => {
+    const sampleManifest = await request(
+      props.smile_sample_endpoint + newDashboardSample.primaryId,
+      {
+        json: true,
+      }
+    );
+
+    Object.keys(newDashboardSample).forEach((key) => {
+      if (key in sampleManifest) {
+        sampleManifest[key] =
+          newDashboardSample[key as keyof DashboardSampleInput];
+      }
+    });
+
+    // Ensure validator and label generator use latest status data added during validation
+    delete sampleManifest["status"];
+
+    // Ensure isCmoSample is set in sample's 'additionalProperties' if not already present.
+    // This ensures that cmo samples get sent to the label generator after validation as
+    // some of the older SMILE samples do not have this additionalProperty set
+    if (sampleManifest["additionalProperties"]["isCmoSample"] == null) {
+      const requestId = sampleManifest["additionalProperties"]["igoRequestId"];
+      let req = ogm.model("Request");
+      const rd = await req.find({
+        where: { igoRequestId: requestId },
+      });
+      sampleManifest["additionalProperties"]["isCmoSample"] =
+        rd[0]["isCmoRequest"].toString();
+    }
+
+    publishNatsMessage(
+      props.pub_validate_sample_update,
+      JSON.stringify(sampleManifest)
+    );
+
+    await ogm.model("Sample").update({
+      where: { smileSampleId: sampleManifest.smileSampleId },
+      update: { revisable: false },
+    });
+
+    resolve(null);
+  });
+}
+
+const editableSampleMetadataFields = new Set([
+  "cmoPatientId",
+  "investigatorSampleId",
+  "sampleType",
+  "preservation",
+  "tumorOrNormal",
+  "sampleClass",
+  "oncotreeCode",
+  "collectionYear",
+  "sampleOrigin",
+  "tissueLocation",
+]);
+
+const editableTempoFields = new Set([
+  "billed",
+  "costCenter",
+  "billedBy",
+  "custodianInformation",
+  "accessLevel",
+]);
+
+async function updateAllSamplesConcurrently(
+  newDashboardSamples: DashboardSampleInput[],
+  ogm: OGM
+) {
+  const allPromises = newDashboardSamples.map(async (dashboardSample) => {
+    try {
+      const metadataChanged = dashboardSample.changedFieldNames.some((field) =>
+        editableSampleMetadataFields.has(field)
+      );
+      const tempoChanged = dashboardSample.changedFieldNames.some((field) =>
+        editableTempoFields.has(field)
+      );
+
+      const promises = [];
+      if (metadataChanged) {
+        promises.push(updateSampleMetadata(dashboardSample, ogm));
+      }
+      if (tempoChanged) {
+        promises.push(updateTempo(dashboardSample));
+      }
+
+      return Promise.all(promises);
+    } catch (error) {
+      console.error(
+        `Failed to update sample with primaryId ${dashboardSample.primaryId}. Error:`,
+        error
+      );
+      throw error; // ensure Promise.allSettled captures the error
+    }
+  });
+
+  await Promise.allSettled(allPromises);
+}
+
+async function publishNatsMessage(topic: string, message: string) {
+  const sc = StringCodec();
+
+  const tlsOptions = {
+    keyFile: props.nats_key_pem,
+    certFile: props.nats_cert_pem,
+    caFile: props.nats_ca_pem,
+    rejectUnauthorized: false,
+  };
+
+  const natsConnProperties = {
+    servers: [props.nats_url],
+    user: props.nats_username,
+    pass: props.nats_password,
+    tls: tlsOptions,
+  };
+
+  try {
+    const natsConn = await connect(natsConnProperties);
+    console.log("Connected to server: ");
+    console.log(natsConn.getServer());
+    console.log("publishing message: ", message, "\nto topic", topic);
+    const h = headers();
+    h.append("Nats-Msg-Subject", topic);
+    natsConn.publish(topic, sc.encode(JSON.stringify(message)), { headers: h });
+  } catch (err) {
+    console.log(
+      `error connecting to ${JSON.stringify(natsConnProperties)}`,
+      err
+    );
+  }
 }
