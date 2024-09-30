@@ -1789,6 +1789,49 @@ export type DashboardSampleCount = {
   totalCount?: Maybe<Scalars["Int"]>;
 };
 
+export type DashboardSampleInput = {
+  accessLevel?: InputMaybe<Scalars["String"]>;
+  baitSet?: InputMaybe<Scalars["String"]>;
+  bamCompleteDate?: InputMaybe<Scalars["String"]>;
+  bamCompleteStatus?: InputMaybe<Scalars["String"]>;
+  billed?: InputMaybe<Scalars["Boolean"]>;
+  billedBy?: InputMaybe<Scalars["String"]>;
+  cancerType?: InputMaybe<Scalars["String"]>;
+  cancerTypeDetailed?: InputMaybe<Scalars["String"]>;
+  cmoPatientId?: InputMaybe<Scalars["String"]>;
+  cmoSampleName?: InputMaybe<Scalars["String"]>;
+  collectionYear?: InputMaybe<Scalars["String"]>;
+  costCenter?: InputMaybe<Scalars["String"]>;
+  custodianInformation?: InputMaybe<Scalars["String"]>;
+  embargoDate?: InputMaybe<Scalars["String"]>;
+  genePanel?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["String"]>;
+  initialPipelineRunDate?: InputMaybe<Scalars["String"]>;
+  investigatorSampleId?: InputMaybe<Scalars["String"]>;
+  mafCompleteDate?: InputMaybe<Scalars["String"]>;
+  mafCompleteNormalPrimaryId?: InputMaybe<Scalars["String"]>;
+  mafCompleteStatus?: InputMaybe<Scalars["String"]>;
+  oncotreeCode?: InputMaybe<Scalars["String"]>;
+  preservation?: InputMaybe<Scalars["String"]>;
+  primaryId?: InputMaybe<Scalars["String"]>;
+  qcCompleteDate?: InputMaybe<Scalars["String"]>;
+  qcCompleteReason?: InputMaybe<Scalars["String"]>;
+  qcCompleteResult?: InputMaybe<Scalars["String"]>;
+  qcCompleteStatus?: InputMaybe<Scalars["String"]>;
+  recipe?: InputMaybe<Scalars["String"]>;
+  revisable?: InputMaybe<Scalars["Boolean"]>;
+  sampleClass?: InputMaybe<Scalars["String"]>;
+  sampleOrigin?: InputMaybe<Scalars["String"]>;
+  sampleType?: InputMaybe<Scalars["String"]>;
+  sex?: InputMaybe<Scalars["String"]>;
+  smileSampleId?: InputMaybe<Scalars["String"]>;
+  species?: InputMaybe<Scalars["String"]>;
+  tissueLocation?: InputMaybe<Scalars["String"]>;
+  tumorOrNormal?: InputMaybe<Scalars["String"]>;
+  validationReport?: InputMaybe<Scalars["String"]>;
+  validationStatus?: InputMaybe<Scalars["String"]>;
+};
+
 export type DeleteInfo = {
   __typename?: "DeleteInfo";
   bookmark?: Maybe<Scalars["String"]>;
@@ -2181,6 +2224,7 @@ export type Mutation = {
   updateBamCompletes: UpdateBamCompletesMutationResponse;
   updateCohortCompletes: UpdateCohortCompletesMutationResponse;
   updateCohorts: UpdateCohortsMutationResponse;
+  updateDashboardSamples?: Maybe<Array<Maybe<DashboardSample>>>;
   updateMafCompletes: UpdateMafCompletesMutationResponse;
   updatePatientAliases: UpdatePatientAliasesMutationResponse;
   updatePatients: UpdatePatientsMutationResponse;
@@ -2355,6 +2399,10 @@ export type MutationUpdateCohortsArgs = {
   disconnect?: InputMaybe<CohortDisconnectInput>;
   update?: InputMaybe<CohortUpdateInput>;
   where?: InputMaybe<CohortWhere>;
+};
+
+export type MutationUpdateDashboardSamplesArgs = {
+  newDashboardSamples?: InputMaybe<Array<InputMaybe<DashboardSampleInput>>>;
 };
 
 export type MutationUpdateMafCompletesArgs = {
@@ -12649,6 +12697,57 @@ export type SamplesQuery = {
   }>;
 };
 
+export type UpdateDashboardSamplesMutationVariables = Exact<{
+  newDashboardSamples: Array<DashboardSampleInput> | DashboardSampleInput;
+}>;
+
+export type UpdateDashboardSamplesMutation = {
+  __typename?: "Mutation";
+  updateDashboardSamples?: Array<{
+    __typename?: "DashboardSample";
+    smileSampleId?: string | null;
+    revisable?: boolean | null;
+    primaryId?: string | null;
+    cmoSampleName?: string | null;
+    importDate?: string | null;
+    cmoPatientId?: string | null;
+    investigatorSampleId?: string | null;
+    sampleType?: string | null;
+    species?: string | null;
+    genePanel?: string | null;
+    baitSet?: string | null;
+    preservation?: string | null;
+    tumorOrNormal?: string | null;
+    sampleClass?: string | null;
+    oncotreeCode?: string | null;
+    collectionYear?: string | null;
+    sampleOrigin?: string | null;
+    tissueLocation?: string | null;
+    sex?: string | null;
+    recipe?: string | null;
+    validationReport?: string | null;
+    validationStatus?: string | null;
+    cancerType?: string | null;
+    cancerTypeDetailed?: string | null;
+    billed?: boolean | null;
+    costCenter?: string | null;
+    billedBy?: string | null;
+    custodianInformation?: string | null;
+    accessLevel?: string | null;
+    initialPipelineRunDate?: string | null;
+    embargoDate?: string | null;
+    bamCompleteDate?: string | null;
+    bamCompleteStatus?: string | null;
+    mafCompleteDate?: string | null;
+    mafCompleteNormalPrimaryId?: string | null;
+    mafCompleteStatus?: string | null;
+    qcCompleteDate?: string | null;
+    qcCompleteResult?: string | null;
+    qcCompleteReason?: string | null;
+    qcCompleteStatus?: string | null;
+  } | null> | null;
+};
+
 export type UpdateSamplesMutationVariables = Exact<{
   where?: InputMaybe<SampleWhere>;
   update?: InputMaybe<SampleUpdateInput>;
@@ -13005,6 +13104,30 @@ export const SamplesDocument = gql`
 export type SamplesQueryResult = Apollo.QueryResult<
   SamplesQuery,
   SamplesQueryVariables
+>;
+export const UpdateDashboardSamplesDocument = gql`
+  mutation UpdateDashboardSamples(
+    $newDashboardSamples: [DashboardSampleInput!]!
+  ) {
+    updateDashboardSamples(newDashboardSamples: $newDashboardSamples) {
+      ...DashboardSampleParts
+      ...DashboardSampleMetadataParts
+      ...DashboardTempoParts
+    }
+  }
+  ${DashboardSamplePartsFragmentDoc}
+  ${DashboardSampleMetadataPartsFragmentDoc}
+  ${DashboardTempoPartsFragmentDoc}
+`;
+export type UpdateDashboardSamplesMutationFn = Apollo.MutationFunction<
+  UpdateDashboardSamplesMutation,
+  UpdateDashboardSamplesMutationVariables
+>;
+export type UpdateDashboardSamplesMutationResult =
+  Apollo.MutationResult<UpdateDashboardSamplesMutation>;
+export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
+  UpdateDashboardSamplesMutation,
+  UpdateDashboardSamplesMutationVariables
 >;
 export const UpdateSamplesDocument = gql`
   mutation UpdateSamples(

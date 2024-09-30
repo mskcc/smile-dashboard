@@ -210,6 +210,16 @@ query Samples(
   }
 }
 
+mutation UpdateDashboardSamples(
+  $newDashboardSamples: [DashboardSampleInput!]!
+) {
+  updateDashboardSamples(newDashboardSamples: $newDashboardSamples) {
+    ...DashboardSampleParts
+    ...DashboardSampleMetadataParts
+    ...DashboardTempoParts
+  }
+}
+
 mutation UpdateSamples(
   $where: SampleWhere
   $update: SampleUpdateInput

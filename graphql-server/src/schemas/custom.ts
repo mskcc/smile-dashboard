@@ -4,7 +4,7 @@ import { CachedOncotreeData } from "../utils/oncotree";
 import NodeCache from "node-cache";
 import { parseJsonSafely } from "../utils/json";
 import { gql } from "apollo-server";
-import { SampleContext } from "../generated/graphql";
+import { SampleContext, DashboardSampleInput } from "../generated/graphql";
 
 const resolvers = {
   Query: {
@@ -46,6 +46,14 @@ const resolvers = {
         sampleContext,
         addlOncotreeCodes: Array.from(addlOncotreeCodes),
       });
+    },
+  },
+  Mutation: {
+    async updateDashboardSamples(
+      _source: undefined,
+      { newDashboardSamples }: { newDashboardSamples: DashboardSampleInput[] }
+    ) {
+      return newDashboardSamples; // placeholder
     },
   },
 };
@@ -131,6 +139,70 @@ const typeDefs = gql`
       searchVals: [String]
       sampleContext: SampleContext
     ): DashboardSampleCount
+  }
+
+  input DashboardSampleInput {
+    # (s:Sample)
+    smileSampleId: String
+    revisable: Boolean
+
+    # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+    ## Root-level fields
+    primaryId: String
+    cmoSampleName: String
+    importDate: String
+    cmoPatientId: String
+    investigatorSampleId: String
+    sampleType: String
+    species: String
+    genePanel: String
+    baitSet: String
+    preservation: String
+    tumorOrNormal: String
+    sampleClass: String
+    oncotreeCode: String
+    collectionYear: String
+    sampleOrigin: String
+    tissueLocation: String
+    sex: String
+    ## Custom fields
+    recipe: String
+    ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
+    validationReport: String
+    validationStatus: String
+
+    # Oncotree API
+    cancerType: String
+    cancerTypeDetailed: String
+
+    ## (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
+    ## Root-level fields
+    billed: Boolean
+    costCenter: String
+    billedBy: String
+    custodianInformation: String
+    accessLevel: String
+    ## Custom fields
+    initialPipelineRunDate: String
+    embargoDate: String
+    ## (t:Tempo)-[:HAS_EVENT]->(bc:BamComplete)
+    bamCompleteDate: String
+    bamCompleteStatus: String
+    ## (t:Tempo)-[:HAS_EVENT]->(mc:MafComplete)
+    mafCompleteDate: String
+    mafCompleteNormalPrimaryId: String
+    mafCompleteStatus: String
+    # (t:Tempo)-[:HAS_EVENT]->(qc:QcComplete)
+    qcCompleteDate: String
+    qcCompleteResult: String
+    qcCompleteReason: String
+    qcCompleteStatus: String
+  }
+
+  type Mutation {
+    updateDashboardSamples(
+      newDashboardSamples: [DashboardSampleInput]
+    ): [DashboardSample]
   }
 `;
 
