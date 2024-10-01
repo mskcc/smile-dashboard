@@ -272,12 +272,12 @@ async function queryDashboardSamples({
 
     oldestCC.date AS initialPipelineRunDate,
 
-    latestT.smileTempoId AS smileTempoId,
-    latestT.billed AS billed,
-    latestT.costCenter AS costCenter,
-    latestT.billedBy AS billedBy,
-    latestT.custodianInformation AS custodianInformation,
-    latestT.accessLevel AS accessLevel,
+    t.smileTempoId AS smileTempoId,
+    t.billed AS billed,
+    t.costCenter AS costCenter,
+    t.billedBy AS billedBy,
+    t.custodianInformation AS custodianInformation,
+    t.accessLevel AS accessLevel,
 
     latestBC.date AS bamCompleteDate,
     latestBC.status AS bamCompleteStatus,
@@ -502,50 +502,47 @@ function buildPartialCypherQuery({
   ${tFilters && `WHERE ${tFilters}`}
 
   // now get the most recent date for each Sample from the Tempos (we still have all the Tempos for each Sample)
-  WITH s, latestSm, latestSt, oldestCC, collect(t) AS allTempos, max(t.date) AS latestTDate
-
-  // now only keep one of the Tempos that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, [t IN allTempos WHERE t.date = latestTDate][0] AS latestT
+  WITH s, latestSm, latestSt, oldestCC, t
 
   // if the Tempo has any BamCompletes, get them
-  OPTIONAL MATCH (latestT)-[:HAS_EVENT]->(bc:BamComplete)
+  OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
 
   ${bcFilters && `WHERE ${bcFilters}`}
 
   // now get the most recent date for each BamComplete (we still have all the BamCompletes for each Tempo)
-  WITH s, latestSm, latestSt, oldestCC, latestT, collect(bc) AS allBamCompletes, max(bc.date) AS latestBCDate
+  WITH s, latestSm, latestSt, oldestCC, t, collect(bc) AS allBamCompletes, max(bc.date) AS latestBCDate
 
   // now only keep one of the BamCompletes that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, latestT, [bc IN allBamCompletes WHERE bc.date = latestBCDate][0] AS latestBC
+  WITH s, latestSm, latestSt, oldestCC, t, [bc IN allBamCompletes WHERE bc.date = latestBCDate][0] AS latestBC
 
   // if the Tempo has any MafCompletes, get them
-  OPTIONAL MATCH (latestT)-[:HAS_EVENT]->(mc:MafComplete)
+  OPTIONAL MATCH (t)-[:HAS_EVENT]->(mc:MafComplete)
 
   ${mcFilters && `WHERE ${mcFilters}`}
 
   // now get the most recent date for each MafComplete (we still have all the MafCompletes for each Tempo)
-  WITH s, latestSm, latestSt, oldestCC, latestT, latestBC, collect(mc) AS allMafCompletes, max(mc.date) AS latestMCDate
+  WITH s, latestSm, latestSt, oldestCC, t, latestBC, collect(mc) AS allMafCompletes, max(mc.date) AS latestMCDate
 
   // now only keep one of the MafCompletes that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, latestT, latestBC, [mc IN allMafCompletes WHERE mc.date = latestMCDate][0] AS latestMC
+  WITH s, latestSm, latestSt, oldestCC, t, latestBC, [mc IN allMafCompletes WHERE mc.date = latestMCDate][0] AS latestMC
 
   // if the Tempo has any QcCompletes, get them
-  OPTIONAL MATCH (latestT)-[:HAS_EVENT]->(qc:QcComplete)
+  OPTIONAL MATCH (t)-[:HAS_EVENT]->(qc:QcComplete)
 
   ${qcFilters && `WHERE ${qcFilters}`}
 
   // now get the most recent date for each QcComplete (we still have all the QcCompletes for each Tempo)
-  WITH s, latestSm, latestSt, oldestCC, latestT, latestBC, latestMC, collect(qc) AS allQcCompletes, max(qc.date) AS latestQCDate
+  WITH s, latestSm, latestSt, oldestCC, t, latestBC, latestMC, collect(qc) AS allQcCompletes, max(qc.date) AS latestQCDate
 
   // now only keep one of the QcCompletes that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, latestT, latestBC, latestMC, [qc IN allQcCompletes WHERE qc.date = latestQCDate][0] AS latestQC
+  WITH s, latestSm, latestSt, oldestCC, t, latestBC, latestMC, [qc IN allQcCompletes WHERE qc.date = latestQCDate][0] AS latestQC
 
   // return whatever we need (TODO would it be faster if we only return the fields we need?  should we be filtering those from the start of the query?)
   WITH s AS sample,
         latestSm,
         latestSt,
         oldestCC,
-        latestT,
+        t,
         latestBC,
         latestMC,
         latestQC
