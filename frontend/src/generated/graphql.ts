@@ -1781,7 +1781,7 @@ export type DashboardSample = {
   tissueLocation?: Maybe<Scalars["String"]>;
   tumorOrNormal?: Maybe<Scalars["String"]>;
   validationReport?: Maybe<Scalars["String"]>;
-  validationStatus?: Maybe<Scalars["String"]>;
+  validationStatus?: Maybe<Scalars["Boolean"]>;
 };
 
 export type DashboardSampleCount = {
@@ -1830,7 +1830,7 @@ export type DashboardSampleInput = {
   tissueLocation?: InputMaybe<Scalars["String"]>;
   tumorOrNormal?: InputMaybe<Scalars["String"]>;
   validationReport?: InputMaybe<Scalars["String"]>;
-  validationStatus?: InputMaybe<Scalars["String"]>;
+  validationStatus?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type DeleteInfo = {
@@ -4608,13 +4608,13 @@ export type QueryCohortsConnectionArgs = {
 
 export type QueryDashboardSampleCountArgs = {
   sampleContext?: InputMaybe<SampleContext>;
-  searchVals?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  searchVals?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type QueryDashboardSamplesArgs = {
-  limit?: InputMaybe<Scalars["Int"]>;
+  limit: Scalars["Int"];
   sampleContext?: InputMaybe<SampleContext>;
-  searchVals?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  searchVals?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type QueryMafCompletesArgs = {
@@ -12461,11 +12461,9 @@ export type PatientsListQuery = {
 };
 
 export type DashboardSamplesQueryVariables = Exact<{
-  searchVals?: InputMaybe<
-    Array<InputMaybe<Scalars["String"]>> | InputMaybe<Scalars["String"]>
-  >;
+  searchVals?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
   sampleContext?: InputMaybe<SampleContext>;
-  limit?: InputMaybe<Scalars["Int"]>;
+  limit: Scalars["Int"];
 }>;
 
 export type DashboardSamplesQuery = {
@@ -12497,7 +12495,7 @@ export type DashboardSamplesQuery = {
     sex?: string | null;
     recipe?: string | null;
     validationReport?: string | null;
-    validationStatus?: string | null;
+    validationStatus?: boolean | null;
     cancerType?: string | null;
     cancerTypeDetailed?: string | null;
     billed?: boolean | null;
@@ -12546,7 +12544,7 @@ export type DashboardSampleMetadataPartsFragment = {
   sex?: string | null;
   recipe?: string | null;
   validationReport?: string | null;
-  validationStatus?: string | null;
+  validationStatus?: boolean | null;
   cancerType?: string | null;
   cancerTypeDetailed?: string | null;
 };
@@ -12622,7 +12620,7 @@ export type UpdateDashboardSamplesMutation = {
     sex?: string | null;
     recipe?: string | null;
     validationReport?: string | null;
-    validationStatus?: string | null;
+    validationStatus?: boolean | null;
     cancerType?: string | null;
     cancerTypeDetailed?: string | null;
     billed?: boolean | null;
@@ -12937,9 +12935,9 @@ export type PatientsListQueryResult = Apollo.QueryResult<
 >;
 export const DashboardSamplesDocument = gql`
   query DashboardSamples(
-    $searchVals: [String]
+    $searchVals: [String!]
     $sampleContext: SampleContext
-    $limit: Int
+    $limit: Int!
   ) {
     dashboardSampleCount(
       searchVals: $searchVals
@@ -12981,7 +12979,7 @@ export const DashboardSamplesDocument = gql`
  * });
  */
 export function useDashboardSamplesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     DashboardSamplesQuery,
     DashboardSamplesQueryVariables
   >

@@ -4,7 +4,11 @@ import { CachedOncotreeData } from "../utils/oncotree";
 import NodeCache from "node-cache";
 import { parseJsonSafely } from "../utils/json";
 import { gql } from "apollo-server";
-import { SampleContext, DashboardSampleInput } from "../generated/graphql";
+import {
+  DashboardSampleInput,
+  QueryDashboardSampleCountArgs,
+  QueryDashboardSamplesArgs,
+} from "../generated/graphql";
 import { props } from "../utils/constants";
 import { connect, headers, StringCodec } from "nats";
 import { OGM } from "@neo4j/graphql-ogm";
@@ -15,15 +19,7 @@ export async function buildCustomSchema(ogm: OGM) {
     Query: {
       async dashboardSamples(
         _source: undefined,
-        {
-          searchVals,
-          sampleContext,
-          limit,
-        }: {
-          searchVals: string[];
-          sampleContext: SampleContext;
-          limit: number;
-        },
+        { searchVals, sampleContext, limit }: QueryDashboardSamplesArgs,
         { oncotreeCache }: ApolloServerContext
       ) {
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
@@ -31,20 +27,21 @@ export async function buildCustomSchema(ogm: OGM) {
           oncotreeCache,
         });
 
-        return await queryDashboardSamples({
+        const partialCypherQuery = buildPartialCypherQuery({
           searchVals,
           sampleContext,
+          addlOncotreeCodes,
+        });
+
+        return await queryDashboardSamples({
+          partialCypherQuery,
           limit,
           oncotreeCache,
-          addlOncotreeCodes: Array.from(addlOncotreeCodes),
         });
       },
       async dashboardSampleCount(
         _source: undefined,
-        {
-          searchVals,
-          sampleContext,
-        }: { searchVals: string[]; sampleContext: SampleContext },
+        { searchVals, sampleContext }: QueryDashboardSampleCountArgs,
         { oncotreeCache }: ApolloServerContext
       ) {
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
@@ -52,10 +49,14 @@ export async function buildCustomSchema(ogm: OGM) {
           oncotreeCache,
         });
 
-        return await queryDashboardSampleCount({
+        const partialCypherQuery = buildPartialCypherQuery({
           searchVals,
           sampleContext,
-          addlOncotreeCodes: Array.from(addlOncotreeCodes),
+          addlOncotreeCodes,
+        });
+
+        return await queryDashboardSampleCount({
+          partialCypherQuery,
         });
       },
     },
@@ -109,7 +110,7 @@ export async function buildCustomSchema(ogm: OGM) {
       recipe: String
       ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
       validationReport: String
-      validationStatus: String
+      validationStatus: Boolean
 
       # Oncotree API
       cancerType: String
@@ -146,12 +147,12 @@ export async function buildCustomSchema(ogm: OGM) {
 
     type Query {
       dashboardSamples(
-        searchVals: [String]
+        searchVals: [String!]
         sampleContext: SampleContext
-        limit: Int
+        limit: Int!
       ): [DashboardSample!]!
       dashboardSampleCount(
-        searchVals: [String]
+        searchVals: [String!]
         sampleContext: SampleContext
       ): DashboardSampleCount!
     }
@@ -188,7 +189,7 @@ export async function buildCustomSchema(ogm: OGM) {
       recipe: String
       ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
       validationReport: String
-      validationStatus: String
+      validationStatus: Boolean
 
       # Oncotree API
       cancerType: String
@@ -232,72 +233,62 @@ export async function buildCustomSchema(ogm: OGM) {
 }
 
 async function queryDashboardSamples({
-  searchVals,
-  sampleContext,
+  partialCypherQuery,
   limit,
   oncotreeCache,
-  addlOncotreeCodes,
 }: {
-  searchVals: string[];
-  sampleContext?: SampleContext;
-  limit: number;
+  partialCypherQuery: string;
+  limit: QueryDashboardSamplesArgs["limit"];
   oncotreeCache: NodeCache;
-  addlOncotreeCodes: string[];
 }) {
-  const partialCypherQuery = buildPartialCypherQuery({
-    searchVals,
-    sampleContext,
-    addlOncotreeCodes,
-  });
-
   const cypherQuery = `
-  ${partialCypherQuery}
-  RETURN
-    sample.smileSampleId AS smileSampleId,
-    sample.revisable AS revisable,
+    ${partialCypherQuery}
+    RETURN
+      s.smileSampleId AS smileSampleId,
+      s.revisable AS revisable,
 
-    latestSm.primaryId AS primaryId,
-    latestSm.cmoSampleName AS cmoSampleName,
-    latestSm.importDate AS importDate,
-    latestSm.cmoPatientId AS cmoPatientId,
-    latestSm.investigatorSampleId AS investigatorSampleId,
-    latestSm.sampleType AS sampleType,
-    latestSm.species AS species,
-    latestSm.genePanel AS genePanel,
-    latestSm.baitSet AS baitSet,
-    latestSm.preservation AS preservation,
-    latestSm.tumorOrNormal AS tumorOrNormal,
-    latestSm.sampleClass AS sampleClass,
-    latestSm.oncotreeCode AS oncotreeCode,
-    latestSm.collectionYear AS collectionYear,
-    latestSm.sampleOrigin AS sampleOrigin,
-    latestSm.tissueLocation AS tissueLocation,
-    latestSm.sex AS sex,
-    latestSm.cmoSampleIdFields AS cmoSampleIdFields,
+      latestSm.primaryId AS primaryId,
+      latestSm.cmoSampleName AS cmoSampleName,
+      latestSm.importDate AS importDate,
+      latestSm.cmoPatientId AS cmoPatientId,
+      latestSm.investigatorSampleId AS investigatorSampleId,
+      latestSm.sampleType AS sampleType,
+      latestSm.species AS species,
+      latestSm.genePanel AS genePanel,
+      latestSm.baitSet AS baitSet,
+      latestSm.preservation AS preservation,
+      latestSm.tumorOrNormal AS tumorOrNormal,
+      latestSm.sampleClass AS sampleClass,
+      latestSm.oncotreeCode AS oncotreeCode,
+      latestSm.collectionYear AS collectionYear,
+      latestSm.sampleOrigin AS sampleOrigin,
+      latestSm.tissueLocation AS tissueLocation,
+      latestSm.sex AS sex,
+      latestSm.cmoSampleIdFields AS cmoSampleIdFields,
 
-    oldestCC.date AS initialPipelineRunDate,
+      oldestCCDate AS initialPipelineRunDate,
 
-    t.smileTempoId AS smileTempoId,
-    t.billed AS billed,
-    t.costCenter AS costCenter,
-    t.billedBy AS billedBy,
-    t.custodianInformation AS custodianInformation,
-    t.accessLevel AS accessLevel,
+      t.smileTempoId AS smileTempoId,
+      t.billed AS billed,
+      t.costCenter AS costCenter,
+      t.billedBy AS billedBy,
+      t.custodianInformation AS custodianInformation,
+      t.accessLevel AS accessLevel,
 
-    latestBC.date AS bamCompleteDate,
-    latestBC.status AS bamCompleteStatus,
+      latestBC.date AS bamCompleteDate,
+      latestBC.status AS bamCompleteStatus,
 
-    latestMC.date AS mafCompleteDate,
-    latestMC.normalPrimaryId AS mafCompleteNormalPrimaryId,
-    latestMC.status AS mafCompleteStatus,
+      latestMC.date AS mafCompleteDate,
+      latestMC.normalPrimaryId AS mafCompleteNormalPrimaryId,
+      latestMC.status AS mafCompleteStatus,
 
-    latestQC.date AS qcCompleteDate,
-    latestQC.result AS qcCompleteResult,
-    latestQC.reason AS qcCompleteReason,
-    latestQC.status AS qcCompleteStatus
+      latestQC.date AS qcCompleteDate,
+      latestQC.result AS qcCompleteResult,
+      latestQC.reason AS qcCompleteReason,
+      latestQC.status AS qcCompleteStatus
 
-  ORDER BY importDate DESC
-  LIMIT ${limit}
+    ORDER BY importDate DESC
+    LIMIT ${limit}
   `;
 
   const session = neo4jDriver.session();
@@ -323,29 +314,19 @@ async function queryDashboardSamples({
       };
     });
   } catch (error) {
-    console.error("Error running query:", error);
+    console.error("Error with queryDashboardSamples:", error);
   }
 }
 
 async function queryDashboardSampleCount({
-  searchVals,
-  sampleContext,
-  addlOncotreeCodes,
+  partialCypherQuery,
 }: {
-  searchVals: string[];
-  sampleContext?: SampleContext;
-  addlOncotreeCodes: string[];
+  partialCypherQuery: string;
 }) {
-  const partialCypherQuery = buildPartialCypherQuery({
-    searchVals,
-    sampleContext,
-    addlOncotreeCodes,
-  });
-
   const cypherQuery = `
-  ${partialCypherQuery}
-  RETURN
-    count(sample) AS totalCount
+    ${partialCypherQuery}
+    RETURN
+      count(s) AS totalCount
   `;
 
   const session = neo4jDriver.session();
@@ -353,7 +334,7 @@ async function queryDashboardSampleCount({
     const result = await session.run(cypherQuery);
     return result.records[0].toObject();
   } catch (error) {
-    console.error("Error running query:", error);
+    console.error("Error with queryDashboardSampleCount:", error);
   }
 }
 
@@ -362,16 +343,21 @@ function buildPartialCypherQuery({
   sampleContext,
   addlOncotreeCodes,
 }: {
-  searchVals: string[];
-  sampleContext?: SampleContext;
+  searchVals: QueryDashboardSampleCountArgs["searchVals"];
+  sampleContext?: QueryDashboardSampleCountArgs["sampleContext"];
   addlOncotreeCodes: string[];
 }) {
-  function buildSearchFilter(
-    variable: string,
-    fields: string[],
-    searchVals: string[],
-    useFuzzyMatch: boolean = true
-  ): string {
+  function buildSearchFilters({
+    variable,
+    fields,
+    searchVals,
+    useFuzzyMatch = true,
+  }: {
+    variable: string;
+    fields: string[];
+    searchVals: string[];
+    useFuzzyMatch?: boolean;
+  }): string {
     const regexPattern = useFuzzyMatch
       ? `(?i).*(${searchVals.join("|")}).*`
       : `${searchVals.join("|")}`;
@@ -417,10 +403,14 @@ function buildPartialCypherQuery({
   ];
 
   const searchFilters =
-    searchVals.length > 0
+    searchVals && searchVals.length > 0
       ? searchFiltersConfig.map(
-          (config) =>
-            `${buildSearchFilter(config.variable, config.fields, searchVals)}`
+          (c) =>
+            `${buildSearchFilters({
+              variable: c.variable,
+              fields: c.fields,
+              searchVals,
+            })}`
         )
       : ["", "", "", "", ""];
 
@@ -428,129 +418,107 @@ function buildPartialCypherQuery({
 
   const addlOncotreeCodeFilters =
     addlOncotreeCodes.length > 0
-      ? ` OR ${buildSearchFilter("sm", ["oncotreeCode"], addlOncotreeCodes)}`
+      ? ` OR ${buildSearchFilters({
+          variable: "sm",
+          fields: ["oncotreeCode"],
+          searchVals: addlOncotreeCodes,
+          useFuzzyMatch: false,
+        })}`
       : "";
 
   const smOrFilters = smFilters
     ? `${"(" + smFilters + addlOncotreeCodeFilters + ")"}`
     : "";
 
-  const wesFilters =
+  const wesContext =
     sampleContext?.fieldName === "genePanel"
-      ? `${smFilters && " AND "}${buildSearchFilter(
-          "sm",
-          ["genePanel"],
-          sampleContext.values
-        )}`
+      ? `${smOrFilters && " AND "}${buildSearchFilters({
+          variable: "sm",
+          fields: ["genePanel"],
+          searchVals: sampleContext.values,
+        })}`
       : "";
 
-  const requestFilters =
+  const requestContext =
     sampleContext?.fieldName === "igoRequestId"
-      ? `${smOrFilters && " AND "}${buildSearchFilter(
-          "sm",
-          ["igoRequestId"],
-          sampleContext.values,
-          false
-        )}`
+      ? `${smOrFilters && " AND "}sm.igoRequestId = '${
+          sampleContext.values[0]
+        }'`
       : "";
 
-  const patientFilters =
+  const patientContext =
     sampleContext?.fieldName === "patientId"
-      ? `${buildSearchFilter("pa", ["value"], sampleContext.values, false)}`
+      ? `pa.value = '${sampleContext.values[0]}'`
       : "";
 
-  const cohortFilters =
+  const cohortContext =
     sampleContext?.fieldName === "cohortId"
-      ? `${buildSearchFilter("c", ["cohortId"], sampleContext.values, false)}`
+      ? `c.cohortId = '${sampleContext.values[0]}'`
       : "";
-
-  let allSmFilters = "";
-  if (smOrFilters || wesFilters || requestFilters) {
-    allSmFilters = "WHERE " + smOrFilters + wesFilters + requestFilters;
-  }
 
   const partialCypherQuery = `
-  // all Samples have at least one SampleMetadata (SampleMetadata is required)
-  MATCH (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+    MATCH (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+    ${
+      smOrFilters || wesContext || requestContext
+        ? `WHERE ${smOrFilters}${wesContext}${requestContext}`
+        : ""
+    }
 
-  ${allSmFilters}
+    // Get the most recent SampleMetadata
+    WITH s, collect(sm) AS allSampleMetadata, max(sm.importDate) AS latestImportDate
+    WITH s, [sm IN allSampleMetadata WHERE sm.importDate = latestImportDate][0] AS latestSm
 
-  // now get the most recent import date for each Sample from the SampleMetadata (we still have all the SampleMetadata for each Sample)
-  WITH s, collect(sm) AS allSampleMetadata, max(sm.importDate) AS latestImportDate
+    // Get SampleMetadata's Status
+    OPTIONAL MATCH (latestSm)-[:HAS_STATUS]->(st:Status)
+    WITH s, latestSm, st AS latestSt
 
-  // now only keep one of the SampleMetadata that has the most recent importDate (if there is more than one we take the first)
-  WITH s, [sm IN allSampleMetadata WHERE sm.importDate = latestImportDate][0] AS latestSm
+    // For Patient Samples view, if applicable
+    ${
+      patientContext &&
+      `MATCH (s)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias) WHERE ${patientContext}`
+    }
 
-  // if the most recent SampleMetadata for a Sample has a Status attached to it
-  OPTIONAL MATCH (latestSm)-[:HAS_STATUS]->(st:Status)
-  WITH s, latestSm, st AS latestSt
+    // For Cohort Samples view, if applicable
+    ${
+      cohortContext ? "" : "OPTIONAL "
+    }MATCH (s:Sample)<-[:HAS_COHORT_SAMPLE]-(c:Cohort)-[:HAS_COHORT_COMPLETE]->(cc:CohortComplete)
+    ${cohortContext && `WHERE ${cohortContext}`}
 
-  MATCH (s)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias)
-  ${patientFilters && `WHERE ${patientFilters}`}
+    // Get the oldest CohortComplete date ("Initial Pipeline Run Date" in Cohort Samples view)
+    WITH s, latestSm, latestSt, min(cc.date) AS oldestCCDate
 
-  // if the Sample belongs to any Cohorts, get them - the Cohort will have a CohortComplete so get that too
-  ${
-    cohortFilters ? "" : "OPTIONAL "
-  }MATCH (s:Sample)<-[:HAS_COHORT_SAMPLE]-(c:Cohort)-[:HAS_COHORT_COMPLETE]->(cc:CohortComplete)
+    // Get Tempo data
+    OPTIONAL MATCH (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
+    ${tFilters && `WHERE ${tFilters}`}
+    WITH s, latestSm, latestSt, oldestCCDate, t
 
-  ${cohortFilters && `WHERE ${cohortFilters}`}
+    // Get the most recent BamComplete event
+    OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
+    ${bcFilters && `WHERE ${bcFilters}`}
+    WITH s, latestSm, latestSt, oldestCCDate, t, collect(bc) AS allBamCompletes, max(bc.date) AS latestBCDate
+    WITH s, latestSm, latestSt, oldestCCDate, t, [bc IN allBamCompletes WHERE bc.date = latestBCDate][0] AS latestBC
 
-  // we then collect all the CohortCompletes for each Sample and get the most recent CohortComplete.date
-  WITH s, latestSm, latestSt, collect(cc) AS allCohortComplete, min(cc.date) AS oldestCCDate
+    // Get the most recent MafComplete event
+    OPTIONAL MATCH (t)-[:HAS_EVENT]->(mc:MafComplete)
+    ${mcFilters && `WHERE ${mcFilters}`}
+    WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, collect(mc) AS allMafCompletes, max(mc.date) AS latestMCDate
+    WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, [mc IN allMafCompletes WHERE mc.date = latestMCDate][0] AS latestMC
 
-  // now only keep one of the CohortCompletes that has the most recent CohortComplete date (if there is more than one take the first)
-  WITH s, latestSm, latestSt, [cc IN allCohortComplete WHERE cc.date = oldestCCDate][0] AS oldestCC
-  
-  // if the Sample has Tempos get them
-  OPTIONAL MATCH (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
+    // Get the most recent QcComplete event
+    OPTIONAL MATCH (t)-[:HAS_EVENT]->(qc:QcComplete)
+    ${qcFilters && `WHERE ${qcFilters}`}
+    WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, latestMC, collect(qc) AS allQcCompletes, max(qc.date) AS latestQCDate
+    WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, latestMC, [qc IN allQcCompletes WHERE qc.date = latestQCDate][0] AS latestQC
 
-  ${tFilters && `WHERE ${tFilters}`}
-
-  // now get the most recent date for each Sample from the Tempos (we still have all the Tempos for each Sample)
-  WITH s, latestSm, latestSt, oldestCC, t
-
-  // if the Tempo has any BamCompletes, get them
-  OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
-
-  ${bcFilters && `WHERE ${bcFilters}`}
-
-  // now get the most recent date for each BamComplete (we still have all the BamCompletes for each Tempo)
-  WITH s, latestSm, latestSt, oldestCC, t, collect(bc) AS allBamCompletes, max(bc.date) AS latestBCDate
-
-  // now only keep one of the BamCompletes that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, t, [bc IN allBamCompletes WHERE bc.date = latestBCDate][0] AS latestBC
-
-  // if the Tempo has any MafCompletes, get them
-  OPTIONAL MATCH (t)-[:HAS_EVENT]->(mc:MafComplete)
-
-  ${mcFilters && `WHERE ${mcFilters}`}
-
-  // now get the most recent date for each MafComplete (we still have all the MafCompletes for each Tempo)
-  WITH s, latestSm, latestSt, oldestCC, t, latestBC, collect(mc) AS allMafCompletes, max(mc.date) AS latestMCDate
-
-  // now only keep one of the MafCompletes that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, t, latestBC, [mc IN allMafCompletes WHERE mc.date = latestMCDate][0] AS latestMC
-
-  // if the Tempo has any QcCompletes, get them
-  OPTIONAL MATCH (t)-[:HAS_EVENT]->(qc:QcComplete)
-
-  ${qcFilters && `WHERE ${qcFilters}`}
-
-  // now get the most recent date for each QcComplete (we still have all the QcCompletes for each Tempo)
-  WITH s, latestSm, latestSt, oldestCC, t, latestBC, latestMC, collect(qc) AS allQcCompletes, max(qc.date) AS latestQCDate
-
-  // now only keep one of the QcCompletes that has the most recent date (if there is more than one we take the first)
-  WITH s, latestSm, latestSt, oldestCC, t, latestBC, latestMC, [qc IN allQcCompletes WHERE qc.date = latestQCDate][0] AS latestQC
-
-  // return whatever we need (TODO would it be faster if we only return the fields we need?  should we be filtering those from the start of the query?)
-  WITH s AS sample,
-        latestSm,
-        latestSt,
-        oldestCC,
-        t,
-        latestBC,
-        latestMC,
-        latestQC
+    WITH
+      s,
+      latestSm,
+      latestSt,
+      oldestCCDate,
+      t,
+      latestBC,
+      latestMC,
+      latestQC
   `;
 
   return partialCypherQuery;
@@ -560,11 +528,11 @@ function getAddlOtCodesMatchingCtOrCtdVals({
   searchVals,
   oncotreeCache,
 }: {
-  searchVals: string[];
+  searchVals: QueryDashboardSamplesArgs["searchVals"];
   oncotreeCache: NodeCache;
 }) {
   let addlOncotreeCodes: Set<string> = new Set();
-  if (searchVals.length > 0) {
+  if (searchVals && searchVals.length > 0) {
     oncotreeCache.keys().forEach((code) => {
       const { name, mainType } = (oncotreeCache.get(
         code
@@ -579,27 +547,7 @@ function getAddlOtCodesMatchingCtOrCtdVals({
       });
     });
   }
-  return addlOncotreeCodes;
-}
-
-async function updateTempo(newDashboardSample: DashboardSampleInput) {
-  return new Promise((resolve) => {
-    const dataForTempoBillingUpdate = {
-      primaryId: newDashboardSample.primaryId,
-      billed: newDashboardSample.billed,
-      billedBy: newDashboardSample.billedBy,
-      costCenter: newDashboardSample.costCenter,
-      accessLevel: newDashboardSample.accessLevel,
-      custodianInformation: newDashboardSample.custodianInformation,
-    };
-
-    publishNatsMessage(
-      props.pub_tempo_sample_billing,
-      JSON.stringify(dataForTempoBillingUpdate)
-    );
-
-    resolve(null);
-  });
+  return Array.from(addlOncotreeCodes);
 }
 
 async function updateSampleMetadata(
@@ -646,6 +594,26 @@ async function updateSampleMetadata(
       where: { smileSampleId: sampleManifest.smileSampleId },
       update: { revisable: false },
     });
+
+    resolve(null);
+  });
+}
+
+async function updateTempo(newDashboardSample: DashboardSampleInput) {
+  return new Promise((resolve) => {
+    const dataForTempoBillingUpdate = {
+      primaryId: newDashboardSample.primaryId,
+      billed: newDashboardSample.billed,
+      billedBy: newDashboardSample.billedBy,
+      costCenter: newDashboardSample.costCenter,
+      accessLevel: newDashboardSample.accessLevel,
+      custodianInformation: newDashboardSample.custodianInformation,
+    };
+
+    publishNatsMessage(
+      props.pub_tempo_sample_billing,
+      JSON.stringify(dataForTempoBillingUpdate)
+    );
 
     resolve(null);
   });
@@ -725,14 +693,15 @@ async function publishNatsMessage(topic: string, message: string) {
 
   try {
     const natsConn = await connect(natsConnProperties);
-    console.log("Connected to server: ");
-    console.log(natsConn.getServer());
-    console.log("publishing message: ", message, "\nto topic", topic);
+    console.log(
+      `Publishing message to NATS server at ${natsConn.getServer()} under topic ${topic}: `,
+      message
+    );
     const h = headers();
     h.append("Nats-Msg-Subject", topic);
     natsConn.publish(topic, sc.encode(JSON.stringify(message)), { headers: h });
   } catch (err) {
-    console.log(
+    console.error(
       `error connecting to ${JSON.stringify(natsConnProperties)}`,
       err
     );
