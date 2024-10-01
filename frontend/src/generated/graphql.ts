@@ -1786,7 +1786,6 @@ export type DashboardSample = {
 
 export type DashboardSampleCount = {
   __typename?: "DashboardSampleCount";
-  count?: Maybe<Scalars["Int"]>;
   totalCount?: Maybe<Scalars["Int"]>;
 };
 
@@ -4613,6 +4612,7 @@ export type QueryDashboardSampleCountArgs = {
 };
 
 export type QueryDashboardSamplesArgs = {
+  limit?: InputMaybe<Scalars["Int"]>;
   sampleContext?: InputMaybe<SampleContext>;
   searchVals?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
 };
@@ -12465,6 +12465,7 @@ export type DashboardSamplesQueryVariables = Exact<{
     Array<InputMaybe<Scalars["String"]>> | InputMaybe<Scalars["String"]>
   >;
   sampleContext?: InputMaybe<SampleContext>;
+  limit?: InputMaybe<Scalars["Int"]>;
 }>;
 
 export type DashboardSamplesQuery = {
@@ -12935,14 +12936,22 @@ export type PatientsListQueryResult = Apollo.QueryResult<
   PatientsListQueryVariables
 >;
 export const DashboardSamplesDocument = gql`
-  query DashboardSamples($searchVals: [String], $sampleContext: SampleContext) {
+  query DashboardSamples(
+    $searchVals: [String]
+    $sampleContext: SampleContext
+    $limit: Int
+  ) {
     dashboardSampleCount(
       searchVals: $searchVals
       sampleContext: $sampleContext
     ) {
       totalCount
     }
-    dashboardSamples(searchVals: $searchVals, sampleContext: $sampleContext) {
+    dashboardSamples(
+      searchVals: $searchVals
+      sampleContext: $sampleContext
+      limit: $limit
+    ) {
       ...DashboardSampleParts
       ...DashboardSampleMetadataParts
       ...DashboardTempoParts
@@ -12967,6 +12976,7 @@ export const DashboardSamplesDocument = gql`
  *   variables: {
  *      searchVals: // value for 'searchVals'
  *      sampleContext: // value for 'sampleContext'
+ *      limit: // value for 'limit'
  *   },
  * });
  */

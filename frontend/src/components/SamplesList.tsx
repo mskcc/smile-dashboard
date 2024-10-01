@@ -80,6 +80,7 @@ export default function SamplesList({
       variables: {
         searchVals: [],
         sampleContext,
+        limit: MAX_ROWS_TABLE,
       },
       pollInterval: POLLING_INTERVAL,
     });
@@ -93,6 +94,7 @@ export default function SamplesList({
     refetch({
       searchVals: parseUserSearchVal(userSearchVal),
       sampleContext,
+      limit: MAX_ROWS_TABLE,
     }).then(() => {
       gridRef.current?.api?.hideOverlay();
     });
@@ -238,7 +240,7 @@ export default function SamplesList({
                     gridRef.current?.columnApi?.getAllGridColumns()
                   )
                 )
-              : refetch().then((result) =>
+              : refetch({ limit: MAX_ROWS_EXPORT }).then((result) =>
                   buildTsvString(result.data.dashboardSamples!, columnDefs)
                 );
           }}
@@ -246,7 +248,7 @@ export default function SamplesList({
             setShowDownloadModal(false);
             // Reset the limit back to the default value of MAX_ROWS_TABLE.
             // Otherwise, polling will use the most recent value MAX_ROWS_EXPORT
-            refetch();
+            refetch({ limit: MAX_ROWS_TABLE });
           }}
           exportFileName={[
             parentDataName?.slice(0, -1),

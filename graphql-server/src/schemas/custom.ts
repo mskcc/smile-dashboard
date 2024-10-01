@@ -18,7 +18,12 @@ export async function buildCustomSchema(ogm: OGM) {
         {
           searchVals,
           sampleContext,
-        }: { searchVals: string[]; sampleContext: SampleContext },
+          limit,
+        }: {
+          searchVals: string[];
+          sampleContext: SampleContext;
+          limit: number;
+        },
         { oncotreeCache }: ApolloServerContext
       ) {
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
@@ -29,6 +34,7 @@ export async function buildCustomSchema(ogm: OGM) {
         return await queryDashboardSamples({
           searchVals,
           sampleContext,
+          limit,
           oncotreeCache,
           addlOncotreeCodes: Array.from(addlOncotreeCodes),
         });
@@ -133,10 +139,6 @@ export async function buildCustomSchema(ogm: OGM) {
       qcCompleteStatus: String
     }
 
-    type DashboardSampleCount {
-      count: Int
-    }
-
     input SampleContext {
       fieldName: String
       values: [String!]!
@@ -146,6 +148,7 @@ export async function buildCustomSchema(ogm: OGM) {
       dashboardSamples(
         searchVals: [String]
         sampleContext: SampleContext
+        limit: Int
       ): [DashboardSample!]!
       dashboardSampleCount(
         searchVals: [String]
@@ -231,11 +234,13 @@ export async function buildCustomSchema(ogm: OGM) {
 async function queryDashboardSamples({
   searchVals,
   sampleContext,
+  limit,
   oncotreeCache,
   addlOncotreeCodes,
 }: {
   searchVals: string[];
   sampleContext?: SampleContext;
+  limit: number;
   oncotreeCache: NodeCache;
   addlOncotreeCodes: string[];
 }) {
@@ -292,7 +297,7 @@ async function queryDashboardSamples({
     latestQC.status AS qcCompleteStatus
 
   ORDER BY importDate DESC
-  LIMIT 500
+  LIMIT ${limit}
   `;
 
   const session = neo4jDriver.session();
