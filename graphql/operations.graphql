@@ -140,76 +140,6 @@ fragment RequestParts on Request {
   smileRequestId
 }
 
-fragment SampleParts on Sample {
-  datasource
-  revisable
-  sampleCategory
-  sampleClass
-  smileSampleId
-}
-
-fragment SampleMetadataParts on SampleMetadata {
-  additionalProperties
-  baitSet
-  cfDNA2dBarcode
-  cmoInfoIgoId
-  cmoPatientId
-  cmoSampleIdFields
-  cmoSampleName
-  collectionYear
-  genePanel
-  igoComplete
-  igoRequestId
-  importDate
-  investigatorSampleId
-  libraries
-  oncotreeCode
-  preservation
-  primaryId
-  qcReports
-  sampleClass
-  sampleName
-  sampleOrigin
-  sampleType
-  sex
-  species
-  tissueLocation
-  tubeId
-  tumorOrNormal
-}
-
-fragment TempoParts on Tempo {
-  smileTempoId
-  billed
-  billedBy
-  costCenter
-  custodianInformation
-  accessLevel
-}
-
-query Samples(
-  $where: SampleWhere
-  $hasMetadataSampleMetadataWhere2: SampleMetadataWhere
-  $hasMetadataSampleMetadataOptions2: SampleMetadataOptions
-) {
-  samples(where: $where) {
-    smileSampleId
-    revisable
-    sampleCategory
-    sampleClass
-    datasource
-    hasMetadataSampleMetadata(
-      where: $hasMetadataSampleMetadataWhere2
-      options: $hasMetadataSampleMetadataOptions2
-    ) {
-      ...SampleMetadataParts
-    }
-    hasTempoTempos {
-      ...TempoParts
-    }
-  }
-}
-
 mutation UpdateDashboardSamples(
   $newDashboardSamples: [DashboardSampleInput!]!
 ) {
@@ -217,28 +147,6 @@ mutation UpdateDashboardSamples(
     ...DashboardSampleParts
     ...DashboardSampleMetadataParts
     ...DashboardTempoParts
-  }
-}
-
-mutation UpdateSamples(
-  $where: SampleWhere
-  $update: SampleUpdateInput
-  $connect: SampleConnectInput
-) {
-  updateSamples(where: $where, update: $update, connect: $connect) {
-    samples {
-      smileSampleId
-      revisable
-      datasource
-      sampleCategory
-      sampleClass
-      hasMetadataSampleMetadata {
-        ...SampleMetadataParts
-      }
-      hasTempoTempos {
-        ...TempoParts
-      }
-    }
   }
 }
 

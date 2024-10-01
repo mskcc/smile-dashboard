@@ -58,7 +58,7 @@ export async function buildCustomSchema(ogm: OGM) {
         _source: undefined,
         { newDashboardSamples }: { newDashboardSamples: DashboardSampleInput[] }
       ) {
-        await updateAllSamplesConcurrently(newDashboardSamples, ogm);
+        updateAllSamplesConcurrently(newDashboardSamples, ogm);
 
         // Here, we're returning newDashboardSamples for simplicity. However, if we were to follow
         // GraphQL's convention, we'd return the actual resulting data from the database update. This
@@ -82,7 +82,7 @@ export async function buildCustomSchema(ogm: OGM) {
 
       # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
       ## Root-level fields
-      primaryId: String
+      primaryId: String!
       cmoSampleName: String
       importDate: String
       cmoPatientId: String
@@ -146,11 +146,11 @@ export async function buildCustomSchema(ogm: OGM) {
       dashboardSamples(
         searchVals: [String]
         sampleContext: SampleContext
-      ): [DashboardSample]
+      ): [DashboardSample!]!
       dashboardSampleCount(
         searchVals: [String]
         sampleContext: SampleContext
-      ): DashboardSampleCount
+      ): DashboardSampleCount!
     }
 
     # We have to define a separate "input" type and can't reuse DashboardSample.
@@ -164,7 +164,7 @@ export async function buildCustomSchema(ogm: OGM) {
 
       # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
       ## Root-level fields
-      primaryId: String
+      primaryId: String!
       cmoSampleName: String
       importDate: String
       cmoPatientId: String
@@ -248,6 +248,7 @@ async function queryDashboardSamples({
   const cypherQuery = `
   ${partialCypherQuery}
   RETURN
+    sample.smileSampleId AS smileSampleId,
     sample.revisable AS revisable,
 
     latestSm.primaryId AS primaryId,

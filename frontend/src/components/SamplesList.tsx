@@ -1,9 +1,9 @@
-import { Sample, useDashboardSamplesQuery } from "../generated/graphql";
+import { useDashboardSamplesQuery } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container } from "react-bootstrap";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
-// import { UpdateModal } from "./UpdateModal";
+import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
 import { buildTsvString } from "../utils/stringBuilders";
 import {
@@ -48,7 +48,6 @@ interface ISampleListProps {
   setUnsavedChanges?: (unsavedChanges: boolean) => void;
   parentDataName?: DataName;
   sampleContext?: SampleContext;
-  sampleKeyForUpdate?: keyof Sample;
   userEmail?: string | null;
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
   customToolbarUI?: JSX.Element;
@@ -59,7 +58,6 @@ export default function SamplesList({
   parentDataName,
   sampleContext,
   setUnsavedChanges,
-  sampleKeyForUpdate = "hasMetadataSampleMetadata",
   userEmail,
   setUserEmail,
   customToolbarUI,
@@ -77,7 +75,7 @@ export default function SamplesList({
   const params = useParams();
   const hasParams = Object.keys(params).length > 0;
 
-  const { loading, error, data, startPolling, stopPolling, refetch } =
+  const { error, data, startPolling, stopPolling, refetch } =
     useDashboardSamplesQuery({
       variables: {
         searchVals: [],
@@ -260,16 +258,15 @@ export default function SamplesList({
         />
       )}
 
-      {/* {showUpdateModal && (
+      {showUpdateModal && (
         <UpdateModal
           changes={changes}
           samples={samples!}
           onSuccess={handleDiscardChanges}
           onHide={() => setShowUpdateModal(false)}
           onOpen={() => stopPolling()}
-          sampleKeyForUpdate={sampleKeyForUpdate}
         />
-      )} */}
+      )}
 
       <AlertModal
         show={showAlertModal}
@@ -382,7 +379,6 @@ export default function SamplesList({
                 setSampleCount(data?.dashboardSampleCount?.totalCount || 0);
               }}
               onGridColumnsChanged={() => handleSearch(userSearchVal)}
-              suppressClickEdit={true} // temporarily disable cell editing
             />
           </div>
         )}
