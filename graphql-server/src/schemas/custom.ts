@@ -294,11 +294,13 @@ async function queryDashboardSamples({
   const session = neo4jDriver.session();
   try {
     const result = await session.run(cypherQuery);
+
     return result.records.map((record) => {
       const recordObject = record.toObject();
       const otCache = recordObject.oncotreeCode
         ? (oncotreeCache.get(recordObject.oncotreeCode) as CachedOncotreeData)
         : null;
+
       return {
         ...recordObject,
         recipe: parseJsonSafely(recordObject.cmoSampleIdFields)?.recipe,
@@ -338,6 +340,65 @@ async function queryDashboardSampleCount({
   }
 }
 
+function buildSearchFilters({
+  variable,
+  fields,
+  searchVals,
+  useFuzzyMatch = true,
+}: {
+  variable: string;
+  fields: string[];
+  searchVals: string[];
+  useFuzzyMatch?: boolean;
+}): string {
+  if (useFuzzyMatch) {
+    return fields
+      .map(
+        (field) => `${variable}.${field} =~ '(?i).*(${searchVals.join("|")}).*'`
+      )
+      .join(" OR ");
+  } else {
+    return fields
+      .flatMap((field) =>
+        searchVals.map((val) => `${variable}.${field} = '${val}'`)
+      )
+      .join(" OR ");
+  }
+}
+
+const searchFiltersConfig = [
+  {
+    variable: "latestSm",
+    fields: [
+      "primaryId",
+      "cmoSampleName",
+      "importDate",
+      "cmoPatientId",
+      "investigatorSampleId",
+      "sampleType",
+      "species",
+      "genePanel",
+      "baitSet",
+      "preservation",
+      "tumorOrNormal",
+      "sampleClass",
+      "oncotreeCode",
+      "collectionYear",
+      "sampleOrigin",
+      "tissueLocation",
+      "sex",
+      "cmoSampleIdFields",
+    ],
+  },
+  {
+    variable: "t",
+    fields: ["costCenter", "billedBy", "custodianInformation", "accessLevel"],
+  },
+  { variable: "latestBC", fields: ["date", "status"] },
+  { variable: "latestMC", fields: ["date", "normalPrimaryId", "status"] },
+  { variable: "latestQC", fields: ["date", "result", "reason", "status"] },
+];
+
 function buildPartialCypherQuery({
   searchVals,
   sampleContext,
@@ -347,124 +408,73 @@ function buildPartialCypherQuery({
   sampleContext?: QueryDashboardSampleCountArgs["sampleContext"];
   addlOncotreeCodes: string[];
 }) {
-  function buildSearchFilters({
-    variable,
-    fields,
-    searchVals,
-    useFuzzyMatch = true,
-  }: {
-    variable: string;
-    fields: string[];
-    searchVals: string[];
-    useFuzzyMatch?: boolean;
-  }): string {
-    const regexPattern = useFuzzyMatch
-      ? `(?i).*(${searchVals.join("|")}).*`
-      : `${searchVals.join("|")}`;
-    return fields
-      .map(
-        (field) =>
-          `${variable}.${field} =${useFuzzyMatch ? "~" : ""} '${regexPattern}'`
-      )
-      .join(" OR ");
-  }
-
-  const searchFiltersConfig = [
-    {
-      variable: "sm",
-      fields: [
-        "primaryId",
-        "cmoSampleName",
-        "importDate",
-        "cmoPatientId",
-        "investigatorSampleId",
-        "sampleType",
-        "species",
-        "genePanel",
-        "baitSet",
-        "preservation",
-        "tumorOrNormal",
-        "sampleClass",
-        "oncotreeCode",
-        "collectionYear",
-        "sampleOrigin",
-        "tissueLocation",
-        "sex",
-        "cmoSampleIdFields",
-      ],
-    },
-    {
-      variable: "t",
-      fields: ["costCenter", "billedBy", "custodianInformation", "accessLevel"],
-    },
-    { variable: "bc", fields: ["date", "status"] },
-    { variable: "mc", fields: ["date", "normalPrimaryId", "status"] },
-    { variable: "qc", fields: ["date", "result", "reason", "status"] },
-  ];
-
-  const searchFilters =
-    searchVals && searchVals.length > 0
-      ? searchFiltersConfig.map(
-          (c) =>
-            `${buildSearchFilters({
-              variable: c.variable,
-              fields: c.fields,
-              searchVals,
-            })}`
+  // Build search filters given user's search values input. For example:
+  // latestSm.primaryId =~ '(?i).*(someInput).*' OR latestSm.cmoSampleName =~ '(?i).*(someInput).* OR ...
+  let searchFilters = searchVals?.length
+    ? searchFiltersConfig
+        .map((c) =>
+          buildSearchFilters({
+            variable: c.variable,
+            fields: c.fields,
+            searchVals,
+          })
         )
-      : ["", "", "", "", ""];
-
-  const [smFilters, tFilters, bcFilters, mcFilters, qcFilters] = searchFilters;
-
-  const addlOncotreeCodeFilters =
-    addlOncotreeCodes.length > 0
-      ? ` OR ${buildSearchFilters({
-          variable: "sm",
-          fields: ["oncotreeCode"],
-          searchVals: addlOncotreeCodes,
-          useFuzzyMatch: false,
-        })}`
-      : "";
-
-  const smOrFilters = smFilters
-    ? `${"(" + smFilters + addlOncotreeCodeFilters + ")"}`
+        .join(" OR ")
     : "";
 
+  // Search inside cmoSampleIdFields.recipe instead of the entire cmoSampleIdFields JSON string
+  searchFilters = searchFilters.replace(
+    /latestSm\.cmoSampleIdFields/g,
+    "apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields).recipe"
+  );
+
+  // Add add'l Oncotree codes to search if user inputted "cancerTypeDetailed" or "cancerType" values
+  const addlOncotreeCodeFilters = addlOncotreeCodes.length
+    ? ` OR ${buildSearchFilters({
+        variable: "latestSm",
+        fields: ["oncotreeCode"],
+        searchVals: addlOncotreeCodes,
+        useFuzzyMatch: false,
+      })}`
+    : "";
+
+  const fullSearchFilters = searchFilters
+    ? `(${searchFilters}${addlOncotreeCodeFilters})`
+    : "";
+
+  // Filters for the WES Samples view on Samples page
   const wesContext =
     sampleContext?.fieldName === "genePanel"
-      ? `${smOrFilters && " AND "}${buildSearchFilters({
-          variable: "sm",
+      ? `${fullSearchFilters && " AND "}${buildSearchFilters({
+          variable: "latestSm",
           fields: ["genePanel"],
           searchVals: sampleContext.values,
         })}`
       : "";
 
+  // Filters for the Request Samples view
   const requestContext =
     sampleContext?.fieldName === "igoRequestId"
-      ? `${smOrFilters && " AND "}sm.igoRequestId = '${
+      ? `${fullSearchFilters && " AND "}latestSm.igoRequestId = '${
           sampleContext.values[0]
         }'`
       : "";
 
+  // Filters for the Patient Samples view
   const patientContext =
     sampleContext?.fieldName === "patientId"
       ? `pa.value = '${sampleContext.values[0]}'`
       : "";
 
+  // Filters for the Cohort Samples view
   const cohortContext =
     sampleContext?.fieldName === "cohortId"
       ? `c.cohortId = '${sampleContext.values[0]}'`
       : "";
 
   const partialCypherQuery = `
+    // Get Sample and the most recent SampleMetadata
     MATCH (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
-    ${
-      smOrFilters || wesContext || requestContext
-        ? `WHERE ${smOrFilters}${wesContext}${requestContext}`
-        : ""
-    }
-
-    // Get the most recent SampleMetadata
     WITH s, collect(sm) AS allSampleMetadata, max(sm.importDate) AS latestImportDate
     WITH s, [sm IN allSampleMetadata WHERE sm.importDate = latestImportDate][0] AS latestSm
 
@@ -472,13 +482,13 @@ function buildPartialCypherQuery({
     OPTIONAL MATCH (latestSm)-[:HAS_STATUS]->(st:Status)
     WITH s, latestSm, st AS latestSt
 
-    // For Patient Samples view, if applicable
+    // Filters for Patient Samples view, if applicable
     ${
       patientContext &&
       `MATCH (s)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias) WHERE ${patientContext}`
     }
 
-    // For Cohort Samples view, if applicable
+    // Filters for Cohort Samples view, if applicable
     ${
       cohortContext ? "" : "OPTIONAL "
     }MATCH (s:Sample)<-[:HAS_COHORT_SAMPLE]-(c:Cohort)-[:HAS_COHORT_COMPLETE]->(cc:CohortComplete)
@@ -489,24 +499,20 @@ function buildPartialCypherQuery({
 
     // Get Tempo data
     OPTIONAL MATCH (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
-    ${tFilters && `WHERE ${tFilters}`}
     WITH s, latestSm, latestSt, oldestCCDate, t
 
     // Get the most recent BamComplete event
     OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
-    ${bcFilters && `WHERE ${bcFilters}`}
     WITH s, latestSm, latestSt, oldestCCDate, t, collect(bc) AS allBamCompletes, max(bc.date) AS latestBCDate
     WITH s, latestSm, latestSt, oldestCCDate, t, [bc IN allBamCompletes WHERE bc.date = latestBCDate][0] AS latestBC
 
     // Get the most recent MafComplete event
     OPTIONAL MATCH (t)-[:HAS_EVENT]->(mc:MafComplete)
-    ${mcFilters && `WHERE ${mcFilters}`}
     WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, collect(mc) AS allMafCompletes, max(mc.date) AS latestMCDate
     WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, [mc IN allMafCompletes WHERE mc.date = latestMCDate][0] AS latestMC
 
     // Get the most recent QcComplete event
     OPTIONAL MATCH (t)-[:HAS_EVENT]->(qc:QcComplete)
-    ${qcFilters && `WHERE ${qcFilters}`}
     WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, latestMC, collect(qc) AS allQcCompletes, max(qc.date) AS latestQCDate
     WITH s, latestSm, latestSt, oldestCCDate, t, latestBC, latestMC, [qc IN allQcCompletes WHERE qc.date = latestQCDate][0] AS latestQC
 
@@ -519,6 +525,12 @@ function buildPartialCypherQuery({
       latestBC,
       latestMC,
       latestQC
+    
+    ${
+      fullSearchFilters || wesContext || requestContext
+        ? `WHERE ${fullSearchFilters}${wesContext}${requestContext}`
+        : ""
+    }
   `;
 
   return partialCypherQuery;
