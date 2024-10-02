@@ -387,7 +387,7 @@ const searchFiltersConfig = [
       "sampleOrigin",
       "tissueLocation",
       "sex",
-      "cmoSampleIdFields",
+      "cmoSampleIdFields", // for searching recipe
     ],
   },
   {
@@ -410,7 +410,7 @@ function buildPartialCypherQuery({
 }) {
   // Build search filters given user's search values input. For example:
   // latestSm.primaryId =~ '(?i).*(someInput).*' OR latestSm.cmoSampleName =~ '(?i).*(someInput).* OR ...
-  let searchFilters = searchVals?.length
+  const searchFilters = searchVals?.length
     ? searchFiltersConfig
         .map((c) =>
           buildSearchFilters({
@@ -421,12 +421,6 @@ function buildPartialCypherQuery({
         )
         .join(" OR ")
     : "";
-
-  // Search inside cmoSampleIdFields.recipe instead of the entire cmoSampleIdFields JSON string
-  searchFilters = searchFilters.replace(
-    /latestSm\.cmoSampleIdFields/g,
-    "apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields).recipe"
-  );
 
   // Add add'l Oncotree codes to search if user inputted "cancerTypeDetailed" or "cancerType" values
   const addlOncotreeCodeFilters = addlOncotreeCodes.length
