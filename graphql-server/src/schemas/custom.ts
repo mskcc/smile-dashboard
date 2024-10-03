@@ -538,7 +538,7 @@ function getAddlOtCodesMatchingCtOrCtdVals({
   oncotreeCache: NodeCache;
 }) {
   let addlOncotreeCodes: Set<string> = new Set();
-  if (searchVals && searchVals.length > 0) {
+  if (searchVals?.length) {
     oncotreeCache.keys().forEach((code) => {
       const { name, mainType } = (oncotreeCache.get(
         code
