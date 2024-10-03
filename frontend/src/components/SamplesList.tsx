@@ -232,16 +232,17 @@ export default function SamplesList({
       {showDownloadModal && (
         <DownloadModal
           loader={() => {
+            const allColumns = gridRef.current?.columnApi?.getAllGridColumns();
             return sampleCount <= MAX_ROWS_TABLE
               ? Promise.resolve(
-                  buildTsvString(
-                    samples!,
-                    columnDefs,
-                    gridRef.current?.columnApi?.getAllGridColumns()
-                  )
+                  buildTsvString(samples!, columnDefs, allColumns)
                 )
               : refetch({ limit: MAX_ROWS_EXPORT }).then((result) =>
-                  buildTsvString(result.data.dashboardSamples!, columnDefs)
+                  buildTsvString(
+                    result.data.dashboardSamples!,
+                    columnDefs,
+                    allColumns
+                  )
                 );
           }}
           onComplete={() => {
