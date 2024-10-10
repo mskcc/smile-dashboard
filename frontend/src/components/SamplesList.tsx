@@ -1,7 +1,7 @@
-import { useDashboardSamplesQuery } from "../generated/graphql";
+import { useDashboardSamplesLazyQuery } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container } from "react-bootstrap";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useMemo, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
@@ -17,7 +17,11 @@ import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "ag-grid-enterprise";
-import { CellValueChangedEvent, ColDef } from "ag-grid-community";
+import {
+  CellValueChangedEvent,
+  ColDef,
+  IGetRowsParams,
+} from "ag-grid-community";
 import { ErrorMessage, Toolbar } from "../shared/tableElements";
 import styles from "./records.module.scss";
 import { getUserEmail } from "../utils/getUserEmail";
@@ -53,6 +57,12 @@ interface ISampleListProps {
   customToolbarUI?: JSX.Element;
 }
 
+// TODOs
+// - Fix animation of loading rows
+// - Fix random rows' height expanding when loading new rows
+// - Investigate console error "AG Grid: ImmutableService only works with ClientSideRowModel"
+// - Test
+
 export default function SamplesList({
   columnDefs,
   parentDataName,
@@ -75,8 +85,8 @@ export default function SamplesList({
   const params = useParams();
   const hasParams = Object.keys(params).length > 0;
 
-  const { error, data, startPolling, stopPolling, refetch } =
-    useDashboardSamplesQuery({
+  const [, { error, data, fetchMore, refetch, startPolling, stopPolling }] =
+    useDashboardSamplesLazyQuery({
       variables: {
         searchVals: [],
         sampleContext,
@@ -87,6 +97,40 @@ export default function SamplesList({
     });
 
   const samples = data?.dashboardSamples;
+
+  const datasource = useMemo(
+    () => ({
+      getRows: (params: IGetRowsParams) => {
+        const { startRow, endRow, successCallback, failCallback } = params;
+
+        const fetchInput = {
+          searchVals: parseUserSearchVal(userSearchVal),
+          sampleContext,
+          limit: endRow - startRow,
+          offset: startRow,
+        };
+
+        const thisFetch =
+          startRow === 0
+            ? refetch(fetchInput)
+            : fetchMore({
+                variables: fetchInput,
+              });
+
+        return thisFetch
+          .then((result) => {
+            successCallback(
+              result.data.dashboardSamples,
+              result.data.dashboardSampleCount.totalCount ?? 0
+            );
+          })
+          .catch(() => {
+            failCallback();
+          });
+      },
+    }),
+    [userSearchVal, sampleContext, refetch, fetchMore]
+  );
 
   if (error) return <ErrorMessage error={error} />;
 
@@ -335,6 +379,8 @@ export default function SamplesList({
             style={{ width: width }}
           >
             <AgGridReact
+              rowModelType="infinite"
+              datasource={datasource}
               getRowId={(d) => {
                 return d.data.primaryId;
               }}

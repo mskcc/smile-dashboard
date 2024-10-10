@@ -203,6 +203,12 @@ const ONCOTREE_CODE_NA_TOOLTIP =
 
 export const SampleMetadataDetailsColumns: ColDef[] = [
   {
+    headerName: "Row",
+    valueGetter: (params) => {
+      return params.node?.rowIndex!;
+    },
+  },
+  {
     field: "primaryId",
     headerName: "Primary ID",
   },
@@ -461,7 +467,7 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
         if (changedValue) {
           return changedValue.newValue;
         } else {
-          if (params?.colDef?.field! in params.data!) {
+          if (params.data && params?.colDef?.field! in params.data!) {
             return params.data?.[params.colDef?.field!];
           } else {
             return "N/A";

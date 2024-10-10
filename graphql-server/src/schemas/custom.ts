@@ -19,7 +19,7 @@ export async function buildCustomSchema(ogm: OGM) {
     Query: {
       async dashboardSamples(
         _source: undefined,
-        { searchVals, sampleContext, limit }: QueryDashboardSamplesArgs,
+        { searchVals, sampleContext, limit, offset }: QueryDashboardSamplesArgs,
         { oncotreeCache }: ApolloServerContext
       ) {
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
@@ -36,6 +36,7 @@ export async function buildCustomSchema(ogm: OGM) {
         return await queryDashboardSamples({
           partialCypherQuery,
           limit,
+          offset,
           oncotreeCache,
         });
       },
@@ -237,9 +238,11 @@ async function queryDashboardSamples({
   partialCypherQuery,
   limit,
   oncotreeCache,
+  offset, // Add offset parameter
 }: {
   partialCypherQuery: string;
   limit: QueryDashboardSamplesArgs["limit"];
+  offset: number; // Add offset parameter
   oncotreeCache: NodeCache;
 }) {
   const cypherQuery = `
@@ -289,6 +292,7 @@ async function queryDashboardSamples({
       latestQC.status AS qcCompleteStatus
 
     ORDER BY importDate DESC
+    SKIP ${offset}
     LIMIT ${limit}
   `;
 
