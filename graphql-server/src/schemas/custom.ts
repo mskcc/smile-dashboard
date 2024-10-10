@@ -150,6 +150,7 @@ export async function buildCustomSchema(ogm: OGM) {
         searchVals: [String!]
         sampleContext: SampleContext
         limit: Int!
+        offset: Int!
       ): [DashboardSample!]!
       dashboardSampleCount(
         searchVals: [String!]

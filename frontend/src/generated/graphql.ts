@@ -4613,6 +4613,7 @@ export type QueryDashboardSampleCountArgs = {
 
 export type QueryDashboardSamplesArgs = {
   limit: Scalars["Int"];
+  offset: Scalars["Int"];
   sampleContext?: InputMaybe<SampleContext>;
   searchVals?: InputMaybe<Array<Scalars["String"]>>;
 };
@@ -12464,6 +12465,7 @@ export type DashboardSamplesQueryVariables = Exact<{
   searchVals?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
   sampleContext?: InputMaybe<SampleContext>;
   limit: Scalars["Int"];
+  offset: Scalars["Int"];
 }>;
 
 export type DashboardSamplesQuery = {
@@ -12938,6 +12940,7 @@ export const DashboardSamplesDocument = gql`
     $searchVals: [String!]
     $sampleContext: SampleContext
     $limit: Int!
+    $offset: Int!
   ) {
     dashboardSampleCount(
       searchVals: $searchVals
@@ -12949,6 +12952,7 @@ export const DashboardSamplesDocument = gql`
       searchVals: $searchVals
       sampleContext: $sampleContext
       limit: $limit
+      offset: $offset
     ) {
       ...DashboardSampleParts
       ...DashboardSampleMetadataParts
@@ -12975,6 +12979,7 @@ export const DashboardSamplesDocument = gql`
  *      searchVals: // value for 'searchVals'
  *      sampleContext: // value for 'sampleContext'
  *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
  *   },
  * });
  */

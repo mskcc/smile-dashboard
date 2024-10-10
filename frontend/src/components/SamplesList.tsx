@@ -81,6 +81,7 @@ export default function SamplesList({
         searchVals: [],
         sampleContext,
         limit: MAX_ROWS_TABLE,
+        offset: 0,
       },
       pollInterval: POLLING_INTERVAL,
     });

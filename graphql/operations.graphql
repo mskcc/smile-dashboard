@@ -50,6 +50,7 @@ query DashboardSamples(
   $searchVals: [String!]
   $sampleContext: SampleContext
   $limit: Int!
+  $offset: Int!
 ) {
   dashboardSampleCount(searchVals: $searchVals, sampleContext: $sampleContext) {
     totalCount
@@ -58,6 +59,7 @@ query DashboardSamples(
     searchVals: $searchVals
     sampleContext: $sampleContext
     limit: $limit
+    offset: $offset
   ) {
     ...DashboardSampleParts
     ...DashboardSampleMetadataParts
