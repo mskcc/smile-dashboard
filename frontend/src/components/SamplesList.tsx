@@ -35,8 +35,6 @@ import { parseUserSearchVal } from "../utils/parseSearchQueries";
 const POLLING_INTERVAL = 5000; // 5s
 const CACHE_BLOCK_SIZE = 500;
 const MAX_ROWS_EXPORT = 5000;
-const MAX_ROWS_SCROLLED_ALERT =
-  "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples.";
 const MAX_ROWS_EXPORT_EXCEED_ALERT =
   "You can only download up to 5,000 rows of data at a time. Please refine your search and try again. If you need the full dataset, contact the SMILE team at cmosmile@mskcc.org.";
 const COST_CENTER_VALIDATION_ALERT =
@@ -58,7 +56,7 @@ interface ISampleListProps {
 }
 
 // TODOs
-// - Replace usage of the old `samples` variable
+// - Fix search / Replace usage of the old `samples` variable
 // - Fix random rows' height expanding when loading new rows
 // - Investigate console error "AG Grid: ImmutableService only works with ClientSideRowModel"
 // - Test
@@ -77,8 +75,7 @@ export default function SamplesList({
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [alertContent, setAlertContent] = useState(MAX_ROWS_SCROLLED_ALERT);
+  const [alertContent, setAlertContent] = useState<string | null>(null);
 
   const [changes, setChanges] = useState<SampleChange[]>([]);
   const [editMode, setEditMode] = useState(true);
@@ -87,18 +84,16 @@ export default function SamplesList({
   const params = useParams();
   const hasParams = Object.keys(params).length > 0;
 
-  const [
-    ,
-    { loading, error, data, fetchMore, refetch, startPolling, stopPolling },
-  ] = useDashboardSamplesLazyQuery({
-    variables: {
-      searchVals: [],
-      sampleContext,
-      limit: CACHE_BLOCK_SIZE,
-      offset: 0,
-    },
-    pollInterval: POLLING_INTERVAL,
-  });
+  const [, { error, data, fetchMore, refetch, startPolling, stopPolling }] =
+    useDashboardSamplesLazyQuery({
+      variables: {
+        searchVals: [],
+        sampleContext,
+        limit: CACHE_BLOCK_SIZE,
+        offset: 0,
+      },
+      pollInterval: POLLING_INTERVAL,
+    });
 
   const samples = data?.dashboardSamples;
 
@@ -158,13 +153,6 @@ export default function SamplesList({
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
 
-    function resetAlertIfCostCentersAreAllValid(changes: SampleChange[]) {
-      const allRowsHaveValidCostCenter = changes.every(
-        (c) => c.fieldName !== "costCenter" || isValidCostCenter(c.newValue)
-      );
-      if (allRowsHaveValidCostCenter) setAlertContent(MAX_ROWS_SCROLLED_ALERT);
-    }
-
     // prevent registering a change if no actual changes are made
     const noChangeInVal = rowNode.data[fieldName] === newValue;
     const noChangeInEmptyCell = !rowNode.data[fieldName] && !newValue;
@@ -174,7 +162,6 @@ export default function SamplesList({
       );
       setChanges(updatedChanges);
       if (updatedChanges.length === 0) setUnsavedChanges?.(false);
-      resetAlertIfCostCentersAreAllValid(updatedChanges);
       gridRef.current?.api?.refreshCells({ rowNodes: [rowNode] });
       return;
     }
@@ -238,13 +225,8 @@ export default function SamplesList({
     });
 
     // validate Cost Center inputs
-    if (fieldName === "costCenter") {
-      if (!isValidCostCenter(newValue)) {
-        setAlertContent(COST_CENTER_VALIDATION_ALERT);
-        setShowAlertModal(true);
-      } else {
-        resetAlertIfCostCentersAreAllValid(changes);
-      }
+    if (fieldName === "costCenter" && !isValidCostCenter(newValue)) {
+      setAlertContent(COST_CENTER_VALIDATION_ALERT);
     }
 
     setUnsavedChanges?.(true);
@@ -323,10 +305,8 @@ export default function SamplesList({
       )}
 
       <AlertModal
-        show={showAlertModal}
-        onHide={() => {
-          setShowAlertModal(false);
-        }}
+        show={!!alertContent}
+        onHide={() => setAlertContent(null)}
         title={"Warning"}
         content={alertContent}
       />
@@ -342,8 +322,6 @@ export default function SamplesList({
         handleDownload={() => {
           if (sampleCount > MAX_ROWS_EXPORT) {
             setAlertContent(MAX_ROWS_EXPORT_EXCEED_ALERT);
-            setShowAlertModal(true);
-            return;
           } else {
             setShowDownloadModal(true);
           }
@@ -362,9 +340,17 @@ export default function SamplesList({
                 </Button>{" "}
                 <Button
                   className={"btn btn-success"}
-                  disabled={alertContent === COST_CENTER_VALIDATION_ALERT}
                   onClick={() => {
-                    setShowUpdateModal(true);
+                    const hasInvalidCostCenter = changes.some(
+                      (c) =>
+                        c.fieldName === "costCenter" &&
+                        !isValidCostCenter(c.newValue)
+                    );
+                    if (hasInvalidCostCenter) {
+                      setAlertContent(COST_CENTER_VALIDATION_ALERT);
+                    } else {
+                      setShowUpdateModal(true);
+                    }
                   }}
                   size={"sm"}
                 >
@@ -424,11 +410,6 @@ export default function SamplesList({
               }}
               tooltipShowDelay={0}
               tooltipHideDelay={60000}
-              onBodyScrollEnd={(params) => {
-                if (params.api.getLastDisplayedRow() + 1 === CACHE_BLOCK_SIZE) {
-                  setShowAlertModal(true);
-                }
-              }}
               onFilterChanged={(params) => {
                 setSampleCount(params.api.getDisplayedRowCount());
               }}
