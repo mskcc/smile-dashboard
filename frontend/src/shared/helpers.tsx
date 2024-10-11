@@ -203,28 +203,34 @@ const ONCOTREE_CODE_NA_TOOLTIP =
 
 export const SampleMetadataDetailsColumns: ColDef[] = [
   {
-    headerName: "Row",
-    valueGetter: (params) => {
-      return params.node?.rowIndex!;
-    },
-  },
-  {
     field: "primaryId",
     headerName: "Primary ID",
+    cellRenderer: (params: ICellRendererParams) => {
+      if (params.value === undefined) {
+        return (
+          <>
+            <LoadingIcon /> Loading...
+          </>
+        );
+      }
+      return params.value;
+    },
   },
   {
     field: "revisable",
     headerName: "Status",
     cellRenderer: (params: ICellRendererParams) => {
-      if (params.data?.revisable) {
+      if (params.data?.revisable === true) {
         return params.data?.validationStatus === false ? (
           <WarningIcon />
         ) : (
           <CheckIcon />
         );
-      } else {
+      }
+      if (params.data?.revisable === false) {
         return <LoadingIcon />;
       }
+      return null;
     },
     tooltipComponent: StatusTooltip,
     // This prop is required for tooltip to appear even though we're not using it
@@ -457,20 +463,22 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
 
     if (colDef.valueGetter === undefined) {
       colDef.valueGetter = (params) => {
-        const changes: SampleChange[] = params.context?.getChanges();
-        const changedValue = changes?.find((change) => {
-          return (
-            change.fieldName === params.colDef.field &&
-            change.primaryId === params.data?.primaryId
-          );
-        });
-        if (changedValue) {
-          return changedValue.newValue;
-        } else {
-          if (params.data && params?.colDef?.field! in params.data!) {
-            return params.data?.[params.colDef?.field!];
+        if (params.data && params.colDef.field) {
+          const changes: SampleChange[] = params.context.getChanges();
+          const changedValue = changes.find((change) => {
+            return (
+              change.fieldName === params.colDef.field &&
+              change.primaryId === params.data.primaryId
+            );
+          });
+          if (changedValue) {
+            return changedValue.newValue;
           } else {
-            return "N/A";
+            if (params.colDef.field in params.data) {
+              return params.data[params.colDef.field];
+            } else {
+              return "N/A";
+            }
           }
         }
       };

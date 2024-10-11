@@ -33,7 +33,7 @@ import { DataName } from "../shared/types";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 
 const POLLING_INTERVAL = 5000; // 5s
-const MAX_ROWS_TABLE = 500;
+const CACHE_BLOCK_SIZE = 500;
 const MAX_ROWS_EXPORT = 5000;
 const MAX_ROWS_SCROLLED_ALERT =
   "You've reached the maximum number of samples that can be displayed. Please refine your search to see more samples.";
@@ -58,7 +58,7 @@ interface ISampleListProps {
 }
 
 // TODOs
-// - Fix animation of loading rows
+// - Replace usage of the old `samples` variable
 // - Fix random rows' height expanding when loading new rows
 // - Investigate console error "AG Grid: ImmutableService only works with ClientSideRowModel"
 // - Test
@@ -73,28 +73,32 @@ export default function SamplesList({
   customToolbarUI,
 }: ISampleListProps) {
   const [userSearchVal, setUserSearchVal] = useState<string>("");
+  const [sampleCount, setSampleCount] = useState(0);
+
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [showAlertModal, setShowAlertModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertContent, setAlertContent] = useState(MAX_ROWS_SCROLLED_ALERT);
+
   const [changes, setChanges] = useState<SampleChange[]>([]);
   const [editMode, setEditMode] = useState(true);
-  const [alertContent, setAlertContent] = useState(MAX_ROWS_SCROLLED_ALERT);
-  const [sampleCount, setSampleCount] = useState(0);
 
   const gridRef = useRef<AgGridReactType>(null);
   const params = useParams();
   const hasParams = Object.keys(params).length > 0;
 
-  const [, { error, data, fetchMore, refetch, startPolling, stopPolling }] =
-    useDashboardSamplesLazyQuery({
-      variables: {
-        searchVals: [],
-        sampleContext,
-        limit: MAX_ROWS_TABLE,
-        offset: 0,
-      },
-      pollInterval: POLLING_INTERVAL,
-    });
+  const [
+    ,
+    { loading, error, data, fetchMore, refetch, startPolling, stopPolling },
+  ] = useDashboardSamplesLazyQuery({
+    variables: {
+      searchVals: [],
+      sampleContext,
+      limit: CACHE_BLOCK_SIZE,
+      offset: 0,
+    },
+    pollInterval: POLLING_INTERVAL,
+  });
 
   const samples = data?.dashboardSamples;
 
@@ -141,7 +145,7 @@ export default function SamplesList({
     refetch({
       searchVals: parseUserSearchVal(userSearchVal),
       sampleContext,
-      limit: MAX_ROWS_TABLE,
+      limit: CACHE_BLOCK_SIZE,
     }).then(() => {
       gridRef.current?.api?.hideOverlay();
     });
@@ -280,7 +284,7 @@ export default function SamplesList({
         <DownloadModal
           loader={() => {
             const allColumns = gridRef.current?.columnApi?.getAllGridColumns();
-            return sampleCount <= MAX_ROWS_TABLE
+            return sampleCount <= CACHE_BLOCK_SIZE
               ? Promise.resolve(
                   buildTsvString(samples!, columnDefs, allColumns)
                 )
@@ -296,7 +300,7 @@ export default function SamplesList({
             setShowDownloadModal(false);
             // Reset the limit back to the default value of MAX_ROWS_TABLE.
             // Otherwise, polling will use the most recent value MAX_ROWS_EXPORT
-            refetch({ limit: MAX_ROWS_TABLE });
+            refetch({ limit: CACHE_BLOCK_SIZE });
           }}
           exportFileName={[
             parentDataName?.slice(0, -1),
@@ -383,6 +387,7 @@ export default function SamplesList({
             <AgGridReact
               rowModelType="infinite"
               datasource={datasource}
+              cacheBlockSize={CACHE_BLOCK_SIZE}
               getRowId={(d) => {
                 return d.data.primaryId;
               }}
@@ -420,7 +425,7 @@ export default function SamplesList({
               tooltipShowDelay={0}
               tooltipHideDelay={60000}
               onBodyScrollEnd={(params) => {
-                if (params.api.getLastDisplayedRow() + 1 === MAX_ROWS_TABLE) {
+                if (params.api.getLastDisplayedRow() + 1 === CACHE_BLOCK_SIZE) {
                   setShowAlertModal(true);
                 }
               }}
