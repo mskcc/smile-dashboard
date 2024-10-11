@@ -80,7 +80,7 @@ export async function buildCustomSchema(ogm: OGM) {
 
   const typeDefs = gql`
     type DashboardSampleCount {
-      totalCount: Int
+      totalCount: Int!
     }
 
     type DashboardSample {

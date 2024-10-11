@@ -1785,7 +1785,7 @@ export type DashboardSample = {
 
 export type DashboardSampleCount = {
   __typename?: "DashboardSampleCount";
-  totalCount?: Maybe<Scalars["Int"]>;
+  totalCount: Scalars["Int"];
 };
 
 export type DashboardSampleInput = {
@@ -12471,7 +12471,7 @@ export type DashboardSamplesQuery = {
   __typename?: "Query";
   dashboardSampleCount: {
     __typename?: "DashboardSampleCount";
-    totalCount?: number | null;
+    totalCount: number;
   };
   dashboardSamples: Array<{
     __typename?: "DashboardSample";

@@ -121,8 +121,10 @@ export default function SamplesList({
           .then((result) => {
             successCallback(
               result.data.dashboardSamples,
-              result.data.dashboardSampleCount.totalCount ?? 0
+              result.data.dashboardSampleCount.totalCount
             );
+
+            setSampleCount(result.data.dashboardSampleCount.totalCount);
           })
           .catch(() => {
             failCallback();
