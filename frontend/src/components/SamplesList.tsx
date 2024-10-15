@@ -1,7 +1,7 @@
 import { useDashboardSamplesLazyQuery } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container } from "react-bootstrap";
-import { Dispatch, SetStateAction, useCallback, useMemo, useRef } from "react";
+import { Dispatch, SetStateAction, useCallback, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
@@ -20,7 +20,7 @@ import "ag-grid-enterprise";
 import {
   CellValueChangedEvent,
   ColDef,
-  IGetRowsParams,
+  IServerSideGetRowsParams,
 } from "ag-grid-community";
 import { ErrorMessage, Toolbar } from "../shared/tableElements";
 import styles from "./records.module.scss";
@@ -33,7 +33,7 @@ import { DataName } from "../shared/types";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 
 const POLLING_INTERVAL = 5000; // 5s
-const CACHE_BLOCK_SIZE = 500;
+const CACHE_BLOCK_SIZE = 20; // number of rows to fetch at a time
 const MAX_ROWS_EXPORT = 5000;
 const MAX_ROWS_EXPORT_EXCEED_ALERT =
   "You can only download up to 5,000 rows of data at a time. Please refine your search and try again. If you need the full dataset, contact the SMILE team at cmosmile@mskcc.org.";
@@ -100,18 +100,16 @@ export default function SamplesList({
   const createDatasource = useCallback(
     ({ userSearchVal, sampleContext }) => {
       return {
-        getRows: (params: IGetRowsParams) => {
-          const { startRow, endRow, successCallback, failCallback } = params;
-
+        getRows: async (params: IServerSideGetRowsParams) => {
           const fetchInput = {
             searchVals: parseUserSearchVal(userSearchVal),
             sampleContext,
-            limit: endRow - startRow,
-            offset: startRow,
+            offset: params.request.startRow ?? 0,
+            limit: params.request.endRow ?? CACHE_BLOCK_SIZE,
           };
 
           const thisFetch =
-            startRow === 0
+            params.request.startRow === 0
               ? refetch(fetchInput)
               : fetchMore({
                   variables: fetchInput,
@@ -119,15 +117,15 @@ export default function SamplesList({
 
           return thisFetch
             .then((result) => {
-              successCallback(
-                result.data.dashboardSamples,
-                result.data.dashboardSampleCount.totalCount
-              );
-
               setSampleCount(result.data.dashboardSampleCount.totalCount);
+              params.success({
+                rowData: result.data.dashboardSamples,
+                rowCount: result.data.dashboardSampleCount.totalCount,
+              });
             })
-            .catch(() => {
-              failCallback();
+            .catch((error) => {
+              console.error(error);
+              params.fail();
             });
         },
       };
@@ -135,18 +133,12 @@ export default function SamplesList({
     [refetch, fetchMore]
   );
 
-  const datasource = useMemo(() => {
-    return createDatasource({ userSearchVal, sampleContext });
-    // Exclude userSearchVal to avoid re-renders as user types a new search input
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createDatasource]);
-
-  async function handleSearch(userSearchVal: string) {
-    const newDatasource = await createDatasource({
+  async function refreshData(userSearchVal: string) {
+    const newDatasource = createDatasource({
       userSearchVal,
       sampleContext,
     });
-    gridRef.current?.api.setDatasource(newDatasource); // triggers a refresh
+    gridRef.current?.api.setServerSideDatasource(newDatasource); // triggers a refresh
   }
 
   if (error) return <ErrorMessage error={error} />;
@@ -320,7 +312,7 @@ export default function SamplesList({
         dataName={"samples"}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
-        handleSearch={(userSearchVal) => handleSearch(userSearchVal)}
+        refreshData={(userSearchVal) => refreshData(userSearchVal)}
         matchingResultsCount={`${
           sampleCount ? sampleCount.toLocaleString() : "Loading"
         } matching samples`}
@@ -376,12 +368,13 @@ export default function SamplesList({
             style={{ width: width }}
           >
             <AgGridReact
-              rowModelType="infinite"
-              datasource={datasource}
+              rowModelType="serverSide"
+              serverSideInfiniteScroll={true}
               cacheBlockSize={CACHE_BLOCK_SIZE}
-              getRowId={(d) => {
-                return d.data.primaryId;
+              getRowId={(params) => {
+                return params.data.primaryId;
               }}
+              debug={true}
               rowClassRules={{
                 unlocked: function (params) {
                   return params.data?.revisable === true;
@@ -418,10 +411,7 @@ export default function SamplesList({
               onFilterChanged={(params) => {
                 setSampleCount(params.api.getDisplayedRowCount());
               }}
-              onRowDataUpdated={() => {
-                setSampleCount(data?.dashboardSampleCount?.totalCount || 0);
-              }}
-              onGridColumnsChanged={() => handleSearch(userSearchVal)}
+              onGridColumnsChanged={() => refreshData(userSearchVal)}
             />
           </div>
         )}
