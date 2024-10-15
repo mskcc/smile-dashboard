@@ -56,7 +56,6 @@ interface ISampleListProps {
 }
 
 // TODOs
-// - Replace usage of the old `samples` variable
 // - Fix random rows' height expanding when loading new rows
 // - Investigate console error "AG Grid: ImmutableService only works with ClientSideRowModel"
 // - Test
@@ -372,9 +371,6 @@ export default function SamplesList({
               rowModelType="serverSide"
               serverSideInfiniteScroll={true}
               cacheBlockSize={CACHE_BLOCK_SIZE}
-              getRowId={(params) => {
-                return params.data.primaryId;
-              }}
               rowClassRules={{
                 unlocked: function (params) {
                   return params.data?.revisable === true;
@@ -391,7 +387,6 @@ export default function SamplesList({
                 },
               }}
               columnDefs={columnDefs}
-              rowData={samples!}
               onCellEditRequest={onCellValueChanged}
               readOnlyEdit={true}
               defaultColDef={defaultColDef}
