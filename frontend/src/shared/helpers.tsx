@@ -442,7 +442,7 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
   samplesColDefs.forEach((colDef) => {
     const newClassRule = {
       unsubmittedChange: (params: CellClassParams) => {
-        const changes: SampleChange[] = params.context.getChanges();
+        const changes: SampleChange[] = params.context?.getChanges();
         const changedValue = changes?.find((change) => {
           return (
             change.fieldName === params.colDef.field &&
@@ -464,8 +464,8 @@ function setupEditableSampleFields(samplesColDefs: ColDef[]) {
     if (colDef.valueGetter === undefined) {
       colDef.valueGetter = (params) => {
         if (params.data && params.colDef.field) {
-          const changes: SampleChange[] = params.context.getChanges();
-          const changedValue = changes.find((change) => {
+          const changes: SampleChange[] = params.context?.getChanges();
+          const changedValue = changes?.find((change) => {
             return (
               change.fieldName === params.colDef.field &&
               change.primaryId === params.data.primaryId

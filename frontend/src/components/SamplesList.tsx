@@ -261,19 +261,20 @@ export default function SamplesList({
 
       {showDownloadModal && (
         <DownloadModal
-          loader={() => {
-            const allColumns = gridRef.current?.columnApi?.getAllGridColumns();
-            return sampleCount <= CACHE_BLOCK_SIZE
-              ? Promise.resolve(
-                  buildTsvString(samples!, columnDefs, allColumns)
-                )
-              : refetch({ limit: MAX_ROWS_EXPORT }).then((result) =>
-                  buildTsvString(
-                    result.data.dashboardSamples!,
-                    columnDefs,
-                    allColumns
-                  )
-                );
+          loader={async () => {
+            const { data } = await fetchMore({
+              variables: {
+                searchVals: parseUserSearchVal(userSearchVal),
+                sampleContext,
+                offset: 0,
+                limit: MAX_ROWS_EXPORT,
+              },
+            });
+            return buildTsvString(
+              data.dashboardSamples,
+              columnDefs,
+              gridRef.current?.columnApi?.getAllGridColumns()
+            );
           }}
           onComplete={() => {
             setShowDownloadModal(false);
@@ -374,7 +375,6 @@ export default function SamplesList({
               getRowId={(params) => {
                 return params.data.primaryId;
               }}
-              debug={true}
               rowClassRules={{
                 unlocked: function (params) {
                   return params.data?.revisable === true;
