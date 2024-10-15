@@ -1,7 +1,7 @@
 import { useDashboardSamplesLazyQuery } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container } from "react-bootstrap";
-import { Dispatch, SetStateAction, useMemo, useRef } from "react";
+import { Dispatch, SetStateAction, useCallback, useMemo, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
 import { UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
@@ -56,7 +56,7 @@ interface ISampleListProps {
 }
 
 // TODOs
-// - Fix search / Replace usage of the old `samples` variable
+// - Replace usage of the old `samples` variable
 // - Fix random rows' height expanding when loading new rows
 // - Investigate console error "AG Grid: ImmutableService only works with ClientSideRowModel"
 // - Test
@@ -97,54 +97,59 @@ export default function SamplesList({
 
   const samples = data?.dashboardSamples;
 
-  const datasource = useMemo(
-    () => ({
-      getRows: (params: IGetRowsParams) => {
-        const { startRow, endRow, successCallback, failCallback } = params;
+  const createDatasource = useCallback(
+    ({ userSearchVal, sampleContext }) => {
+      return {
+        getRows: (params: IGetRowsParams) => {
+          const { startRow, endRow, successCallback, failCallback } = params;
 
-        const fetchInput = {
-          searchVals: parseUserSearchVal(userSearchVal),
-          sampleContext,
-          limit: endRow - startRow,
-          offset: startRow,
-        };
+          const fetchInput = {
+            searchVals: parseUserSearchVal(userSearchVal),
+            sampleContext,
+            limit: endRow - startRow,
+            offset: startRow,
+          };
 
-        const thisFetch =
-          startRow === 0
-            ? refetch(fetchInput)
-            : fetchMore({
-                variables: fetchInput,
-              });
+          const thisFetch =
+            startRow === 0
+              ? refetch(fetchInput)
+              : fetchMore({
+                  variables: fetchInput,
+                });
 
-        return thisFetch
-          .then((result) => {
-            successCallback(
-              result.data.dashboardSamples,
-              result.data.dashboardSampleCount.totalCount
-            );
+          return thisFetch
+            .then((result) => {
+              successCallback(
+                result.data.dashboardSamples,
+                result.data.dashboardSampleCount.totalCount
+              );
 
-            setSampleCount(result.data.dashboardSampleCount.totalCount);
-          })
-          .catch(() => {
-            failCallback();
-          });
-      },
-    }),
-    [userSearchVal, sampleContext, refetch, fetchMore]
+              setSampleCount(result.data.dashboardSampleCount.totalCount);
+            })
+            .catch(() => {
+              failCallback();
+            });
+        },
+      };
+    },
+    [refetch, fetchMore]
   );
 
-  if (error) return <ErrorMessage error={error} />;
+  const datasource = useMemo(() => {
+    return createDatasource({ userSearchVal, sampleContext });
+    // Exclude userSearchVal to avoid re-renders as user types a new search input
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createDatasource]);
 
-  function handleSearch(userSearchVal: string) {
-    gridRef.current?.api?.showLoadingOverlay();
-    refetch({
-      searchVals: parseUserSearchVal(userSearchVal),
+  async function handleSearch(userSearchVal: string) {
+    const newDatasource = await createDatasource({
+      userSearchVal,
       sampleContext,
-      limit: CACHE_BLOCK_SIZE,
-    }).then(() => {
-      gridRef.current?.api?.hideOverlay();
     });
+    gridRef.current?.api.setDatasource(newDatasource); // triggers a refresh
   }
+
+  if (error) return <ErrorMessage error={error} />;
 
   async function onCellValueChanged(params: CellValueChangedEvent) {
     if (!editMode) return;
