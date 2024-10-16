@@ -230,6 +230,11 @@ export default function SamplesList({
   }
 
   const handleDiscardChanges = () => {
+    // Remove cell styles associated with having been edited
+    gridRef.current?.api?.redrawRows({
+      rowNodes: changes.map((c) => c.rowNode),
+    });
+
     setEditMode(false);
 
     setTimeout(() => {
