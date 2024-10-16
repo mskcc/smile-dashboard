@@ -261,6 +261,7 @@ export default function SamplesList({
       {showDownloadModal && (
         <DownloadModal
           loader={async () => {
+            // Using fetchMore instead of refetch to avoid overriding the cached variables
             const { data } = await fetchMore({
               variables: {
                 searchVals: parseUserSearchVal(userSearchVal),
@@ -275,12 +276,7 @@ export default function SamplesList({
               gridRef.current?.columnApi?.getAllGridColumns()
             );
           }}
-          onComplete={() => {
-            setShowDownloadModal(false);
-            // Reset the limit back to the default value of MAX_ROWS_TABLE.
-            // Otherwise, polling will use the most recent value MAX_ROWS_EXPORT
-            refetch({ limit: CACHE_BLOCK_SIZE });
-          }}
+          onComplete={() => setShowDownloadModal(false)}
           exportFileName={[
             parentDataName?.slice(0, -1),
             Object.values(params)?.[0],
