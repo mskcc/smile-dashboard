@@ -33,7 +33,7 @@ import { DataName } from "../shared/types";
 import { parseUserSearchVal } from "../utils/parseSearchQueries";
 
 const POLLING_INTERVAL = 5000; // 5s
-const CACHE_BLOCK_SIZE = 20; // number of rows to fetch at a time
+const CACHE_BLOCK_SIZE = 100; // number of rows to fetch at a time
 const MAX_ROWS_EXPORT = 5000;
 const MAX_ROWS_EXPORT_EXCEED_ALERT =
   "You can only download up to 5,000 rows of data at a time. Please refine your search and try again. If you need the full dataset, contact the SMILE team at cmosmile@mskcc.org.";
@@ -54,11 +54,6 @@ interface ISampleListProps {
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
   customToolbarUI?: JSX.Element;
 }
-
-// TODOs
-// - Fix random rows' height expanding when loading new rows
-// - Investigate console error "AG Grid: ImmutableService only works with ClientSideRowModel"
-// - Test
 
 export default function SamplesList({
   columnDefs,
