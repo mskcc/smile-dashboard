@@ -3,7 +3,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container } from "react-bootstrap";
 import { Dispatch, SetStateAction, useCallback, useRef } from "react";
 import { DownloadModal } from "./DownloadModal";
-import { UpdateModal } from "./UpdateModal";
+import { groupChangesByPrimaryId, UpdateModal } from "./UpdateModal";
 import { AlertModal } from "./AlertModal";
 import { buildTsvString } from "../utils/stringBuilders";
 import {
@@ -66,13 +66,11 @@ export default function SamplesList({
 }: ISampleListProps) {
   const [userSearchVal, setUserSearchVal] = useState<string>("");
   const [sampleCount, setSampleCount] = useState(0);
+  const [changes, setChanges] = useState<SampleChange[]>([]);
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [alertContent, setAlertContent] = useState<string | null>(null);
-
-  const [changes, setChanges] = useState<SampleChange[]>([]);
-  const [editMode, setEditMode] = useState(true);
 
   const gridRef = useRef<AgGridReactType>(null);
   const params = useParams();
@@ -138,8 +136,6 @@ export default function SamplesList({
   if (error) return <ErrorMessage error={error} />;
 
   async function onCellValueChanged(params: CellValueChangedEvent) {
-    if (!editMode) return;
-
     const primaryId = params.data.primaryId;
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
@@ -224,24 +220,52 @@ export default function SamplesList({
     gridRef.current?.api?.refreshCells({ rowNodes: [rowNode] });
   }
 
-  const handleDiscardChanges = () => {
-    // Remove cell styles associated with having been edited
-    gridRef.current?.api?.redrawRows({
-      rowNodes: changes.map((c) => c.rowNode),
+  async function handleDiscardChanges() {
+    setChanges([]);
+    setUnsavedChanges?.(false);
+  }
+
+  async function handleConfirmUpdates() {
+    const changesByPrimaryId = groupChangesByPrimaryId(changes);
+    const optimisticSamples = samples?.map((s) => {
+      if (s.primaryId in changesByPrimaryId) {
+        return {
+          ...s,
+          revisable: false,
+          ...changesByPrimaryId[s.primaryId],
+        };
+      }
+      return s;
     });
+    const optimisticDatasource = {
+      getRows: (params: IServerSideGetRowsParams) => {
+        params.success({
+          rowData: optimisticSamples!,
+          rowCount: sampleCount,
+        });
+      },
+    };
+    gridRef.current?.api?.setServerSideDatasource(optimisticDatasource);
 
-    setEditMode(false);
+    setTimeout(async () => {
+      const newSamples = await refetch().then(
+        (result) => result.data.dashboardSamples
+      );
+      const newDatasource = {
+        getRows: async (params: IServerSideGetRowsParams) => {
+          params.success({
+            rowData: newSamples,
+            rowCount: sampleCount,
+          });
+        },
+      };
+      gridRef.current?.api?.setServerSideDatasource(newDatasource);
 
-    setTimeout(() => {
       startPolling(POLLING_INTERVAL);
     }, 10000);
 
-    setUnsavedChanges?.(false);
-    setChanges([]);
-    setTimeout(() => {
-      setEditMode(true);
-    }, 0);
-  };
+    handleDiscardChanges();
+  }
 
   return (
     <>
@@ -291,7 +315,7 @@ export default function SamplesList({
         <UpdateModal
           changes={changes}
           samples={samples!}
-          onSuccess={handleDiscardChanges}
+          onSuccess={handleConfirmUpdates}
           onHide={() => setShowUpdateModal(false)}
           onOpen={() => stopPolling()}
         />
@@ -326,7 +350,14 @@ export default function SamplesList({
               <Col md="auto">
                 <Button
                   className={"btn btn-secondary"}
-                  onClick={handleDiscardChanges}
+                  onClick={() => {
+                    // Remove cell styles associated with having been edited
+                    gridRef.current?.api?.redrawRows({
+                      rowNodes: changes.map((c) => c.rowNode),
+                    });
+
+                    handleDiscardChanges();
+                  }}
                   size={"sm"}
                 >
                   Discard Changes
@@ -347,7 +378,7 @@ export default function SamplesList({
                   }}
                   size={"sm"}
                 >
-                  Submit Updates
+                  Confirm Updates
                 </Button>
               </Col>
             </>
