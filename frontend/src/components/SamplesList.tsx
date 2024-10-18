@@ -230,7 +230,7 @@ export default function SamplesList({
     // AG Grid's Server-Side data model. e.g. GraphQL's optimistic response only returns
     // the updated data, while AG Grid expects the datasource == the entire dataset.)
     const changesByPrimaryId = groupChangesByPrimaryId(changes);
-    const optimisticSamples = samples?.map((s) => {
+    const optimisticSamples = samples!.map((s) => {
       if (s.primaryId in changesByPrimaryId) {
         return {
           ...s,
@@ -254,10 +254,22 @@ export default function SamplesList({
       const newSamples = await refetch().then(
         (result) => result.data.dashboardSamples
       );
+      // Sort newSamples to match the order of optimisticSamples to avoid rows from
+      // rearranging in front of users as a result of new data being sorted by importDate
+      const sortedNewSamples = [...newSamples];
+      sortedNewSamples.sort((a, b) => {
+        const indexA = optimisticSamples.findIndex(
+          (s) => s.primaryId === a.primaryId
+        );
+        const indexB = optimisticSamples.findIndex(
+          (s) => s.primaryId === b.primaryId
+        );
+        return indexA - indexB;
+      });
       const newDatasource = {
         getRows: async (params: IServerSideGetRowsParams) => {
           params.success({
-            rowData: newSamples,
+            rowData: sortedNewSamples,
             rowCount: sampleCount,
           });
         },
@@ -400,6 +412,7 @@ export default function SamplesList({
             <AgGridReact
               rowModelType="serverSide"
               serverSideInfiniteScroll={true}
+              getRowId={(params) => params.data.primaryId}
               cacheBlockSize={CACHE_BLOCK_SIZE}
               rowClassRules={{
                 unlocked: function (params) {
