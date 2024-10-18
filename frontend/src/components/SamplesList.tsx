@@ -65,7 +65,6 @@ export default function SamplesList({
   customToolbarUI,
 }: ISampleListProps) {
   const [userSearchVal, setUserSearchVal] = useState<string>("");
-  const [sampleCount, setSampleCount] = useState(0);
   const [changes, setChanges] = useState<SampleChange[]>([]);
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -88,6 +87,7 @@ export default function SamplesList({
     });
 
   const samples = data?.dashboardSamples;
+  const sampleCount = data?.dashboardSampleCount.totalCount;
 
   const createDatasource = useCallback(
     ({ userSearchVal, sampleContext }) => {
@@ -109,7 +109,6 @@ export default function SamplesList({
 
           return thisFetch
             .then((result) => {
-              setSampleCount(result.data.dashboardSampleCount.totalCount);
               params.success({
                 rowData: result.data.dashboardSamples,
                 rowCount: result.data.dashboardSampleCount.totalCount,
@@ -341,7 +340,7 @@ export default function SamplesList({
           sampleCount ? sampleCount.toLocaleString() : "Loading"
         } matching samples`}
         handleDownload={() => {
-          if (sampleCount > MAX_ROWS_EXPORT) {
+          if (sampleCount && sampleCount > MAX_ROWS_EXPORT) {
             setAlertContent(MAX_ROWS_EXPORT_EXCEED_ALERT);
           } else {
             setShowDownloadModal(true);
@@ -434,9 +433,6 @@ export default function SamplesList({
               }}
               tooltipShowDelay={0}
               tooltipHideDelay={60000}
-              onFilterChanged={(params) => {
-                setSampleCount(params.api.getDisplayedRowCount());
-              }}
               onGridColumnsChanged={() => refreshData(userSearchVal)}
             />
           </div>
