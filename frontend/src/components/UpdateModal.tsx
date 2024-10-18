@@ -73,9 +73,6 @@ export function UpdateModal({
 
     updateDashboardSamplesMutation({
       variables: { newDashboardSamples },
-      optimisticResponse: {
-        updateDashboardSamples: newDashboardSamples,
-      },
     });
 
     onSuccess();

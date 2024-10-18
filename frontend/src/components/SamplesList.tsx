@@ -226,6 +226,10 @@ export default function SamplesList({
   }
 
   async function handleConfirmUpdates() {
+    // Manually handle optimistic updates
+    // (We can't use GraphQL's optimistic response because it isn't a good fit for
+    // AG Grid's Server-Side data model. e.g. GraphQL's optimistic response only returns
+    // the updated data, while AG Grid expects the datasource == the entire dataset.)
     const changesByPrimaryId = groupChangesByPrimaryId(changes);
     const optimisticSamples = samples?.map((s) => {
       if (s.primaryId in changesByPrimaryId) {
