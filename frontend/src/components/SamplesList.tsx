@@ -1,4 +1,8 @@
-import { useDashboardSamplesLazyQuery } from "../generated/graphql";
+import {
+  AgGridSortDirection,
+  DashboardSampleSort,
+  useDashboardSamplesLazyQuery,
+} from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Button, Col, Container } from "react-bootstrap";
 import { Dispatch, SetStateAction, useCallback, useRef } from "react";
@@ -55,6 +59,11 @@ interface ISampleListProps {
   customToolbarUI?: JSX.Element;
 }
 
+const DEFAULT_SORT: DashboardSampleSort = {
+  colId: "importDate",
+  sort: AgGridSortDirection.Desc,
+};
+
 export default function SamplesList({
   columnDefs,
   parentDataName,
@@ -80,6 +89,7 @@ export default function SamplesList({
       variables: {
         searchVals: [],
         sampleContext,
+        sort: DEFAULT_SORT,
         limit: CACHE_BLOCK_SIZE,
         offset: 0,
       },
@@ -96,8 +106,11 @@ export default function SamplesList({
           const fetchInput = {
             searchVals: parseUserSearchVal(userSearchVal),
             sampleContext,
+            sort:
+              (params.request.sortModel[0] as DashboardSampleSort) ||
+              DEFAULT_SORT,
             offset: params.request.startRow ?? 0,
-            limit: params.request.endRow ?? CACHE_BLOCK_SIZE,
+            limit: CACHE_BLOCK_SIZE,
           };
 
           const thisFetch =
@@ -139,7 +152,7 @@ export default function SamplesList({
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
 
-    // prevent registering a change if no actual changes are made
+    // Prevent registering a change if no actual changes are made
     const noChangeInVal = rowNode.data[fieldName] === newValue;
     const noChangeInEmptyCell = !rowNode.data[fieldName] && !newValue;
     if (noChangeInVal || noChangeInEmptyCell) {
@@ -152,7 +165,7 @@ export default function SamplesList({
       return;
     }
 
-    // add/update the billedBy cell to/in the changes array
+    // Add/update the billedBy cell to/in the changes array
     if (fieldName === "billed" && setUserEmail) {
       let currUserEmail = userEmail;
 
@@ -197,7 +210,7 @@ export default function SamplesList({
       });
     }
 
-    // add/update the edited cell to/in the changes array
+    // Add/update the edited cell to/in the changes array
     setChanges((changes) => {
       const change = changes.find(
         (c) => c.primaryId === primaryId && c.fieldName === fieldName
@@ -210,7 +223,7 @@ export default function SamplesList({
       return [...changes];
     });
 
-    // validate Cost Center inputs
+    // Validate Cost Center inputs
     if (fieldName === "costCenter" && !isValidCostCenter(newValue)) {
       setAlertContent(COST_CENTER_VALIDATION_ALERT);
     }
@@ -303,8 +316,6 @@ export default function SamplesList({
             // Using fetchMore instead of refetch to avoid overriding the cached variables
             const { data } = await fetchMore({
               variables: {
-                searchVals: parseUserSearchVal(userSearchVal),
-                sampleContext,
                 offset: 0,
                 limit: MAX_ROWS_EXPORT,
               },
@@ -412,7 +423,6 @@ export default function SamplesList({
             <AgGridReact
               rowModelType="serverSide"
               serverSideInfiniteScroll={true}
-              getRowId={(params) => params.data.primaryId}
               cacheBlockSize={CACHE_BLOCK_SIZE}
               rowClassRules={{
                 unlocked: function (params) {

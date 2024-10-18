@@ -20,6 +20,11 @@ export type Scalars = {
   Float: number;
 };
 
+export enum AgGridSortDirection {
+  Asc = "asc",
+  Desc = "desc",
+}
+
 export type BamComplete = {
   __typename?: "BamComplete";
   date: Scalars["String"];
@@ -1783,6 +1788,11 @@ export type DashboardSample = {
   validationStatus?: Maybe<Scalars["Boolean"]>;
 };
 
+export type DashboardSampleContext = {
+  fieldName?: InputMaybe<Scalars["String"]>;
+  values: Array<Scalars["String"]>;
+};
+
 export type DashboardSampleCount = {
   __typename?: "DashboardSampleCount";
   totalCount: Scalars["Int"];
@@ -1830,6 +1840,11 @@ export type DashboardSampleInput = {
   tumorOrNormal?: InputMaybe<Scalars["String"]>;
   validationReport?: InputMaybe<Scalars["String"]>;
   validationStatus?: InputMaybe<Scalars["Boolean"]>;
+};
+
+export type DashboardSampleSort = {
+  colId: Scalars["String"];
+  sort: AgGridSortDirection;
 };
 
 export type DeleteInfo = {
@@ -4606,15 +4621,16 @@ export type QueryCohortsConnectionArgs = {
 };
 
 export type QueryDashboardSampleCountArgs = {
-  sampleContext?: InputMaybe<SampleContext>;
+  sampleContext?: InputMaybe<DashboardSampleContext>;
   searchVals?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type QueryDashboardSamplesArgs = {
   limit: Scalars["Int"];
   offset: Scalars["Int"];
-  sampleContext?: InputMaybe<SampleContext>;
+  sampleContext?: InputMaybe<DashboardSampleContext>;
   searchVals?: InputMaybe<Array<Scalars["String"]>>;
+  sort: DashboardSampleSort;
 };
 
 export type QueryMafCompletesArgs = {
@@ -7475,11 +7491,6 @@ export type SampleConnectInput = {
 
 export type SampleConnectWhere = {
   node: SampleWhere;
-};
-
-export type SampleContext = {
-  fieldName?: InputMaybe<Scalars["String"]>;
-  values: Array<Scalars["String"]>;
 };
 
 export type SampleCreateInput = {
@@ -12462,7 +12473,8 @@ export type PatientsListQuery = {
 
 export type DashboardSamplesQueryVariables = Exact<{
   searchVals?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
-  sampleContext?: InputMaybe<SampleContext>;
+  sampleContext?: InputMaybe<DashboardSampleContext>;
+  sort: DashboardSampleSort;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
 }>;
@@ -12841,7 +12853,8 @@ export type PatientsListQueryResult = Apollo.QueryResult<
 export const DashboardSamplesDocument = gql`
   query DashboardSamples(
     $searchVals: [String!]
-    $sampleContext: SampleContext
+    $sampleContext: DashboardSampleContext
+    $sort: DashboardSampleSort!
     $limit: Int!
     $offset: Int!
   ) {
@@ -12854,6 +12867,7 @@ export const DashboardSamplesDocument = gql`
     dashboardSamples(
       searchVals: $searchVals
       sampleContext: $sampleContext
+      sort: $sort
       limit: $limit
       offset: $offset
     ) {

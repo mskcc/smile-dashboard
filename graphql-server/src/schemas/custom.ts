@@ -19,7 +19,13 @@ export async function buildCustomSchema(ogm: OGM) {
     Query: {
       async dashboardSamples(
         _source: undefined,
-        { searchVals, sampleContext, limit, offset }: QueryDashboardSamplesArgs,
+        {
+          searchVals,
+          sampleContext,
+          sort,
+          limit,
+          offset,
+        }: QueryDashboardSamplesArgs,
         { oncotreeCache }: ApolloServerContext
       ) {
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
@@ -37,6 +43,7 @@ export async function buildCustomSchema(ogm: OGM) {
           partialCypherQuery,
           limit,
           offset,
+          sort,
           oncotreeCache,
         });
       },
@@ -141,21 +148,33 @@ export async function buildCustomSchema(ogm: OGM) {
       qcCompleteStatus: String
     }
 
-    input SampleContext {
+    input DashboardSampleContext {
       fieldName: String
       values: [String!]!
+    }
+
+    enum AgGridSortDirection {
+      asc
+      desc
+    }
+
+    # Modeling after AG Grid's SortModel type
+    input DashboardSampleSort {
+      colId: String! # field name
+      sort: AgGridSortDirection!
     }
 
     type Query {
       dashboardSamples(
         searchVals: [String!]
-        sampleContext: SampleContext
+        sampleContext: DashboardSampleContext
+        sort: DashboardSampleSort!
         limit: Int!
         offset: Int!
       ): [DashboardSample!]!
       dashboardSampleCount(
         searchVals: [String!]
-        sampleContext: SampleContext
+        sampleContext: DashboardSampleContext
       ): DashboardSampleCount!
     }
 
@@ -236,13 +255,15 @@ export async function buildCustomSchema(ogm: OGM) {
 
 async function queryDashboardSamples({
   partialCypherQuery,
+  sort,
   limit,
+  offset,
   oncotreeCache,
-  offset, // Add offset parameter
 }: {
   partialCypherQuery: string;
+  sort: QueryDashboardSamplesArgs["sort"];
   limit: QueryDashboardSamplesArgs["limit"];
-  offset: number; // Add offset parameter
+  offset: QueryDashboardSamplesArgs["offset"];
   oncotreeCache: NodeCache;
 }) {
   const cypherQuery = `
@@ -291,7 +312,7 @@ async function queryDashboardSamples({
       latestQC.reason AS qcCompleteReason,
       latestQC.status AS qcCompleteStatus
 
-    ORDER BY importDate DESC
+    ORDER BY ${sort.colId} ${sort.sort}
     SKIP ${offset}
     LIMIT ${limit}
   `;
@@ -308,6 +329,7 @@ async function queryDashboardSamples({
 
       return {
         ...recordObject,
+        // TODO: handle sorting for these custom fields or disable them from being sortable
         recipe: parseJsonSafely(recordObject.cmoSampleIdFields)?.recipe,
         embargoDate: recordObject.initialPipelineRunDate
           ? new Date(
