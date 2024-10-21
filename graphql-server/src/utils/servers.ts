@@ -5,7 +5,7 @@ import { props } from "./constants";
 import { buildNeo4jDbSchema } from "../schemas/neo4j";
 import { buildCustomSchema } from "../schemas/custom";
 import { mergeSchemas } from "@graphql-tools/schema";
-import { oracleDbSchema } from "../schemas/oracle";
+import { buildOracleDbSchema } from "../schemas/oracle";
 import { ApolloServer } from "apollo-server-express";
 import {
   ApolloServerPluginDrainHttpServer,
@@ -47,19 +47,17 @@ export async function initializeApolloServer(
   httpsServer: https.Server,
   app: Express
 ) {
-  console.log("Building schemas...");
   const { neo4jDbSchema, ogm } = await buildNeo4jDbSchema();
   const customSchema = await buildCustomSchema(ogm);
+  const oracleDbSchema = await buildOracleDbSchema();
   const mergedSchema = mergeSchemas({
     schemas: [neo4jDbSchema, oracleDbSchema, customSchema],
   });
 
-  console.log("Fetching Oncotree data and caching...");
   const oncotreeCache = new NodeCache({ stdTTL: 86400 }); // 1 day
   await fetchAndCacheOncotreeData(oncotreeCache);
   oncotreeCache.on("expired", fetchAndCacheOncotreeData);
 
-  console.log("Initializing Apollo Server...");
   const apolloServer = new ApolloServer<ApolloServerContext>({
     schema: mergedSchema,
     context: async ({ req }: { req: any }) => {

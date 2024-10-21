@@ -99,7 +99,7 @@ export default function SamplesList({
   const samples = data?.dashboardSamples;
   const sampleCount = data?.dashboardSampleCount.totalCount;
 
-  const createDatasource = useCallback(
+  const getServerSideDatasource = useCallback(
     ({ userSearchVal, sampleContext }) => {
       return {
         getRows: async (params: IServerSideGetRowsParams) => {
@@ -138,7 +138,7 @@ export default function SamplesList({
   );
 
   async function refreshData(userSearchVal: string) {
-    const newDatasource = createDatasource({
+    const newDatasource = getServerSideDatasource({
       userSearchVal,
       sampleContext,
     });
