@@ -23,6 +23,7 @@ export async function buildCustomSchema(ogm: OGM) {
           searchVals,
           sampleContext,
           sort,
+          filter,
           limit,
           offset,
         }: QueryDashboardSamplesArgs,
@@ -36,20 +37,21 @@ export async function buildCustomSchema(ogm: OGM) {
         const partialCypherQuery = buildPartialCypherQuery({
           searchVals,
           sampleContext,
+          filter,
           addlOncotreeCodes,
         });
 
         return await queryDashboardSamples({
           partialCypherQuery,
+          sort,
           limit,
           offset,
-          sort,
           oncotreeCache,
         });
       },
       async dashboardSampleCount(
         _source: undefined,
-        { searchVals, sampleContext }: QueryDashboardSampleCountArgs,
+        { searchVals, sampleContext, filter }: QueryDashboardSampleCountArgs,
         { oncotreeCache }: ApolloServerContext
       ) {
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
@@ -60,6 +62,7 @@ export async function buildCustomSchema(ogm: OGM) {
         const partialCypherQuery = buildPartialCypherQuery({
           searchVals,
           sampleContext,
+          filter,
           addlOncotreeCodes,
         });
 
@@ -164,10 +167,16 @@ export async function buildCustomSchema(ogm: OGM) {
       sort: AgGridSortDirection!
     }
 
+    input DashboardSampleFilter {
+      field: String!
+      values: [String!]!
+    }
+
     type Query {
       dashboardSamples(
         searchVals: [String!]
         sampleContext: DashboardSampleContext
+        filter: DashboardSampleFilter
         sort: DashboardSampleSort!
         limit: Int!
         offset: Int!
@@ -175,6 +184,7 @@ export async function buildCustomSchema(ogm: OGM) {
       dashboardSampleCount(
         searchVals: [String!]
         sampleContext: DashboardSampleContext
+        filter: DashboardSampleFilter
       ): DashboardSampleCount!
     }
 
@@ -429,10 +439,12 @@ const searchFiltersConfig = [
 function buildPartialCypherQuery({
   searchVals,
   sampleContext,
+  filter,
   addlOncotreeCodes,
 }: {
   searchVals: QueryDashboardSampleCountArgs["searchVals"];
   sampleContext?: QueryDashboardSampleCountArgs["sampleContext"];
+  filter?: QueryDashboardSamplesArgs["filter"];
   addlOncotreeCodes: string[];
 }) {
   // Build search filters given user's search values input. For example:
@@ -493,6 +505,18 @@ function buildPartialCypherQuery({
       ? `c.cohortId = '${sampleContext.values[0]}'`
       : "";
 
+  // Column filter of Cohort Samples view
+  let tempoFilter = "";
+  if (filter?.field === "billed") {
+    if (filter.values[0] === "Yes") {
+      tempoFilter = "t.billed = true";
+    } else if (filter.values[0] === "No") {
+      tempoFilter = "t.billed = false OR t.billed IS NULL";
+    } else if (filter.values.length === 0) {
+      tempoFilter = "t.billed <> true AND t.billed <> false";
+    }
+  }
+
   const partialCypherQuery = `
     // Get Sample and the most recent SampleMetadata
     MATCH (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
@@ -520,7 +544,9 @@ function buildPartialCypherQuery({
 
     // Get Tempo data
     OPTIONAL MATCH (s:Sample)-[:HAS_TEMPO]->(t:Tempo)
+    // We're calling WITH immediately after OPTIONAL MATCH here to correctly filter Tempo data
     WITH s, latestSm, latestSt, oldestCCDate, t
+    ${tempoFilter && `WHERE ${tempoFilter}`}
 
     // Get the most recent BamComplete event
     OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)

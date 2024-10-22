@@ -703,10 +703,9 @@ export const WesSampleDetailsColumns: ColDef[] = [
           return "";
       }
     },
-    filter: true,
+    filter: "agSetColumnFilter",
     filterParams: {
-      valueFormatter: (params: ValueFormatterParams) =>
-        params.value === "true" ? "Yes" : "No",
+      values: ["Yes", "No"],
       suppressMiniFilter: true,
     },
   },

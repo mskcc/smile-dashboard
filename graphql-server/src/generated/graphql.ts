@@ -1798,6 +1798,11 @@ export type DashboardSampleCount = {
   totalCount: Scalars["Int"];
 };
 
+export type DashboardSampleFilter = {
+  field: Scalars["String"];
+  values: Array<Scalars["String"]>;
+};
+
 export type DashboardSampleInput = {
   accessLevel?: InputMaybe<Scalars["String"]>;
   baitSet?: InputMaybe<Scalars["String"]>;
@@ -4621,11 +4626,13 @@ export type QueryCohortsConnectionArgs = {
 };
 
 export type QueryDashboardSampleCountArgs = {
+  filter?: InputMaybe<DashboardSampleFilter>;
   sampleContext?: InputMaybe<DashboardSampleContext>;
   searchVals?: InputMaybe<Array<Scalars["String"]>>;
 };
 
 export type QueryDashboardSamplesArgs = {
+  filter?: InputMaybe<DashboardSampleFilter>;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   sampleContext?: InputMaybe<DashboardSampleContext>;
@@ -12475,6 +12482,7 @@ export type DashboardSamplesQueryVariables = Exact<{
   searchVals?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
   sampleContext?: InputMaybe<DashboardSampleContext>;
   sort: DashboardSampleSort;
+  filter?: InputMaybe<DashboardSampleFilter>;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
 }>;
@@ -12855,12 +12863,14 @@ export const DashboardSamplesDocument = gql`
     $searchVals: [String!]
     $sampleContext: DashboardSampleContext
     $sort: DashboardSampleSort!
+    $filter: DashboardSampleFilter
     $limit: Int!
     $offset: Int!
   ) {
     dashboardSampleCount(
       searchVals: $searchVals
       sampleContext: $sampleContext
+      filter: $filter
     ) {
       totalCount
     }
@@ -12868,6 +12878,7 @@ export const DashboardSamplesDocument = gql`
       searchVals: $searchVals
       sampleContext: $sampleContext
       sort: $sort
+      filter: $filter
       limit: $limit
       offset: $offset
     ) {

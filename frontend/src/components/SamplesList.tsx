@@ -1,6 +1,8 @@
 import {
   AgGridSortDirection,
+  DashboardSampleFilter,
   DashboardSampleSort,
+  QueryDashboardSamplesArgs,
   useDashboardSamplesLazyQuery,
 } from "../generated/graphql";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -103,15 +105,25 @@ export default function SamplesList({
     ({ userSearchVal, sampleContext }) => {
       return {
         getRows: async (params: IServerSideGetRowsParams) => {
+          let filter: DashboardSampleFilter | undefined;
+          const filterModel = params.request.filterModel;
+          if (filterModel && Object.keys(filterModel).length > 0) {
+            filter = {
+              field: Object.keys(filterModel)[0],
+              values: filterModel[Object.keys(filterModel)[0]].values,
+            };
+          } else {
+            filter = undefined; // all filter values are selected
+          }
+
           const fetchInput = {
             searchVals: parseUserSearchVal(userSearchVal),
             sampleContext,
-            sort:
-              (params.request.sortModel[0] as DashboardSampleSort) ||
-              DEFAULT_SORT,
+            sort: params.request.sortModel[0] || DEFAULT_SORT,
+            filter,
             offset: params.request.startRow ?? 0,
             limit: CACHE_BLOCK_SIZE,
-          };
+          } as QueryDashboardSamplesArgs;
 
           const thisFetch =
             params.request.startRow === 0
@@ -360,7 +372,7 @@ export default function SamplesList({
         setUserSearchVal={setUserSearchVal}
         refreshData={(userSearchVal) => refreshData(userSearchVal)}
         matchingResultsCount={`${
-          sampleCount ? sampleCount.toLocaleString() : "Loading"
+          sampleCount !== undefined ? sampleCount.toLocaleString() : "Loading"
         } matching samples`}
         handleDownload={() => {
           if (sampleCount && sampleCount > MAX_ROWS_EXPORT) {
