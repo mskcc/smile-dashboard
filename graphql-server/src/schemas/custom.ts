@@ -299,7 +299,7 @@ async function queryDashboardSamples({
       latestSm.sampleOrigin AS sampleOrigin,
       latestSm.tissueLocation AS tissueLocation,
       latestSm.sex AS sex,
-      latestSm.cmoSampleIdFields AS cmoSampleIdFields,
+      apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields).recipe as recipe,
 
       oldestCCDate AS initialPipelineRunDate,
 
@@ -340,7 +340,6 @@ async function queryDashboardSamples({
       return {
         ...recordObject,
         // TODO: handle sorting for these custom fields or disable them from being sortable
-        recipe: parseJsonSafely(recordObject.cmoSampleIdFields)?.recipe,
         embargoDate: recordObject.initialPipelineRunDate
           ? new Date(
               new Date(recordObject.initialPipelineRunDate).setMonth(
