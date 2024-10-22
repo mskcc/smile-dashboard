@@ -1,6 +1,5 @@
 import {
   AgGridSortDirection,
-  DashboardSample,
   DashboardSampleFilter,
   DashboardSampleSort,
   QueryDashboardSamplesArgs,

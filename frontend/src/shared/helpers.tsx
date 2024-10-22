@@ -4,7 +4,6 @@ import {
   IHeaderParams,
   RowNode,
   ITooltipParams,
-  ValueFormatterParams,
   IServerSideGetRowsRequest,
   CellClassParams,
 } from "ag-grid-community";
@@ -343,6 +342,7 @@ export const SampleMetadataDetailsColumns: ColDef[] = [
         return ONCOTREE_CODE_NA_TOOLTIP;
       }
     },
+    sortable: false,
   },
   {
     field: "cancerTypeDetailed",
@@ -360,6 +360,7 @@ export const SampleMetadataDetailsColumns: ColDef[] = [
         return ONCOTREE_CODE_NA_TOOLTIP;
       }
     },
+    sortable: false,
   },
   {
     field: "collectionYear",
