@@ -302,6 +302,7 @@ async function queryDashboardSamples({
       apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields).recipe as recipe,
 
       oldestCCDate AS initialPipelineRunDate,
+      toString(datetime(replace(oldestCCDate, ' ', 'T')) + duration({ months: 18 })) AS embargoDate,
 
       t.smileTempoId AS smileTempoId,
       t.billed AS billed,
@@ -339,14 +340,6 @@ async function queryDashboardSamples({
 
       return {
         ...recordObject,
-        // TODO: handle sorting for these custom fields or disable them from being sortable
-        embargoDate: recordObject.initialPipelineRunDate
-          ? new Date(
-              new Date(recordObject.initialPipelineRunDate).setMonth(
-                new Date(recordObject.initialPipelineRunDate).getMonth() + 18
-              )
-            ).toISOString()
-          : null,
         cancerType: otCache?.mainType,
         cancerTypeDetailed: otCache?.name,
       };
