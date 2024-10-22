@@ -1762,7 +1762,7 @@ export type DashboardSample = {
   custodianInformation?: Maybe<Scalars["String"]>;
   embargoDate?: Maybe<Scalars["String"]>;
   genePanel?: Maybe<Scalars["String"]>;
-  importDate?: Maybe<Scalars["String"]>;
+  importDate: Scalars["String"];
   initialPipelineRunDate?: Maybe<Scalars["String"]>;
   investigatorSampleId?: Maybe<Scalars["String"]>;
   mafCompleteDate?: Maybe<Scalars["String"]>;
@@ -1821,7 +1821,7 @@ export type DashboardSampleInput = {
   custodianInformation?: InputMaybe<Scalars["String"]>;
   embargoDate?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
+  importDate: Scalars["String"];
   initialPipelineRunDate?: InputMaybe<Scalars["String"]>;
   investigatorSampleId?: InputMaybe<Scalars["String"]>;
   mafCompleteDate?: InputMaybe<Scalars["String"]>;
@@ -12500,7 +12500,7 @@ export type DashboardSamplesQuery = {
     revisable?: boolean | null;
     primaryId: string;
     cmoSampleName?: string | null;
-    importDate?: string | null;
+    importDate: string;
     cmoPatientId?: string | null;
     investigatorSampleId?: string | null;
     sampleType?: string | null;
@@ -12549,7 +12549,7 @@ export type DashboardSampleMetadataPartsFragment = {
   __typename?: "DashboardSample";
   primaryId: string;
   cmoSampleName?: string | null;
-  importDate?: string | null;
+  importDate: string;
   cmoPatientId?: string | null;
   investigatorSampleId?: string | null;
   sampleType?: string | null;
@@ -12625,7 +12625,7 @@ export type UpdateDashboardSamplesMutation = {
     revisable?: boolean | null;
     primaryId: string;
     cmoSampleName?: string | null;
-    importDate?: string | null;
+    importDate: string;
     cmoPatientId?: string | null;
     investigatorSampleId?: string | null;
     sampleType?: string | null;

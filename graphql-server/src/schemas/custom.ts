@@ -102,7 +102,7 @@ export async function buildCustomSchema(ogm: OGM) {
       ## Root-level fields
       primaryId: String!
       cmoSampleName: String
-      importDate: String
+      importDate: String!
       cmoPatientId: String
       investigatorSampleId: String
       sampleType: String
@@ -201,7 +201,7 @@ export async function buildCustomSchema(ogm: OGM) {
       ## Root-level fields
       primaryId: String!
       cmoSampleName: String
-      importDate: String
+      importDate: String!
       cmoPatientId: String
       investigatorSampleId: String
       sampleType: String

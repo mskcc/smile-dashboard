@@ -1,5 +1,6 @@
 import {
   AgGridSortDirection,
+  DashboardSample,
   DashboardSampleFilter,
   DashboardSampleSort,
   QueryDashboardSamplesArgs,
@@ -149,7 +150,7 @@ export default function SamplesList({
     [refetch, fetchMore]
   );
 
-  async function refreshData(userSearchVal: string) {
+  function refreshData(userSearchVal: string) {
     const newDatasource = getServerSideDatasource({
       userSearchVal,
       sampleContext,
@@ -250,7 +251,7 @@ export default function SamplesList({
   }
 
   async function handleConfirmUpdates() {
-    // Manually handle optimistic updates
+    // Manually handle optimistic updates: refresh updated rows' UI to indicate them being updated
     // (We can't use GraphQL's optimistic response because it isn't a good fit for
     // AG Grid's Server-Side data model. e.g. GraphQL's optimistic response only returns
     // the updated data, while AG Grid expects the datasource == the entire dataset.)
@@ -260,10 +261,16 @@ export default function SamplesList({
         return {
           ...s,
           revisable: false,
+          importDate: new Date().toISOString().split("T")[0],
           ...changesByPrimaryId[s.primaryId],
         };
       }
       return s;
+    });
+    optimisticSamples.sort((a, b) => {
+      return (
+        new Date(b.importDate).getTime() - new Date(a.importDate).getTime()
+      );
     });
     const optimisticDatasource = {
       getRows: (params: IServerSideGetRowsParams) => {
@@ -276,31 +283,7 @@ export default function SamplesList({
     gridRef.current?.api?.setServerSideDatasource(optimisticDatasource);
 
     setTimeout(async () => {
-      const newSamples = await refetch().then(
-        (result) => result.data.dashboardSamples
-      );
-      // Sort newSamples to match the order of optimisticSamples to avoid rows from
-      // rearranging in front of users as a result of new data being sorted by importDate
-      const sortedNewSamples = [...newSamples];
-      sortedNewSamples.sort((a, b) => {
-        const indexA = optimisticSamples.findIndex(
-          (s) => s.primaryId === a.primaryId
-        );
-        const indexB = optimisticSamples.findIndex(
-          (s) => s.primaryId === b.primaryId
-        );
-        return indexA - indexB;
-      });
-      const newDatasource = {
-        getRows: async (params: IServerSideGetRowsParams) => {
-          params.success({
-            rowData: sortedNewSamples,
-            rowCount: sampleCount,
-          });
-        },
-      };
-      gridRef.current?.api?.setServerSideDatasource(newDatasource);
-
+      refreshData(userSearchVal);
       startPolling(POLLING_INTERVAL);
     }, 10000);
 
