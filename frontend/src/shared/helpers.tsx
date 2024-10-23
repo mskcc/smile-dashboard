@@ -204,16 +204,6 @@ export const SampleMetadataDetailsColumns: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
-    cellRenderer: (params: ICellRendererParams) => {
-      if (params.value === undefined) {
-        return (
-          <>
-            <LoadingIcon /> Loading...
-          </>
-        );
-      }
-      return params.value;
-    },
   },
   {
     field: "revisable",
