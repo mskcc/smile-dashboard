@@ -15,6 +15,7 @@ import { buildTsvString } from "../utils/stringBuilders";
 import {
   SampleChange,
   defaultColDef,
+  formatDate,
   isValidCostCenter,
 } from "../shared/helpers";
 import { AgGridReact } from "ag-grid-react";
@@ -260,7 +261,7 @@ export default function SamplesList({
         return {
           ...s,
           revisable: false,
-          importDate: new Date().toISOString().split("T")[0],
+          importDate: formatDate(new Date()) as string,
           ...changesByPrimaryId[s.primaryId],
         };
       }

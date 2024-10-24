@@ -833,7 +833,7 @@ export function handleSearch(
   setParsedSearchVals(parsedSearchVals);
 }
 
-function formatDate(date: moment.MomentInput) {
+export function formatDate(date: moment.MomentInput) {
   return date ? moment(date).format("YYYY-MM-DD") : null;
 }
 
