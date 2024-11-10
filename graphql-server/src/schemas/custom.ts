@@ -8,6 +8,8 @@ import {
   DashboardSampleInput,
   QueryDashboardPatientCountArgs,
   QueryDashboardPatientsArgs,
+  QueryDashboardRequestCountArgs,
+  QueryDashboardRequestsArgs,
   QueryDashboardSampleCountArgs,
   QueryDashboardSamplesArgs,
 } from "../generated/graphql";
@@ -72,6 +74,27 @@ export async function buildCustomSchema(ogm: OGM) {
           partialCypherQuery,
         });
       },
+
+      async dashboardRequests(
+        _source: undefined,
+        { searchVals, filter, sort, limit, offset }: QueryDashboardRequestsArgs
+      ) {
+        const queryBody = buildRequestQueryBody({ searchVals, filter });
+        return await queryDashboardRequests({
+          queryBody,
+          sort,
+          limit,
+          offset,
+        });
+      },
+      async dashboardRequestCount(
+        _source: undefined,
+        { searchVals, filter }: QueryDashboardRequestCountArgs
+      ) {
+        const queryBody = buildRequestQueryBody({ searchVals, filter });
+        return await queryDashboardRequestCount({ queryBody });
+      },
+
       async dashboardPatients(
         _source: undefined,
         { searchVals, filter, sort, limit, offset }: QueryDashboardPatientsArgs
@@ -92,6 +115,7 @@ export async function buildCustomSchema(ogm: OGM) {
         return await queryDashboardPatientCount({ queryBody });
       },
     },
+
     Mutation: {
       async updateDashboardSamples(
         _source: undefined,
@@ -178,9 +202,10 @@ export async function buildCustomSchema(ogm: OGM) {
     }
 
     type DashboardRequest {
-      igoRequestId: String
+      igoRequestId: String!
       igoProjectId: String
       importDate: String
+      totalSampleCount: Int
       projectManagerName: String
       investigatorName: String
       investigatorEmail: String
@@ -250,14 +275,14 @@ export async function buildCustomSchema(ogm: OGM) {
         filter: DashboardRecordFilter
       ): DashboardRecordCount!
 
-      DashboardRequests(
+      dashboardRequests(
         searchVals: [String!]
         filter: DashboardRecordFilter
         sort: DashboardRecordSort!
         limit: Int!
         offset: Int!
       ): [DashboardRequest!]!
-      DashboardRequestCount(
+      dashboardRequestCount(
         searchVals: [String!]
         filter: DashboardRecordFilter
       ): DashboardRecordCount!
@@ -831,6 +856,146 @@ async function publishNatsMessage(topic: string, message: string) {
       `error connecting to ${JSON.stringify(natsConnProperties)}`,
       err
     );
+  }
+}
+
+function buildRequestQueryBody({
+  searchVals,
+  filter,
+}: {
+  searchVals: QueryDashboardRequestsArgs["searchVals"];
+  filter: QueryDashboardRequestsArgs["filter"];
+}) {
+  const fieldsToSearch = [
+    "igoRequestId",
+    "igoProjectId",
+    "importDate",
+    "projectManagerName",
+    "investigatorName",
+    "investigatorEmail",
+    "piEmail",
+    "dataAnalystName",
+    "dataAnalystEmail",
+    "genePanel",
+    "labHeadName",
+    "labHeadEmail",
+    "qcAccessEmails",
+    "dataAccessEmails",
+    "bicAnalysis",
+    "isCmoRequest",
+    "otherContactEmails",
+  ];
+
+  const searchFilters = searchVals?.length
+    ? "WHERE " +
+      fieldsToSearch
+        .map((field) => `${field} =~ '(?i).*(${searchVals.join("|")}).*'`)
+        .join(" OR ")
+    : "";
+
+  const requestQueryBody = `
+    MATCH (r:Request)
+
+    // Get the latest SampleMetadata of each Sample
+    OPTIONAL MATCH (r)-[:HAS_SAMPLE]->(s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+    WITH
+      r,
+      collect(s) as samples,
+      collect(sm) AS allSampleMetadata,
+      max(sm.importDate) AS latestImportDate
+    WITH
+      r,
+      size(samples) as totalSampleCount,
+      [sm IN allSampleMetadata WHERE sm.importDate = latestImportDate][0] AS latestSm
+
+    WITH
+      r.igoRequestId as igoRequestId,
+      r.igoProjectId as igoProjectId,
+      latestSm.importDate as importDate,
+      totalSampleCount,
+      r.projectManagerName as projectManagerName,
+      r.investigatorName as investigatorName,
+      r.investigatorEmail as investigatorEmail,
+      r.piEmail as piEmail,
+      r.dataAnalystName as dataAnalystName,
+      r.dataAnalystEmail as dataAnalystEmail,
+      r.genePanel as genePanel,
+      r.labHeadName as labHeadName,
+      r.labHeadEmail as labHeadEmail,
+      r.qcAccessEmails as qcAccessEmails,
+      r.dataAccessEmails as dataAccessEmails,
+      r.bicAnalysis as bicAnalysis,
+      r.isCmoRequest as isCmoRequest,
+      r.otherContactEmails as otherContactEmails
+
+    ${searchFilters}
+  `;
+
+  return requestQueryBody;
+}
+
+async function queryDashboardRequests({
+  queryBody,
+  sort,
+  limit,
+  offset,
+}: {
+  queryBody: string;
+  sort: QueryDashboardRequestsArgs["sort"];
+  limit: QueryDashboardRequestsArgs["limit"];
+  offset: QueryDashboardRequestsArgs["offset"];
+}) {
+  const cypherQuery = `
+    ${queryBody}
+    RETURN
+      igoRequestId,
+      igoProjectId,
+      importDate,
+      totalSampleCount,
+      projectManagerName,
+      investigatorName,
+      investigatorEmail,
+      piEmail,
+      dataAnalystName,
+      dataAnalystEmail,
+      genePanel,
+      labHeadName,
+      labHeadEmail,
+      qcAccessEmails,
+      dataAccessEmails,
+      bicAnalysis,
+      isCmoRequest,
+      otherContactEmails
+    ORDER BY ${getNeo4jCustomSort(sort)}
+    SKIP ${offset}
+    LIMIT ${limit}
+  `;
+
+  const session = neo4jDriver.session();
+  try {
+    const result = await session.run(cypherQuery);
+    return result.records.map((record) => record.toObject());
+  } catch (error) {
+    console.error("Error with queryDashboardRequests:", error);
+  }
+}
+
+async function queryDashboardRequestCount({
+  queryBody,
+}: {
+  queryBody: string;
+}) {
+  const cypherQuery = `
+    ${queryBody}
+    RETURN count(igoRequestId) AS totalCount
+  `;
+
+  const session = neo4jDriver.session();
+  try {
+    const result = await session.run(cypherQuery);
+    return result.records[0].toObject();
+  } catch (error) {
+    console.error("Error with queryDashboardRequestCount:", error);
   }
 }
 
