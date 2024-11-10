@@ -177,6 +177,26 @@ export async function buildCustomSchema(ogm: OGM) {
       values: [String!]!
     }
 
+    type DashboardRequest {
+      igoRequestId: String
+      igoProjectId: String
+      importDate: String
+      projectManagerName: String
+      investigatorName: String
+      investigatorEmail: String
+      piEmail: String
+      dataAnalystName: String
+      dataAnalystEmail: String
+      genePanel: String
+      labHeadName: String
+      labHeadEmail: String
+      qcAccessEmails: String
+      dataAccessEmails: String
+      bicAnalysis: Boolean
+      isCmoRequest: Boolean
+      otherContactEmails: String
+    }
+
     type DashboardPatient {
       smilePatientId: String!
       cmoPatientId: String
@@ -229,9 +249,21 @@ export async function buildCustomSchema(ogm: OGM) {
         searchVals: [String!]
         filter: DashboardRecordFilter
       ): DashboardRecordCount!
+
+      DashboardRequests(
+        searchVals: [String!]
+        filter: DashboardRecordFilter
+        sort: DashboardRecordSort!
+        limit: Int!
+        offset: Int!
+      ): [DashboardRequest!]!
+      DashboardRequestCount(
+        searchVals: [String!]
+        filter: DashboardRecordFilter
+      ): DashboardRecordCount!
     }
 
-    # We have to define a separate "input" type and can't reuse DashboardSample.
+    # We have to define a separate "input" type for the mutation and can't reuse DashboardSample.
     # For more context, see: https://stackoverflow.com/q/41743253
     input DashboardSampleInput {
       changedFieldNames: [String!]!

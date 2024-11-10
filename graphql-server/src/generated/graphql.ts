@@ -1775,6 +1775,27 @@ export type DashboardRecordSort = {
   sort: AgGridSortDirection;
 };
 
+export type DashboardRequest = {
+  __typename?: "DashboardRequest";
+  bicAnalysis?: Maybe<Scalars["Boolean"]>;
+  dataAccessEmails?: Maybe<Scalars["String"]>;
+  dataAnalystEmail?: Maybe<Scalars["String"]>;
+  dataAnalystName?: Maybe<Scalars["String"]>;
+  genePanel?: Maybe<Scalars["String"]>;
+  igoProjectId?: Maybe<Scalars["String"]>;
+  igoRequestId?: Maybe<Scalars["String"]>;
+  importDate?: Maybe<Scalars["String"]>;
+  investigatorEmail?: Maybe<Scalars["String"]>;
+  investigatorName?: Maybe<Scalars["String"]>;
+  isCmoRequest?: Maybe<Scalars["Boolean"]>;
+  labHeadEmail?: Maybe<Scalars["String"]>;
+  labHeadName?: Maybe<Scalars["String"]>;
+  otherContactEmails?: Maybe<Scalars["String"]>;
+  piEmail?: Maybe<Scalars["String"]>;
+  projectManagerName?: Maybe<Scalars["String"]>;
+  qcAccessEmails?: Maybe<Scalars["String"]>;
+};
+
 export type DashboardSample = {
   __typename?: "DashboardSample";
   accessLevel?: Maybe<Scalars["String"]>;
@@ -4538,6 +4559,8 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
+  DashboardRequestCount: DashboardRecordCount;
+  DashboardRequests: Array<DashboardRequest>;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -4588,6 +4611,19 @@ export type Query = {
   tempos: Array<Tempo>;
   temposAggregate: TempoAggregateSelection;
   temposConnection: TemposConnection;
+};
+
+export type QueryDashboardRequestCountArgs = {
+  filter?: InputMaybe<DashboardRecordFilter>;
+  searchVals?: InputMaybe<Array<Scalars["String"]>>;
+};
+
+export type QueryDashboardRequestsArgs = {
+  filter?: InputMaybe<DashboardRecordFilter>;
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
+  searchVals?: InputMaybe<Array<Scalars["String"]>>;
+  sort: DashboardRecordSort;
 };
 
 export type QueryBamCompletesArgs = {
@@ -6759,7 +6795,7 @@ export type Sample = {
   requestsHasSample: Array<Request>;
   requestsHasSampleAggregate?: Maybe<SampleRequestRequestsHasSampleAggregationSelection>;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
-  revisable: Scalars["Boolean"];
+  revisable?: Maybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias: Array<SampleAlias>;
   sampleAliasesIsAliasAggregate?: Maybe<SampleSampleAliasSampleAliasesIsAliasAggregationSelection>;
   sampleAliasesIsAliasConnection: SampleSampleAliasesIsAliasConnection;
@@ -7533,7 +7569,7 @@ export type SampleCreateInput = {
   hasTempoTempos?: InputMaybe<SampleHasTempoTemposFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
-  revisable: Scalars["Boolean"];
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
   sampleCategory: Scalars["String"];
   sampleClass: Scalars["String"];
