@@ -38,7 +38,7 @@ export async function buildCustomSchema(ogm: OGM) {
           oncotreeCache,
         });
 
-        const partialCypherQuery = buildPartialCypherQuery({
+        const queryBody = buildSamplesQueryBody({
           searchVals,
           context,
           filter,
@@ -46,7 +46,7 @@ export async function buildCustomSchema(ogm: OGM) {
         });
 
         return await queryDashboardSamples({
-          partialCypherQuery,
+          queryBody,
           sort,
           limit,
           offset,
@@ -63,7 +63,7 @@ export async function buildCustomSchema(ogm: OGM) {
           oncotreeCache,
         });
 
-        const partialCypherQuery = buildPartialCypherQuery({
+        const queryBody = buildSamplesQueryBody({
           searchVals,
           context,
           filter,
@@ -71,7 +71,7 @@ export async function buildCustomSchema(ogm: OGM) {
         });
 
         return await queryDashboardSampleCount({
-          partialCypherQuery,
+          queryBody,
         });
       },
 
@@ -79,7 +79,7 @@ export async function buildCustomSchema(ogm: OGM) {
         _source: undefined,
         { searchVals, filter, sort, limit, offset }: QueryDashboardRequestsArgs
       ) {
-        const queryBody = buildRequestQueryBody({ searchVals, filter });
+        const queryBody = buildRequestsQueryBody({ searchVals, filter });
         return await queryDashboardRequests({
           queryBody,
           sort,
@@ -91,7 +91,7 @@ export async function buildCustomSchema(ogm: OGM) {
         _source: undefined,
         { searchVals, filter }: QueryDashboardRequestCountArgs
       ) {
-        const queryBody = buildRequestQueryBody({ searchVals, filter });
+        const queryBody = buildRequestsQueryBody({ searchVals, filter });
         return await queryDashboardRequestCount({ queryBody });
       },
 
@@ -364,20 +364,20 @@ export async function buildCustomSchema(ogm: OGM) {
 }
 
 async function queryDashboardSamples({
-  partialCypherQuery,
+  queryBody,
   sort,
   limit,
   offset,
   oncotreeCache,
 }: {
-  partialCypherQuery: string;
+  queryBody: string;
   sort: QueryDashboardSamplesArgs["sort"];
   limit: QueryDashboardSamplesArgs["limit"];
   offset: QueryDashboardSamplesArgs["offset"];
   oncotreeCache: NodeCache;
 }) {
   const cypherQuery = `
-    ${partialCypherQuery}
+    ${queryBody}
     RETURN
       s.smileSampleId AS smileSampleId,
       s.revisable AS revisable,
@@ -449,13 +449,9 @@ async function queryDashboardSamples({
   }
 }
 
-async function queryDashboardSampleCount({
-  partialCypherQuery,
-}: {
-  partialCypherQuery: string;
-}) {
+async function queryDashboardSampleCount({ queryBody }: { queryBody: string }) {
   const cypherQuery = `
-    ${partialCypherQuery}
+    ${queryBody}
     RETURN
       count(s) AS totalCount
   `;
@@ -528,7 +524,7 @@ const searchFiltersConfig = [
   { variable: "latestQC", fields: ["date", "result", "reason", "status"] },
 ];
 
-function buildPartialCypherQuery({
+function buildSamplesQueryBody({
   searchVals,
   context,
   filter,
@@ -609,7 +605,7 @@ function buildPartialCypherQuery({
     }
   }
 
-  const partialCypherQuery = `
+  const samplesQueryBody = `
     // Get Sample and the most recent SampleMetadata
     MATCH (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
     WITH s, collect(sm) AS allSampleMetadata, max(sm.importDate) AS latestImportDate
@@ -672,7 +668,7 @@ function buildPartialCypherQuery({
     }
   `;
 
-  return partialCypherQuery;
+  return samplesQueryBody;
 }
 
 function getAddlOtCodesMatchingCtOrCtdVals({
@@ -859,7 +855,7 @@ async function publishNatsMessage(topic: string, message: string) {
   }
 }
 
-function buildRequestQueryBody({
+function buildRequestsQueryBody({
   searchVals,
   filter,
 }: {
