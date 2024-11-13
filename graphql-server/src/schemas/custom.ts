@@ -1039,6 +1039,7 @@ function buildPatientsQueryBody({
       cmoPa,
       dmpPa,
       s,
+      latestImportDate,
       [sm IN allSampleMetadata WHERE sm.importDate = latestImportDate][0] AS latestSm
 
     // Get the CMO Sample IDs and additionalProperties JSONs from SampleMetadata
@@ -1047,6 +1048,7 @@ function buildPatientsQueryBody({
       cmoPa,
       dmpPa,
       s,
+      latestImportDate,
       CASE
         WHEN latestSm.cmoSampleName IS NOT NULL THEN latestSm.cmoSampleName
             ELSE latestSm.primaryId
@@ -1058,6 +1060,7 @@ function buildPatientsQueryBody({
       p,
       cmoPa,
       dmpPa,
+      latestImportDate,
       collect(s) as samples,
       collect(cmoSampleId) AS cmoSampleIds,
       collect(latestSmAddlPropsJson.\`consent-parta\`) as consentPartAs,
@@ -1067,6 +1070,7 @@ function buildPatientsQueryBody({
       p.smilePatientId AS smilePatientId,
       cmoPa.value AS cmoPatientId,
       dmpPa.value AS dmpPatientId,
+      latestImportDate,
       size(samples) as totalSampleCount,
       apoc.text.join([id IN cmoSampleIds WHERE id <> ''], ', ') AS cmoSampleIds,
       consentPartAs[0] as consentPartA,

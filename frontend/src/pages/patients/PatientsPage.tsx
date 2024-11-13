@@ -198,7 +198,7 @@ export default function PatientsPage({
   const sampleQueryParamFieldName = "patientId";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
   const defaultSort = {
-    colId: "dmpPatientId",
+    colId: "latestImportDate",
     sort: AgGridSortDirection.Desc,
   };
 
