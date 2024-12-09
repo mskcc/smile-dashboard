@@ -14,6 +14,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import { StatusTooltip } from "./components/StatusToolTip";
 import moment from "moment";
 import _ from "lodash";
+import { DashboardSample } from "../generated/graphql";
 
 export type SampleChange = {
   primaryId: string;
@@ -301,6 +302,10 @@ export const SampleMetadataDetailsColumns: ColDef[] = [
   {
     field: "cmoSampleName",
     headerName: "CMO Sample Name",
+  },
+  {
+    field: "historicalCmoSampleNames",
+    headerName: "Historical CMO Sample Names",
   },
   {
     field: "importDate",
@@ -764,6 +769,7 @@ export const WesSampleDetailsColumns: ColDef[] = [
   },
 ];
 
+// TODO: confirm that this read-only version isn't needed, then delete it
 export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(
   WesSampleDetailsColumns
 );
