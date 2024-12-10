@@ -303,6 +303,10 @@ export const SampleMetadataDetailsColumns: ColDef[] = [
     headerName: "CMO Sample Name",
   },
   {
+    field: "historicalCmoSampleNames",
+    headerName: "Historical CMO Sample Names",
+  },
+  {
     field: "importDate",
     headerName: "Last Updated",
     ...getAgGridDateFilterConfigs(),
