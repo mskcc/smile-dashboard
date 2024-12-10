@@ -1038,40 +1038,6 @@ function buildFinalCypherFilter({ queryFilters }: { queryFilters: string[] }) {
   return combinedPredicates ? "WHERE " + combinedPredicates : "";
 }
 
-const samplesSearchFiltersConfig = [
-  {
-    variable: "latestSm",
-    fields: [
-      "primaryId",
-      "cmoSampleName",
-      "historicalCmoSampleNames",
-      "importDate",
-      "cmoPatientId",
-      "investigatorSampleId",
-      "sampleType",
-      "species",
-      "genePanel",
-      "baitSet",
-      "preservation",
-      "tumorOrNormal",
-      "sampleClass",
-      "oncotreeCode",
-      "collectionYear",
-      "sampleOrigin",
-      "tissueLocation",
-      "sex",
-      "cmoSampleIdFields", // for searching recipe
-    ],
-  },
-  {
-    variable: "t",
-    fields: ["costCenter", "billedBy", "custodianInformation", "accessLevel"],
-  },
-  { variable: "latestBC", fields: ["date", "status"] },
-  { variable: "latestMC", fields: ["date", "normalPrimaryId", "status"] },
-  { variable: "latestQC", fields: ["date", "result", "reason", "status"] },
-];
-
 function buildSamplesQueryBody({
   searchVals,
   context,
@@ -1088,37 +1054,56 @@ function buildSamplesQueryBody({
   // This contrasts with our approach in other query builders, where we combine all predicates into a single
   // WHERE clause and injecting that at the end (right before the RETURN statement).
 
-  // Build search filters given user's search values input. For example:
-  // latestSm.primaryId =~ '(?i).*(someInput).*' OR latestSm.cmoSampleName =~ '(?i).*(someInput).* OR ...
-  let searchFilters = searchVals?.length
-    ? samplesSearchFiltersConfig
-        .map((c) =>
-          buildSamplesSearchFilters({
-            variable: c.variable,
-            fields: c.fields,
-            searchVals,
-          })
-        )
-        .join(" OR ")
-    : "";
-  // Add add'l Oncotree codes to search if user inputted "cancerTypeDetailed" or "cancerType" values
-  if (addlOncotreeCodes.length) {
-    searchFilters += ` OR ${buildSamplesSearchFilters({
-      variable: "latestSm",
-      fields: ["oncotreeCode"],
-      searchVals: addlOncotreeCodes,
-      useFuzzyMatch: false,
-    })}`;
+  let searchFilters = "";
+  if (searchVals?.length) {
+    const fieldsToSearch = [
+      "latestSm.primaryId",
+      "latestSm.cmoSampleName",
+      "latestSm.importDate",
+      "latestSm.cmoPatientId",
+      "latestSm.investigatorSampleId",
+      "latestSm.sampleType",
+      "latestSm.species",
+      "latestSm.genePanel",
+      "latestSm.baitSet",
+      "latestSm.preservation",
+      "latestSm.tumorOrNormal",
+      "latestSm.sampleClass",
+      "latestSm.oncotreeCode",
+      "latestSm.collectionYear",
+      "latestSm.sampleOrigin",
+      "latestSm.tissueLocation",
+      "latestSm.sex",
+      "latestSm.cmoSampleIdFields", // for searching recipe
+      "t.costCenter",
+      "t.billedBy",
+      "t.custodianInformation",
+      "t.accessLevel",
+      "latestBC.date",
+      "latestBC.status",
+      "latestMC.date",
+      "latestMC.normalPrimaryId",
+      "latestMC.status",
+      "latestQC.date",
+      "latestQC.result",
+      "latestQC.reason",
+      "latestQC.status",
+      "historicalCmoSampleNames",
+    ];
+    searchFilters += fieldsToSearch
+      .map((field) => `${field} =~ '(?i).*(${searchVals.join("|")}).*'`)
+      .join(" OR ");
+    if (addlOncotreeCodes.length) {
+      searchFilters += ` OR latestSm.oncotreeCode =~ '^(${addlOncotreeCodes.join(
+        "|"
+      )})'`;
+    }
   }
 
   // Filter for WES samples on click on the Samples page
   const wesContext =
     context?.fieldName === "genePanel"
-      ? buildSamplesSearchFilters({
-          variable: "latestSm",
-          fields: ["genePanel"],
-          searchVals: context.values,
-        })
+      ? `latestSm.genePanel =~ '(?i).*(${context.values.join("|")}).*'`
       : "";
 
   // Filter for the current request in the Request Samples view
@@ -1441,32 +1426,6 @@ function getAddlOtCodesMatchingCtOrCtdVals({
     });
   }
   return Array.from(addlOncotreeCodes);
-}
-
-function buildSamplesSearchFilters({
-  variable,
-  fields,
-  searchVals,
-  useFuzzyMatch = true,
-}: {
-  variable: string;
-  fields: string[];
-  searchVals: string[];
-  useFuzzyMatch?: boolean;
-}): string {
-  if (useFuzzyMatch) {
-    return fields
-      .map(
-        (field) => `${variable}.${field} =~ '(?i).*(${searchVals.join("|")}).*'`
-      )
-      .join(" OR ");
-  } else {
-    return fields
-      .flatMap((field) =>
-        searchVals.map((val) => `${variable}.${field} = '${val}'`)
-      )
-      .join(" OR ");
-  }
 }
 
 /**
