@@ -768,7 +768,6 @@ export const WesSampleDetailsColumns: ColDef[] = [
   },
 ];
 
-// TODO: confirm that this read-only version isn't needed, then delete it
 export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(
   WesSampleDetailsColumns
 );
