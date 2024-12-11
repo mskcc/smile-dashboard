@@ -1233,9 +1233,12 @@ function buildSamplesQueryBody({
       latestSm,
       apoc.text.join(
         apoc.coll.toSet(
-          [sm IN allSampleMetadata WHERE sm.cmoSampleName <> latestSm.cmoSampleName | sm.cmoSampleName]
-        )
-      , ", ") AS historicalCmoSampleNames
+          [sm IN apoc.coll.sortMaps(allSampleMetadata, "importDate")
+            WHERE sm.cmoSampleName <> latestSm.cmoSampleName AND sm.cmoSampleName <> ""
+            | sm.cmoSampleName + " (" + sm.importDate + ")"
+          ]
+        ),
+      ", ") AS historicalCmoSampleNames
 
     // Filters for either the WES Samples or Request Samples view, if applicable
     ${wesContext && `WHERE ${wesContext}`}
