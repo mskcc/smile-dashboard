@@ -495,12 +495,12 @@ function buildRequestsQueryBody({
     OPTIONAL MATCH (r)-[:HAS_SAMPLE]->(s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
     WITH
       r,
-      collect(s) AS samples,
+      count(DISTINCT s.smileSampleId) AS totalSampleCount,
       collect(sm) AS allSampleMetadata,
       max(sm.importDate) AS latestImportDate
     WITH
       r,
-      size(samples) AS totalSampleCount,
+      totalSampleCount,
       [sm IN allSampleMetadata WHERE sm.importDate = latestImportDate][0] AS latestSm
 
     WITH
