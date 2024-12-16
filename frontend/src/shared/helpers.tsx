@@ -305,6 +305,8 @@ export const SampleMetadataDetailsColumns: ColDef[] = [
   {
     field: "historicalCmoSampleNames",
     headerName: "Historical CMO Sample Names",
+    wrapText: true,
+    autoHeight: true,
   },
   {
     field: "importDate",
