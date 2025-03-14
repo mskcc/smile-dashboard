@@ -96,7 +96,7 @@ export default function SamplesList({
     });
 
   const samples = data?.dashboardSamples;
-  const sampleCount = data?.dashboardSamples[0]._total || 0;
+  const sampleCount = data?.dashboardSamples[0]?._total || 0;
 
   const getServerSideDatasource = useCallback(
     ({ userSearchVal, sampleContext }) => {
