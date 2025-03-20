@@ -262,8 +262,6 @@ async function updateSampleMetadata(
 
     Object.keys(newDashboardSample).forEach((key) => {
       if (key in sampleManifest) {
-        console.log(key);
-
         sampleManifest[key] =
           newDashboardSample[key as keyof DashboardSampleInput];
       }

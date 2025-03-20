@@ -22,7 +22,7 @@ async function main() {
     httpsServer.listen({ port: 4000 }, resolve)
   );
 
-  console.log(
+  console.info(
     `🚀 Server ready at ${REACT_APP_EXPRESS_SERVER_ORIGIN}${apolloServer.graphqlPath}`
   );
 }
