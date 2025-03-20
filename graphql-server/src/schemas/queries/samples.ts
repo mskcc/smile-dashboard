@@ -344,20 +344,19 @@ export function buildSamplesQueryBody({
 
   return samplesQueryBody;
 }
-export async function queryDashboardSamples({
+
+export async function buildSamplesQueryFull({
   queryBody,
   sort,
   limit,
   offset,
-  oncotreeCache,
 }: {
   queryBody: string;
   sort: QueryDashboardSamplesArgs["sort"];
   limit: QueryDashboardSamplesArgs["limit"];
   offset: QueryDashboardSamplesArgs["offset"];
-  oncotreeCache: OncotreeCache;
 }) {
-  const cypherQuery = `
+  return `
     ${queryBody}
     WITH COUNT(DISTINCT tempNode) AS total, COLLECT(DISTINCT tempNode) AS results
     UNWIND results AS resultz
@@ -370,16 +369,24 @@ export async function queryDashboardSamples({
     SKIP ${offset}
     LIMIT ${limit}
   `;
+}
 
+export async function queryDashboardSamples({
+  samplesCypherQuery,
+  oncotreeCache,
+}: {
+  samplesCypherQuery: string;
+  oncotreeCache: OncotreeCache | undefined;
+}) {
   const session = neo4jDriver.session();
   try {
-    const result = await session.run(cypherQuery);
+    const result = await session.run(samplesCypherQuery);
     return result.records.map((record) => {
       const recordObject = record.toObject().resultz;
       return {
         ...recordObject,
-        cancerType: oncotreeCache[recordObject.oncotreeCode]?.mainType,
-        cancerTypeDetailed: oncotreeCache[recordObject.oncotreeCode]?.name,
+        cancerType: oncotreeCache?.[recordObject.oncotreeCode]?.mainType,
+        cancerTypeDetailed: oncotreeCache?.[recordObject.oncotreeCode]?.name,
       };
     });
   } catch (error) {

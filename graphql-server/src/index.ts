@@ -5,7 +5,7 @@ import { configureApp } from "./middlewares/configureApp";
 import { configureSession } from "./middlewares/configureSession";
 import { configureLogging } from "./middlewares/configureLogging";
 import { configureRoutes } from "./routes";
-require("log-timestamp"); // adds a timestamp to every console log
+require("log-timestamp"); // adds a timestamp to every log statement
 
 async function main() {
   const app: Express = express();

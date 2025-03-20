@@ -20,6 +20,12 @@ import {
   ONCOTREE_CACHE_KEY,
 } from "./oncotree";
 import neo4j from "neo4j-driver";
+import {
+  buildSamplesQueryBody,
+  buildSamplesQueryFull,
+  queryDashboardSamples,
+} from "../schemas/queries/samples";
+import { DashboardRecordSort, DashboardSample } from "../generated/graphql";
 
 export function initializeHttpsServer(app: Express) {
   return https.createServer(
@@ -36,7 +42,7 @@ export interface ApolloServerContext {
     user: any;
     isAuthenticated: boolean;
   };
-  oncotreeCache: OncotreeCache;
+  inMemoryCache: NodeCache;
 }
 
 export const neo4jDriver = neo4j.driver(
@@ -68,7 +74,7 @@ export async function initializeApolloServer(
           user: req.user,
           isAuthenticated: req.isAuthenticated,
         },
-        oncotreeCache: inMemoryCache.get(ONCOTREE_CACHE_KEY),
+        inMemoryCache: inMemoryCache,
       };
     },
     plugins: [
@@ -84,9 +90,12 @@ export async function initializeApolloServer(
   return apolloServer;
 }
 
+export const SAMPLES_CACHE_KEY = "samples";
+
 async function setUpTheInMemoryCache() {
   const inMemoryCache = new NodeCache();
   await updateOncotreeCache(inMemoryCache);
+  await updateSamplesCache(inMemoryCache);
   // Functions to run when items in cache expire
   // (node-cache checks for expired items and runs this event listener every 10m by default)
   inMemoryCache.on("expired", (key) => {
@@ -94,6 +103,43 @@ async function setUpTheInMemoryCache() {
       console.info("Refreshing the Oncotree cache...");
       updateOncotreeCache(inMemoryCache);
     }
+    if (key === SAMPLES_CACHE_KEY) {
+      console.info("Refreshing the samples cache...");
+      updateSamplesCache(inMemoryCache);
+    }
   });
   return inMemoryCache;
+}
+
+// TODO: find an appropriate place to put the code below
+export type SamplesCache = Record<string, DashboardSample[]>;
+
+async function updateSamplesCache(inMemoryCache: NodeCache) {
+  const samplesCache = {} as SamplesCache;
+  const queryBody = buildSamplesQueryBody({
+    searchVals: [],
+    context: undefined,
+    filters: undefined,
+    addlOncotreeCodes: [],
+  });
+  const numOfPagesToCache = 5;
+  const agGridCacheBlockSize = 100; // keep this consistent with helpers.tsx's CACHE_BLOCK_SIZE
+  for (let i = 0; i < numOfPagesToCache; i++) {
+    const offset = i * agGridCacheBlockSize; // [0, 100, 200, 300, 400]
+    const samplesCypherQuery = await buildSamplesQueryFull({
+      queryBody,
+      // Keep this consistent with SamplesList.tsx's DEFAULT_SORT
+      sort: { colId: "importDate", sort: "desc" } as DashboardRecordSort,
+      limit: agGridCacheBlockSize,
+      offset: offset,
+    });
+    const queryResult = await queryDashboardSamples({
+      samplesCypherQuery,
+      oncotreeCache: inMemoryCache.get(ONCOTREE_CACHE_KEY),
+    });
+    if (queryResult) {
+      samplesCache[samplesCypherQuery] = queryResult;
+    }
+  }
+  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, 360); // expires every 1 hour
 }

@@ -1,5 +1,9 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { ApolloServerContext } from "../utils/servers";
+import {
+  ApolloServerContext,
+  SAMPLES_CACHE_KEY,
+  SamplesCache,
+} from "../utils/servers";
 import { gql } from "apollo-server";
 import {
   AgGridSortDirection,
@@ -23,9 +27,10 @@ import {
 } from "./queries/cohorts";
 import {
   buildSamplesQueryBody,
+  buildSamplesQueryFull,
   queryDashboardSamples,
 } from "./queries/samples";
-import { OncotreeCache } from "../utils/oncotree";
+import { ONCOTREE_CACHE_KEY, OncotreeCache } from "../utils/oncotree";
 import {
   buildRequestsQueryBody,
   queryDashboardRequests,
@@ -84,8 +89,15 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
         }: QueryDashboardSamplesArgs,
-        { oncotreeCache }: ApolloServerContext
+        { inMemoryCache }: ApolloServerContext
       ) {
+        const oncotreeCache = inMemoryCache.get(
+          ONCOTREE_CACHE_KEY
+        ) as OncotreeCache;
+        const samplesCache = inMemoryCache.get(
+          SAMPLES_CACHE_KEY
+        ) as SamplesCache;
+
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
           searchVals,
           oncotreeCache,
@@ -98,11 +110,19 @@ export async function buildCustomSchema(ogm: OGM) {
           addlOncotreeCodes,
         });
 
-        return await queryDashboardSamples({
+        const samplesCypherQuery = await buildSamplesQueryFull({
           queryBody,
           sort,
           limit,
           offset,
+        });
+
+        if (samplesCypherQuery in samplesCache) {
+          return samplesCache[samplesCypherQuery];
+        }
+
+        return await queryDashboardSamples({
+          samplesCypherQuery,
           oncotreeCache,
         });
       },
@@ -411,6 +431,7 @@ async function publishNatsMessage(topic: string, message: string) {
   }
 }
 
+// TODO: move this to samples.ts
 export function getAddlOtCodesMatchingCtOrCtdVals({
   searchVals,
   oncotreeCache,
