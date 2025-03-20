@@ -1,14 +1,14 @@
 import fetch from "node-fetch";
 import NodeCache from "node-cache";
 import { props } from "./constants";
-import { InputMaybe, SampleWhere } from "../generated/graphql";
-import { GraphQLWhereArg } from "@neo4j/graphql/dist/types";
 import { neo4jDriver } from "./servers";
+
+export const ONCOTREE_CACHE_KEY = "oncotree";
 
 /**
  * Source: https://oncotree.mskcc.org/#/home?tab=api
  */
-export type OncotreeTumorType = {
+export type OncotreeApiTumorType = {
   children: Record<string, unknown>;
   code: string;
   color: string;
@@ -23,18 +23,9 @@ export type OncotreeTumorType = {
   tissue: string;
 };
 
-export type CachedOncotreeData =
-  | Pick<OncotreeTumorType, "name" | "mainType">
-  | undefined;
+export type OncotreeCache = Record<string, { name: string; mainType: string }>;
 
-export async function fetchAndCacheOncotreeData(oncotreeCache: NodeCache) {
-  const data = await fetchOncotreeData();
-  if (data) {
-    await updateOncotreeCache(data, oncotreeCache);
-  }
-}
-
-async function fetchOncotreeData() {
+async function fetchOncotreeApiData() {
   try {
     const response = await fetch(props.oncotree_api, {
       headers: {
@@ -46,7 +37,7 @@ async function fetchOncotreeData() {
         `Failed to fetch the Oncotree API: ${response.statusText}`
       );
     }
-    return await response.json();
+    return (await response.json()) as Promise<OncotreeApiTumorType[]>;
   } catch (error) {
     if (error instanceof Error) {
       console.error(`Error: ${error.message}`);
@@ -57,40 +48,22 @@ async function fetchOncotreeData() {
   }
 }
 
-async function updateOncotreeCache(
-  oncotreeData: OncotreeTumorType[],
-  oncotreeCache: NodeCache
-) {
-  // Restructure data for node-cache to store multiple k-v pairs in one go with mset()
-  const parsedData = oncotreeData.map((obj) => {
-    return {
-      key: obj.code,
-      val: {
-        name: obj.name,
-        mainType: obj.mainType,
-      } as CachedOncotreeData,
-    };
-  });
-
-  // Cache codes found in Neo4j but not from Oncotree API (likely due to codes to being renamed).
-  // Otherwise, we'll continously fetch the Oncotree API for non-existent codes without stopping
-  const existingCodes = await getOncotreeCodesFromNeo4j();
-  const fetchedCodes = new Set(parsedData.map((obj) => obj.key));
-  if (existingCodes) {
-    for (const existingCode of existingCodes) {
-      if (!fetchedCodes.has(existingCode)) {
-        parsedData.push({
-          key: existingCode,
-          val: {
-            name: "N/A",
-            mainType: "N/A",
-          } as CachedOncotreeData,
-        });
-      }
+export async function updateOncotreeCache(inMemoryCache: NodeCache) {
+  const oncotreeApiData = await fetchOncotreeApiData();
+  if (!oncotreeApiData) return;
+  const oncotreeCache = oncotreeApiData.reduce((acc, tumor) => {
+    acc[tumor.code] = { name: tumor.name, mainType: tumor.mainType };
+    return acc;
+  }, {} as OncotreeCache);
+  // Add to cache oncotree codes found in Neo4j but not in Oncotree API's response
+  // (These codes are likely old codes that have been renamed in the Oncotree database)
+  const oncotreeCodesInNeo4j = await getOncotreeCodesFromNeo4j();
+  oncotreeCodesInNeo4j?.forEach((code) => {
+    if (!oncotreeCache.hasOwnProperty(code)) {
+      oncotreeCache[code] = { name: "N/A", mainType: "N/A" };
     }
-  }
-
-  oncotreeCache.mset(parsedData);
+  });
+  inMemoryCache.set(ONCOTREE_CACHE_KEY, oncotreeCache, 84600); // 1 day
 }
 
 async function getOncotreeCodesFromNeo4j() {
@@ -98,12 +71,12 @@ async function getOncotreeCodesFromNeo4j() {
   try {
     const result = await session.writeTransaction((tx) =>
       tx.run(`
-        MATCH (s:SampleMetadata) RETURN DISTINCT s.oncotreeCode AS oncotreeCode
+        MATCH (sm:SampleMetadata) RETURN DISTINCT sm.oncotreeCode AS oncotreeCode
       `)
     );
-    return new Set(
-      result.records.map((record) => record.get("oncotreeCode")).filter(Boolean)
-    );
+    return result.records
+      .map((record) => record.get("oncotreeCode"))
+      .filter(Boolean) as string[];
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.message);
@@ -111,55 +84,4 @@ async function getOncotreeCodesFromNeo4j() {
   } finally {
     await session.close();
   }
-}
-
-export function includeCancerTypeFieldsInSearch(
-  where: InputMaybe<SampleWhere>,
-  oncotreeCache: NodeCache
-) {
-  const customWhere = { ...where };
-
-  // Extract the list of SampleMetadata filters from the search query. For example:
-  // [
-  //    { "cmoSampleName_CONTAINS": "01234_A_1" },
-  //    { "importDate_CONTAINS": "01234_A_1" },
-  //    { "investigatorSampleId_CONTAINS": "01234_A_1" },
-  //    ...
-  // ]
-  const sampleMetadataFilters =
-    // Other views handler
-    customWhere?.OR?.find((filter) => filter.hasMetadataSampleMetadata_SOME)
-      ?.hasMetadataSampleMetadata_SOME?.OR ||
-    // Request Samples view handler
-    customWhere?.hasMetadataSampleMetadata_SOME?.OR;
-
-  if (sampleMetadataFilters?.length) {
-    // Extract the user query: searchValues equal ["someValue"] for a single-value search
-    // and ["val1", "val2", "val3", ...] for a bulk search
-    const searchInput = Object.values(sampleMetadataFilters[0])[0] as
-      | string
-      | string[];
-    const searchValues = Array.isArray(searchInput)
-      ? searchInput
-      : [searchInput];
-
-    // Search through the oncotreeCache for matching cancerType or cancerTypeDetailed values.
-    // If there is a match, add the corresponding Oncotree code to the original search query
-    oncotreeCache.keys().forEach((code) => {
-      const { name, mainType } = (oncotreeCache.get(
-        code
-      ) as CachedOncotreeData)!;
-      if (
-        searchValues.some(
-          (val) =>
-            name?.toLowerCase().includes(val?.toLowerCase()) ||
-            mainType?.toLowerCase().includes(val?.toLowerCase())
-        )
-      ) {
-        sampleMetadataFilters?.push({ oncotreeCode_IN: [code] });
-      }
-    });
-  }
-
-  return customWhere as GraphQLWhereArg;
 }

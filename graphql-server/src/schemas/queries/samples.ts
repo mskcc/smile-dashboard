@@ -1,6 +1,5 @@
-import NodeCache from "node-cache";
 import { QueryDashboardSamplesArgs } from "../../generated/graphql";
-import { CachedOncotreeData } from "../../utils/oncotree";
+import { OncotreeCache } from "../../utils/oncotree";
 import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherDateFilter,
@@ -195,7 +194,7 @@ export function buildSamplesQueryBody({
       	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
       	RETURN sm ORDER BY sm.importDate DESC LIMIT 1
       } as latestSm
-    
+
     WITH
       s,
       latestSm[0] as latestSm,
@@ -288,11 +287,11 @@ export function buildSamplesQueryBody({
 
       ${bamCompleteDateFilter && `WHERE ${bamCompleteDateFilter}`}
       ${mafCompleteDateFilter && `WHERE ${mafCompleteDateFilter}`}
-      ${qcCompleteDateFilter && `WHERE ${qcCompleteDateFilter}`}      
-      
+      ${qcCompleteDateFilter && `WHERE ${qcCompleteDateFilter}`}
+
     WITH
       ({
-        smileSampleId: s.smileSampleId, 
+        smileSampleId: s.smileSampleId,
         revisable: s.revisable,
         sampleCategory: s.sampleCategory,
 
@@ -320,7 +319,7 @@ export function buildSamplesQueryBody({
         altId: apoc.convert.fromJsonMap(latestSm.additionalProperties).altId,
         validationReport: latestSt.validationReport,
         validationStatus: latestSt.validationStatus,
-        
+
         smileTempoId: t.smileTempoId,
         billed: t.billed,
         costCenter: t.costCenter,
@@ -337,7 +336,7 @@ export function buildSamplesQueryBody({
         qcCompleteDate: latestQC.date,
         qcCompleteResult: latestQC.result,
         qcCompleteReason: latestQC.reason,
-        qcCompleteStatus: latestQC.status 
+        qcCompleteStatus: latestQC.status
         }) AS tempNode
 
     ${searchFilters && `WHERE ${searchFilters}`}
@@ -356,7 +355,7 @@ export async function queryDashboardSamples({
   sort: QueryDashboardSamplesArgs["sort"];
   limit: QueryDashboardSamplesArgs["limit"];
   offset: QueryDashboardSamplesArgs["offset"];
-  oncotreeCache: NodeCache;
+  oncotreeCache: OncotreeCache;
 }) {
   const cypherQuery = `
     ${queryBody}
@@ -375,16 +374,12 @@ export async function queryDashboardSamples({
   const session = neo4jDriver.session();
   try {
     const result = await session.run(cypherQuery);
-
     return result.records.map((record) => {
       const recordObject = record.toObject().resultz;
-      const otCache = recordObject.oncotreeCode
-        ? (oncotreeCache.get(recordObject.oncotreeCode) as CachedOncotreeData)
-        : null;
       return {
         ...recordObject,
-        cancerType: otCache?.mainType,
-        cancerTypeDetailed: otCache?.name,
+        cancerType: oncotreeCache[recordObject.oncotreeCode]?.mainType,
+        cancerTypeDetailed: oncotreeCache[recordObject.oncotreeCode]?.name,
       };
     });
   } catch (error) {

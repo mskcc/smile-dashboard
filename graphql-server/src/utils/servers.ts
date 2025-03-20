@@ -14,19 +14,21 @@ import {
 import { updateActiveUserSessions } from "./session";
 import { corsOptions } from "./constants";
 import NodeCache from "node-cache";
-import { fetchAndCacheOncotreeData } from "./oncotree";
+import {
+  OncotreeCache,
+  updateOncotreeCache,
+  ONCOTREE_CACHE_KEY,
+} from "./oncotree";
 import neo4j from "neo4j-driver";
 
 export function initializeHttpsServer(app: Express) {
-  const httpsServer = https.createServer(
+  return https.createServer(
     {
       key: fs.readFileSync(props.web_key_pem),
       cert: fs.readFileSync(props.web_cert_pem),
     },
     app
   );
-
-  return httpsServer;
 }
 
 export interface ApolloServerContext {
@@ -34,7 +36,7 @@ export interface ApolloServerContext {
     user: any;
     isAuthenticated: boolean;
   };
-  oncotreeCache: NodeCache;
+  oncotreeCache: OncotreeCache;
 }
 
 export const neo4jDriver = neo4j.driver(
@@ -54,9 +56,7 @@ export async function initializeApolloServer(
     schemas: [neo4jDbSchema, oracleDbSchema, customSchema],
   });
 
-  const oncotreeCache = new NodeCache({ stdTTL: 86400 }); // 1 day
-  await fetchAndCacheOncotreeData(oncotreeCache);
-  oncotreeCache.on("expired", fetchAndCacheOncotreeData);
+  const inMemoryCache = await setUpTheInMemoryCache();
 
   const apolloServer = new ApolloServer<ApolloServerContext>({
     schema: mergedSchema,
@@ -68,7 +68,7 @@ export async function initializeApolloServer(
           user: req.user,
           isAuthenticated: req.isAuthenticated,
         },
-        oncotreeCache: oncotreeCache,
+        oncotreeCache: inMemoryCache.get(ONCOTREE_CACHE_KEY),
       };
     },
     plugins: [
@@ -79,10 +79,21 @@ export async function initializeApolloServer(
       }),
     ],
   });
-
   await apolloServer.start();
-
   apolloServer.applyMiddleware({ app, cors: corsOptions });
-
   return apolloServer;
+}
+
+async function setUpTheInMemoryCache() {
+  const inMemoryCache = new NodeCache();
+  await updateOncotreeCache(inMemoryCache);
+  // Functions to run when items in cache expire
+  // (node-cache checks for expired items and runs this event listener every 10m by default)
+  inMemoryCache.on("expired", (key) => {
+    if (key === ONCOTREE_CACHE_KEY) {
+      console.info("Refreshing the Oncotree cache...");
+      updateOncotreeCache(inMemoryCache);
+    }
+  });
+  return inMemoryCache;
 }

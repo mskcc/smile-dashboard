@@ -25,8 +25,7 @@ import {
   buildSamplesQueryBody,
   queryDashboardSamples,
 } from "./queries/samples";
-import NodeCache from "node-cache";
-import { CachedOncotreeData } from "../utils/oncotree";
+import { OncotreeCache } from "../utils/oncotree";
 import {
   buildRequestsQueryBody,
   queryDashboardRequests,
@@ -417,23 +416,20 @@ export function getAddlOtCodesMatchingCtOrCtdVals({
   oncotreeCache,
 }: {
   searchVals: QueryDashboardSamplesArgs["searchVals"];
-  oncotreeCache: NodeCache;
+  oncotreeCache: OncotreeCache;
 }) {
   let addlOncotreeCodes: Set<string> = new Set();
   if (searchVals?.length) {
-    oncotreeCache.keys().forEach((code) => {
-      const { name, mainType } = (oncotreeCache.get(
-        code
-      ) as CachedOncotreeData)!;
-      searchVals.forEach((val) => {
+    for (const [code, { name, mainType }] of Object.entries(oncotreeCache)) {
+      for (const val of searchVals) {
         if (
           name?.toLowerCase().includes(val?.toLowerCase()) ||
           mainType?.toLowerCase().includes(val?.toLowerCase())
         ) {
           addlOncotreeCodes.add(code);
         }
-      });
-    });
+      }
+    }
   }
   return Array.from(addlOncotreeCodes);
 }
