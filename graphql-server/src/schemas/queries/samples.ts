@@ -1,5 +1,5 @@
 import { QueryDashboardSamplesArgs } from "../../generated/graphql";
-import { OncotreeCache } from "../../utils/oncotree";
+import { OncotreeCache } from "../../utils/cache";
 import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherDateFilter,

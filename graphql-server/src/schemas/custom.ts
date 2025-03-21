@@ -1,9 +1,5 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import {
-  ApolloServerContext,
-  SAMPLES_CACHE_KEY,
-  SamplesCache,
-} from "../utils/servers";
+import { ApolloServerContext } from "../utils/servers";
 import { gql } from "apollo-server";
 import {
   AgGridSortDirection,
@@ -30,7 +26,12 @@ import {
   buildSamplesQueryFull,
   queryDashboardSamples,
 } from "./queries/samples";
-import { ONCOTREE_CACHE_KEY, OncotreeCache } from "../utils/oncotree";
+import {
+  ONCOTREE_CACHE_KEY,
+  OncotreeCache,
+  SAMPLES_CACHE_KEY,
+  SamplesCache,
+} from "../utils/cache";
 import {
   buildRequestsQueryBody,
   queryDashboardRequests,
