@@ -18,9 +18,23 @@ const SAMPLES_CACHE_TTL_SECONDS = 3600; // 1 hour
 const SAMPLES_PAGES_TO_CACHE = 3; // lower this during dev for faster iterations
 const CACHE_BLOCK_SIZE = 100; // keep consistent with helpers.tsx's CACHE_BLOCK_SIZE
 const SAMPLES_DEFAULT_SORT = {
+  // keep consistent with SamplesList.tsx's DEFAULT_SORT
   colId: "importDate",
   sort: "desc",
-} as DashboardRecordSort; // keep consistent with SamplesList.tsx's DEFAULT_SORT
+} as DashboardRecordSort;
+const WES_SAMPLE_CONTEXT = {
+  // keep consistent with SamplesPage.tsx's WES_SAMPLE_CONTEXT
+  fieldName: "genePanel",
+  values: [
+    "Agilent_51MB",
+    "Agilent_v4_51MB_Human",
+    "CustomCapture",
+    "IDT_Exome_v1_FP",
+    "IDT_Exome_V1_IMPACT468",
+    "WES_Human",
+    "WholeExomeSequencing",
+  ],
+};
 
 export type OncotreeCache = Record<string, { name: string; mainType: string }>; // key = Oncotree code
 export type SamplesCache = Record<string, DashboardSample[]>; // key = full Cypher query
@@ -128,15 +142,58 @@ async function getOncotreeCodesFromNeo4j() {
   }
 }
 
+// TODO: run these queries concurrently using Promise.all to reduce startup time
 async function updateSamplesCache(inMemoryCache: NodeCache) {
-  const samplesCache = {} as SamplesCache;
-  // Build the body of Samples page's initial query
-  const queryBody = buildSamplesQueryBody({
+  const oncotreeCache = inMemoryCache.get(ONCOTREE_CACHE_KEY) as OncotreeCache;
+
+  // fetch and save results of the all-samples query
+  const allSamplesQueryBody = buildSamplesQueryBody({
     searchVals: [],
     context: undefined,
     filters: undefined,
     addlOncotreeCodes: [],
   });
+  const allSamplesCacheContent = await buildSamplesCacheContent({
+    queryNameForLogging: "all samples",
+    queryBody: allSamplesQueryBody,
+    oncotreeCache,
+  });
+
+  // fetch and save results of the WES samples query
+  const wesSamplesQueryBody = buildSamplesQueryBody({
+    searchVals: [],
+    context: WES_SAMPLE_CONTEXT,
+    filters: undefined,
+    addlOncotreeCodes: [],
+  });
+  const wesSamplesCacheContent = await buildSamplesCacheContent({
+    queryNameForLogging: "WES samples",
+    queryBody: wesSamplesQueryBody,
+    oncotreeCache,
+  });
+
+  // Add all query results to cache
+  inMemoryCache.set(
+    SAMPLES_CACHE_KEY,
+    {
+      ...allSamplesCacheContent,
+      ...wesSamplesCacheContent,
+    },
+    SAMPLES_CACHE_TTL_SECONDS
+  );
+}
+
+async function buildSamplesCacheContent({
+  queryNameForLogging,
+  queryBody,
+  oncotreeCache,
+}: {
+  queryNameForLogging: string;
+  queryBody: string;
+  oncotreeCache: OncotreeCache;
+}) {
+  const samplesCacheContent = {} as SamplesCache;
+
   // Save the first few "pages" of that query's result to cache
   for (let i = 0; i < SAMPLES_PAGES_TO_CACHE; i++) {
     const samplesCypherQuery = await buildSamplesQueryFull({
@@ -146,15 +203,16 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
       offset: i * CACHE_BLOCK_SIZE,
     });
     console.info(
-      "Saving page " + (i + 1) + " of Samples page's initial query to cache..."
+      "Caching page " + (i + 1) + " of " + queryNameForLogging + " query..."
     );
     const queryResult = await queryDashboardSamples({
       samplesCypherQuery,
-      oncotreeCache: inMemoryCache.get(ONCOTREE_CACHE_KEY),
+      oncotreeCache,
     });
     if (queryResult) {
-      samplesCache[samplesCypherQuery] = queryResult;
+      samplesCacheContent[samplesCypherQuery] = queryResult;
     }
   }
-  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL_SECONDS);
+
+  return samplesCacheContent;
 }
