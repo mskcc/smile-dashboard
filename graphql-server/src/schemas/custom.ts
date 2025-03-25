@@ -24,6 +24,7 @@ import {
 import {
   buildSamplesQueryBody,
   buildSamplesQueryFinal,
+  getAddlOtCodesMatchingCtOrCtdVals,
   queryDashboardSamples,
 } from "./queries/samples";
 import {
@@ -430,30 +431,6 @@ async function publishNatsMessage(topic: string, message: string) {
       err
     );
   }
-}
-
-// TODO: move this to samples.ts
-export function getAddlOtCodesMatchingCtOrCtdVals({
-  searchVals,
-  oncotreeCache,
-}: {
-  searchVals: QueryDashboardSamplesArgs["searchVals"];
-  oncotreeCache: OncotreeCache;
-}) {
-  let addlOncotreeCodes: Set<string> = new Set();
-  if (searchVals?.length) {
-    for (const [code, { name, mainType }] of Object.entries(oncotreeCache)) {
-      for (const val of searchVals) {
-        if (
-          name?.toLowerCase().includes(val?.toLowerCase()) ||
-          mainType?.toLowerCase().includes(val?.toLowerCase())
-        ) {
-          addlOncotreeCodes.add(code);
-        }
-      }
-    }
-  }
-  return Array.from(addlOncotreeCodes);
 }
 
 const typeDefs = gql`
