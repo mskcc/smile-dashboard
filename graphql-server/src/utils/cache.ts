@@ -4,7 +4,7 @@ import { props } from "./constants";
 import { neo4jDriver } from "./servers";
 import {
   buildSamplesQueryBody,
-  buildSamplesQueryFull,
+  buildSamplesQueryFinal,
   queryDashboardSamples,
 } from "../schemas/queries/samples";
 import { DashboardRecordSort, DashboardSample } from "../generated/graphql";
@@ -15,15 +15,15 @@ export const SAMPLES_CACHE_KEY = "samples";
 const ONCOTREE_CACHE_TTL_SECONDS = 86400; // 1 day
 const SAMPLES_CACHE_TTL_SECONDS = 3600; // 1 hour
 
-const SAMPLES_PAGES_TO_CACHE = 3; // lower this during dev for faster iterations
+const SAMPLES_PAGES_TO_CACHE = 3; // lower this if needed during dev for faster iterations
 const CACHE_BLOCK_SIZE = 100; // keep consistent with helpers.tsx's CACHE_BLOCK_SIZE
+// Keep consistent with SamplesList.tsx's DEFAULT_SORT
 const SAMPLES_DEFAULT_SORT = {
-  // keep consistent with SamplesList.tsx's DEFAULT_SORT
   colId: "importDate",
   sort: "desc",
 } as DashboardRecordSort;
+// Keep consistent with SamplesPage.tsx's WES_SAMPLE_CONTEXT
 const WES_SAMPLE_CONTEXT = {
-  // keep consistent with SamplesPage.tsx's WES_SAMPLE_CONTEXT
   fieldName: "genePanel",
   values: [
     "Agilent_51MB",
@@ -77,7 +77,6 @@ export async function initializeInMemoryCache() {
 }
 
 export async function updateOncotreeCache(inMemoryCache: NodeCache) {
-  console.info("Saving select data from the latest Oncotree API to cache...");
   const oncotreeApiData = await fetchOncotreeApiData();
   if (!oncotreeApiData) return;
   const oncotreeCache = oncotreeApiData.reduce((acc, tumor) => {
@@ -142,77 +141,67 @@ async function getOncotreeCodesFromNeo4j() {
   }
 }
 
-// TODO: run these queries concurrently using Promise.all to reduce startup time
 async function updateSamplesCache(inMemoryCache: NodeCache) {
-  const oncotreeCache = inMemoryCache.get(ONCOTREE_CACHE_KEY) as OncotreeCache;
+  console.info("Querying and caching select samples data...");
 
-  // fetch and save results of the all-samples query
+  // Build query bodies for all samples and WES samples queries of Samples page
   const allSamplesQueryBody = buildSamplesQueryBody({
     searchVals: [],
     context: undefined,
     filters: undefined,
     addlOncotreeCodes: [],
   });
-  const allSamplesCacheContent = await buildSamplesCacheContent({
-    queryNameForLogging: "all samples",
-    queryBody: allSamplesQueryBody,
-    oncotreeCache,
-  });
-
-  // fetch and save results of the WES samples query
   const wesSamplesQueryBody = buildSamplesQueryBody({
     searchVals: [],
     context: WES_SAMPLE_CONTEXT,
     filters: undefined,
     addlOncotreeCodes: [],
   });
-  const wesSamplesCacheContent = await buildSamplesCacheContent({
-    queryNameForLogging: "WES samples",
+
+  // Run these queries concurrently to reduce server startup time
+  const oncotreeCache = inMemoryCache.get(ONCOTREE_CACHE_KEY) as OncotreeCache;
+  const allSamplesQueryPromises = buildSamplesQueryPromises({
+    queryBody: allSamplesQueryBody,
+    oncotreeCache,
+  });
+  const wesSamplesQueryPromises = buildSamplesQueryPromises({
     queryBody: wesSamplesQueryBody,
     oncotreeCache,
   });
+  const queryResults = await Promise.all([
+    ...allSamplesQueryPromises,
+    ...wesSamplesQueryPromises,
+  ]);
 
-  // Add all query results to cache
-  inMemoryCache.set(
-    SAMPLES_CACHE_KEY,
-    {
-      ...allSamplesCacheContent,
-      ...wesSamplesCacheContent,
-    },
-    SAMPLES_CACHE_TTL_SECONDS
-  );
+  // Add all samples query results to cache
+  const samplesCache: SamplesCache = {};
+  queryResults.forEach((result) => {
+    if (result) {
+      Object.assign(samplesCache, result);
+    }
+  });
+  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL_SECONDS);
 }
 
-async function buildSamplesCacheContent({
-  queryNameForLogging,
+function buildSamplesQueryPromises({
   queryBody,
   oncotreeCache,
 }: {
-  queryNameForLogging: string;
   queryBody: string;
   oncotreeCache: OncotreeCache;
 }) {
-  const samplesCacheContent = {} as SamplesCache;
-
-  // Save the first few "pages" of that query's result to cache
-  for (let i = 0; i < SAMPLES_PAGES_TO_CACHE; i++) {
-    const samplesCypherQuery = await buildSamplesQueryFull({
+  const pageIndicesToCache = [...Array(SAMPLES_PAGES_TO_CACHE).keys()]; // [0, 1, 2, ..., n]
+  return pageIndicesToCache.map(async (pageIndex) => {
+    const samplesCypherQuery = await buildSamplesQueryFinal({
       queryBody,
       sort: SAMPLES_DEFAULT_SORT,
       limit: CACHE_BLOCK_SIZE,
-      offset: i * CACHE_BLOCK_SIZE,
+      offset: CACHE_BLOCK_SIZE * pageIndex,
     });
-    console.info(
-      "Caching page " + (i + 1) + " of " + queryNameForLogging + " query..."
-    );
     const queryResult = await queryDashboardSamples({
       samplesCypherQuery,
       oncotreeCache,
     });
-    if (queryResult) {
-      samplesCacheContent[samplesCypherQuery] = queryResult;
-    }
-  }
-
-  return samplesCacheContent;
+    return queryResult ? { [samplesCypherQuery]: queryResult } : null;
+  });
 }

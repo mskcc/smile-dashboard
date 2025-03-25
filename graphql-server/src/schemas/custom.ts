@@ -23,7 +23,7 @@ import {
 } from "./queries/cohorts";
 import {
   buildSamplesQueryBody,
-  buildSamplesQueryFull,
+  buildSamplesQueryFinal,
   queryDashboardSamples,
 } from "./queries/samples";
 import {
@@ -111,7 +111,7 @@ export async function buildCustomSchema(ogm: OGM) {
           addlOncotreeCodes,
         });
 
-        const samplesCypherQuery = await buildSamplesQueryFull({
+        const samplesCypherQuery = await buildSamplesQueryFinal({
           queryBody,
           sort,
           limit,

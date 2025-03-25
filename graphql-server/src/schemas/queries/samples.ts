@@ -345,7 +345,7 @@ export function buildSamplesQueryBody({
   return samplesQueryBody;
 }
 
-export async function buildSamplesQueryFull({
+export async function buildSamplesQueryFinal({
   queryBody,
   sort,
   limit,
