@@ -15,7 +15,7 @@ export const SAMPLES_CACHE_KEY = "samples";
 const ONCOTREE_CACHE_TTL_SECONDS = 86400; // 1 day
 const SAMPLES_CACHE_TTL_SECONDS = 3600; // 1 hour
 
-const SAMPLES_PAGES_TO_CACHE = 3; // lower this if needed during dev for faster iterations
+const SAMPLES_PAGES_TO_CACHE = 5; // lower this if needed during dev for faster iterations
 const CACHE_BLOCK_SIZE = 100; // keep consistent with helpers.tsx's CACHE_BLOCK_SIZE
 // Keep consistent with SamplesList.tsx's DEFAULT_SORT
 const SAMPLES_DEFAULT_SORT = {
@@ -59,31 +59,38 @@ export type OncotreeApiTumorType = {
 
 export async function initializeInMemoryCache() {
   const inMemoryCache = new NodeCache();
+
+  // Warm up the cache
   await updateOncotreeCache(inMemoryCache);
   await updateSamplesCache(inMemoryCache);
-  // Functions to run when items in cache expire
+  logCacheStats(inMemoryCache);
+
+  // Add cache item expiration handlers
   // (node-cache checks for expired items and runs this event listener every 10m by default)
   inMemoryCache.on("expired", (key) => {
     if (key === ONCOTREE_CACHE_KEY) {
-      console.info("Refreshing the Oncotree cache...");
       updateOncotreeCache(inMemoryCache);
+      logCacheStats(inMemoryCache);
     }
     if (key === SAMPLES_CACHE_KEY) {
-      console.info("Refreshing the samples cache...");
       updateSamplesCache(inMemoryCache);
+      logCacheStats(inMemoryCache);
     }
   });
+
   return inMemoryCache;
 }
 
 export async function updateOncotreeCache(inMemoryCache: NodeCache) {
   const oncotreeApiData = await fetchOncotreeApiData();
   if (!oncotreeApiData) return;
+
   const oncotreeCache = oncotreeApiData.reduce((acc, tumor) => {
     acc[tumor.code] = { name: tumor.name, mainType: tumor.mainType };
     return acc;
   }, {} as OncotreeCache);
-  // Add to cache oncotree codes found in Neo4j but not in Oncotree API's response
+
+  // Add to cache the oncotree codes found in Neo4j but not in Oncotree API's response
   // (These codes are likely old codes that have been renamed in the Oncotree database)
   const oncotreeCodesInNeo4j = await getOncotreeCodesFromNeo4j();
   oncotreeCodesInNeo4j?.forEach((code) => {
@@ -91,11 +98,12 @@ export async function updateOncotreeCache(inMemoryCache: NodeCache) {
       oncotreeCache[code] = { name: "N/A", mainType: "N/A" };
     }
   });
+
   inMemoryCache.set(
     ONCOTREE_CACHE_KEY,
     oncotreeCache,
     ONCOTREE_CACHE_TTL_SECONDS
-  ); // 1 day
+  );
 }
 
 async function fetchOncotreeApiData() {
@@ -204,4 +212,11 @@ function buildSamplesQueryPromises({
     });
     return queryResult ? { [samplesCypherQuery]: queryResult } : null;
   });
+}
+
+function logCacheStats(inMemoryCache: NodeCache) {
+  const stats = inMemoryCache.getStats();
+  console.info(
+    `Cache stats: ${stats.keys} keys, ${stats.hits} hits, ${stats.misses} misses, ${stats.ksize}B in key size, ${stats.vsize}B in value size`
+  );
 }
