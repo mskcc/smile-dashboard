@@ -119,7 +119,7 @@ export async function buildCustomSchema(ogm: OGM) {
           offset,
         });
 
-        if (samplesCypherQuery in samplesCache) {
+        if (samplesCache && samplesCypherQuery in samplesCache) {
           return samplesCache[samplesCypherQuery];
         }
 

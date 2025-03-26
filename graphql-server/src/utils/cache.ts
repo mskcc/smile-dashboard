@@ -12,8 +12,8 @@ import { DashboardRecordSort, DashboardSample } from "../generated/graphql";
 export const ONCOTREE_CACHE_KEY = "oncotree";
 export const SAMPLES_CACHE_KEY = "samples";
 
-const ONCOTREE_CACHE_TTL_SECONDS = 86400; // 1 day
-const SAMPLES_CACHE_TTL_SECONDS = 3600; // 1 hour
+const ONCOTREE_CACHE_TTL = 86400; // 1 day
+const SAMPLES_CACHE_TTL = 3600; // 1 hour
 
 const SAMPLES_PAGES_TO_CACHE = 5; // lower this if needed during dev for faster iterations
 const CACHE_BLOCK_SIZE = 100; // keep consistent with helpers.tsx's CACHE_BLOCK_SIZE
@@ -67,13 +67,13 @@ export async function initializeInMemoryCache() {
 
   // Add cache item expiration handlers
   // (node-cache checks for expired items and runs this event listener every 10m by default)
-  inMemoryCache.on("expired", (key) => {
+  inMemoryCache.on("expired", async (key) => {
     if (key === ONCOTREE_CACHE_KEY) {
-      updateOncotreeCache(inMemoryCache);
+      await updateOncotreeCache(inMemoryCache);
       logCacheStats(inMemoryCache);
     }
     if (key === SAMPLES_CACHE_KEY) {
-      updateSamplesCache(inMemoryCache);
+      await updateSamplesCache(inMemoryCache);
       logCacheStats(inMemoryCache);
     }
   });
@@ -99,11 +99,7 @@ export async function updateOncotreeCache(inMemoryCache: NodeCache) {
     }
   });
 
-  inMemoryCache.set(
-    ONCOTREE_CACHE_KEY,
-    oncotreeCache,
-    ONCOTREE_CACHE_TTL_SECONDS
-  );
+  inMemoryCache.set(ONCOTREE_CACHE_KEY, oncotreeCache, ONCOTREE_CACHE_TTL);
 }
 
 async function fetchOncotreeApiData() {
@@ -188,7 +184,7 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
       Object.assign(samplesCache, result);
     }
   });
-  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL_SECONDS);
+  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL);
 }
 
 function buildSamplesQueryPromises({
