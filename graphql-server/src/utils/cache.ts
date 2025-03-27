@@ -7,7 +7,11 @@ import {
   buildSamplesQueryFinal,
   queryDashboardSamples,
 } from "../schemas/queries/samples";
-import { DashboardRecordSort, DashboardSample } from "../generated/graphql";
+import {
+  DashboardRecordSort,
+  DashboardSample,
+  DashboardSampleInput,
+} from "../generated/graphql";
 
 export const ONCOTREE_CACHE_KEY = "oncotree";
 export const SAMPLES_CACHE_KEY = "samples";
@@ -210,9 +214,44 @@ function buildSamplesQueryPromises({
   });
 }
 
+export function updateCacheWithNewSampleUpdates(
+  newDashboardSamples: DashboardSampleInput[],
+  inMemoryCache: NodeCache
+) {
+  const samplesCache = inMemoryCache.get(SAMPLES_CACHE_KEY) as SamplesCache;
+
+  // Create a map out of newDashboardSamples for quick lookup by primaryId
+  const newSamplesByPrimaryId = newDashboardSamples.reduce(
+    (accumulator, newDashboardSample) => {
+      accumulator[newDashboardSample.primaryId] = newDashboardSample;
+      return accumulator;
+    },
+    {} as Record<string, DashboardSampleInput> // key = primaryId
+  );
+
+  // Update the fields of any samples in cache that were changed in newDashboardSamples
+  for (const sample of Object.values(samplesCache).flat()) {
+    if (newSamplesByPrimaryId.hasOwnProperty(sample.primaryId)) {
+      const newDashboardSample = newSamplesByPrimaryId[sample.primaryId];
+      for (const field of newDashboardSample.changedFieldNames) {
+        if (field in sample && field in newDashboardSample) {
+          (sample as any)[field] =
+            newDashboardSample[field as keyof DashboardSampleInput];
+        }
+      }
+    }
+  }
+
+  // Refresh the samples cache
+  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL);
+}
+
 function logCacheStats(inMemoryCache: NodeCache) {
   const stats = inMemoryCache.getStats();
   console.info(
-    `Cache stats: ${stats.keys} keys, ${stats.hits} hits, ${stats.misses} misses, ${stats.ksize}B in key size, ${stats.vsize}B in value size`
+    `Cache stats: ${stats.keys} keys (${inMemoryCache.keys().join(", ")}), ${
+      stats.hits
+    } hits, ` +
+      `${stats.misses} misses, ${stats.ksize}B in key size, ${stats.vsize}B in value size`
   );
 }
