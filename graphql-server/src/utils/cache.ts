@@ -43,7 +43,7 @@ const WES_SAMPLE_CONTEXT = {
 };
 
 const MAX_RETRIES_UPON_FALSE_SAMPLE_STATUS = 3;
-const RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS = 10000; // 10s
+const RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS = 3000; // 3s
 
 export type OncotreeCache = Record<string, { name: string; mainType: string }>; // key = Oncotree code
 export type SamplesCache = Record<string, DashboardSample[]>; // key = full Cypher query
@@ -79,11 +79,9 @@ export async function initializeInMemoryCache() {
   inMemoryCache.on("expired", async (key) => {
     if (key === ONCOTREE_CACHE_KEY) {
       await updateOncotreeCache(inMemoryCache);
-      logCacheStats(inMemoryCache);
     }
     if (key === SAMPLES_CACHE_KEY) {
       await updateSamplesCache(inMemoryCache);
-      logCacheStats(inMemoryCache);
     }
   });
 
@@ -224,6 +222,19 @@ export async function updateCacheWithNewSampleUpdates(
   inMemoryCache: NodeCache
 ) {
   const samplesCache = inMemoryCache.get(SAMPLES_CACHE_KEY) as SamplesCache;
+  const cachedSamples = Object.values(samplesCache).flat();
+
+  // Early return if no samples in the cache are receiving updates
+  const cachedPrimaryIds = new Set(cachedSamples.map((s) => s.primaryId));
+  const cacheNeedsUpdate = newDashboardSamples.some((s) =>
+    cachedPrimaryIds.has(s.primaryId)
+  );
+  if (!cacheNeedsUpdate) {
+    console.info(
+      "Skipping cache update because updated dashboard samples are not in cache."
+    );
+    return;
+  }
 
   // Create a map out of newDashboardSamples for quick lookup by primaryId
   const newSamplesByPrimaryId = newDashboardSamples.reduce(
@@ -268,9 +279,8 @@ export async function updateCacheWithNewSampleUpdates(
     }
   }
 
-  // TODO: pause polling interval upon sample update
-  console.info("Updating cache...");
-  for (const sample of Object.values(samplesCache).flat()) {
+  console.info("Updating the samples cache with dashboard updates...");
+  for (const sample of cachedSamples) {
     if (newSamplesByPrimaryId.hasOwnProperty(sample.primaryId)) {
       // Update the fields of any samples in cache that were changed in newDashboardSamples
       const newDashboardSample = newSamplesByPrimaryId[sample.primaryId];
@@ -280,7 +290,7 @@ export async function updateCacheWithNewSampleUpdates(
             newDashboardSample[field as keyof DashboardSampleInput];
         }
       }
-      // Update these fields of samples in cache with the latest data from Neo4j
+      // Update select fields of samples in cache with the latest data from Neo4j
       const latestSampleData = sampleDataForCacheUpdate[sample.primaryId];
       for (const [field, value] of Object.entries(latestSampleData)) {
         (sample as any)[field] = value;
