@@ -249,6 +249,7 @@ export default function SamplesList({
   }
 
   async function handleConfirmUpdates() {
+    stopPolling();
     // Manually handle optimistic updates: refresh updated rows' UI to indicate them being updated
     // (We can't use GraphQL's optimistic response because it isn't a good fit for
     // AG Grid's Server-Side data model. e.g. GraphQL's optimistic response only returns

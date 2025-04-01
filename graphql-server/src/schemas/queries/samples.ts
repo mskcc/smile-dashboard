@@ -1,4 +1,7 @@
-import { QueryDashboardSamplesArgs } from "../../generated/graphql";
+import {
+  DashboardSample,
+  QueryDashboardSamplesArgs,
+} from "../../generated/graphql";
 import { OncotreeCache } from "../../utils/cache";
 import { neo4jDriver } from "../../utils/servers";
 import {
@@ -415,4 +418,72 @@ export function getAddlOtCodesMatchingCtOrCtdVals({
     }
   }
   return Array.from(addlOncotreeCodes);
+}
+
+export type SampleDataForCacheUpdate = Record<
+  string,
+  Pick<
+    DashboardSample,
+    | "primaryId"
+    | "cmoSampleName"
+    | "historicalCmoSampleNames"
+    | "importDate"
+    | "revisable"
+  >
+>;
+
+export async function querySelectSampleDataForCacheUpdate(
+  primaryIds: string[]
+): Promise<SampleDataForCacheUpdate> {
+  const cypherQuery = `
+    MATCH (s:Sample)
+    WITH
+      s,
+      COLLECT {
+      	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
+      	RETURN sm ORDER BY sm.importDate DESC LIMIT 1
+      } as latestSm
+    WITH
+      s,
+      latestSm[0] as latestSm,
+      COLLECT {
+      	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
+      	RETURN ({
+      		cmoSampleName: sm.cmoSampleName,
+      		importDate: sm.importDate
+      	})
+      } AS sampleIdsList
+    WITH
+      s,
+      latestSm,
+      apoc.text.join(
+        apoc.coll.toSet(
+          [sid IN apoc.coll.sortMaps(sampleIdsList, "importDate")
+            WHERE sid.cmoSampleName <> latestSm.cmoSampleName AND sid.cmoSampleName <> ""
+            | sid.cmoSampleName + " (" + sid.importDate + ")"
+          ]
+        ),
+      ", ") AS historicalCmoSampleNames
+    WHERE latestSm.primaryId IN $primaryIds
+    RETURN
+      latestSm.primaryId AS primaryId,
+      latestSm.cmoSampleName AS cmoSampleName,
+      latestSm.importDate AS importDate,
+      historicalCmoSampleNames,
+      s.revisable AS revisable
+  `;
+
+  const session = neo4jDriver.session();
+  try {
+    const result = await session.run(cypherQuery, { primaryIds });
+    return result.records
+      .map((record) => record.toObject())
+      .reduce((acc, { primaryId, ...rest }) => {
+        acc[primaryId] = rest;
+        return acc;
+      }, {});
+  } catch (error) {
+    console.error("Error with querySelectSampleDataForCacheUpdate:", error);
+    return {};
+  }
 }

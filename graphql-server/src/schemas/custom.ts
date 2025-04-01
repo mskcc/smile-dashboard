@@ -9,7 +9,6 @@ import {
   QueryDashboardRequestsArgs,
   QueryDashboardSamplesArgs,
   DashboardRecordSort,
-  DashboardSample,
 } from "../generated/graphql";
 import { props } from "../utils/constants";
 import { connect, headers, StringCodec } from "nats";
@@ -141,7 +140,10 @@ export async function buildCustomSchema(ogm: OGM) {
         { inMemoryCache }: ApolloServerContext
       ) {
         await updateAllSamplesConcurrently(newDashboardSamples, ogm);
-        updateCacheWithNewSampleUpdates(newDashboardSamples, inMemoryCache);
+        await updateCacheWithNewSampleUpdates(
+          newDashboardSamples,
+          inMemoryCache
+        );
 
         // Here, we're returning newDashboardSamples for simplicity. However, if we were to follow
         // GraphQL's convention, we'd return the actual resulting data from the database update. This

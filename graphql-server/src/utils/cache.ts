@@ -6,6 +6,8 @@ import {
   buildSamplesQueryBody,
   buildSamplesQueryFinal,
   queryDashboardSamples,
+  querySelectSampleDataForCacheUpdate,
+  SampleDataForCacheUpdate,
 } from "../schemas/queries/samples";
 import {
   DashboardRecordSort,
@@ -39,6 +41,9 @@ const WES_SAMPLE_CONTEXT = {
     "WholeExomeSequencing",
   ],
 };
+
+const MAX_RETRIES_UPON_FALSE_SAMPLE_STATUS = 3;
+const RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS = 10000; // 10s
 
 export type OncotreeCache = Record<string, { name: string; mainType: string }>; // key = Oncotree code
 export type SamplesCache = Record<string, DashboardSample[]>; // key = full Cypher query
@@ -214,7 +219,7 @@ function buildSamplesQueryPromises({
   });
 }
 
-export function updateCacheWithNewSampleUpdates(
+export async function updateCacheWithNewSampleUpdates(
   newDashboardSamples: DashboardSampleInput[],
   inMemoryCache: NodeCache
 ) {
@@ -229,15 +234,56 @@ export function updateCacheWithNewSampleUpdates(
     {} as Record<string, DashboardSampleInput> // key = primaryId
   );
 
-  // Update the fields of any samples in cache that were changed in newDashboardSamples
+  // Get the latest sample label and status from Neo4j to update the samples cache
+  let sampleDataForCacheUpdate: SampleDataForCacheUpdate = {};
+  for (let retry = 0; retry < MAX_RETRIES_UPON_FALSE_SAMPLE_STATUS; retry++) {
+    console.info(
+      "Getting the latest sample label and status for updated samples..."
+    );
+    await new Promise((resolve) =>
+      setTimeout(resolve, RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS)
+    );
+    sampleDataForCacheUpdate = await querySelectSampleDataForCacheUpdate(
+      Object.keys(newSamplesByPrimaryId)
+    );
+    const hasFalseRevisable = Object.values(sampleDataForCacheUpdate).some(
+      ({ revisable }) => revisable === false
+    );
+    if (!hasFalseRevisable) {
+      console.info("No false revisable found.");
+      break;
+    } else {
+      if (retry < MAX_RETRIES_UPON_FALSE_SAMPLE_STATUS - 1) {
+        console.info(
+          `Detected a sample with 'revisable' == false. ` +
+            `Refetching from Neo4j in ${
+              RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS / 1000
+            } seconds...`
+        );
+      } else {
+        console.info(
+          "Max retries attempted. Leaving sample(s) in cache with 'revisable' == false..."
+        );
+      }
+    }
+  }
+
+  // TODO: pause polling interval upon sample update
+  console.info("Updating cache...");
   for (const sample of Object.values(samplesCache).flat()) {
     if (newSamplesByPrimaryId.hasOwnProperty(sample.primaryId)) {
+      // Update the fields of any samples in cache that were changed in newDashboardSamples
       const newDashboardSample = newSamplesByPrimaryId[sample.primaryId];
       for (const field of newDashboardSample.changedFieldNames) {
         if (field in sample && field in newDashboardSample) {
           (sample as any)[field] =
             newDashboardSample[field as keyof DashboardSampleInput];
         }
+      }
+      // Update these fields of samples in cache with the latest data from Neo4j
+      const latestSampleData = sampleDataForCacheUpdate[sample.primaryId];
+      for (const [field, value] of Object.entries(latestSampleData)) {
+        (sample as any)[field] = value;
       }
     }
   }
