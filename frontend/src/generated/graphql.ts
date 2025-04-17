@@ -1447,11 +1447,13 @@ export type DashboardSample = {
   historicalCmoSampleNames?: Maybe<Scalars["String"]>;
   importDate: Scalars["String"];
   initialPipelineRunDate?: Maybe<Scalars["String"]>;
+  instrumentModel?: Maybe<Scalars["String"]>;
   investigatorSampleId?: Maybe<Scalars["String"]>;
   mafCompleteDate?: Maybe<Scalars["String"]>;
   mafCompleteNormalPrimaryId?: Maybe<Scalars["String"]>;
   mafCompleteStatus?: Maybe<Scalars["String"]>;
   oncotreeCode?: Maybe<Scalars["String"]>;
+  platform?: Maybe<Scalars["String"]>;
   preservation?: Maybe<Scalars["String"]>;
   primaryId: Scalars["String"];
   qcCompleteDate?: Maybe<Scalars["String"]>;
@@ -1460,7 +1462,6 @@ export type DashboardSample = {
   qcCompleteStatus?: Maybe<Scalars["String"]>;
   recipe?: Maybe<Scalars["String"]>;
   revisable?: Maybe<Scalars["Boolean"]>;
-  runMode?: Maybe<Scalars["String"]>;
   sampleCategory: Scalars["String"];
   sampleClass?: Maybe<Scalars["String"]>;
   sampleOrigin?: Maybe<Scalars["String"]>;
@@ -11076,7 +11077,8 @@ export type DashboardSamplesQuery = {
     recipe?: string | null;
     altId?: string | null;
     historicalCmoSampleNames?: string | null;
-    runMode?: string | null;
+    instrumentModel?: string | null;
+    platform?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11129,7 +11131,8 @@ export type DashboardSampleMetadataPartsFragment = {
   recipe?: string | null;
   altId?: string | null;
   historicalCmoSampleNames?: string | null;
-  runMode?: string | null;
+  instrumentModel?: string | null;
+  platform?: string | null;
   validationReport?: string | null;
   validationStatus?: boolean | null;
   cancerType?: string | null;
@@ -11209,7 +11212,8 @@ export type UpdateDashboardSamplesMutation = {
     recipe?: string | null;
     altId?: string | null;
     historicalCmoSampleNames?: string | null;
-    runMode?: string | null;
+    instrumentModel?: string | null;
+    platform?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11276,7 +11280,8 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     recipe
     altId
     historicalCmoSampleNames
-    runMode
+    instrumentModel
+    platform
     validationReport
     validationStatus
     cancerType

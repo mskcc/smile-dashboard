@@ -283,7 +283,6 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
-      apoc.convert.fromJsonList(latestSm.libraries)[0].runs[0].runMode AS runMode,
       historicalCmoSampleNames,
       latestSt,
       t,
@@ -321,9 +320,9 @@ export function buildSamplesQueryBody({
         sampleOrigin: latestSm.sampleOrigin,
         tissueLocation: latestSm.tissueLocation,
         sex: latestSm.sex,
+        libraries: latestSm.libraries,
         recipe: apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields).recipe,
         altId: apoc.convert.fromJsonMap(latestSm.additionalProperties).altId,
-        runMode: runMode,
         validationReport: latestSt.validationReport,
         validationStatus: latestSt.validationStatus,
 
@@ -390,10 +389,15 @@ export async function queryDashboardSamples({
     const result = await session.run(samplesCypherQuery);
     return result.records.map((record) => {
       const recordObject = record.toObject().resultz;
+      const instrumentModel = getInstrumentModelByLibraries(
+        recordObject.libraries
+      );
       return {
         ...recordObject,
         cancerType: oncotreeCache?.[recordObject.oncotreeCode]?.mainType,
         cancerTypeDetailed: oncotreeCache?.[recordObject.oncotreeCode]?.name,
+        instrumentModel: instrumentModel,
+        platform: getPlatformByInstrumentModel(instrumentModel),
       };
     });
   } catch (error) {
@@ -495,4 +499,65 @@ export async function querySelectSampleDataForCacheUpdate(
   } finally {
     await session.close();
   }
+}
+
+function getInstrumentModelByLibraries(
+  libraries: string | null
+): string | null {
+  if (libraries == null) return null;
+  try {
+    // Parse the libraries JSON string into an array of library objects
+    const libs = JSON.parse(libraries) as Array<{
+      runs?: Array<{
+        runMode?: string;
+        runDate?: string;
+      }>;
+    }>;
+    // Get the latest run in the libs array based on runDate,
+    // then return the corresponding runMode (aka Instrument Model)
+    const latestRun = {
+      runMode: null as string | null,
+      runDate: null as Date | null,
+    };
+    for (const currLib of libs) {
+      if (!Array.isArray(currLib.runs) || currLib.runs.length === 0) continue;
+      for (const currRun of currLib.runs) {
+        if (!currRun.runMode || !currRun.runDate) continue;
+        const currRunDate = new Date(currRun.runDate);
+        if (!latestRun.runDate || currRunDate > latestRun.runDate) {
+          latestRun.runDate = currRunDate;
+          latestRun.runMode = currRun.runMode;
+        }
+      }
+    }
+    return latestRun.runMode;
+  } catch (e) {
+    return null;
+  }
+}
+
+const ILLUMINA_INSTRUMENT_MODELS = new Set([
+  "HiSeq",
+  "HiSeq High Output",
+  "HiSeq Rapid Run",
+  "HiSeq X",
+  "MiSeq",
+  "NextSeq",
+  "NextSeq 2000",
+  "NovaSeq",
+  "NovaSeq S1",
+  "NovaSeq S2",
+  "NovaSeq S4",
+  "NovaSeq SP",
+  "NovaSeq X 10B",
+  "NovaSeq X 1.5B",
+  "NovaSeq X 25B",
+]);
+
+function getPlatformByInstrumentModel(
+  instrumentModel: string | null
+): string | null {
+  return instrumentModel && ILLUMINA_INSTRUMENT_MODELS.has(instrumentModel)
+    ? "Illumina"
+    : null;
 }

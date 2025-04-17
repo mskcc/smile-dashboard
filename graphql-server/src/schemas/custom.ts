@@ -519,7 +519,8 @@ const typeDefs = gql`
     recipe: String
     altId: String
     historicalCmoSampleNames: String
-    runMode: String
+    instrumentModel: String
+    platform: String
     ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
     validationReport: String
     validationStatus: Boolean
