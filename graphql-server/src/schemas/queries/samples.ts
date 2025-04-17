@@ -198,11 +198,11 @@ export function buildSamplesQueryBody({
       COLLECT {
       	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
       	RETURN sm ORDER BY sm.importDate DESC LIMIT 1
-      } as latestSm
+      } AS latestSm
 
     WITH
       s,
-      latestSm[0] as latestSm,
+      latestSm[0] AS latestSm,
       COLLECT {
       	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
       	RETURN ({
@@ -270,25 +270,26 @@ export function buildSamplesQueryBody({
       COLLECT {
         OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
         RETURN bc ORDER BY bc.date DESC LIMIT 1
-      } as latestBC,
+      } AS latestBC,
       COLLECT {
         OPTIONAL MATCH (t)-[:HAS_EVENT]->(mc:MafComplete)
         RETURN mc ORDER BY mc.date DESC LIMIT 1
-      } as latestMC,
+      } AS latestMC,
       COLLECT {
         OPTIONAL MATCH (t)-[:HAS_EVENT]->(qc:QcComplete)
         RETURN qc ORDER BY qc.date DESC LIMIT 1
-      } as latestQC
+      } AS latestQC
 
     WITH
       s,
       latestSm,
+      apoc.convert.fromJsonList(latestSm.libraries)[0].runs[0].runMode AS runMode,
       historicalCmoSampleNames,
       latestSt,
       t,
-      latestBC[0] as latestBC,
-      latestMC[0] as latestMC,
-      latestQC[0] as latestQC
+      latestBC[0] AS latestBC,
+      latestMC[0] AS latestMC,
+      latestQC[0] AS latestQC
 
       ${bamCompleteDateFilter && `WHERE ${bamCompleteDateFilter}`}
       ${mafCompleteDateFilter && `WHERE ${mafCompleteDateFilter}`}
@@ -322,6 +323,7 @@ export function buildSamplesQueryBody({
         sex: latestSm.sex,
         recipe: apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields).recipe,
         altId: apoc.convert.fromJsonMap(latestSm.additionalProperties).altId,
+        runMode: runMode,
         validationReport: latestSt.validationReport,
         validationStatus: latestSt.validationStatus,
 
@@ -342,7 +344,7 @@ export function buildSamplesQueryBody({
         qcCompleteResult: latestQC.result,
         qcCompleteReason: latestQC.reason,
         qcCompleteStatus: latestQC.status
-        }) AS tempNode
+      }) AS tempNode
 
     ${searchFilters && `WHERE ${searchFilters}`}
   `;
@@ -447,10 +449,10 @@ export async function querySelectSampleDataForCacheUpdate(
       COLLECT {
       	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
       	RETURN sm ORDER BY sm.importDate DESC LIMIT 1
-      } as latestSm
+      } AS latestSm
     WITH
       s,
-      latestSm[0] as latestSm,
+      latestSm[0] AS latestSm,
       COLLECT {
       	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
       	RETURN ({
