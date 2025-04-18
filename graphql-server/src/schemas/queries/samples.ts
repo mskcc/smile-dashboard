@@ -501,20 +501,21 @@ export async function querySelectSampleDataForCacheUpdate(
   }
 }
 
+/**
+ * Extracts the instrument model from a JSON string containing libraries data
+ * Returns the most recent instrument model based on run dates (confirmed with PMs)
+ */
 function getInstrumentModelByLibraries(
   libraries: string | null
 ): string | null {
   if (libraries == null) return null;
   try {
-    // Parse the libraries JSON string into an array of library objects
     const libs = JSON.parse(libraries) as Array<{
       runs?: Array<{
         runMode?: string;
         runDate?: string;
       }>;
     }>;
-    // Get the latest run in the libs array based on runDate,
-    // then return the corresponding runMode (aka Instrument Model)
     const latestRun = {
       runMode: null as string | null,
       runDate: null as Date | null,
@@ -536,6 +537,10 @@ function getInstrumentModelByLibraries(
   }
 }
 
+/**
+ * Set of Illumina platform's instrument models
+ * Source: Sinisa
+ */
 const ILLUMINA_INSTRUMENT_MODELS = new Set([
   "HiSeq",
   "HiSeq High Output",
@@ -554,6 +559,10 @@ const ILLUMINA_INSTRUMENT_MODELS = new Set([
   "NovaSeq X 25B",
 ]);
 
+/**
+ * Returns the platform based on the instrument model value
+ * Currently only supports Illumina
+ */
 function getPlatformByInstrumentModel(
   instrumentModel: string | null
 ): string | null {
