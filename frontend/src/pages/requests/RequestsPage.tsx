@@ -7,7 +7,7 @@ import {
   MAX_ROWS_EXPORT,
   MAX_ROWS_EXPORT_WARNING,
   RequestColumns,
-  SampleColumns,
+  sampleColDefs,
 } from "../../shared/helpers";
 import { useParams } from "react-router-dom";
 import RecordsList from "../../components/RecordsList";
@@ -52,7 +52,7 @@ export default function RequestsPage() {
             setShowDownloadModal(true);
           }
         }}
-        samplesColDefs={SampleColumns}
+        samplesColDefs={sampleColDefs}
         sampleContext={
           sampleQueryParamValue
             ? {

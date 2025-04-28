@@ -186,7 +186,7 @@ export const RequestColumns: ColDef[] = [
   },
 ];
 
-export const PatientColumns: ColDef[] = [
+export const patientColDefs: ColDef[] = [
   {
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
@@ -273,7 +273,7 @@ const ONCOTREE_CODE_NA_TOOLTIP =
   "This code might have been remapped (renamed) between different versions of the Oncotree API. " +
   "For remapping details, visit the docs at https://oncotree.mskcc.org/#/home?tab=mapping";
 
-export const SampleColumns: ColDef[] = [
+export const sampleColDefs: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
@@ -652,7 +652,7 @@ function setupEditableSampleFields(
   });
 }
 
-export const CohortColumns: ColDef[] = [
+export const cohortColDefs: ColDef[] = [
   {
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
@@ -719,7 +719,7 @@ export const CohortColumns: ColDef[] = [
   },
 ];
 
-export const WesSampleColumns: ColDef[] = [
+export const wesSampleColDefs: ColDef[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
@@ -868,7 +868,7 @@ export const WesSampleColumns: ColDef[] = [
   },
 ];
 
-export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(WesSampleColumns);
+export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(wesSampleColDefs);
 
 export const defaultColDef: ColDef = {
   sortable: true,
@@ -904,11 +904,11 @@ const editableWesSampleFields = [
   "accessLevel",
 ];
 
-setupEditableSampleFields(SampleColumns, editableSampleFields);
-setupEditableSampleFields(WesSampleColumns, editableWesSampleFields);
+setupEditableSampleFields(sampleColDefs, editableSampleFields);
+setupEditableSampleFields(wesSampleColDefs, editableWesSampleFields);
 
 export const combinedSampleDetailsColumns = _.uniqBy(
-  [...SampleColumns, ...ReadOnlyCohortSampleDetailsColumns],
+  [...sampleColDefs, ...ReadOnlyCohortSampleDetailsColumns],
   "field"
 );
 
