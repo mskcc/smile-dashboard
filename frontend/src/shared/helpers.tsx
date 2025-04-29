@@ -73,7 +73,7 @@ function getAgGridBooleanValueFormatter({
   };
 }
 
-export const RequestColumns: ColDef[] = [
+export const requestColDefs: ColDef[] = [
   {
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
@@ -287,7 +287,8 @@ export const sampleColDefs: ColDef[] = [
     headerName: "Status",
     cellRenderer: (params: ICellRendererParams) => {
       if (params.data?.revisable === true) {
-        return params.data?.validationStatus === false ? (
+        return params.data?.validationStatus === false ||
+          params.data?.validationStatus === null ? (
           <WarningIcon />
         ) : (
           <CheckIcon />
@@ -299,9 +300,10 @@ export const sampleColDefs: ColDef[] = [
       return null;
     },
     tooltipComponent: StatusTooltip,
-    // This prop is required for tooltip to appear even though we're not using it
-    // (We're overriding this prop with the custom tooltip component)
-    tooltipField: "validationReport",
+    // This prop is required for tooltip to appear even though it's being overridden with the tooltipComponent.
+    // We're using the "primaryId" field because it's always present in the data. Using "validationReport" would
+    // make the tooltip not appear for rows where the Sample is missing a corresponding Status in the database.
+    tooltipField: "primaryId",
   },
   {
     field: "cmoSampleName",

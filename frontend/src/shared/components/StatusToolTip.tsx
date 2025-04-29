@@ -2,13 +2,15 @@ import { ColDef, ITooltipParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { DashboardSample } from "../../generated/graphql";
 
+type SampleStatusItem = {
+  status: string;
+  meaning: string;
+  actionItem: string;
+  responsibleParty: string;
+};
+
 type SampleStatusMap = {
-  [key: string]: {
-    status: string;
-    meaning: string;
-    actionItem: string;
-    responsibleParty: string;
-  };
+  [key: string]: SampleStatusItem;
 };
 
 /**
@@ -17,7 +19,6 @@ type SampleStatusMap = {
  * Note: when querying this data from the database, handle both formats: JSON string and {key=value} string.
  *
  * @Value Actionable details for the PM team.
- * Source: page 14 of PM SMILE manual at https://mskcc.sharepoint.com/:w:/t/CMOProjectManagers/EarBTW9ZqBxBlp34XsTT5zwBhID-kFZ10nUv13wwkIyZkg?e=M4hztj.
  */
 const SAMPLE_STATUS_MAP: SampleStatusMap = {
   "baitSet missing": {
@@ -100,6 +101,18 @@ const SAMPLE_STATUS_MAP: SampleStatusMap = {
   },
 };
 
+/**
+ * AG Grid data to use when a Sample is missing a corresponding Status in the database.
+ */
+const MISSING_SAMPLE_STATUS: SampleStatusItem[] = [
+  {
+    status: "Data error",
+    meaning: "Validation status is missing from this sample",
+    actionItem: "PMs contact the SMILE team",
+    responsibleParty: "SMILE",
+  },
+];
+
 const sampleStatusColDefs: ColDef[] = [
   {
     field: "status",
@@ -133,72 +146,61 @@ const defaultColDef: ColDef = {
   },
 };
 
-export const StatusTooltip = (props: ITooltipParams) => {
-  let { primaryId, validationReport, validationStatus } =
-    props.data as DashboardSample;
-
-  console.log("Validation report", validationReport);
-
-  let validationReportList;
-
-  if (validationReport !== null && validationReport !== undefined) {
-    let validationReportMap = new Map();
-
-    try {
-      // TODO: test this case
-      // Parse the validation report JSON string
-      // e.g. "{"fastQs":"missing","igoComplete":"false"}"
-      validationReportMap = new Map(
-        Object.entries(JSON.parse(validationReport))
-      );
-    } catch (e) {
-      // TODO: test this case
-      // Handle parsing the alternative format of the validation report data
-      // e.g. "{fastQs=missing,igoComplete=false}"
-      const cleanedReport = validationReport.replace(/[{}]/g, "");
-      const reportArray = cleanedReport.split(",");
-      for (const r of reportArray) {
-        const [key, value] = r.split("=").map((str: String) => str.trim());
+function parseValidationReport(validationReport: string): Map<string, string> {
+  const validationReportMap = new Map<string, string>();
+  try {
+    // Parse the validation report JSON string
+    // e.g. "{"fastQs":"missing","igoComplete":"false"}"
+    return new Map(Object.entries(JSON.parse(validationReport)));
+  } catch (e) {
+    // Parse the alternative format of the validation report data
+    // e.g. "{fastQs=missing,igoComplete=false}"
+    const keyValuePairs = validationReport.replace(/[{}]/g, "").split(",");
+    for (const keyValuePair of keyValuePairs) {
+      const [key, value] = keyValuePair.split("=").map((str) => str.trim());
+      if (key && value) {
         validationReportMap.set(key, value);
       }
     }
+    return validationReportMap;
+  }
+}
 
-    validationReportList = Array.from(
-      validationReportMap,
-      ([fieldName, report]) => ({
+export function StatusTooltip({ data }: ITooltipParams<DashboardSample>) {
+  if (!data) {
+    return null;
+  }
+
+  const { primaryId, validationReport, validationStatus } = data;
+  const validationDataForAgGrid: SampleStatusItem[] = [];
+
+  // Populate the validationDataForAgGrid with the validation report data
+  if (validationStatus === false) {
+    const validationReportMap = parseValidationReport(validationReport!);
+    validationDataForAgGrid.push(
+      ...Array.from(validationReportMap, ([fieldName, report]) => ({
         ...SAMPLE_STATUS_MAP[`${fieldName} ${report}`],
-      })
+      }))
     );
-  } else {
-    validationStatus = false;
-    // TODO: test this case
-    validationReportList = [
-      {
-        status: "Data error",
-        meaning: "Validation status is missing from this sample",
-        actionItem: "Please contact the SMILE team",
-        responsibleParty: "SMILE",
-      },
-    ];
+    // Handle the case where a Sample is missing a corresponding Status in the database
+  } else if (validationStatus === null) {
+    validationDataForAgGrid.push(...MISSING_SAMPLE_STATUS);
   }
 
-  console.log("validationReportList", validationReportList);
-
-  if (!validationStatus) {
-    return (
-      <div className="tooltip-styles">
-        <p>Error report for {`${primaryId}`}</p>
-        <div className="ag-theme-alpine" style={{ width: 880 }}>
-          <AgGridReact
-            rowData={validationReportList}
-            columnDefs={sampleStatusColDefs}
-            defaultColDef={defaultColDef}
-            domLayout="autoHeight"
-          ></AgGridReact>
-        </div>
+  if (validationDataForAgGrid.length === 0) {
+    return null;
+  }
+  return (
+    <div className="tooltip-styles">
+      <p>Status report for {`${primaryId}`}</p>
+      <div className="ag-theme-alpine" style={{ width: 880 }}>
+        <AgGridReact
+          rowData={validationDataForAgGrid}
+          columnDefs={sampleStatusColDefs}
+          defaultColDef={defaultColDef}
+          domLayout="autoHeight"
+        ></AgGridReact>
       </div>
-    );
-  } else {
-    return "";
-  }
-};
+    </div>
+  );
+}

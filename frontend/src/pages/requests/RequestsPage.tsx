@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   MAX_ROWS_EXPORT,
   MAX_ROWS_EXPORT_WARNING,
-  RequestColumns,
+  requestColDefs,
   sampleColDefs,
 } from "../../shared/helpers";
 import { useParams } from "react-router-dom";
@@ -34,7 +34,7 @@ export default function RequestsPage() {
   return (
     <>
       <RecordsList
-        columnDefs={RequestColumns}
+        columnDefs={requestColDefs}
         dataName={dataName}
         defaultSort={defaultSort}
         useRecordsLazyQuery={useDashboardRequestsLazyQuery}
