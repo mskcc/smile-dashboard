@@ -244,12 +244,19 @@ export const patientColDefs: ColDef[] = [
     }),
   },
   {
+    field: "inDbGap",
+    headerName: "In a dbGaP Study",
+    // TODO: enable column filter
+    // TODO: format values to "Yes" and "No"
+  },
+  {
     field: "totalSampleCount",
     headerName: "# Samples",
   },
   {
     field: "cmoSampleIds",
     headerName: "Sample IDs",
+    maxWidth: 300,
   },
   {
     field: "smilePatientId",
