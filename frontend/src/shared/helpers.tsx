@@ -245,9 +245,14 @@ export const patientColDefs: ColDef[] = [
   },
   {
     field: "inDbGap",
-    headerName: "In a dbGaP Study",
-    // TODO: enable column filter
-    // TODO: format values to "Yes" and "No"
+    headerName: "dbGaP",
+    ...getAgGridBooleanFilterConfigs({
+      showBlanksFilterOption: false,
+    }),
+    ...getAgGridBooleanValueFormatter({
+      trueVal: true,
+      falseVal: false,
+    }),
   },
   {
     field: "totalSampleCount",

@@ -59,6 +59,19 @@ export function buildPatientsQueryBody({
       });
       queryFilters.push(consentPartCFilter);
     }
+
+    const inDbGapFilterObj = filters?.find(
+      (filter) => filter.field === "inDbGap"
+    );
+    if (inDbGapFilterObj) {
+      const inDbGapFilter = buildCypherBooleanFilter({
+        booleanVar: "tempNode.inDbGap",
+        filter: JSON.parse(inDbGapFilterObj.filter),
+        trueVal: true,
+        falseVal: false,
+      });
+      queryFilters.push(inDbGapFilter);
+    }
   }
 
   const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
