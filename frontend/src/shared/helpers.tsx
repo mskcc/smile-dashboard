@@ -14,6 +14,8 @@ import CheckIcon from "@material-ui/icons/Check";
 import { StatusTooltip } from "./components/StatusToolTip";
 import moment from "moment";
 import _ from "lodash";
+import { ValidationModal } from "../components/ValidationModal";
+import { DashboardRequest } from "../generated/graphql";
 
 export type SampleChange = {
   primaryId: string;
@@ -78,37 +80,31 @@ export const requestColDefs: ColDef[] = [
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
       return (
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => {
-            if (params.data.igoRequestId !== undefined) {
-              params.context.navigateFunction(
-                `/requests/${params.data.igoRequestId}`
-              );
-            }
-          }}
-        >
-          View
-        </Button>
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data.igoRequestId !== undefined) {
+                params.context.navigateFunction(
+                  `/requests/${params.data.igoRequestId}`
+                );
+              }
+            }}
+          >
+            View
+          </Button>
+        </div>
       );
     },
     sortable: false,
   },
   {
     headerName: "Status",
-    cellRenderer: (params: ICellRendererParams) => {
+    cellRenderer: (params: ICellRendererParams<DashboardRequest>) => {
       return params.data?.validationStatus === false ||
         params.data?.validationStatus === null ? (
-        <div
-          onClick={() => {
-            console.log("Warning icon clicked");
-          }}
-          className="warning-icon"
-          title="Click to view validation issues"
-        >
-          <WarningIcon />
-        </div>
+        <ValidationModal data={params.data} />
       ) : (
         <CheckIcon className="check-icon" />
       );

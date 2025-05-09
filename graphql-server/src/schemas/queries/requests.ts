@@ -166,8 +166,6 @@ export async function queryDashboardRequests({
     LIMIT ${limit}
   `;
 
-  console.log("Cypher Query:", cypherQuery);
-
   const session = neo4jDriver.session();
   try {
     const result = await session.run(cypherQuery);

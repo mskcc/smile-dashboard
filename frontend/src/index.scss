@@ -114,7 +114,6 @@ $standardMargin: 10px;
 }
 
 .check-icon {
-  margin-left: 5px;
   margin-bottom: 5px;
 }
 
@@ -124,12 +123,7 @@ $standardMargin: 10px;
 
 .warning-icon {
   margin-bottom: 5px;
-  padding: 4px;
+  padding: 2px;
   cursor: pointer;
-  display: inline-flex;
   border-radius: 4px;
-  transition: background-color 0.2s;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
 }
