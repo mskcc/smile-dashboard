@@ -91,28 +91,34 @@ export function buildRequestsQueryBody({
     WITH
       r,
       COLLECT {
-        MATCH (r)-[:HAS_METADATA]->(rm:RequestMetadata)
-      	RETURN rm ORDER BY rm.importDate DESC LIMIT 1
+        MATCH (r)-[:HAS_METADATA]->(rm:RequestMetadata)-[:HAS_STATUS]->(st:Status)
+      	RETURN { rm: rm, st: st }
+        ORDER BY rm.importDate DESC
+        LIMIT 1
       } AS latestRm
 
     OPTIONAL MATCH (r)-[:HAS_SAMPLE]->(s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
 
     WITH
       r,
+      latestRm[0].st AS latestStatus,
       COUNT(DISTINCT s.smileSampleId) AS totalSampleCount,
       apoc.coll.max(
-        COLLECT(latestRm[0].importDate) +
+        COLLECT(latestRm[0].rm.importDate) +
         COLLECT(DISTINCT sm.importDate)
       ) AS latestImportDate
 
     WITH
       r,
+      latestStatus,
       totalSampleCount,
       latestImportDate
 
     WITH
       ({igoRequestId: r.igoRequestId,
         igoProjectId: r.igoProjectId,
+        validationReport: latestStatus.validationReport,
+        validationStatus: latestStatus.validationStatus,
         importDate: latestImportDate,
         totalSampleCount: totalSampleCount,
         projectManagerName: r.projectManagerName,
