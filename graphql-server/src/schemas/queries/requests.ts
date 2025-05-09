@@ -84,19 +84,32 @@ export function buildRequestsQueryBody({
 
   const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
 
+  // TODO: when done, compare the request page results before vs after to ensure consistency
   const requestsQueryBody = `
-    MATCH (r:Request)-[:HAS_METADATA]->(rm:RequestMetadata)
+    MATCH (r:Request)
 
-    // Get the latest SampleMetadata of each Sample
-    OPTIONAL MATCH (r)-[:HAS_SAMPLE]->(s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
     WITH
       r,
-      count(DISTINCT s.smileSampleId) AS totalSampleCount,
-      collect(distinct sm.importDate) + collect(distinct rm.importDate) as allImportDates
+      COLLECT {
+        MATCH (r)-[:HAS_METADATA]->(rm:RequestMetadata)
+      	RETURN rm ORDER BY rm.importDate DESC LIMIT 1
+      } AS latestRm
+
+    OPTIONAL MATCH (r)-[:HAS_SAMPLE]->(s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
+
+    WITH
+      r,
+      COUNT(DISTINCT s.smileSampleId) AS totalSampleCount,
+      apoc.coll.max(
+        COLLECT(latestRm[0].importDate) +
+        COLLECT(DISTINCT sm.importDate)
+      ) AS latestImportDate
+
     WITH
       r,
       totalSampleCount,
-      apoc.coll.max(allImportDates) as latestImportDate
+      latestImportDate
+
     WITH
       ({igoRequestId: r.igoRequestId,
         igoProjectId: r.igoProjectId,
@@ -146,6 +159,8 @@ export async function queryDashboardRequests({
     SKIP ${offset}
     LIMIT ${limit}
   `;
+
+  console.log("Cypher Query:", cypherQuery);
 
   const session = neo4jDriver.session();
   try {
