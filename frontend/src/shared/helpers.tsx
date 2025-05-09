@@ -14,7 +14,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import { StatusTooltip } from "./components/StatusToolTip";
 import moment from "moment";
 import _ from "lodash";
-import { ValidationModal } from "../components/ValidationModal";
+import { RecordValidation } from "../components/RecordValidation";
 import { DashboardRequest } from "../generated/graphql";
 
 export type SampleChange = {
@@ -102,9 +102,14 @@ export const requestColDefs: ColDef[] = [
   {
     headerName: "Status",
     cellRenderer: (params: ICellRendererParams<DashboardRequest>) => {
-      return params.data?.validationStatus === false ||
-        params.data?.validationStatus === null ? (
-        <ValidationModal data={params.data} />
+      if (!params.data) return null;
+      const { igoRequestId, validationStatus, validationReport } = params.data;
+      return validationStatus === false || validationStatus === null ? (
+        <RecordValidation
+          validationStatus={validationStatus}
+          validationReport={validationReport}
+          errorReportName={`request ${igoRequestId}`}
+        />
       ) : (
         <CheckIcon className="check-icon" />
       );
