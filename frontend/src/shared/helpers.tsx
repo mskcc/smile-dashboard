@@ -96,6 +96,26 @@ export const requestColDefs: ColDef[] = [
     sortable: false,
   },
   {
+    headerName: "Status",
+    cellRenderer: (params: ICellRendererParams) => {
+      return params.data?.validationStatus === false ||
+        params.data?.validationStatus === null ? (
+        <div
+          onClick={() => {
+            console.log("Warning icon clicked");
+          }}
+          className="warning-icon"
+          title="Click to view validation issues"
+        >
+          <WarningIcon />
+        </div>
+      ) : (
+        <CheckIcon className="check-icon" />
+      );
+    },
+    sortable: false,
+  },
+  {
     field: "igoRequestId",
     headerName: "IGO Request ID",
   },
@@ -317,6 +337,7 @@ export const sampleColDefs: ColDef[] = [
     // We're using the "primaryId" field because it's always present in the data. Using "validationReport" would
     // make the tooltip not appear for rows where the Sample is missing a corresponding Status in the database.
     tooltipField: "primaryId",
+    sortable: false,
   },
   {
     field: "cmoSampleName",

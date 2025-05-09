@@ -112,3 +112,24 @@ $standardMargin: 10px;
 .ag-rich-select-list {
   height: auto !important;
 }
+
+.check-icon {
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+
+.warning-icon:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.warning-icon {
+  margin-bottom: 5px;
+  padding: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
