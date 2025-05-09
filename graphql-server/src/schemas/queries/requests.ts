@@ -21,26 +21,28 @@ export function buildRequestsQueryBody({
 
   if (searchVals?.length) {
     const fieldsToSearch = [
-      "tempNode.igoRequestId",
-      "tempNode.igoProjectId",
-      "tempNode.importDate",
-      "tempNode.projectManagerName",
-      "tempNode.investigatorName",
-      "tempNode.investigatorEmail",
-      "tempNode.piEmail",
-      "tempNode.dataAnalystName",
-      "tempNode.dataAnalystEmail",
-      "tempNode.genePanel",
-      "tempNode.labHeadName",
-      "tempNode.labHeadEmail",
-      "tempNode.qcAccessEmails",
-      "tempNode.dataAccessEmails",
-      "tempNode.bicAnalysis",
-      "tempNode.isCmoRequest",
-      "tempNode.otherContactEmails",
+      "igoRequestId",
+      "igoProjectId",
+      "importDate",
+      "projectManagerName",
+      "investigatorName",
+      "investigatorEmail",
+      "piEmail",
+      "dataAnalystName",
+      "dataAnalystEmail",
+      "genePanel",
+      "labHeadName",
+      "labHeadEmail",
+      "qcAccessEmails",
+      "dataAccessEmails",
+      "bicAnalysis",
+      "isCmoRequest",
+      "otherContactEmails",
     ];
     const searchFilters = fieldsToSearch
-      .map((field) => `${field} =~ '(?i).*(${searchVals.join("|")}).*'`)
+      .map(
+        (field) => `tempNode.${field} =~ '(?i).*(${searchVals.join("|")}).*'`
+      )
       .join(" OR ");
     queryFilters.push(searchFilters);
   }
