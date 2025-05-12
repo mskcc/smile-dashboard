@@ -2,7 +2,7 @@ import { ColDef, ITooltipParams } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { DashboardSample } from "../../generated/graphql";
 
-const SAMPLE_STATUS_MAP: StatusMap = {
+export const SAMPLE_STATUS_MAP: StatusMap = {
   "baitSet missing": {
     item: "Baitset Missing",
     description: "Baitset field does not have a value assigned in LIMS",
@@ -98,7 +98,7 @@ export type StatusItem = {
  *
  * @Value Actionable details for the PM team.
  */
-type StatusMap = {
+export type StatusMap = {
   [key: string]: StatusItem;
 };
 
@@ -167,6 +167,36 @@ export function parseValidationReport(
     }
     return validationReportMap;
   }
+}
+
+export function extractNestedValidationReport(
+  validationReport: string
+): string | null {
+  try {
+    // Try parsing as JSON first
+    const parsed = JSON.parse(validationReport);
+    if (parsed.samples?.[0]?.status?.validationReport) {
+      return JSON.stringify(parsed.samples[0].status.validationReport);
+    }
+  } catch (e) {
+    // If JSON parsing fails, try the alternative format
+    // Example: {samples=[{status={validationReport={...}}]}
+    const samplesMatch = validationReport.match(/samples=\[(.*?)\]/);
+    if (samplesMatch) {
+      const samplesContent = samplesMatch[1];
+      const statusMatch = samplesContent.match(/status=\{(.*?)\}/);
+      if (statusMatch) {
+        const statusContent = statusMatch[1];
+        const validationReportMatch = statusContent.match(
+          /validationReport=\{(.*?)\}/
+        );
+        if (validationReportMatch) {
+          return `{${validationReportMatch[1]}}`;
+        }
+      }
+    }
+  }
+  return null;
 }
 
 export function StatusTooltip({ data }: ITooltipParams<DashboardSample>) {
