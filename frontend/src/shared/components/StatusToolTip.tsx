@@ -98,6 +98,7 @@ export type StatusItem = {
   description: string;
   actionItem: string;
   responsibleParty: string;
+  sampleLevelHeader?: string;
 };
 
 /**

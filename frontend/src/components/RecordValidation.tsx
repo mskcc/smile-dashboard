@@ -70,9 +70,15 @@ const validationColDefs: ColDef[] = [
     headerName: "Responsible Party",
     maxWidth: 170,
   },
+  // Group sample validation errors under one header
+  {
+    field: "sampleLevelHeader",
+    hide: true,
+    rowGroup: true,
+  },
+  // Group same-sample validation errors by igoId
   {
     field: "igoId",
-    headerName: "IGO ID",
     hide: true,
     rowGroup: true,
   },
@@ -133,13 +139,6 @@ function ErrorReportModal({
     const samplesValidationReports =
       parseSamplesValidationReports(validationReport);
     if (samplesValidationReports.length > 0) {
-      validationDataForAgGrid.push({
-        item: "Sample-level errors",
-        description: "Request contains samples with validation errors",
-        actionItem:
-          "See sample-specific errors and action items grouped by Primary ID below",
-        responsibleParty: "",
-      });
       samplesValidationReports.forEach((report) => {
         const igoId = Object.keys(report)[0];
         const reportKey = report[igoId];
@@ -148,6 +147,7 @@ function ErrorReportModal({
           validationDataForAgGrid.push({
             ...statusItem,
             igoId,
+            sampleLevelHeader: "Sample-level validation errors",
           });
         }
       });
