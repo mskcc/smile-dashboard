@@ -119,19 +119,17 @@ function ErrorReportModal({
     // Status > validationReport > samples > an individual sample's status > validationReport
     const samplesValidationReports =
       parseNestedSamplesValidationReport(validationReport);
-    if (Object.keys(samplesValidationReports).length > 0) {
-      Object.entries(samplesValidationReports).forEach(
-        ([igoId, statusMapKey]) => {
-          const statusItem = SAMPLE_STATUS_MAP[statusMapKey];
-          if (statusItem) {
-            validationDataForAgGrid.push({
-              sampleLevelValidationHeader: "Sample-level validation errors",
-              igoId,
-              ...statusItem,
-            });
-          }
+    if (samplesValidationReports.length > 0) {
+      samplesValidationReports.forEach(([igoId, statusMapKey]) => {
+        const statusItem = SAMPLE_STATUS_MAP[statusMapKey];
+        if (statusItem) {
+          validationDataForAgGrid.push({
+            sampleLevelValidationHeader: "Sample-level validation errors",
+            igoId,
+            ...statusItem,
+          });
         }
-      );
+      });
     }
     // When a record's validationStatus is missing, display a note to the user
   } else if (validationStatus === null) {
@@ -185,7 +183,7 @@ function parseValidationReport(validationReport: string): Map<string, string> {
 }
 
 function parseNestedSamplesValidationReport(input: string) {
-  const result: { [igoId: string]: keyof typeof SAMPLE_STATUS_MAP } = {};
+  const result: Array<[string, keyof typeof SAMPLE_STATUS_MAP]> = [];
   try {
     // Parse the validation report string as JSON
     // e.g. "{"samples":[{"igoId":"06000_PD_1","cmoInfoIgoId":"06000_PD_1",...}]}"
@@ -200,7 +198,10 @@ function parseNestedSamplesValidationReport(input: string) {
               ? validationReport
               : parseValidationReport(validationReport);
           reportMap.forEach((value, key) => {
-            result[igoId] = `${key} ${value}`;
+            result.push([
+              igoId,
+              `${key} ${value}` as keyof typeof SAMPLE_STATUS_MAP,
+            ]);
           });
         }
       }
@@ -215,7 +216,10 @@ function parseNestedSamplesValidationReport(input: string) {
       const reportContent = match[2];
       const reportMap = parseValidationReport(`{${reportContent}}`);
       reportMap.forEach((value, key) => {
-        result[igoId] = `${key} ${value}`;
+        result.push([
+          igoId,
+          `${key} ${value}` as keyof typeof SAMPLE_STATUS_MAP,
+        ]);
       });
     }
   }
