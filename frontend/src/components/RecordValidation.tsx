@@ -5,53 +5,46 @@ import { CustomTooltip } from "../shared/components/CustomToolTip";
 import WarningIcon from "@material-ui/icons/Warning";
 import { Button, Modal } from "react-bootstrap";
 import { ColDef } from "ag-grid-community";
+import { AgGridReact } from "ag-grid-react";
 import {
-  defaultColDef,
-  getActionItemForMissingIgoField,
   MISSING_STATUS,
-  parseValidationReport,
   SAMPLE_STATUS_MAP,
   StatusItem,
   StatusMap,
-} from "../shared/components/StatusToolTip";
-import { AgGridReact } from "ag-grid-react";
+} from "../configs/recordValidationMaps";
 
-// TODO: reduce duplication of code between this file and StatusToolTip.tsx
-const REQUEST_STATUS_MAP: StatusMap = {
-  "isCmo SMILE CMO request filter is enabled and request JSON received has 'cmoRequest': false. This value must be set to true for import into SMILE.":
-    {
-      item: "isCmo false",
-      description:
-        "SMILE CMO request filter is enabled and request JSON received has 'cmoRequest': false. " +
-        "This value must be set to true for import into SMILE.",
-      actionItem: getActionItemForMissingIgoField("cmoRequest"),
-      responsibleParty: "IGO",
-    },
-  "samples (missing) Request JSON is missing 'samples' or 'samples' is an empty list.":
-    {
-      item: "samples (missing)",
-      description:
-        "Request JSON from IGO LIMS' REST API is missing 'samples' or 'samples' is an empty list.",
-      actionItem: getActionItemForMissingIgoField("samples"),
-      responsibleParty: "IGO",
-    },
-  "samples (failed) some request samples failed validation": {
-    item: "samples (failed)",
-    description: "Some request samples failed validation",
-    actionItem:
-      "Review each sample's validation error below. If sample-level errors are missing or incorrect, please contact the SMILE team.",
-    responsibleParty: "",
-  },
-  "samples (failed) all request samples failed validation": {
-    item: "samples (failed)",
-    description: "All request samples failed validation",
-    actionItem:
-      "Review each sample's validation error below. If sample-level errors are missing or incorrect, please contact the SMILE team.",
-    responsibleParty: "",
-  },
-};
+type ModalTitle = `Error report for ${string}`;
 
-const validationColDefs: ColDef[] = [
+export function RecordValidation({
+  validationStatus,
+  validationReport,
+  modalTitle,
+  recordStatusMap,
+}: {
+  validationStatus: DashboardRequest["validationStatus"];
+  validationReport: DashboardRequest["validationReport"];
+  modalTitle: ModalTitle;
+  recordStatusMap: StatusMap;
+}) {
+  const [modalShow, setModalShow] = useState(false);
+  return (
+    <>
+      <WarningIconButton setModalShow={setModalShow} />
+      {modalShow && (
+        <ErrorReportModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          validationStatus={validationStatus}
+          validationReport={validationReport}
+          title={modalTitle}
+          recordStatusMap={recordStatusMap}
+        />
+      )}
+    </>
+  );
+}
+
+const validationColDefs: ColDef<StatusItem>[] = [
   {
     field: "item",
     headerName: "Item",
@@ -70,13 +63,13 @@ const validationColDefs: ColDef[] = [
     headerName: "Responsible Party",
     maxWidth: 170,
   },
-  // Group sample validation errors under one header
+  // For request validation only - Group sample validation errors under one header
   {
-    field: "sampleLevelHeader",
+    field: "sampleLevelValidationHeader",
     hide: true,
     rowGroup: true,
   },
-  // Group same-sample validation errors by igoId
+  // For request validation only - Group same-sample validation errors by igoId
   {
     field: "igoId",
     hide: true,
@@ -84,33 +77,15 @@ const validationColDefs: ColDef[] = [
   },
 ];
 
-type modalTitle = `Error report for ${string}`;
-
-export function RecordValidation({
-  validationStatus,
-  validationReport,
-  modalTitle,
-}: {
-  validationStatus: DashboardRequest["validationStatus"];
-  validationReport: DashboardRequest["validationReport"];
-  modalTitle: modalTitle;
-}) {
-  const [modalShow, setModalShow] = useState(false);
-  return (
-    <>
-      <WarningIconButton setModalShow={setModalShow} />
-      {modalShow && (
-        <ErrorReportModal
-          show={modalShow}
-          onHide={() => setModalShow(false)}
-          validationStatus={validationStatus}
-          validationReport={validationReport}
-          title={modalTitle}
-        />
-      )}
-    </>
-  );
-}
+const defaultColDef: ColDef = {
+  wrapText: true,
+  autoHeight: true,
+  cellStyle: {
+    wordBreak: "break-word",
+    lineHeight: "1.25",
+    padding: "6px 18px",
+  },
+};
 
 function ErrorReportModal({
   show,
@@ -118,40 +93,47 @@ function ErrorReportModal({
   validationStatus,
   validationReport,
   title,
+  recordStatusMap,
 }: {
   show: boolean;
   onHide: () => void;
   validationStatus: DashboardRequest["validationStatus"];
   validationReport: DashboardRequest["validationReport"];
-  title: modalTitle;
+  title: ModalTitle;
+  recordStatusMap: StatusMap;
 }) {
-  const validationDataForAgGrid: (StatusItem & { igoId?: string })[] = [];
+  const validationDataForAgGrid: StatusItem[] = [];
 
+  // Prepare the data for AG Grid
   if (validationStatus === false && validationReport) {
+    // Parse the validation report string and handle the `samples` field separately if applicable
     const validationReportMap = parseValidationReport(validationReport);
     validationReportMap.delete("samples");
     validationDataForAgGrid.push(
       ...Array.from(validationReportMap, ([fieldName, report]) => {
-        const statusItem = REQUEST_STATUS_MAP[`${fieldName} ${report}`];
+        const statusItem = recordStatusMap[`${fieldName} ${report}`];
         return statusItem || null;
       }).filter((item) => item !== null)
     );
+    // For request-level validation, validation reports of failed samples are nested inside the request's
+    // Status > validationReport > samples > an individual sample's status > validationReport
     const samplesValidationReports =
-      parseSamplesValidationReports(validationReport);
-    if (samplesValidationReports.length > 0) {
-      samplesValidationReports.forEach((report) => {
-        const igoId = Object.keys(report)[0];
-        const reportKey = report[igoId];
-        const statusItem = SAMPLE_STATUS_MAP[`${reportKey}`];
-        if (statusItem) {
-          validationDataForAgGrid.push({
-            ...statusItem,
-            igoId,
-            sampleLevelHeader: "Sample-level validation errors",
-          });
+      parseNestedSamplesValidationReport(validationReport);
+    if (Object.keys(samplesValidationReports).length > 0) {
+      Object.entries(samplesValidationReports).forEach(
+        ([igoId, statusMapKey]) => {
+          const statusItem = SAMPLE_STATUS_MAP[statusMapKey];
+          if (statusItem) {
+            validationDataForAgGrid.push({
+              sampleLevelValidationHeader: "Sample-level validation errors",
+              igoId,
+              ...statusItem,
+            });
+          }
         }
-      });
+      );
     }
+    // When a record's validationStatus is missing, display a note to the user
   } else if (validationStatus === null) {
     validationDataForAgGrid.push(...MISSING_STATUS);
   }
@@ -166,11 +148,11 @@ function ErrorReportModal({
       </Modal.Header>
       <Modal.Body>
         <div className={`${styles.tableHeight} ag-theme-alpine`}>
-          <AgGridReact
+          <AgGridReact<StatusItem>
+            groupDisplayType="groupRows"
             rowData={validationDataForAgGrid}
             columnDefs={validationColDefs}
             defaultColDef={defaultColDef}
-            groupDisplayType="groupRows"
             onGridReady={(params) => params.api.sizeColumnsToFit()}
           />
         </div>
@@ -182,9 +164,31 @@ function ErrorReportModal({
   );
 }
 
-function parseSamplesValidationReports(input: string) {
-  const result: Array<{ [igoId: string]: string }> = [];
+function parseValidationReport(validationReport: string): Map<string, string> {
+  const validationReportMap = new Map<string, string>();
   try {
+    // Parse the validation report JSON string
+    // e.g. "{"fastQs":"missing","igoComplete":"false"}"
+    return new Map(Object.entries(JSON.parse(validationReport)));
+  } catch (e) {
+    // Parse the alternative format of the validation report data
+    // e.g. "{fastQs=missing,igoComplete=false}"
+    const keyValuePairs = validationReport.replace(/[{}]/g, "").split(",");
+    for (const keyValuePair of keyValuePairs) {
+      const [key, value] = keyValuePair.split("=").map((str) => str.trim());
+      if (key && value) {
+        validationReportMap.set(key, value);
+      }
+    }
+    return validationReportMap;
+  }
+}
+
+function parseNestedSamplesValidationReport(input: string) {
+  const result: { [igoId: string]: keyof typeof SAMPLE_STATUS_MAP } = {};
+  try {
+    // Parse the validation report string as JSON
+    // e.g. "{"samples":[{"igoId":"06000_PD_1","cmoInfoIgoId":"06000_PD_1",...}]}"
     const obj = JSON.parse(input);
     if (obj && Array.isArray(obj.samples)) {
       for (const sample of obj.samples) {
@@ -196,23 +200,22 @@ function parseSamplesValidationReports(input: string) {
               ? validationReport
               : parseValidationReport(validationReport);
           reportMap.forEach((value, key) => {
-            result.push({ [igoId]: `${key} ${value}` });
+            result[igoId] = `${key} ${value}`;
           });
         }
       }
-      return result;
     }
   } catch {
-    // Not valid JSON, fallback to regex approach
+    // Parse the alternative format of the validation report data
+    // e.g. "{samples=[{igoId=06000_PD_1, cmoInfoIgoId=06000_PD_1, ...}]}"
     const pattern = /igoId=([^,}\s]+)[\s\S]*?validationReport=\{([^}]*)\}/g;
     let match: RegExpExecArray | null;
-
     while ((match = pattern.exec(input)) !== null) {
       const igoId = match[1];
       const reportContent = match[2];
       const reportMap = parseValidationReport(`{${reportContent}}`);
       reportMap.forEach((value, key) => {
-        result.push({ [igoId]: `${key} ${value}` });
+        result[igoId] = `${key} ${value}`;
       });
     }
   }
@@ -232,7 +235,7 @@ function WarningIconButton({
       aria-label="Warning"
     >
       <CustomTooltip icon={<WarningIcon className="warning-icon" />}>
-        Click to view request validation errors
+        Click to view validation errors
       </CustomTooltip>
     </div>
   );
