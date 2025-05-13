@@ -104,11 +104,12 @@ export const requestColDefs: ColDef[] = [
     cellRenderer: (params: ICellRendererParams<DashboardRequest>) => {
       if (!params.data) return null;
       const { igoRequestId, validationStatus, validationReport } = params.data;
-      return validationStatus === false || validationStatus === null ? (
+      return (validationStatus === false || validationStatus === null) &&
+        validationReport !== '{"samples":[]}' ? (
         <RecordValidation
           validationStatus={validationStatus}
           validationReport={validationReport}
-          errorReportName={`request ${igoRequestId}`}
+          modalTitle={`Error report for request ${igoRequestId}`}
         />
       ) : (
         <CheckIcon className="check-icon" />
