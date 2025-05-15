@@ -106,8 +106,7 @@ export const requestColDefs: ColDef[] = [
     cellRenderer: (params: ICellRendererParams<DashboardRequest>) => {
       if (!params.data) return null;
       const { igoRequestId, validationStatus, validationReport } = params.data;
-      return (validationStatus === false || validationStatus === null) &&
-        validationReport !== '{"samples":[]}' ? (
+      return validationReport !== null && validationReport !== "{}" ? (
         <RecordValidation
           validationStatus={validationStatus}
           validationReport={validationReport}
