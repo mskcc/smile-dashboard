@@ -105,16 +105,16 @@ function ErrorReportModal({
   const validationDataForAgGrid: StatusItem[] = [];
 
   // Prepare the data for AG Grid
-  if (validationStatus === false && validationReport) {
+  if (validationReport) {
     // Parse the validation report string and handle the `samples` field separately if applicable
     const validationReportMap = parseValidationReport(validationReport);
-    validationReportMap.delete("samples");
     validationDataForAgGrid.push(
       ...Array.from(validationReportMap, ([fieldName, report]) => {
         const statusItem = recordStatusMap[`${fieldName} ${report}`];
         return statusItem || null;
       }).filter((item) => item !== null)
     );
+
     // For request-level validation, validation reports of failed samples are nested inside the request's
     // Status > validationReport > samples > an individual sample's status > validationReport
     const samplesValidationReports =
