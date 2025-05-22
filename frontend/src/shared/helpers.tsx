@@ -13,7 +13,12 @@ import CheckIcon from "@material-ui/icons/Check";
 import moment from "moment";
 import _ from "lodash";
 import { RecordValidation } from "../components/RecordValidation";
-import { DashboardRequest, DashboardSample } from "../generated/graphql";
+import {
+  DashboardCohort,
+  DashboardPatient,
+  DashboardRequest,
+  DashboardSample,
+} from "../generated/graphql";
 import {
   REQUEST_STATUS_MAP,
   SAMPLE_STATUS_MAP,
@@ -87,7 +92,7 @@ export const multiLineColDef: ColDef = {
   },
 };
 
-export const requestColDefs: ColDef[] = [
+export const requestColDefs: ColDef<DashboardRequest>[] = [
   {
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
@@ -145,12 +150,6 @@ export const requestColDefs: ColDef[] = [
   {
     field: "totalSampleCount",
     headerName: "# Samples",
-    cellClass: (params) => {
-      if (params.data.revisable === false) {
-        return "pendingCell";
-      }
-      return undefined;
-    },
   },
   {
     field: "projectManagerName",
@@ -220,7 +219,7 @@ export const requestColDefs: ColDef[] = [
   },
 ];
 
-export const patientColDefs: ColDef[] = [
+export const patientColDefs: ColDef<DashboardPatient>[] = [
   {
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
@@ -319,7 +318,7 @@ const ONCOTREE_CODE_NA_TOOLTIP =
   "This code might have been remapped (renamed) between different versions of the Oncotree API. " +
   "For remapping details, visit the docs at https://oncotree.mskcc.org/#/home?tab=mapping";
 
-export const sampleColDefs: ColDef[] = [
+export const sampleColDefs: ColDef<DashboardSample>[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",
@@ -557,7 +556,7 @@ export const sampleColDefs: ColDef[] = [
   },
 ];
 
-export const DbGapPhenotypeColumns: ColDef[] = [
+export const DbGapPhenotypeColumns: ColDef<DashboardSample>[] = [
   {
     field: "cmoPatientId",
     headerName: "SUBJECT_ID",
@@ -712,7 +711,7 @@ function setupEditableSampleFields(
   });
 }
 
-export const cohortColDefs: ColDef[] = [
+export const cohortColDefs: ColDef<DashboardCohort>[] = [
   {
     headerName: "View Samples",
     cellRenderer: (params: ICellRendererParams) => {
@@ -779,7 +778,7 @@ export const cohortColDefs: ColDef[] = [
   },
 ];
 
-export const wesSampleColDefs: ColDef[] = [
+export const wesSampleColDefs: ColDef<DashboardSample>[] = [
   {
     field: "primaryId",
     headerName: "Primary ID",

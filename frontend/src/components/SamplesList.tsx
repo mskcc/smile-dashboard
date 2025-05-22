@@ -1,10 +1,7 @@
 import {
   AgGridSortDirection,
-  DashboardRecordContext,
   DashboardRecordFilter,
   DashboardRecordSort,
-  DashboardRequestsQueryVariables,
-  DashboardSamplesQuery,
   DashboardSamplesQueryVariables,
   QueryDashboardSamplesArgs,
   useDashboardSamplesLazyQuery,
