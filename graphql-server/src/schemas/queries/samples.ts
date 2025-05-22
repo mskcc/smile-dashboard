@@ -12,12 +12,12 @@ import {
 
 export function buildSamplesQueryBody({
   searchVals,
-  context,
+  contexts,
   filters,
   addlOncotreeCodes,
 }: {
   searchVals: QueryDashboardSamplesArgs["searchVals"];
-  context?: QueryDashboardSamplesArgs["context"];
+  contexts?: QueryDashboardSamplesArgs["contexts"];
   filters?: QueryDashboardSamplesArgs["filters"];
   addlOncotreeCodes: string[];
 }) {
@@ -76,29 +76,39 @@ export function buildSamplesQueryBody({
     }
   }
 
-  // Filter for WES samples on click on the Samples page
-  const wesContext =
-    context?.fieldName === "genePanel"
-      ? `latestSm.genePanel =~ '(?i).*(${context.values.join("|")}).*'`
-      : "";
+  // Filter for the WES samples on the Samples page
+  const genePanelContextObj = contexts?.find(
+    (ctx) => ctx?.fieldName === "genePanel"
+  );
+  const genePanelContext = genePanelContextObj
+    ? `latestSm.genePanel =~ '(?i).*(${genePanelContextObj.values.join(
+        "|"
+      )}).*'`
+    : "";
 
   // Filter for the current request in the Request Samples view
-  const requestContext =
-    context?.fieldName === "igoRequestId"
-      ? `latestSm.igoRequestId = '${context.values[0]}'`
-      : "";
+  const requestContextObj = contexts?.find(
+    (ctx) => ctx?.fieldName === "igoRequestId"
+  );
+  const requestContext = requestContextObj
+    ? `latestSm.igoRequestId = '${requestContextObj.values[0]}'`
+    : "";
 
   // Filter for the current patient for the Patient Samples view
-  const patientContext =
-    context?.fieldName === "patientId"
-      ? `pa.value = '${context.values[0]}'`
-      : "";
+  const patientContextObj = contexts?.find(
+    (ctx) => ctx?.fieldName === "patientId"
+  );
+  const patientContext = patientContextObj
+    ? `pa.value = '${patientContextObj.values[0]}'`
+    : "";
 
   // Filter for the current cohort for the Cohort Samples view
-  const cohortContext =
-    context?.fieldName === "cohortId"
-      ? `c.cohortId = '${context.values[0]}'`
-      : "";
+  const cohortContextObj = contexts?.find(
+    (ctx) => ctx?.fieldName === "cohortId"
+  );
+  const cohortContext = cohortContextObj
+    ? `c.cohortId = '${cohortContextObj.values[0]}'`
+    : "";
 
   // "Last Updated" column filter in the Samples Metadata view
   let importDateFilter = "";
@@ -225,7 +235,7 @@ export function buildSamplesQueryBody({
       ", ") AS historicalCmoSampleNames
 
     // Filters for either the WES Samples or Request Samples view, if applicable
-    ${wesContext && `WHERE ${wesContext}`}
+    ${genePanelContext && `WHERE ${genePanelContext}`}
     ${requestContext && `WHERE ${requestContext}`}
 
     // Get SampleMetadata's Status

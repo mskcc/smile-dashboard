@@ -3,6 +3,9 @@ import {
   DashboardRecordContext,
   DashboardRecordFilter,
   DashboardRecordSort,
+  DashboardRequestsQueryVariables,
+  DashboardSamplesQuery,
+  DashboardSamplesQueryVariables,
   QueryDashboardSamplesArgs,
   useDashboardSamplesLazyQuery,
 } from "../generated/graphql";
@@ -58,7 +61,7 @@ interface ISampleListProps {
   columnDefs: ColDef[];
   setUnsavedChanges?: (unsavedChanges: boolean) => void;
   parentDataName?: DataName;
-  sampleContext?: DashboardRecordContext;
+  sampleContexts?: DashboardSamplesQueryVariables["contexts"];
   userEmail?: string | null;
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
   customToolbarUI?: JSX.Element;
@@ -71,7 +74,7 @@ interface ISampleListProps {
 export default function SamplesList({
   columnDefs,
   parentDataName,
-  sampleContext,
+  sampleContexts,
   setUnsavedChanges,
   userEmail,
   setUserEmail,
@@ -95,7 +98,7 @@ export default function SamplesList({
     useDashboardSamplesLazyQuery({
       variables: {
         searchVals: [],
-        context: sampleContext,
+        contexts: sampleContexts,
         sort: DEFAULT_SORT,
         limit: CACHE_BLOCK_SIZE,
         offset: 0,
@@ -107,7 +110,7 @@ export default function SamplesList({
   const sampleCount = data?.dashboardSamples[0]?._total || 0;
 
   const getServerSideDatasource = useCallback(
-    ({ userSearchVal, sampleContext }) => {
+    ({ userSearchVal, sampleContexts }) => {
       return {
         getRows: async (params: IServerSideGetRowsParams) => {
           let filters: DashboardRecordFilter[] | undefined;
@@ -125,7 +128,7 @@ export default function SamplesList({
 
           const fetchInput = {
             searchVals: parseUserSearchVal(userSearchVal),
-            sampleContext,
+            contexts: sampleContexts,
             sort: params.request.sortModel[0] || DEFAULT_SORT,
             filters,
             offset: params.request.startRow ?? 0,
@@ -159,7 +162,7 @@ export default function SamplesList({
   function refreshData(userSearchVal: string) {
     const newDatasource = getServerSideDatasource({
       userSearchVal,
-      sampleContext,
+      sampleContexts,
     });
     gridRef.current?.api.setServerSideDatasource(newDatasource); // triggers a refresh
   }

@@ -17,9 +17,9 @@ import { ColDef, IServerSideGetRowsParams } from "ag-grid-community";
 import { DataName, useHookLazyGeneric } from "../shared/types";
 import SamplesList from "./SamplesList";
 import {
-  DashboardRecordContext,
   DashboardRecordFilter,
   DashboardRecordSort,
+  DashboardSamplesQueryVariables,
   PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
@@ -49,7 +49,7 @@ interface IRecordsListProps {
   setShowDownloadModal: Dispatch<SetStateAction<boolean>>;
   handleDownload: (recordCount: number) => void;
   samplesColDefs: ColDef[];
-  sampleContext?: DashboardRecordContext;
+  sampleContexts?: DashboardSamplesQueryVariables["contexts"];
   userEmail?: string | null;
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
   customToolbarUI?: JSX.Element;
@@ -68,7 +68,7 @@ export default function RecordsList({
   setShowDownloadModal,
   handleDownload,
   samplesColDefs,
-  sampleContext,
+  sampleContexts,
   userEmail,
   setUserEmail,
   customToolbarUI,
@@ -243,7 +243,7 @@ export default function RecordsList({
                   <SamplesList
                     columnDefs={samplesColDefs}
                     parentDataName={dataName}
-                    sampleContext={sampleContext}
+                    sampleContexts={sampleContexts}
                     setUnsavedChanges={setUnsavedChanges}
                     userEmail={userEmail}
                     setUserEmail={setUserEmail}

@@ -38393,12 +38393,16 @@
             "description": null,
             "args": [
               {
-                "name": "context",
+                "name": "contexts",
                 "description": null,
                 "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "DashboardRecordContext",
-                  "ofType": null
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "DashboardRecordContext",
+                    "ofType": null
+                  }
                 },
                 "defaultValue": null,
                 "isDeprecated": false,

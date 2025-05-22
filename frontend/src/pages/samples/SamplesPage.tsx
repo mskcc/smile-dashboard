@@ -10,30 +10,32 @@ import _ from "lodash";
 import { CustomTooltip } from "../../shared/components/CustomToolTip";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 
-const WES_SAMPLE_CONTEXT = {
-  fieldName: "genePanel",
-  values: [
-    "Agilent_51MB",
-    "Agilent_v4_51MB_Human",
-    "CustomCapture",
-    "IDT_Exome_v1_FP",
-    "IDT_Exome_V1_IMPACT468",
-    "WES_Human",
-    "WholeExomeSequencing",
-  ],
-};
+const WES_SAMPLE_CONTEXT = [
+  {
+    fieldName: "genePanel",
+    values: [
+      "Agilent_51MB",
+      "Agilent_v4_51MB_Human",
+      "CustomCapture",
+      "IDT_Exome_v1_FP",
+      "IDT_Exome_V1_IMPACT468",
+      "WES_Human",
+      "WholeExomeSequencing",
+    ],
+  },
+];
 
 export default function SamplesPage() {
   const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
 
-  const sampleContext = _.isEqual(columnDefs, combinedSampleDetailsColumns)
+  const sampleContexts = _.isEqual(columnDefs, combinedSampleDetailsColumns)
     ? undefined
     : WES_SAMPLE_CONTEXT;
 
   return (
     <SamplesList
       columnDefs={columnDefs}
-      sampleContext={sampleContext}
+      sampleContexts={sampleContexts}
       customToolbarUI={
         <>
           <CustomTooltip

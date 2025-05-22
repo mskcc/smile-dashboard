@@ -4183,7 +4183,7 @@ export type QueryDashboardRequestsArgs = {
 };
 
 export type QueryDashboardSamplesArgs = {
-  context?: InputMaybe<DashboardRecordContext>;
+  contexts?: InputMaybe<Array<InputMaybe<DashboardRecordContext>>>;
   filters?: InputMaybe<Array<DashboardRecordFilter>>;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
@@ -11074,7 +11074,10 @@ export type DashboardCohortsQuery = {
 
 export type DashboardSamplesQueryVariables = Exact<{
   searchVals?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
-  context?: InputMaybe<DashboardRecordContext>;
+  contexts?: InputMaybe<
+    | Array<InputMaybe<DashboardRecordContext>>
+    | InputMaybe<DashboardRecordContext>
+  >;
   sort: DashboardRecordSort;
   filters?: InputMaybe<Array<DashboardRecordFilter> | DashboardRecordFilter>;
   limit: Scalars["Int"];
@@ -11489,7 +11492,7 @@ export type DashboardCohortsQueryResult = Apollo.QueryResult<
 export const DashboardSamplesDocument = gql`
   query DashboardSamples(
     $searchVals: [String!]
-    $context: DashboardRecordContext
+    $contexts: [DashboardRecordContext]
     $sort: DashboardRecordSort!
     $filters: [DashboardRecordFilter!]
     $limit: Int!
@@ -11497,7 +11500,7 @@ export const DashboardSamplesDocument = gql`
   ) {
     dashboardSamples(
       searchVals: $searchVals
-      context: $context
+      contexts: $contexts
       sort: $sort
       filters: $filters
       limit: $limit

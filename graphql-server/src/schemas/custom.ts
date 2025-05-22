@@ -86,7 +86,7 @@ export async function buildCustomSchema(ogm: OGM) {
         _source: undefined,
         {
           searchVals,
-          context,
+          contexts,
           sort,
           filters,
           limit,
@@ -108,7 +108,7 @@ export async function buildCustomSchema(ogm: OGM) {
 
         const queryBody = buildSamplesQueryBody({
           searchVals,
-          context,
+          contexts,
           filters,
           addlOncotreeCodes,
         });
@@ -148,7 +148,7 @@ export async function buildCustomSchema(ogm: OGM) {
         // Here, we're returning newDashboardSamples for simplicity. However, if we were to follow
         // GraphQL's convention, we'd return the actual resulting data from the database update. This
         // means we'd wait for SMILE services to finish processing the data changes, then query that
-        // data to return it to the frontend. For more context, see:
+        // data to return it to the frontend. For more conext, see:
         // https://www.apollographql.com/docs/react/performance/optimistic-ui/#optimistic-mutation-lifecycle
         return newDashboardSamples;
       },

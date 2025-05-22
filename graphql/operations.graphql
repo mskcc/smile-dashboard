@@ -93,7 +93,7 @@ query DashboardCohorts(
 
 query DashboardSamples(
   $searchVals: [String!]
-  $context: DashboardRecordContext
+  $contexts: [DashboardRecordContext]
   $sort: DashboardRecordSort!
   $filters: [DashboardRecordFilter!]
   $limit: Int!
@@ -101,7 +101,7 @@ query DashboardSamples(
 ) {
   dashboardSamples(
     searchVals: $searchVals
-    context: $context
+    contexts: $contexts
     sort: $sort
     filters: $filters
     limit: $limit
