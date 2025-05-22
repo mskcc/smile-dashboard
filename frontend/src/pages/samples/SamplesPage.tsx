@@ -25,6 +25,42 @@ const WES_SAMPLE_CONTEXT = [
   },
 ];
 
+const ACCESS_SAMPLE_CONTEXT = [
+  {
+    fieldName: "genePanel",
+    values: [
+      "ACCESS129",
+      "ACCESS146",
+      "ACCESS148",
+      "ACCESS-Heme",
+      "ACCESS-HEME-115",
+      "HC_ACCESS",
+      "HC_Custom",
+      "MSK-ACCESS_v1",
+      "MSK-ACCESS_v2",
+      "HC_CMOCH",
+      "CMO-CH",
+    ],
+  },
+  {
+    fieldName: "baitSet",
+    values: [
+      "MSK-ACCESS-v1_0-probesAllwFP",
+      "MSK-ACCESS-v1_0-probesAllwFP_GRCh38",
+      "MSK-ACCESS-v1_0-probesAllwFP_hg19_sort_BAITS",
+      "MSK-ACCESS-v1_0-probesAllwFP_hg37_sort-BAITS",
+      "MSK-ACCESS-v2_0-probesAllwFP",
+      "ACCESS_HEME_MN1",
+      "ACCESS129",
+      "ACCESS146",
+      "ACCESS148",
+      "ACCESS-HEME-115",
+      "CMO-CH",
+      "MSK-CH",
+    ],
+  },
+];
+
 export default function SamplesPage() {
   const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
 
