@@ -77,6 +77,16 @@ function getAgGridBooleanValueFormatter({
   };
 }
 
+export const multiLineColDef: ColDef = {
+  wrapText: true,
+  autoHeight: true,
+  cellStyle: {
+    wordBreak: "break-word",
+    lineHeight: "1.25",
+    padding: "6px 18px",
+  },
+};
+
 export const requestColDefs: ColDef[] = [
   {
     headerName: "View Samples",
@@ -355,9 +365,8 @@ export const sampleColDefs: ColDef[] = [
   {
     field: "historicalCmoSampleNames",
     headerName: "Historical CMO Sample Names",
-    wrapText: true,
-    autoHeight: true,
     maxWidth: 300,
+    ...multiLineColDef,
   },
   {
     field: "importDate",
@@ -786,9 +795,8 @@ export const wesSampleColDefs: ColDef[] = [
   {
     field: "historicalCmoSampleNames",
     headerName: "Historical CMO Sample Names",
-    wrapText: true,
-    autoHeight: true,
     maxWidth: 300,
+    ...multiLineColDef,
   },
   {
     field: "investigatorSampleId",
