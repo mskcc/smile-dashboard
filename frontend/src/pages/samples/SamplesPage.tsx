@@ -5,10 +5,16 @@ import {
   combinedSampleDetailsColumns,
 } from "../../shared/helpers";
 import { useState } from "react";
-import { Button } from "react-bootstrap";
+import {
+  Button,
+  Dropdown,
+  DropdownButton,
+  DropdownButtonProps,
+} from "react-bootstrap";
 import _ from "lodash";
 import { CustomTooltip } from "../../shared/components/CustomToolTip";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
+import { ButtonVariant } from "react-bootstrap/esm/types";
 
 const WES_SAMPLE_CONTEXT = [
   {
@@ -68,40 +74,38 @@ export default function SamplesPage() {
     ? undefined
     : WES_SAMPLE_CONTEXT;
 
+  const filterButtonTitle = _.isEqual(columnDefs, combinedSampleDetailsColumns)
+    ? "Filter sample views"
+    : "View WES samples";
+
+  const filterButtonColorVariant: ButtonVariant = _.isEqual(
+    columnDefs,
+    combinedSampleDetailsColumns
+  )
+    ? "outline-secondary"
+    : "success";
+
   return (
     <SamplesList
       columnDefs={columnDefs}
       sampleContexts={sampleContexts}
       customToolbarUI={
-        <>
-          <CustomTooltip
-            icon={<InfoIcon style={{ fontSize: 18, color: "grey" }} />}
-          >
-            These tabs change the data displayed in the table. "View all
-            samples" shows all data and columns, including those of
-            SampleMetadata and WES samples.
-          </CustomTooltip>{" "}
-          <Button
-            onClick={() => {
-              setColumnDefs(combinedSampleDetailsColumns);
-            }}
-            size="sm"
-            variant="outline-secondary"
-            active={_.isEqual(columnDefs, combinedSampleDetailsColumns)}
+        <DropdownButton
+          title={filterButtonTitle}
+          size="sm"
+          variant={filterButtonColorVariant}
+        >
+          <Dropdown.Item
+            onClick={() => setColumnDefs(combinedSampleDetailsColumns)}
           >
             View all samples
-          </Button>{" "}
-          <Button
-            onClick={() => {
-              setColumnDefs(ReadOnlyCohortSampleDetailsColumns);
-            }}
-            size="sm"
-            variant="outline-secondary"
-            active={_.isEqual(columnDefs, ReadOnlyCohortSampleDetailsColumns)}
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => setColumnDefs(ReadOnlyCohortSampleDetailsColumns)}
           >
             View WES samples
-          </Button>
-        </>
+          </Dropdown.Item>
+        </DropdownButton>
       }
       exportDropdownItems={[
         {

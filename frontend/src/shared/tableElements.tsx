@@ -42,6 +42,7 @@ interface IToolbarProps {
   setColumnDefsForExport?: Dispatch<SetStateAction<ColDef[]>>;
 }
 
+// TODO: rename file to Toolbar.tsx
 export function Toolbar({
   dataName,
   userSearchVal,
