@@ -937,6 +937,134 @@ export const wesSampleColDefs: ColDef<DashboardSample>[] = [
   },
 ];
 
+export const accessSampleColDefs: ColDef<DashboardSample>[] = [
+  {
+    field: "primaryId",
+    headerName: "Primary ID",
+  },
+  {
+    field: "altId",
+    headerName: "Alt ID",
+  },
+  {
+    headerName: "Status",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      if (!params.data) return null;
+      const {
+        revisable,
+        validationStatus,
+        validationReport,
+        sampleCategory,
+        primaryId,
+      } = params.data;
+
+      if (revisable === true) {
+        return validationStatus === false ||
+          (validationStatus === null && sampleCategory !== "clinical") ? (
+          <RecordValidation
+            validationStatus={validationStatus}
+            validationReport={validationReport}
+            modalTitle={`Error report for sample ${primaryId}`}
+            recordStatusMap={SAMPLE_STATUS_MAP}
+          />
+        ) : (
+          <CheckIcon />
+        );
+      } else {
+        return <LoadingIcon />;
+      }
+    },
+    sortable: false,
+  },
+  {
+    field: "cmoSampleName",
+    headerName: "CMO Sample Name",
+  },
+  {
+    field: "historicalCmoSampleNames",
+    headerName: "Historical CMO Sample Names",
+    maxWidth: 300,
+    ...multiLineColDef,
+  },
+  {
+    field: "importDate",
+    headerName: "Last Updated",
+    ...getAgGridDateFilterConfigs(),
+  },
+  {
+    field: "cmoPatientId",
+    headerName: "CMO Patient ID",
+  },
+  {
+    field: "investigatorSampleId",
+    headerName: "Investigator Sample ID",
+  },
+  {
+    field: "sampleType",
+    headerName: "Sample Type",
+  },
+  {
+    field: "species",
+    headerName: "Species",
+  },
+  {
+    field: "genePanel",
+    headerName: "Gene Panel",
+  },
+  {
+    field: "baitSet",
+    headerName: "Bait Set",
+  },
+  {
+    field: "preservation",
+    headerName: "Preservation",
+  },
+  {
+    field: "tumorOrNormal",
+    headerName: "Tumor Or Normal",
+  },
+  {
+    field: "sampleClass",
+    headerName: "Sample Class",
+  },
+  {
+    field: "oncotreeCode",
+    headerName: "Oncotree Code",
+  },
+  {
+    field: "cancerType",
+    headerName: "Cancer Type",
+  },
+  {
+    field: "cancerTypeDetailed",
+    headerName: "Cancer Type Detailed",
+  },
+  {
+    field: "collectionYear",
+    headerName: "Collection Year",
+  },
+  {
+    field: "sampleOrigin",
+    headerName: "Sample Origin",
+  },
+  {
+    field: "tissueLocation",
+    headerName: "Tissue Location",
+  },
+  {
+    field: "sex",
+    headerName: "Sex",
+  },
+  {
+    field: "recipe",
+    headerName: "Recipe",
+  },
+  {
+    field: "sampleCategory",
+    headerName: "SMILE Sample Category",
+  },
+];
+
 export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(wesSampleColDefs);
 
 export const defaultColDef: ColDef = {
