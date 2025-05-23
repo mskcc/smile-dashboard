@@ -33,7 +33,7 @@ import {
   ColDef,
   IServerSideGetRowsParams,
 } from "ag-grid-community";
-import { ErrorMessage, Toolbar } from "../shared/tableElements";
+import { ErrorMessage, Toolbar } from "../shared/components/Toolbar";
 import styles from "./records.module.scss";
 import { getUserEmail } from "../utils/getUserEmail";
 import { openLoginPopup } from "../utils/openLoginPopup";

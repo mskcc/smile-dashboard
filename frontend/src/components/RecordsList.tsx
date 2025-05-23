@@ -30,7 +30,7 @@ import {
   defaultColDef,
   MAX_ROWS_EXPORT,
 } from "../shared/helpers";
-import { ErrorMessage, Toolbar } from "../shared/tableElements";
+import { ErrorMessage, Toolbar } from "../shared/components/Toolbar";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import { BreadCrumb } from "../shared/components/BreadCrumb";
 import { Title } from "../shared/components/Title";

@@ -3,25 +3,14 @@ import {
   DbGapPhenotypeColumns,
   readOnlyAccessSampleColDefs,
   readOnlyWesSampleColDefs,
-  accessSampleColDefs,
   combinedSampleDetailsColumns,
 } from "../../shared/helpers";
 import { useState } from "react";
-import {
-  Button,
-  Dropdown,
-  DropdownButton,
-  DropdownButtonProps,
-} from "react-bootstrap";
-import _ from "lodash";
+import { Button, ButtonGroup } from "react-bootstrap";
 import { CustomTooltip } from "../../shared/components/CustomToolTip";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
-import { ButtonVariant } from "react-bootstrap/esm/types";
 import { ColDef } from "ag-grid-community";
-import {
-  DashboardRecordContext,
-  DashboardSample,
-} from "../../generated/graphql";
+import { DashboardRecordContext } from "../../generated/graphql";
 
 const WES_SAMPLE_CONTEXT = [
   {
@@ -74,81 +63,71 @@ const ACCESS_SAMPLE_CONTEXT = [
   },
 ];
 
-function useFilteredView(): {
-  columnDefs: ColDef<DashboardSample>[];
-  setColumnDefs: (columnDefs: ColDef<DashboardSample>[]) => void;
-  sampleContexts: Array<DashboardRecordContext> | undefined;
-  filterButtonTitle: string;
-  filterButtonColorVariant: ButtonVariant;
-} {
-  const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
-  if (_.isEqual(columnDefs, readOnlyWesSampleColDefs)) {
-    return {
+const tabSettings = new Map<
+  string,
+  {
+    columnDefs: ColDef[];
+    sampleContexts?: DashboardRecordContext[];
+  }
+>([
+  [
+    "All",
+    {
+      columnDefs: combinedSampleDetailsColumns,
+      sampleContexts: undefined,
+    },
+  ],
+  [
+    "WES",
+    {
       columnDefs: readOnlyWesSampleColDefs,
-      setColumnDefs,
       sampleContexts: WES_SAMPLE_CONTEXT,
-      filterButtonTitle: "View WES samples",
-      filterButtonColorVariant: "success",
-    };
-  }
-  if (_.isEqual(columnDefs, readOnlyAccessSampleColDefs)) {
-    return {
+    },
+  ],
+  [
+    "ACCESS",
+    {
       columnDefs: readOnlyAccessSampleColDefs,
-      setColumnDefs,
       sampleContexts: ACCESS_SAMPLE_CONTEXT,
-      filterButtonTitle: "View ACCESS samples",
-      filterButtonColorVariant: "success",
-    };
-  }
-  // View all samples
-  return {
-    columnDefs: combinedSampleDetailsColumns,
-    setColumnDefs,
-    sampleContexts: undefined,
-    filterButtonTitle: "Filter samples",
-    filterButtonColorVariant: "outline-secondary",
-  };
-}
+    },
+  ],
+]);
+
+type TabKey = typeof tabSettings extends Map<infer K, any> ? K : never;
 
 export default function SamplesPage() {
-  const {
-    columnDefs,
-    setColumnDefs,
-    sampleContexts,
-    filterButtonTitle,
-    filterButtonColorVariant,
-  } = useFilteredView();
+  const [filteredTabKey, setFilteredTabKey] = useState<TabKey>("All");
 
   return (
     <SamplesList
-      columnDefs={columnDefs}
-      sampleContexts={sampleContexts}
+      columnDefs={tabSettings.get(filteredTabKey)?.columnDefs!}
+      sampleContexts={tabSettings.get(filteredTabKey)?.sampleContexts}
       customToolbarUI={
-        <DropdownButton
-          size="sm"
-          title={filterButtonTitle}
-          variant={filterButtonColorVariant}
-        >
-          <Dropdown.Item
-            onClick={() => setColumnDefs(combinedSampleDetailsColumns)}
+        <>
+          <CustomTooltip
+            icon={<InfoIcon style={{ fontSize: 18, color: "grey" }} />}
           >
-            View all samples
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={() => setColumnDefs(readOnlyWesSampleColDefs)}
-          >
-            View WES samples
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={() => setColumnDefs(readOnlyAccessSampleColDefs)}
-          >
-            View ACCESS samples
-          </Dropdown.Item>
-        </DropdownButton>
+            These tabs filter the data and relevant columns displayed in the
+            table. "All" shows all samples, whereas "WES" and "ACCESS" show only
+            whole exome and MSK-ACCESS/CMO-CH samples, respectively.
+          </CustomTooltip>{" "}
+          <ButtonGroup>
+            {Array.from(tabSettings.keys()).map((tabKey) => (
+              <Button
+                onClick={() => setFilteredTabKey(tabKey as TabKey)}
+                size="sm"
+                variant="outline-secondary"
+                active={filteredTabKey === tabKey}
+              >
+                {tabKey}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </>
       }
       exportDropdownItems={[
         {
-          label: "Generate Phenotype files for dbGaP",
+          label: "Export in Phenotype format for dbGaP",
           columnDefs: DbGapPhenotypeColumns,
         },
       ]}

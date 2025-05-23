@@ -374,7 +374,6 @@ export function buildSamplesQueryBody({
 
     ${searchFilters && `WHERE ${searchFilters}`}
   `;
-  console.log("samplesQueryBody", samplesQueryBody);
 
   return samplesQueryBody;
 }
