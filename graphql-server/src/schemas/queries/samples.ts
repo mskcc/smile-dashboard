@@ -86,6 +86,13 @@ export function buildSamplesQueryBody({
       )}).*'`
     : "";
 
+  const baitSetContextObj = contexts?.find(
+    (ctx) => ctx?.fieldName === "baitSet"
+  );
+  const baitSetContext = baitSetContextObj
+    ? `latestSm.baitSet =~ '(?i).*(${baitSetContextObj.values.join("|")}).*'`
+    : "";
+
   // Filter for the current request in the Request Samples view
   const requestContextObj = contexts?.find(
     (ctx) => ctx?.fieldName === "igoRequestId"
@@ -235,7 +242,9 @@ export function buildSamplesQueryBody({
       ", ") AS historicalCmoSampleNames
 
     // Filters for either the WES Samples or Request Samples view, if applicable
-    ${genePanelContext && `WHERE ${genePanelContext}`}
+    ${genePanelContext && `WHERE ${genePanelContext}`} ${
+    baitSetContext && `OR ${baitSetContext}`
+  }
     ${requestContext && `WHERE ${requestContext}`}
 
     // Get SampleMetadata's Status
@@ -365,6 +374,7 @@ export function buildSamplesQueryBody({
 
     ${searchFilters && `WHERE ${searchFilters}`}
   `;
+  console.log("samplesQueryBody", samplesQueryBody);
 
   return samplesQueryBody;
 }

@@ -1,7 +1,9 @@
 import SamplesList from "../../components/SamplesList";
 import {
   DbGapPhenotypeColumns,
-  ReadOnlyCohortSampleDetailsColumns,
+  readOnlyAccessSampleColDefs,
+  readOnlyWesSampleColDefs,
+  accessSampleColDefs,
   combinedSampleDetailsColumns,
 } from "../../shared/helpers";
 import { useState } from "react";
@@ -15,6 +17,11 @@ import _ from "lodash";
 import { CustomTooltip } from "../../shared/components/CustomToolTip";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
 import { ButtonVariant } from "react-bootstrap/esm/types";
+import { ColDef } from "ag-grid-community";
+import {
+  DashboardRecordContext,
+  DashboardSample,
+} from "../../generated/graphql";
 
 const WES_SAMPLE_CONTEXT = [
   {
@@ -67,23 +74,50 @@ const ACCESS_SAMPLE_CONTEXT = [
   },
 ];
 
-export default function SamplesPage() {
+function useFilteredView(): {
+  columnDefs: ColDef<DashboardSample>[];
+  setColumnDefs: (columnDefs: ColDef<DashboardSample>[]) => void;
+  sampleContexts: Array<DashboardRecordContext> | undefined;
+  filterButtonTitle: string;
+  filterButtonColorVariant: ButtonVariant;
+} {
   const [columnDefs, setColumnDefs] = useState(combinedSampleDetailsColumns);
+  if (_.isEqual(columnDefs, readOnlyWesSampleColDefs)) {
+    return {
+      columnDefs: readOnlyWesSampleColDefs,
+      setColumnDefs,
+      sampleContexts: WES_SAMPLE_CONTEXT,
+      filterButtonTitle: "View WES samples",
+      filterButtonColorVariant: "success",
+    };
+  }
+  if (_.isEqual(columnDefs, readOnlyAccessSampleColDefs)) {
+    return {
+      columnDefs: readOnlyAccessSampleColDefs,
+      setColumnDefs,
+      sampleContexts: ACCESS_SAMPLE_CONTEXT,
+      filterButtonTitle: "View ACCESS samples",
+      filterButtonColorVariant: "success",
+    };
+  }
+  // View all samples
+  return {
+    columnDefs: combinedSampleDetailsColumns,
+    setColumnDefs,
+    sampleContexts: undefined,
+    filterButtonTitle: "Filter samples",
+    filterButtonColorVariant: "outline-secondary",
+  };
+}
 
-  const sampleContexts = _.isEqual(columnDefs, combinedSampleDetailsColumns)
-    ? undefined
-    : WES_SAMPLE_CONTEXT;
-
-  const filterButtonTitle = _.isEqual(columnDefs, combinedSampleDetailsColumns)
-    ? "Filter sample views"
-    : "View WES samples";
-
-  const filterButtonColorVariant: ButtonVariant = _.isEqual(
+export default function SamplesPage() {
+  const {
     columnDefs,
-    combinedSampleDetailsColumns
-  )
-    ? "outline-secondary"
-    : "success";
+    setColumnDefs,
+    sampleContexts,
+    filterButtonTitle,
+    filterButtonColorVariant,
+  } = useFilteredView();
 
   return (
     <SamplesList
@@ -91,8 +125,8 @@ export default function SamplesPage() {
       sampleContexts={sampleContexts}
       customToolbarUI={
         <DropdownButton
-          title={filterButtonTitle}
           size="sm"
+          title={filterButtonTitle}
           variant={filterButtonColorVariant}
         >
           <Dropdown.Item
@@ -101,9 +135,14 @@ export default function SamplesPage() {
             View all samples
           </Dropdown.Item>
           <Dropdown.Item
-            onClick={() => setColumnDefs(ReadOnlyCohortSampleDetailsColumns)}
+            onClick={() => setColumnDefs(readOnlyWesSampleColDefs)}
           >
             View WES samples
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => setColumnDefs(readOnlyAccessSampleColDefs)}
+          >
+            View ACCESS samples
           </Dropdown.Item>
         </DropdownButton>
       }

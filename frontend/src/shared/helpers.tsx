@@ -1065,7 +1065,8 @@ export const accessSampleColDefs: ColDef<DashboardSample>[] = [
   },
 ];
 
-export const ReadOnlyCohortSampleDetailsColumns = _.cloneDeep(wesSampleColDefs);
+export const readOnlyWesSampleColDefs = _.cloneDeep(wesSampleColDefs);
+export const readOnlyAccessSampleColDefs = _.cloneDeep(accessSampleColDefs);
 
 export const defaultColDef: ColDef = {
   sortable: true,
@@ -1105,7 +1106,7 @@ setupEditableSampleFields(sampleColDefs, editableSampleFields);
 setupEditableSampleFields(wesSampleColDefs, editableWesSampleFields);
 
 export const combinedSampleDetailsColumns = _.uniqBy(
-  [...sampleColDefs, ...ReadOnlyCohortSampleDetailsColumns],
+  [...sampleColDefs, ...readOnlyWesSampleColDefs],
   "field"
 );
 
