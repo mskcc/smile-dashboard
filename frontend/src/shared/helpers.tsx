@@ -1063,6 +1063,10 @@ export const accessSampleColDefs: ColDef<DashboardSample>[] = [
     field: "sampleCategory",
     headerName: "SMILE Sample Category",
   },
+  {
+    field: "cfDNA2dBarcode",
+    headerName: "2D Barcode",
+  },
 ];
 
 export const readOnlyWesSampleColDefs = _.cloneDeep(wesSampleColDefs);

@@ -142,6 +142,7 @@ fragment DashboardSampleMetadataParts on DashboardSample {
   sampleOrigin
   tissueLocation
   sex
+  cfDNA2dBarcode
   ## Custom fields
   recipe
   altId

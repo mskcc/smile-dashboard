@@ -1435,6 +1435,7 @@ export type DashboardSample = {
   billedBy?: Maybe<Scalars["String"]>;
   cancerType?: Maybe<Scalars["String"]>;
   cancerTypeDetailed?: Maybe<Scalars["String"]>;
+  cfDNA2dBarcode?: Maybe<Scalars["String"]>;
   cmoPatientId?: Maybe<Scalars["String"]>;
   cmoSampleName?: Maybe<Scalars["String"]>;
   collectionYear?: Maybe<Scalars["String"]>;
@@ -1486,6 +1487,7 @@ export type DashboardSampleInput = {
   billedBy?: InputMaybe<Scalars["String"]>;
   cancerType?: InputMaybe<Scalars["String"]>;
   cancerTypeDetailed?: InputMaybe<Scalars["String"]>;
+  cfDNA2dBarcode?: InputMaybe<Scalars["String"]>;
   changedFieldNames: Array<Scalars["String"]>;
   cmoPatientId?: InputMaybe<Scalars["String"]>;
   cmoSampleName?: InputMaybe<Scalars["String"]>;
@@ -11110,6 +11112,7 @@ export type DashboardSamplesQuery = {
     sampleOrigin?: string | null;
     tissueLocation?: string | null;
     sex?: string | null;
+    cfDNA2dBarcode?: string | null;
     recipe?: string | null;
     altId?: string | null;
     analyteType?: string | null;
@@ -11166,6 +11169,7 @@ export type DashboardSampleMetadataPartsFragment = {
   sampleOrigin?: string | null;
   tissueLocation?: string | null;
   sex?: string | null;
+  cfDNA2dBarcode?: string | null;
   recipe?: string | null;
   altId?: string | null;
   analyteType?: string | null;
@@ -11253,6 +11257,7 @@ export type UpdateDashboardSamplesMutation = {
     sampleOrigin?: string | null;
     tissueLocation?: string | null;
     sex?: string | null;
+    cfDNA2dBarcode?: string | null;
     recipe?: string | null;
     altId?: string | null;
     analyteType?: string | null;
@@ -11323,6 +11328,7 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     sampleOrigin
     tissueLocation
     sex
+    cfDNA2dBarcode
     recipe
     altId
     analyteType

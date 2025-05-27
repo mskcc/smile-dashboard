@@ -344,6 +344,7 @@ export function buildSamplesQueryBody({
         sampleOrigin: latestSm.sampleOrigin,
         tissueLocation: latestSm.tissueLocation,
         sex: latestSm.sex,
+        cfDNA2dBarcode: latestSm.cfDNA2dBarcode,
         libraries: latestSm.libraries,
         recipe: cmoSampleIdFields.recipe,
         analyteType: cmoSampleIdFields.naToExtract,

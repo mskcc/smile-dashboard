@@ -12902,6 +12902,18 @@
             "deprecationReason": null
           },
           {
+            "name": "cfDNA2dBarcode",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "cmoPatientId",
             "description": null,
             "args": [],
@@ -13495,6 +13507,18 @@
           },
           {
             "name": "cancerTypeDetailed",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "cfDNA2dBarcode",
             "description": null,
             "type": {
               "kind": "SCALAR",

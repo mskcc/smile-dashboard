@@ -48,6 +48,7 @@ const SAMPLE_FIELDS = `
   sampleOrigin: String
   tissueLocation: String
   sex: String
+  cfDNA2dBarcode: String
   ## Custom fields
   recipe: String
   altId: String
