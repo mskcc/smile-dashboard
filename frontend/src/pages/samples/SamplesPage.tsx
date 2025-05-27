@@ -3,7 +3,7 @@ import {
   DbGapPhenotypeColumns,
   readOnlyAccessSampleColDefs,
   readOnlyWesSampleColDefs,
-  combinedSampleDetailsColumns,
+  combinedSampleColDefs,
 } from "../../shared/helpers";
 import { useState } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
@@ -73,7 +73,7 @@ const tabSettings = new Map<
   [
     "All",
     {
-      columnDefs: combinedSampleDetailsColumns,
+      columnDefs: combinedSampleColDefs,
       sampleContexts: undefined,
     },
   ],
@@ -93,14 +93,14 @@ const tabSettings = new Map<
   ],
 ]);
 
-type TabKey = typeof tabSettings extends Map<infer K, any> ? K : never;
-
 export default function SamplesPage() {
-  const [filteredTabKey, setFilteredTabKey] = useState<TabKey>("All");
+  const [filteredTabKey, setFilteredTabKey] = useState("All");
 
   return (
     <SamplesList
-      columnDefs={tabSettings.get(filteredTabKey)?.columnDefs!}
+      columnDefs={
+        tabSettings.get(filteredTabKey)?.columnDefs ?? combinedSampleColDefs
+      }
       sampleContexts={tabSettings.get(filteredTabKey)?.sampleContexts}
       customToolbarUI={
         <>
@@ -114,7 +114,8 @@ export default function SamplesPage() {
           <ButtonGroup>
             {Array.from(tabSettings.keys()).map((tabKey) => (
               <Button
-                onClick={() => setFilteredTabKey(tabKey as TabKey)}
+                key={tabKey}
+                onClick={() => setFilteredTabKey(tabKey)}
                 size="sm"
                 variant="outline-secondary"
                 active={filteredTabKey === tabKey}

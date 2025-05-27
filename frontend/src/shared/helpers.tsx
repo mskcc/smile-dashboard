@@ -1113,8 +1113,12 @@ const editableWesSampleFields = [
 setupEditableSampleFields(sampleColDefs, editableSampleFields);
 setupEditableSampleFields(wesSampleColDefs, editableWesSampleFields);
 
-export const combinedSampleDetailsColumns = _.uniqBy(
-  [...sampleColDefs, ...readOnlyWesSampleColDefs],
+export const combinedSampleColDefs = _.uniqBy(
+  [
+    ...sampleColDefs,
+    ...readOnlyWesSampleColDefs,
+    ...readOnlyAccessSampleColDefs,
+  ],
   "field"
 );
 
