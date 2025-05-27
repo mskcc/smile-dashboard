@@ -1067,6 +1067,10 @@ export const accessSampleColDefs: ColDef<DashboardSample>[] = [
     field: "cfDNA2dBarcode",
     headerName: "2D Barcode",
   },
+  {
+    field: "dmpPatientAlias",
+    headerName: "DMP Patient Alias",
+  },
 ];
 
 export const readOnlyWesSampleColDefs = _.cloneDeep(wesSampleColDefs);

@@ -258,9 +258,15 @@ export function buildSamplesQueryBody({
 
     // Filters for Patient Samples view, if applicable
     ${
-      patientContext &&
-      `MATCH (s)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias) WHERE ${patientContext}`
-    }
+      patientContext ? "" : "OPTIONAL "
+    }MATCH (s)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias)
+    ${patientContext && `WHERE ${patientContext}`}
+    WITH
+      s,
+      latestSm,
+      historicalCmoSampleNames,
+      latestSt,
+      head([pa IN collect(pa) WHERE pa.namespace = 'dmpId' | pa.value]) AS dmpPatientAlias
 
     // Filters for Cohort Samples view, if applicable
     ${
@@ -274,8 +280,9 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
-      latestSt,
       historicalCmoSampleNames,
+      latestSt,
+      dmpPatientAlias,
       t
     ${billedFilter && `WHERE ${billedFilter}`}
     ${cohortDateFilters && `WHERE ${cohortDateFilters}`}
@@ -284,8 +291,9 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
-      latestSt,
       historicalCmoSampleNames,
+      latestSt,
+      dmpPatientAlias,
       t,
       COLLECT {
         OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
@@ -305,6 +313,7 @@ export function buildSamplesQueryBody({
       latestSm,
       historicalCmoSampleNames,
       latestSt,
+      dmpPatientAlias,
       t,
       latestBC[0] AS latestBC,
       latestMC[0] AS latestMC,
@@ -370,7 +379,9 @@ export function buildSamplesQueryBody({
         qcCompleteReason: latestQC.reason,
         qcCompleteStatus: latestQC.status,
 
-        dbGapStudy: d.dbGapStudy
+        dbGapStudy: d.dbGapStudy,
+
+        dmpPatientAlias: dmpPatientAlias
       }) AS tempNode
 
     ${searchFilters && `WHERE ${searchFilters}`}

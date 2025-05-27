@@ -1442,6 +1442,7 @@ export type DashboardSample = {
   costCenter?: Maybe<Scalars["String"]>;
   custodianInformation?: Maybe<Scalars["String"]>;
   dbGapStudy?: Maybe<Scalars["String"]>;
+  dmpPatientAlias?: Maybe<Scalars["String"]>;
   embargoDate?: Maybe<Scalars["String"]>;
   genePanel?: Maybe<Scalars["String"]>;
   historicalCmoSampleNames?: Maybe<Scalars["String"]>;
@@ -1495,6 +1496,7 @@ export type DashboardSampleInput = {
   costCenter?: InputMaybe<Scalars["String"]>;
   custodianInformation?: InputMaybe<Scalars["String"]>;
   dbGapStudy?: InputMaybe<Scalars["String"]>;
+  dmpPatientAlias?: InputMaybe<Scalars["String"]>;
   embargoDate?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
   historicalCmoSampleNames?: InputMaybe<Scalars["String"]>;
@@ -11140,6 +11142,7 @@ export type DashboardSamplesQuery = {
     qcCompleteReason?: string | null;
     qcCompleteStatus?: string | null;
     dbGapStudy?: string | null;
+    dmpPatientAlias?: string | null;
   }>;
 };
 
@@ -11205,6 +11208,11 @@ export type DashboardTempoPartsFragment = {
 export type DashboardDbGapPartsFragment = {
   __typename?: "DashboardSample";
   dbGapStudy?: string | null;
+};
+
+export type DashboardPatientPartsFragment = {
+  __typename?: "DashboardSample";
+  dmpPatientAlias?: string | null;
 };
 
 export type RequestPartsFragment = {
@@ -11364,6 +11372,11 @@ export const DashboardTempoPartsFragmentDoc = gql`
 export const DashboardDbGapPartsFragmentDoc = gql`
   fragment DashboardDbGapParts on DashboardSample {
     dbGapStudy
+  }
+`;
+export const DashboardPatientPartsFragmentDoc = gql`
+  fragment DashboardPatientParts on DashboardSample {
+    dmpPatientAlias
   }
 `;
 export const RequestPartsFragmentDoc = gql`
@@ -11670,6 +11683,7 @@ export const DashboardSamplesDocument = gql`
       ...DashboardSampleMetadataParts
       ...DashboardTempoParts
       ...DashboardDbGapParts
+      ...DashboardPatientParts
       _total
     }
   }
@@ -11677,6 +11691,7 @@ export const DashboardSamplesDocument = gql`
   ${DashboardSampleMetadataPartsFragmentDoc}
   ${DashboardTempoPartsFragmentDoc}
   ${DashboardDbGapPartsFragmentDoc}
+  ${DashboardPatientPartsFragmentDoc}
 `;
 
 /**

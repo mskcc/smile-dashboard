@@ -90,6 +90,10 @@ const SAMPLE_FIELDS = `
   # (s:Sample)-[:HAS_DBGAP]->(d:DbGap)
   dbGapStudy: String
 
+  # (s:Sample)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias)
+  ## Custom fields
+  dmpPatientAlias: String
+
   # results total
   _total: Int
 `;

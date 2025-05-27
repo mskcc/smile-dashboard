@@ -111,6 +111,7 @@ query DashboardSamples(
     ...DashboardSampleMetadataParts
     ...DashboardTempoParts
     ...DashboardDbGapParts
+    ...DashboardPatientParts
     _total
   }
 }
@@ -187,6 +188,12 @@ fragment DashboardTempoParts on DashboardSample {
 fragment DashboardDbGapParts on DashboardSample {
   # (s:Sample)-[:HAS_DBGAP]->(d:DbGap)
   dbGapStudy
+}
+
+fragment DashboardPatientParts on DashboardSample {
+  # (s:Sample)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias)
+  ## Custom fields
+  dmpPatientAlias
 }
 
 fragment RequestParts on Request {

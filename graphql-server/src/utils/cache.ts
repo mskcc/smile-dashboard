@@ -69,21 +69,21 @@ export type OncotreeApiTumorType = {
 export async function initializeInMemoryCache() {
   const inMemoryCache = new NodeCache();
 
-  // // Warm up the cache
-  // await updateOncotreeCache(inMemoryCache);
-  // await updateSamplesCache(inMemoryCache);
-  // logCacheStats(inMemoryCache);
-  //
-  // // Add cache item expiration handlers
-  // // (node-cache checks for expired items and runs this event listener every 10m by default)
-  // inMemoryCache.on("expired", async (key) => {
-  //   if (key === ONCOTREE_CACHE_KEY) {
-  //     await updateOncotreeCache(inMemoryCache);
-  //   }
-  //   if (key === SAMPLES_CACHE_KEY) {
-  //     await updateSamplesCache(inMemoryCache);
-  //   }
-  // });
+  // Warm up the cache
+  await updateOncotreeCache(inMemoryCache);
+  await updateSamplesCache(inMemoryCache);
+  logCacheStats(inMemoryCache);
+
+  // Add cache item expiration handlers
+  // (node-cache checks for expired items and runs this event listener every 10m by default)
+  inMemoryCache.on("expired", async (key) => {
+    if (key === ONCOTREE_CACHE_KEY) {
+      await updateOncotreeCache(inMemoryCache);
+    }
+    if (key === SAMPLES_CACHE_KEY) {
+      await updateSamplesCache(inMemoryCache);
+    }
+  });
 
   return inMemoryCache;
 }
