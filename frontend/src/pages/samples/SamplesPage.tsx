@@ -85,7 +85,7 @@ const tabSettings = new Map<
     },
   ],
   [
-    "ACCESS",
+    "ACCESS/CMO-CH",
     {
       columnDefs: readOnlyAccessSampleColDefs,
       sampleContexts: ACCESS_SAMPLE_CONTEXT,
@@ -108,8 +108,8 @@ export default function SamplesPage() {
             icon={<InfoIcon style={{ fontSize: 18, color: "grey" }} />}
           >
             These tabs filter the data and relevant columns displayed in the
-            table. "All" shows all samples, whereas "WES" and "ACCESS" show only
-            whole exome and MSK-ACCESS/CMO-CH samples, respectively.
+            table. "All" shows all samples, whereas "WES" and "ACCESS/CMO-CH"
+            show only whole exome and MSK-ACCESS/CMO-CH samples, respectively.
           </CustomTooltip>{" "}
           <ButtonGroup>
             {Array.from(tabSettings.keys()).map((tabKey) => (
