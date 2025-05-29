@@ -281,55 +281,56 @@ async function updateSampleMetadataPromise(
   newDashboardSample: DashboardSampleInput,
   ogm: OGM
 ) {
-  return new Promise(async (resolve) => {
-    const sampleManifest = await request(
-      props.smile_sample_endpoint + newDashboardSample.primaryId,
-      {
-        json: true,
-      }
-    );
+  // return new Promise(async (resolve) => {
+  const sampleManifest = await request(
+    props.smile_sample_endpoint + newDashboardSample.primaryId,
+    {
+      json: true,
+    }
+  );
 
-    Object.keys(newDashboardSample).forEach((key) => {
-      if (key in sampleManifest) {
-        sampleManifest[key] =
-          newDashboardSample[key as keyof DashboardSampleInput];
-      }
-    });
+  Object.keys(newDashboardSample).forEach((key) => {
+    if (key in sampleManifest) {
+      sampleManifest[key] =
+        newDashboardSample[key as keyof DashboardSampleInput];
+    }
+  });
 
-    // Ensure validator and label generator use latest status data added during validation
-    delete sampleManifest.status;
+  // Ensure validator and label generator use latest status data added during validation
+  delete sampleManifest.status;
 
-    // Ensure isCmoSample is set in sample's 'additionalProperties' if not already present
-    if (sampleManifest.additionalProperties.isCmoSample == null) {
-      // For research samples, this ensures that they get sent to the label generator after
-      // validation as some of the older SMILE samples do not have this additionalProperty set
-      if (sampleManifest.datasource === "igo") {
-        const requestId = sampleManifest.additionalProperties.igoRequestId;
-        let requestOgm = ogm.model("Request");
-        const requestOfSample = await requestOgm.find({
-          where: { igoRequestId: requestId },
-        });
-        sampleManifest.additionalProperties.isCmoSample =
-          requestOfSample[0].isCmoRequest.toString();
-      }
-
-      if (sampleManifest.datasource === "dmp") {
-        sampleManifest.additionalProperties.isCmoSample = false;
-      }
+  // Ensure isCmoSample is set in sample's 'additionalProperties' if not already present
+  if (sampleManifest.additionalProperties.isCmoSample == null) {
+    // For research samples, this ensures that they get sent to the label generator after
+    // validation as some of the older SMILE samples do not have this additionalProperty set
+    if (sampleManifest.datasource === "igo") {
+      const requestId = sampleManifest.additionalProperties.igoRequestId;
+      let requestOgm = ogm.model("Request");
+      const requestOfSample = await requestOgm.find({
+        where: { igoRequestId: requestId },
+      });
+      sampleManifest.additionalProperties.isCmoSample =
+        requestOfSample[0].isCmoRequest.toString();
     }
 
-    publishNatsMessage(
-      props.pub_validate_sample_update,
-      JSON.stringify(sampleManifest)
-    );
+    if (sampleManifest.datasource === "dmp") {
+      sampleManifest.additionalProperties.isCmoSample = false;
+    }
+  }
 
-    await ogm.model("Sample").update({
-      where: { smileSampleId: sampleManifest.smileSampleId },
-      update: { revisable: false },
-    });
+  // publishNatsMessage(
+  //   props.pub_validate_sample_update,
+  //   JSON.stringify(sampleManifest)
+  // );
 
-    resolve(null);
+  ogm.model("Sample").update({
+    where: { smileSampleId: sampleManifest.smileSampleId },
+    update: { revisable: false },
   });
+
+  // resolve(null);
+  return sampleManifest;
+  // });
 }
 
 async function updateTempoPromise(newDashboardSample: DashboardSampleInput) {
@@ -395,7 +396,13 @@ async function updateAllSamplesConcurrently(
   newDashboardSamples: DashboardSampleInput[],
   ogm: OGM
 ) {
-  const allPromises = newDashboardSamples.map(async (dashboardSample) => {
+  const allPromises = {
+    metadata: [] as Promise<any>[],
+    tempo: [] as Promise<any>[],
+    dbGap: [] as Promise<any>[],
+  };
+
+  for (const dashboardSample of newDashboardSamples) {
     try {
       const { changedFieldNames } = dashboardSample;
 
@@ -409,28 +416,42 @@ async function updateAllSamplesConcurrently(
         EDITABLE_DBGAP_FIELDS.has(field)
       );
 
-      const promises = [];
       if (metadataChanged) {
-        promises.push(updateSampleMetadataPromise(dashboardSample, ogm));
+        allPromises.metadata.push(
+          updateSampleMetadataPromise(dashboardSample, ogm)
+        );
       }
       if (tempoChanged) {
-        promises.push(updateTempoPromise(dashboardSample));
+        allPromises.tempo.push(updateTempoPromise(dashboardSample));
       }
       if (dbGapChanged) {
-        promises.push(updateDbGapPromise(dashboardSample));
+        allPromises.dbGap.push(updateDbGapPromise(dashboardSample));
       }
-
-      return Promise.all(promises);
     } catch (error) {
       console.error(
-        `Failed to update sample with primaryId ${dashboardSample.primaryId}. Error:`,
+        `Failed to queue updates for sample with primaryId ${dashboardSample.primaryId}. Error:`,
         error
       );
-      throw error; // ensure Promise.allSettled captures the error
+      throw error;
     }
-  });
+  }
 
-  await Promise.allSettled(allPromises);
+  // pub metadata changes as array
+  if (allPromises.metadata.length > 0) {
+    console.log(allPromises.metadata);
+    console.log(JSON.stringify(allPromises.metadata));
+    publishNatsMessage(
+      props.pub_validate_sample_update,
+      JSON.stringify(allPromises.metadata)
+    );
+  }
+
+  // Wait for all promises in each category
+  await Promise.allSettled([
+    ...allPromises.metadata,
+    ...allPromises.tempo,
+    ...allPromises.dbGap,
+  ]);
 }
 
 async function publishNatsMessage(topic: string, message: string) {
