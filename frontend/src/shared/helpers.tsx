@@ -121,11 +121,19 @@ export const requestColDefs: ColDef<DashboardRequest>[] = [
     headerName: "Status",
     cellRenderer: (params: ICellRendererParams<DashboardRequest>) => {
       if (!params.data) return null;
-      const { igoRequestId, validationStatus, validationReport } = params.data;
+      const {
+        igoRequestId,
+        validationStatus,
+        validationReport,
+        toleratedSampleErrors,
+      } = params.data;
+      // add check for toleratedSampleErrors if ultimately deciding to displaying tolerated errors always
+      // even on the request validation error popup
       return validationReport !== null && validationReport !== "{}" ? (
         <RecordValidation
           validationStatus={validationStatus}
           validationReport={validationReport}
+          toleratedSampleErrors={toleratedSampleErrors}
           modalTitle={`Error report for request ${igoRequestId}`}
           recordStatusMap={REQUEST_STATUS_MAP}
         />
@@ -346,6 +354,7 @@ export const sampleColDefs: ColDef<DashboardSample>[] = [
           <RecordValidation
             validationStatus={validationStatus}
             validationReport={validationReport}
+            toleratedSampleErrors={undefined}
             modalTitle={`Error report for sample ${primaryId}`}
             recordStatusMap={SAMPLE_STATUS_MAP}
           />
@@ -975,6 +984,7 @@ export const accessSampleColDefs: ColDef<DashboardSample>[] = [
           <RecordValidation
             validationStatus={validationStatus}
             validationReport={validationReport}
+            toleratedSampleErrors={undefined}
             modalTitle={`Error report for sample ${primaryId}`}
             recordStatusMap={SAMPLE_STATUS_MAP}
           />
