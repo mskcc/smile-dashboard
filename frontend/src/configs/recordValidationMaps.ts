@@ -2,6 +2,7 @@
  * Row-level data type for the validation report modal of a Sample/Request.
  */
 export type StatusItem = {
+  requestLevelValidationHeader?: string; // for grouping by request-level errors
   item: string;
   description: string;
   actionItem: string;
