@@ -8,6 +8,7 @@ import { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import {
   MISSING_STATUS,
+  REQUEST_STATUS_MAP,
   SAMPLE_STATUS_MAP,
   StatusItem,
   StatusMap,
@@ -25,7 +26,7 @@ export function RecordValidation({
 }: {
   validationStatus: DashboardRequest["validationStatus"];
   validationReport: DashboardRequest["validationReport"];
-  toleratedSampleErrors: DashboardRequest["toleratedSampleErrors"];
+  toleratedSampleErrors?: DashboardRequest["toleratedSampleErrors"];
   modalTitle: ModalTitle;
   recordStatusMap: StatusMap;
 }) {
@@ -49,6 +50,11 @@ export function RecordValidation({
 }
 
 const validationColDefs: ColDef<StatusItem>[] = [
+  {
+    field: "requestLevelValidationHeader",
+    hide: true,
+    rowGroup: true,
+  },
   {
     field: "item",
     headerName: "Item",
@@ -116,12 +122,36 @@ function ErrorReportModal({
   if (validationReport) {
     // Parse the validation report string and handle the `samples` field separately if applicable
     const validationReportMap = parseValidationReport(validationReport);
-    validationDataForAgGrid.push(
-      ...Array.from(validationReportMap, ([fieldName, report]) => {
-        const statusItem = recordStatusMap[`${fieldName} ${report}`];
-        return statusItem || null;
-      }).filter((item) => item !== null)
-    );
+    // toleratedSampleErrors is undefined if it's a validation report of anything other than request-level
+    if (typeof toleratedSampleErrors === "undefined") {
+      validationDataForAgGrid.push(
+        ...Array.from(validationReportMap, ([fieldName, report]) => {
+          const statusItem = recordStatusMap[`${fieldName} ${report}`];
+          return statusItem || null;
+        }).filter((item) => item !== null)
+      );
+    } else {
+      const requestErrors: Array<[string, keyof typeof REQUEST_STATUS_MAP]> =
+        [];
+      validationReportMap.forEach((value, key) => {
+        requestErrors.push([
+          "request",
+          `${key} ${value}` as keyof typeof REQUEST_STATUS_MAP,
+        ]);
+      });
+
+      if (requestErrors.length > 0) {
+        requestErrors.forEach(([requestId, statusMapKey]) => {
+          const statusItem = REQUEST_STATUS_MAP[statusMapKey];
+          if (statusItem) {
+            validationDataForAgGrid.push({
+              requestLevelValidationHeader: "Request-level validation errors",
+              ...statusItem,
+            });
+          }
+        });
+      }
+    }
 
     // For request-level validation, validation reports of failed samples are nested inside the request's
     // Status > validationReport > samples > an individual sample's status > validationReport
@@ -144,27 +174,23 @@ function ErrorReportModal({
     if (toleratedSampleErrors && toleratedSampleErrors?.length > 0) {
       const result: Array<[string, keyof typeof SAMPLE_STATUS_MAP]> = [];
       toleratedSampleErrors.forEach((sample) => {
+        const primaryId = sample?.primaryId!;
         const reportMap = parseValidationReport(sample?.validationReport!);
+        // console.log(reportMap)
         reportMap.forEach((value, key) => {
-          result.push([
-            sample?.primaryId!,
-            `${key} ${value}` as keyof typeof SAMPLE_STATUS_MAP,
-          ]);
+          const statusItem =
+            SAMPLE_STATUS_MAP[
+              `${key} ${value}` as keyof typeof SAMPLE_STATUS_MAP
+            ];
+          if (statusItem) {
+            validationDataForAgGrid.push({
+              toleratedSampleLevelValidationHeader:
+                "Sample-level validation warnings",
+              primaryId,
+              ...statusItem,
+            });
+          }
         });
-
-        if (result.length > 0) {
-          result.forEach(([primaryId, statusMapKey]) => {
-            const statusItem = SAMPLE_STATUS_MAP[statusMapKey];
-            if (statusItem) {
-              validationDataForAgGrid.push({
-                toleratedSampleLevelValidationHeader:
-                  "Tolerated sample-level validation errors",
-                primaryId,
-                ...statusItem,
-              });
-            }
-          });
-        }
       });
     }
 

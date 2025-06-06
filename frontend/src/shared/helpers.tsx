@@ -354,7 +354,6 @@ export const sampleColDefs: ColDef<DashboardSample>[] = [
           <RecordValidation
             validationStatus={validationStatus}
             validationReport={validationReport}
-            toleratedSampleErrors={undefined}
             modalTitle={`Error report for sample ${primaryId}`}
             recordStatusMap={SAMPLE_STATUS_MAP}
           />
@@ -984,7 +983,6 @@ export const accessSampleColDefs: ColDef<DashboardSample>[] = [
           <RecordValidation
             validationStatus={validationStatus}
             validationReport={validationReport}
-            toleratedSampleErrors={undefined}
             modalTitle={`Error report for sample ${primaryId}`}
             recordStatusMap={SAMPLE_STATUS_MAP}
           />
