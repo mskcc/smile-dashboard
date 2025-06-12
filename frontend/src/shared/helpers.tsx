@@ -687,7 +687,11 @@ function setupEditableSampleFields(
         });
         return changedValue !== undefined;
       },
+      cursorNotAllowed: (params: CellClassParams) => {
+        return params.data?.sampleCategory === "clinical";
+      },
     };
+
     if (colDef.cellClassRules) {
       colDef.cellClassRules = {
         ...colDef.cellClassRules,
@@ -722,6 +726,7 @@ function setupEditableSampleFields(
 
     colDef.editable = (params) => {
       return (
+        params.data?.sampleCategory !== "clinical" &&
         editableFieldsList.includes(params.colDef.field!) &&
         params.data?.revisable === true
       );
