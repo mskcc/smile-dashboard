@@ -688,7 +688,10 @@ function setupEditableSampleFields(
         return changedValue !== undefined;
       },
       cursorNotAllowed: (params: CellClassParams) => {
-        return params.data?.sampleCategory === "clinical";
+        return (
+          params.data?.sampleCategory === "clinical" ||
+          !editableFieldsList.includes(params.colDef.field!)
+        );
       },
     };
 
