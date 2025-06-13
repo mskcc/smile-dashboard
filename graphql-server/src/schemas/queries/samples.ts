@@ -9,6 +9,45 @@ import {
   buildCypherBooleanFilter,
   getNeo4jCustomSort,
 } from "../custom";
+import { partition } from "lodash";
+
+const FIELDS_TO_SEARCH = [
+  "primaryId",
+  "cmoSampleName",
+  "importDate",
+  "cmoPatientId",
+  "investigatorSampleId",
+  "sampleType",
+  "species",
+  "genePanel",
+  "baitSet",
+  "preservation",
+  "tumorOrNormal",
+  "sampleClass",
+  "oncotreeCode",
+  "collectionYear",
+  "sampleOrigin",
+  "tissueLocation",
+  "sex",
+  "recipe",
+  "altId",
+  "costCenter",
+  "billedBy",
+  "custodianInformation",
+  "accessLevel",
+  "bamCompleteDate",
+  "bamCompleteStatus",
+  "mafCompleteDate",
+  "mafCompleteNormalPrimaryId",
+  "mafCompleteStatus",
+  "qcCompleteDate",
+  "qcCompleteResult",
+  "qcCompleteReason",
+  "qcCompleteStatus",
+  "historicalCmoSampleNames",
+  "sampleCategory",
+  "dbGapStudy",
+];
 
 export function buildSamplesQueryBody({
   searchVals,
@@ -27,50 +66,36 @@ export function buildSamplesQueryBody({
   // WHERE clause and injecting that at the end (right before the RETURN statement).
   let searchFilters = "";
   if (searchVals?.length) {
-    const fieldsToSearch = [
-      "primaryId",
-      "cmoSampleName",
-      "importDate",
-      "cmoPatientId",
-      "investigatorSampleId",
-      "sampleType",
-      "species",
-      "genePanel",
-      "baitSet",
-      "preservation",
-      "tumorOrNormal",
-      "sampleClass",
-      "oncotreeCode",
-      "collectionYear",
-      "sampleOrigin",
-      "tissueLocation",
-      "sex",
-      "recipe",
-      "altId",
-      "costCenter",
-      "billedBy",
-      "custodianInformation",
-      "accessLevel",
-      "bamCompleteDate",
-      "bamCompleteStatus",
-      "mafCompleteDate",
-      "mafCompleteNormalPrimaryId",
-      "mafCompleteStatus",
-      "qcCompleteDate",
-      "qcCompleteResult",
-      "qcCompleteReason",
-      "qcCompleteStatus",
-      "historicalCmoSampleNames",
-      "sampleCategory",
-      "dbGapStudy",
-    ];
-    searchFilters += fieldsToSearch
-      .map(
-        (field) => `tempNode.${field} =~ '(?i).*(${searchVals.join("|")}).*'`
-      )
+    // Split search values into two arrays: quoted and unquoted values
+    const [quotedVals, unquotedVals] = partition(
+      searchVals,
+      (val) =>
+        (val.startsWith("'") && val.endsWith("'")) ||
+        (val.startsWith('"') && val.endsWith('"'))
+    );
+
+    // Perform exact match for quoted values and fuzzy match for unquoted values
+    searchFilters += FIELDS_TO_SEARCH.map((field) => {
+      const conditions = [];
+      if (unquotedVals.length) {
+        conditions.push(
+          `tempNode.${field} =~ '(?i).*(${unquotedVals.join("|")}).*'`
+        );
+      }
+      if (quotedVals.length) {
+        conditions.push(
+          `tempNode.${field} IN [${quotedVals
+            .map((val) => `"${val.slice(1, -1)}"`)
+            .join(", ")}]`
+        );
+      }
+      return conditions.join(" OR ");
+    })
+      .filter(Boolean)
       .join(" OR ");
+
     if (addlOncotreeCodes.length) {
-      searchFilters += ` OR latestSm.oncotreeCode =~ '^(${addlOncotreeCodes.join(
+      searchFilters += ` OR tempNode.oncotreeCode =~ '^(${addlOncotreeCodes.join(
         "|"
       )})'`;
     }
@@ -459,8 +484,9 @@ export function getAddlOtCodesMatchingCtOrCtdVals({
     for (const [code, { name, mainType }] of Object.entries(oncotreeCache)) {
       for (const val of searchVals) {
         if (
-          name?.toLowerCase().includes(val?.toLowerCase()) ||
-          mainType?.toLowerCase().includes(val?.toLowerCase())
+          // Using `includes` to enable matching quoted search terms, e.g. '"Pancreatic Cancer"'
+          val.toLowerCase().includes(name?.toLowerCase()) ||
+          val.toLowerCase().includes(mainType?.toLowerCase())
         ) {
           addlOncotreeCodes.add(code);
         }
