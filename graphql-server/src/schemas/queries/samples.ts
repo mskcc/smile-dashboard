@@ -1,5 +1,7 @@
 import {
+  DashboardRecordContext,
   DashboardSample,
+  InputMaybe,
   QueryDashboardSamplesArgs,
 } from "../../generated/graphql";
 import { OncotreeCache } from "../../utils/cache";
@@ -74,7 +76,7 @@ export function buildSamplesQueryBody({
         (val.startsWith('"') && val.endsWith('"'))
     );
 
-    // Perform exact match for quoted values and fuzzy match for unquoted values
+    // Build Cypher predicates that perform exact match for quoted values and fuzzy match for unquoted values
     searchFilters += FIELDS_TO_SEARCH.map((field) => {
       const conditions = [];
       if (unquotedVals.length) {
@@ -101,46 +103,38 @@ export function buildSamplesQueryBody({
     }
   }
 
-  // Filter for the WES samples on the Samples page
-  const genePanelContextObj = contexts?.find(
-    (ctx) => ctx?.fieldName === "genePanel"
-  );
-  const genePanelContext = genePanelContextObj
-    ? `latestSm.genePanel =~ '(?i).*(${genePanelContextObj.values.join(
-        "|"
-      )}).*'`
-    : "";
-
-  const baitSetContextObj = contexts?.find(
-    (ctx) => ctx?.fieldName === "baitSet"
-  );
-  const baitSetContext = baitSetContextObj
-    ? `latestSm.baitSet =~ '(?i).*(${baitSetContextObj.values.join("|")}).*'`
-    : "";
+  // Filters for the WES samples on the Samples page
+  const genePanelContext = buildCypherPredicateFromContext({
+    contexts,
+    contextField: "genePanel",
+    predicateField: "latestSm.genePanel",
+  });
+  const baitSetContext = buildCypherPredicateFromContext({
+    contexts,
+    contextField: "baitSet",
+    predicateField: "latestSm.baitSet",
+  });
 
   // Filter for the current request in the Request Samples view
-  const requestContextObj = contexts?.find(
-    (ctx) => ctx?.fieldName === "igoRequestId"
-  );
-  const requestContext = requestContextObj
-    ? `latestSm.igoRequestId = '${requestContextObj.values[0]}'`
-    : "";
+  const requestContext = buildCypherPredicateFromContext({
+    contexts,
+    contextField: "igoRequestId",
+    predicateField: "latestSm.igoRequestId",
+  });
 
   // Filter for the current patient for the Patient Samples view
-  const patientContextObj = contexts?.find(
-    (ctx) => ctx?.fieldName === "patientId"
-  );
-  const patientContext = patientContextObj
-    ? `pa.value = '${patientContextObj.values[0]}'`
-    : "";
+  const patientContext = buildCypherPredicateFromContext({
+    contexts,
+    contextField: "patientId",
+    predicateField: "pa.value",
+  });
 
   // Filter for the current cohort for the Cohort Samples view
-  const cohortContextObj = contexts?.find(
-    (ctx) => ctx?.fieldName === "cohortId"
-  );
-  const cohortContext = cohortContextObj
-    ? `c.cohortId = '${cohortContextObj.values[0]}'`
-    : "";
+  const cohortContext = buildCypherPredicateFromContext({
+    contexts,
+    contextField: "cohortId",
+    predicateField: "c.cohortId",
+  });
 
   // "Last Updated" column filter in the Samples Metadata view
   let importDateFilter = "";
@@ -413,6 +407,27 @@ export function buildSamplesQueryBody({
   `;
 
   return samplesQueryBody;
+}
+
+function buildCypherPredicateFromContext({
+  contexts,
+  contextField,
+  predicateField,
+}: {
+  contexts: InputMaybe<InputMaybe<DashboardRecordContext>[]> | undefined;
+  /** The relevant field name in the contexts array (e.g. baitSet) */
+  contextField: string;
+  /** Left-hand side of the Cypher predicate (e.g. latestSm.baitSet) */
+  predicateField: string;
+}): string {
+  const contextObj = contexts?.find((ctx) => ctx?.fieldName === contextField);
+  if (!contextObj || !contextObj.values || contextObj.values.length === 0)
+    return "";
+  if (contextObj.values.length > 1) {
+    return `${predicateField} =~ '(?i).*(${contextObj.values.join("|")}).*'`;
+  } else {
+    return `${predicateField} = '${contextObj.values[0]}'`;
+  }
 }
 
 export function buildSamplesQueryFinal({
