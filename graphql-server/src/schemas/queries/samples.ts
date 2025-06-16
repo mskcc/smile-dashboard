@@ -7,7 +7,7 @@ import {
 import { OncotreeCache } from "../../utils/cache";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildCypherDateFilter,
+  buildCypherPredicateFromColumnDateFilter,
   buildCypherBooleanFilter,
   getNeo4jCustomSort,
 } from "../custom";
@@ -137,16 +137,11 @@ export function buildSamplesQueryBody({
   });
 
   // "Last Updated" column filter in the Samples Metadata view
-  let importDateFilter = "";
-  const importDateFilterObj = filters?.find(
-    (filter) => filter.field === "importDate"
-  );
-  if (importDateFilterObj) {
-    importDateFilter = buildCypherDateFilter({
-      dateVar: "latestSm.importDate",
-      filter: JSON.parse(importDateFilterObj.filter),
-    });
-  }
+  const importDateFilter = buildCypherPredicateFromColumnDateFilter({
+    filters,
+    filterField: "importDate",
+    dateVar: "latestSm.importDate",
+  });
 
   // "Billed" column filter for the Cohort Samples view
   let billedFilter = "";
@@ -159,74 +154,48 @@ export function buildSamplesQueryBody({
     });
   }
 
-  // "Initial Pipeline Run Date" column filter in the Cohort Samples view
-  let initialPipelineRunDateFilter = "";
-  const initialPipelineRunDateFilterObj = filters?.find(
-    (filter) => filter.field === "initialPipelineRunDate"
-  );
-  if (initialPipelineRunDateFilterObj) {
-    initialPipelineRunDateFilter = buildCypherDateFilter({
+  // Cohort date column filters in the Cohort Samples view
+  const initialPipelineRunDateFilter = buildCypherPredicateFromColumnDateFilter(
+    {
+      filters,
+      filterField: "initialPipelineRunDate",
       dateVar: "t.initialPipelineRunDate",
-      filter: JSON.parse(initialPipelineRunDateFilterObj.filter),
-    });
-  }
-  // Embargo Date" column filter in the Cohort Samples view
-  let embargoDateFilter = "";
-  const embargoDateFilterObj = filters?.find(
-    (filter) => filter.field === "embargoDate"
+    }
   );
-  if (embargoDateFilterObj) {
-    embargoDateFilter = buildCypherDateFilter({
-      dateVar: "t.embargoDate",
-      filter: JSON.parse(embargoDateFilterObj.filter),
-    });
-  }
+  const embargoDateFilter = buildCypherPredicateFromColumnDateFilter({
+    filters,
+    filterField: "embargoDate",
+    dateVar: "t.embargoDate",
+  });
   const cohortDateFilters = [initialPipelineRunDateFilter, embargoDateFilter]
     .filter(Boolean)
     .map((filter) => `(${filter})`)
     .join(" AND ");
 
   // "Latest BAM Complete Date" column filter in the Cohort Samples view
-  let bamCompleteDateFilter = "";
-  const bamCompleteDateFilterObj = filters?.find(
-    (filter) => filter.field === "bamCompleteDate"
-  );
-  if (bamCompleteDateFilterObj) {
-    bamCompleteDateFilter = buildCypherDateFilter({
-      dateVar: "latestBC.date",
-      safelyHandleDateString: true,
-      filter: JSON.parse(bamCompleteDateFilterObj.filter),
-    });
-  }
+  const bamCompleteDateFilter = buildCypherPredicateFromColumnDateFilter({
+    filters,
+    filterField: "bamCompleteDate",
+    dateVar: "latestBC.date",
+    safelyHandleDateString: true,
+  });
 
   // "Latest MAF Complete Date" column filter in the Cohort Samples view
-  let mafCompleteDateFilter = "";
-  const mafCompleteDateFilterObj = filters?.find(
-    (filter) => filter.field === "mafCompleteDate"
-  );
-  if (mafCompleteDateFilterObj) {
-    mafCompleteDateFilter = buildCypherDateFilter({
-      dateVar: "latestMC.date",
-      safelyHandleDateString: true,
-      filter: JSON.parse(mafCompleteDateFilterObj.filter),
-    });
-  }
+  const mafCompleteDateFilter = buildCypherPredicateFromColumnDateFilter({
+    filters,
+    filterField: "mafCompleteDate",
+    dateVar: "latestMC.date",
+    safelyHandleDateString: true,
+  });
 
   // "Latest QC Complete Date" column filter in the Cohort Samples view
-  let qcCompleteDateFilter = "";
-  const qcCompleteDateFilterObj = filters?.find(
-    (filter) => filter.field === "qcCompleteDate"
-  );
-  if (qcCompleteDateFilterObj) {
-    qcCompleteDateFilter = buildCypherDateFilter({
-      dateVar: "latestQC.date",
-      safelyHandleDateString: true,
-      filter: JSON.parse(qcCompleteDateFilterObj.filter),
-    });
-  }
+  const qcCompleteDateFilter = buildCypherPredicateFromColumnDateFilter({
+    filters,
+    filterField: "qcCompleteDate",
+    dateVar: "latestQC.date",
+    safelyHandleDateString: true,
+  });
 
-  // NOTE: For future reference, we can get a list of historical CMO labels and import dates by replacing
-  // '| sm.cmoSampleName' with '| {cmoSampleName: sm.cmoSampleName, importDate: sm.importDate}'
   const samplesQueryBody = `
     // Get Sample and the most recent SampleMetadata
     MATCH (s:Sample)
@@ -415,8 +384,7 @@ function buildCypherPredicateFromContext({
   predicateField,
 }: {
   contexts: InputMaybe<InputMaybe<DashboardRecordContext>[]> | undefined;
-  /** The relevant field name in the contexts array (e.g. baitSet) */
-  contextField: string;
+  contextField: DashboardRecordContext["fieldName"];
   /** Left-hand side of the Cypher predicate (e.g. latestSm.baitSet) */
   predicateField: string;
 }): string {

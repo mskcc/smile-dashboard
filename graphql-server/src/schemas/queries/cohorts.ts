@@ -6,7 +6,7 @@ import {
 import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherBooleanFilter,
-  buildCypherDateFilter,
+  buildCypherPredicateFromColumnDateFilter,
   buildFinalCypherFilter,
   getNeo4jCustomSort,
 } from "../custom";
@@ -52,16 +52,14 @@ export function buildCohortsQueryBody({
       queryFilters.push(billedFilter);
     }
 
-    const initialCohortDeliveryDateFilterObj = filters?.find(
-      (filter) => filter.field === "initialCohortDeliveryDate"
-    );
-    if (initialCohortDeliveryDateFilterObj) {
-      const initialCohortDeliveryDateFilter = buildCypherDateFilter({
+    const initialCohortDeliveryDateFilter =
+      buildCypherPredicateFromColumnDateFilter({
+        filters,
+        filterField: "initialCohortDeliveryDate",
         dateVar: "tempNode.initialCohortDeliveryDate",
-        filter: JSON.parse(initialCohortDeliveryDateFilterObj.filter),
       });
+    if (initialCohortDeliveryDateFilter)
       queryFilters.push(initialCohortDeliveryDateFilter);
-    }
   }
 
   const filtersAsCypher = buildFinalCypherFilter({ queryFilters });

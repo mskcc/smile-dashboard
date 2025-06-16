@@ -8,6 +8,8 @@ import {
   QueryDashboardRequestsArgs,
   QueryDashboardSamplesArgs,
   DashboardRecordSort,
+  InputMaybe,
+  DashboardRecordFilter,
 } from "../generated/graphql";
 import { props } from "../utils/constants";
 import { connect, headers, StringCodec } from "nats";
@@ -161,29 +163,23 @@ export async function buildCustomSchema(ogm: OGM) {
   });
 }
 
-/**
- * Build "from" and "to" date predicates to be used in a WHERE clause in Cypher.
- *
- * This function can also handle unsafe date values like Tempo event dates, which can come in a variety of formats
- * such as date values in "yyyy-MM-dd" or "yyyy-MM-dd HH:mm" or "yyyy-MM-dd HH:mm:ss.SSSSSS", empty strings, or "FAILED".
- *
- * @param dateVar The date variable in the current Cypher context e.g. `bc.date` from `MATCH (bc:BamComplete) RETURN bc.date`
- * @param filter The filter object type from AG Grid's `agDateColumnFilter`
- * @param safelyHandleDateString Set this to true when working with date values that are unpredictable/non-standardized
- *
- */
-export function buildCypherDateFilter({
+export function buildCypherPredicateFromColumnDateFilter({
+  filters,
+  filterField,
   dateVar,
-  filter,
   safelyHandleDateString = false,
 }: {
+  filters: InputMaybe<DashboardRecordFilter[]> | undefined;
+  filterField: DashboardRecordFilter["field"];
+  /** The date variable in the current Cypher context e.g. `bc.date` from `MATCH (bc:BamComplete) RETURN bc.date` */
   dateVar: string;
+  /** Set this to true when working with date values that are unpredictable/non-standardized */
   safelyHandleDateString?: boolean;
-  filter: {
-    dateFrom: string;
-    dateTo: string;
-  };
 }) {
+  const filterObj = filters?.find((filter) => filter.field === filterField);
+  if (!filterObj) return "";
+  const filter = JSON.parse(filterObj.filter); // as AG Grid's DateFilterModel type
+
   const formattedDateString = safelyHandleDateString
     ? `
     CASE

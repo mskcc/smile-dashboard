@@ -6,7 +6,7 @@ import { neo4jDriver } from "../../utils/servers";
 import {
   buildFinalCypherFilter,
   getNeo4jCustomSort,
-  buildCypherDateFilter,
+  buildCypherPredicateFromColumnDateFilter,
   buildCypherBooleanFilter,
 } from "../custom";
 
@@ -48,16 +48,12 @@ export function buildRequestsQueryBody({
   }
 
   if (filters) {
-    const importDateFilterObj = filters?.find(
-      (filter) => filter.field === "importDate"
-    );
-    if (importDateFilterObj) {
-      const importDateFilter = buildCypherDateFilter({
-        dateVar: "tempNode.importDate",
-        filter: JSON.parse(importDateFilterObj.filter),
-      });
-      queryFilters.push(importDateFilter);
-    }
+    const importDateFilter = buildCypherPredicateFromColumnDateFilter({
+      filters,
+      filterField: "importDate",
+      dateVar: "tempNode.importDate",
+    });
+    if (importDateFilter) queryFilters.push(importDateFilter);
     const bicAnalysisFilterObj = filters?.find(
       (filter) => filter.field === "bicAnalysis"
     );
@@ -108,32 +104,32 @@ export function buildRequestsQueryBody({
 
     OPTIONAL MATCH (r)-[:HAS_SAMPLE]->(s:Sample)
 
-    WITH 
+    WITH
       r,
-      latestStatus, 
+      latestStatus,
       totalSampleCount,
       latestImportDate,
       s,
       COLLECT {
-        MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)-[:HAS_STATUS]->(ss:Status) 
-        RETURN {primaryId: sm.primaryId, validationStatus: ss.validationStatus, validationReport: ss.validationReport} 
+        MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)-[:HAS_STATUS]->(ss:Status)
+        RETURN {primaryId: sm.primaryId, validationStatus: ss.validationStatus, validationReport: ss.validationReport}
         ORDER BY sm.importDate DESC LIMIT 1
       } as latestSampleData
 
-    WITH 
+    WITH
       r,
       latestStatus,
       totalSampleCount,
       latestImportDate,
       latestSampleData[0] as latestSampleData
 
-    WITH 
+    WITH
       r,
       latestStatus,
       totalSampleCount,
       latestImportDate,
       COLLECT(latestSampleData) as toleratedSampleErrors
-      
+
     WITH
       ({igoRequestId: r.igoRequestId,
       igoProjectId: r.igoProjectId,
