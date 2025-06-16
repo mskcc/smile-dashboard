@@ -6,7 +6,6 @@ import {
   ITooltipParams,
   CellClassParams,
   IFilterDef,
-  EditableCallback,
 } from "ag-grid-community";
 import { Button } from "react-bootstrap";
 import "ag-grid-enterprise";

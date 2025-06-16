@@ -10,8 +10,8 @@ import {
   buildCypherPredicateFromDateColumnFilter,
   buildCypherPredicateFromBooleanColumnFilter,
   getNeo4jCustomSort,
+  buildCypherPredicatesFromSearchVals,
 } from "../custom";
-import { partition } from "lodash";
 
 const FIELDS_TO_SEARCH = [
   "primaryId",
@@ -66,36 +66,13 @@ export function buildSamplesQueryBody({
   // by building WHERE clauses and injecting them into the query as early as possible and when convenient.
   // This contrasts with our approach in other query builders, where we combine all predicates into a single
   // WHERE clause and injecting that at the end (right before the RETURN statement).
+
   let searchFilters = "";
   if (searchVals?.length) {
-    // Split search values into two arrays: quoted and unquoted values
-    const [quotedVals, unquotedVals] = partition(
+    searchFilters = buildCypherPredicatesFromSearchVals({
       searchVals,
-      (val) =>
-        (val.startsWith("'") && val.endsWith("'")) ||
-        (val.startsWith('"') && val.endsWith('"'))
-    );
-
-    // Build Cypher predicates that perform exact match for quoted values and fuzzy match for unquoted values
-    searchFilters += FIELDS_TO_SEARCH.map((field) => {
-      const conditions = [];
-      if (unquotedVals.length) {
-        conditions.push(
-          `tempNode.${field} =~ '(?i).*(${unquotedVals.join("|")}).*'`
-        );
-      }
-      if (quotedVals.length) {
-        conditions.push(
-          `tempNode.${field} IN [${quotedVals
-            .map((val) => `"${val.slice(1, -1)}"`)
-            .join(", ")}]`
-        );
-      }
-      return conditions.join(" OR ");
-    })
-      .filter(Boolean)
-      .join(" OR ");
-
+      fieldsToSearch: FIELDS_TO_SEARCH,
+    });
     if (addlOncotreeCodes.length) {
       searchFilters += ` OR tempNode.oncotreeCode =~ '^(${addlOncotreeCodes.join(
         "|"

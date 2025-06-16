@@ -7,9 +7,22 @@ import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherPredicateFromBooleanColumnFilter,
   buildCypherPredicateFromDateColumnFilter,
+  buildCypherPredicatesFromSearchVals,
   buildFinalCypherFilter,
   getNeo4jCustomSort,
 } from "../custom";
+
+const FIELDS_TO_SEARCH = [
+  "cohortId",
+  "billed",
+  "initialCohortDeliveryDate",
+  "endUsers",
+  "pmUsers",
+  "projectTitle",
+  "projectSubtitle",
+  "status",
+  "type",
+];
 
 export function buildCohortsQueryBody({
   searchVals,
@@ -20,43 +33,29 @@ export function buildCohortsQueryBody({
 }) {
   const queryFilters = [];
 
-  if (searchVals?.length) {
-    const fieldsToSearch = [
-      "tempNode.cohortId",
-      "tempNode.billed",
-      "tempNode.initialCohortDeliveryDate",
-      "tempNode.endUsers",
-      "tempNode.pmUsers",
-      "tempNode.projectTitle",
-      "tempNode.projectSubtitle",
-      "tempNode.status",
-      "tempNode.type",
-    ];
-    const searchFilters = fieldsToSearch
-      .map((field) => `${field} =~ '(?i).*(${searchVals.join("|")}).*'`)
-      .join(" OR ");
-    queryFilters.push(searchFilters);
-  }
+  const searchFilters = buildCypherPredicatesFromSearchVals({
+    searchVals,
+    fieldsToSearch: FIELDS_TO_SEARCH,
+  });
+  if (searchFilters) queryFilters.push(searchFilters);
 
-  if (filters) {
-    const billedFilter = buildCypherPredicateFromBooleanColumnFilter({
+  const billedFilter = buildCypherPredicateFromBooleanColumnFilter({
+    filters,
+    filterField: "billed",
+    booleanVar: "tempNode.billed",
+    trueVal: "Yes",
+    falseVal: "No",
+  });
+  if (billedFilter) queryFilters.push(billedFilter);
+
+  const initialCohortDeliveryDateFilter =
+    buildCypherPredicateFromDateColumnFilter({
       filters,
-      filterField: "billed",
-      booleanVar: "tempNode.billed",
-      trueVal: "Yes",
-      falseVal: "No",
+      filterField: "initialCohortDeliveryDate",
+      dateVar: "tempNode.initialCohortDeliveryDate",
     });
-    if (billedFilter) queryFilters.push(billedFilter);
-
-    const initialCohortDeliveryDateFilter =
-      buildCypherPredicateFromDateColumnFilter({
-        filters,
-        filterField: "initialCohortDeliveryDate",
-        dateVar: "tempNode.initialCohortDeliveryDate",
-      });
-    if (initialCohortDeliveryDateFilter)
-      queryFilters.push(initialCohortDeliveryDateFilter);
-  }
+  if (initialCohortDeliveryDateFilter)
+    queryFilters.push(initialCohortDeliveryDateFilter);
 
   const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
 

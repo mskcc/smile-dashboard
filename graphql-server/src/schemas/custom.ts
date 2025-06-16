@@ -41,6 +41,7 @@ import {
 } from "./queries/requests";
 import { typeDefs } from "../utils/typeDefs";
 const request = require("request-promise-native");
+import { partition } from "lodash";
 
 export async function buildCustomSchema(ogm: OGM) {
   const resolvers = {
@@ -161,6 +162,44 @@ export async function buildCustomSchema(ogm: OGM) {
     typeDefs: typeDefs,
     resolvers: resolvers,
   });
+}
+
+export function buildCypherPredicatesFromSearchVals({
+  searchVals,
+  fieldsToSearch,
+}: {
+  searchVals: QueryDashboardSamplesArgs["searchVals"];
+  fieldsToSearch: string[];
+}) {
+  if (!searchVals || searchVals.length === 0) return "";
+
+  // Split search values into two arrays: quoted and unquoted values
+  const [quotedVals, unquotedVals] = partition(
+    searchVals,
+    (val) =>
+      (val.startsWith("'") && val.endsWith("'")) ||
+      (val.startsWith('"') && val.endsWith('"'))
+  );
+
+  // Build Cypher predicates that perform exact match for quoted values and fuzzy match for unquoted values
+  return fieldsToSearch
+    .map((field) => {
+      const conditions = [];
+      if (unquotedVals.length) {
+        conditions.push(
+          `tempNode.${field} =~ '(?i).*(${unquotedVals.join("|")}).*'`
+        );
+      }
+      if (quotedVals.length) {
+        const quotedValsList = quotedVals
+          .map((val) => `"${val.slice(1, -1)}"`)
+          .join(", ");
+        conditions.push(`tempNode.${field} IN [${quotedValsList}]`);
+      }
+      return conditions.join(" OR ");
+    })
+    .filter(Boolean)
+    .join(" OR ");
 }
 
 export function buildCypherPredicateFromDateColumnFilter({
