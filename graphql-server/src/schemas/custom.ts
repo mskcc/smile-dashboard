@@ -163,7 +163,7 @@ export async function buildCustomSchema(ogm: OGM) {
   });
 }
 
-export function buildCypherPredicateFromColumnDateFilter({
+export function buildCypherPredicateFromDateColumnFilter({
   filters,
   filterField,
   dateVar,
@@ -173,7 +173,11 @@ export function buildCypherPredicateFromColumnDateFilter({
   filterField: DashboardRecordFilter["field"];
   /** The date variable in the current Cypher context e.g. `bc.date` from `MATCH (bc:BamComplete) RETURN bc.date` */
   dateVar: string;
-  /** Set this to true when working with date values that are unpredictable/non-standardized */
+  /**
+   * Set to True when working with date values that are unpredictable/non-standardized like Tempo event dates,
+   * which can come in date value formats such as "yyyy-MM-dd", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss.SSSSSS",
+   * empty strings, or "FAILED".
+   */
   safelyHandleDateString?: boolean;
 }) {
   const filterObj = filters?.find((filter) => filter.field === filterField);
@@ -196,31 +200,29 @@ export function buildCypherPredicateFromColumnDateFilter({
     `;
 }
 
-/**
- * Build boolean predicates to be used in a WHERE clause in Cypher.
- *
- * @param booleanVar The boolean variable in the current Cypher context e.g. `t.billed` from `MATCH (t:Tempo) RETURN t.billed`
- * @param filter The filter object type from AG Grid's `agSetColumnFilter`
- * @param noIncludesFalseAndNull Set this to true if we want the user's filter selection of "No" to include both false and null values
- * @param trueVal The true value that appears in the database for a given field (e.g. "Yes", true)
- * @param falseVal The false value that appears in the database for a given field (e.g. "No", false)
- *
- */
-export function buildCypherBooleanFilter({
+export function buildCypherPredicateFromBooleanColumnFilter({
+  filters,
+  filterField,
   booleanVar,
-  filter,
   noIncludesFalseAndNull = false,
   trueVal = true,
   falseVal = false,
 }: {
+  filters: InputMaybe<DashboardRecordFilter[]> | undefined;
+  filterField: DashboardRecordFilter["field"];
+  /** The boolean variable in the current Cypher context e.g. `t.billed` from `MATCH (t:Tempo) RETURN t.billed` */
   booleanVar: string;
-  filter: {
-    values: string[];
-  };
+  /** Set to True for user's filter selection of "No" to include both false and null values */
   noIncludesFalseAndNull?: boolean;
+  /** The true value that appears in the database for a given field (e.g. "Yes", true) */
   trueVal?: string | boolean;
+  /** The false value that appears in the database for a given field (e.g. "No", false) */
   falseVal?: string | boolean;
 }) {
+  const filterObj = filters?.find((filter) => filter.field === filterField);
+  if (!filterObj) return "";
+  const filter = JSON.parse(filterObj.filter); // as AG Grid's SetFilterModel type
+
   const formattedTrueVal =
     typeof trueVal === "string" ? `'${trueVal}'` : trueVal;
   const formattedFalseVal =

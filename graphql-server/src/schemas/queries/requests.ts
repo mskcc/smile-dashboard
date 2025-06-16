@@ -6,8 +6,8 @@ import { neo4jDriver } from "../../utils/servers";
 import {
   buildFinalCypherFilter,
   getNeo4jCustomSort,
-  buildCypherPredicateFromColumnDateFilter,
-  buildCypherBooleanFilter,
+  buildCypherPredicateFromDateColumnFilter,
+  buildCypherPredicateFromBooleanColumnFilter,
 } from "../custom";
 
 export function buildRequestsQueryBody({
@@ -48,39 +48,32 @@ export function buildRequestsQueryBody({
   }
 
   if (filters) {
-    const importDateFilter = buildCypherPredicateFromColumnDateFilter({
+    const importDateFilter = buildCypherPredicateFromDateColumnFilter({
       filters,
       filterField: "importDate",
       dateVar: "tempNode.importDate",
     });
     if (importDateFilter) queryFilters.push(importDateFilter);
-    const bicAnalysisFilterObj = filters?.find(
-      (filter) => filter.field === "bicAnalysis"
-    );
-    if (bicAnalysisFilterObj) {
-      const bicAnalysisFilter = buildCypherBooleanFilter({
-        booleanVar: "tempNode.bicAnalysis",
-        filter: JSON.parse(bicAnalysisFilterObj.filter),
-        noIncludesFalseAndNull: true,
-      });
-      queryFilters.push(bicAnalysisFilter);
-    }
-    const cmoRequestFilterObj = filters?.find(
-      (filter) => filter.field === "isCmoRequest"
-    );
-    if (cmoRequestFilterObj) {
-      const cmoRequestFilter = buildCypherBooleanFilter({
-        booleanVar: "tempNode.isCmoRequest",
-        filter: JSON.parse(cmoRequestFilterObj.filter),
-        noIncludesFalseAndNull: true,
-      });
-      queryFilters.push(cmoRequestFilter);
-    }
+
+    const bicAnalysisFilter = buildCypherPredicateFromBooleanColumnFilter({
+      filters,
+      filterField: "bicAnalysis",
+      booleanVar: "tempNode.bicAnalysis",
+      noIncludesFalseAndNull: true,
+    });
+    if (bicAnalysisFilter) queryFilters.push(bicAnalysisFilter);
+
+    const cmoRequestFilter = buildCypherPredicateFromBooleanColumnFilter({
+      filters,
+      filterField: "isCmoRequest",
+      booleanVar: "tempNode.isCmoRequest",
+      noIncludesFalseAndNull: true,
+    });
+    if (cmoRequestFilter) queryFilters.push(cmoRequestFilter);
   }
 
   const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
 
-  // TODO: when done, compare the request page results before vs after to ensure consistency
   const requestsQueryBody = `
     MATCH (r:Request)
 

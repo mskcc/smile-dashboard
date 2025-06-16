@@ -5,8 +5,8 @@ import {
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildCypherBooleanFilter,
-  buildCypherPredicateFromColumnDateFilter,
+  buildCypherPredicateFromBooleanColumnFilter,
+  buildCypherPredicateFromDateColumnFilter,
   buildFinalCypherFilter,
   getNeo4jCustomSort,
 } from "../custom";
@@ -39,21 +39,17 @@ export function buildCohortsQueryBody({
   }
 
   if (filters) {
-    const billedFilterObj = filters?.find(
-      (filter) => filter.field === "billed"
-    );
-    if (billedFilterObj) {
-      const billedFilter = buildCypherBooleanFilter({
-        booleanVar: "tempNode.billed",
-        filter: JSON.parse(billedFilterObj.filter),
-        trueVal: "Yes",
-        falseVal: "No",
-      });
-      queryFilters.push(billedFilter);
-    }
+    const billedFilter = buildCypherPredicateFromBooleanColumnFilter({
+      filters,
+      filterField: "billed",
+      booleanVar: "tempNode.billed",
+      trueVal: "Yes",
+      falseVal: "No",
+    });
+    if (billedFilter) queryFilters.push(billedFilter);
 
     const initialCohortDeliveryDateFilter =
-      buildCypherPredicateFromColumnDateFilter({
+      buildCypherPredicateFromDateColumnFilter({
         filters,
         filterField: "initialCohortDeliveryDate",
         dateVar: "tempNode.initialCohortDeliveryDate",

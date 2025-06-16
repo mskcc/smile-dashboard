@@ -7,8 +7,8 @@ import {
 import { OncotreeCache } from "../../utils/cache";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildCypherPredicateFromColumnDateFilter,
-  buildCypherBooleanFilter,
+  buildCypherPredicateFromDateColumnFilter,
+  buildCypherPredicateFromBooleanColumnFilter,
   getNeo4jCustomSort,
 } from "../custom";
 import { partition } from "lodash";
@@ -137,32 +137,29 @@ export function buildSamplesQueryBody({
   });
 
   // "Last Updated" column filter in the Samples Metadata view
-  const importDateFilter = buildCypherPredicateFromColumnDateFilter({
+  const importDateFilter = buildCypherPredicateFromDateColumnFilter({
     filters,
     filterField: "importDate",
     dateVar: "latestSm.importDate",
   });
 
   // "Billed" column filter for the Cohort Samples view
-  let billedFilter = "";
-  const billedFilterObj = filters?.find((filter) => filter.field === "billed");
-  if (billedFilterObj) {
-    billedFilter = buildCypherBooleanFilter({
-      booleanVar: "t.billed",
-      filter: JSON.parse(billedFilterObj.filter),
-      noIncludesFalseAndNull: true,
-    });
-  }
+  const billedFilter = buildCypherPredicateFromBooleanColumnFilter({
+    filters,
+    filterField: "billed",
+    booleanVar: "t.billed",
+    noIncludesFalseAndNull: true,
+  });
 
   // Cohort date column filters in the Cohort Samples view
-  const initialPipelineRunDateFilter = buildCypherPredicateFromColumnDateFilter(
+  const initialPipelineRunDateFilter = buildCypherPredicateFromDateColumnFilter(
     {
       filters,
       filterField: "initialPipelineRunDate",
       dateVar: "t.initialPipelineRunDate",
     }
   );
-  const embargoDateFilter = buildCypherPredicateFromColumnDateFilter({
+  const embargoDateFilter = buildCypherPredicateFromDateColumnFilter({
     filters,
     filterField: "embargoDate",
     dateVar: "t.embargoDate",
@@ -173,7 +170,7 @@ export function buildSamplesQueryBody({
     .join(" AND ");
 
   // "Latest BAM Complete Date" column filter in the Cohort Samples view
-  const bamCompleteDateFilter = buildCypherPredicateFromColumnDateFilter({
+  const bamCompleteDateFilter = buildCypherPredicateFromDateColumnFilter({
     filters,
     filterField: "bamCompleteDate",
     dateVar: "latestBC.date",
@@ -181,7 +178,7 @@ export function buildSamplesQueryBody({
   });
 
   // "Latest MAF Complete Date" column filter in the Cohort Samples view
-  const mafCompleteDateFilter = buildCypherPredicateFromColumnDateFilter({
+  const mafCompleteDateFilter = buildCypherPredicateFromDateColumnFilter({
     filters,
     filterField: "mafCompleteDate",
     dateVar: "latestMC.date",
@@ -189,7 +186,7 @@ export function buildSamplesQueryBody({
   });
 
   // "Latest QC Complete Date" column filter in the Cohort Samples view
-  const qcCompleteDateFilter = buildCypherPredicateFromColumnDateFilter({
+  const qcCompleteDateFilter = buildCypherPredicateFromDateColumnFilter({
     filters,
     filterField: "qcCompleteDate",
     dateVar: "latestQC.date",
@@ -230,9 +227,9 @@ export function buildSamplesQueryBody({
       ", ") AS historicalCmoSampleNames
 
     // Filters for either the WES Samples or Request Samples view, if applicable
-    ${genePanelContext && `WHERE ${genePanelContext}`} ${
-    baitSetContext && `OR ${baitSetContext}`
-  }
+    ${genePanelContext && `WHERE ${genePanelContext}`}
+    ${baitSetContext && `OR ${baitSetContext}`}
+
     ${requestContext && `WHERE ${requestContext}`}
 
     // Get SampleMetadata's Status

@@ -4,7 +4,7 @@ import {
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildCypherBooleanFilter,
+  buildCypherPredicateFromBooleanColumnFilter,
   buildFinalCypherFilter,
   getNeo4jCustomSort,
 } from "../custom";
@@ -34,44 +34,32 @@ export function buildPatientsQueryBody({
   }
 
   if (filters) {
-    const consentPartAFilterObj = filters?.find(
-      (filter) => filter.field === "consentPartA"
-    );
-    if (consentPartAFilterObj) {
-      const consentPartAFilter = buildCypherBooleanFilter({
-        booleanVar: "tempNode.consentPartA",
-        filter: JSON.parse(consentPartAFilterObj.filter),
-        trueVal: "YES",
-        falseVal: "NO",
-      });
-      queryFilters.push(consentPartAFilter);
-    }
+    const consentPartAFilter = buildCypherPredicateFromBooleanColumnFilter({
+      filters,
+      filterField: "consentPartA",
+      booleanVar: "tempNode.consentPartA",
+      trueVal: "YES",
+      falseVal: "NO",
+    });
+    if (consentPartAFilter) queryFilters.push(consentPartAFilter);
 
-    const consentPartCFilterObj = filters?.find(
-      (filter) => filter.field === "consentPartC"
-    );
-    if (consentPartCFilterObj) {
-      const consentPartCFilter = buildCypherBooleanFilter({
-        booleanVar: "tempNode.consentPartC",
-        filter: JSON.parse(consentPartCFilterObj.filter),
-        trueVal: "YES",
-        falseVal: "NO",
-      });
-      queryFilters.push(consentPartCFilter);
-    }
+    const consentPartCFilter = buildCypherPredicateFromBooleanColumnFilter({
+      filters,
+      filterField: "consentPartC",
+      booleanVar: "tempNode.consentPartC",
+      trueVal: "YES",
+      falseVal: "NO",
+    });
+    if (consentPartCFilter) queryFilters.push(consentPartCFilter);
 
-    const inDbGapFilterObj = filters?.find(
-      (filter) => filter.field === "inDbGap"
-    );
-    if (inDbGapFilterObj) {
-      const inDbGapFilter = buildCypherBooleanFilter({
-        booleanVar: "tempNode.inDbGap",
-        filter: JSON.parse(inDbGapFilterObj.filter),
-        trueVal: true,
-        falseVal: false,
-      });
-      queryFilters.push(inDbGapFilter);
-    }
+    const inDbGapFilter = buildCypherPredicateFromBooleanColumnFilter({
+      filters,
+      filterField: "inDbGap",
+      booleanVar: "tempNode.inDbGap",
+      trueVal: true,
+      falseVal: false,
+    });
+    if (inDbGapFilter) queryFilters.push(inDbGapFilter);
   }
 
   const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
