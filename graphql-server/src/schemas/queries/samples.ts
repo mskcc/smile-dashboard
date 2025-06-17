@@ -11,6 +11,7 @@ import {
   buildCypherPredicateFromBooleanColumnFilter,
   getCypherCustomOrderBy,
   buildCypherPredicatesFromSearchVals,
+  isQuotedString,
 } from "../../utils/cypher";
 
 const FIELDS_TO_SEARCH = [
@@ -440,10 +441,10 @@ export function getAddlOtCodesMatchingCtOrCtdVals({
   if (searchVals?.length) {
     for (const [code, { name, mainType }] of Object.entries(oncotreeCache)) {
       for (const val of searchVals) {
+        const valWithoutQuotes = isQuotedString(val) ? val.slice(1, -1) : val;
         if (
-          // Using `includes` to enable matching quoted search terms, e.g. '"Pancreatic Cancer"'
-          val.toLowerCase().includes(name?.toLowerCase()) ||
-          val.toLowerCase().includes(mainType?.toLowerCase())
+          name?.toLowerCase().includes(valWithoutQuotes.toLowerCase()) ||
+          mainType?.toLowerCase().includes(valWithoutQuotes.toLowerCase())
         ) {
           addlOncotreeCodes.add(code);
         }
