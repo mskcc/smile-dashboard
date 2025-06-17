@@ -1,15 +1,11 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext } from "../utils/servers";
 import {
-  AgGridSortDirection,
   DashboardSampleInput,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
   QueryDashboardSamplesArgs,
-  DashboardRecordSort,
-  InputMaybe,
-  DashboardRecordFilter,
 } from "../generated/graphql";
 import { props } from "../utils/constants";
 import { connect, headers, StringCodec } from "nats";
@@ -41,7 +37,6 @@ import {
 } from "./queries/requests";
 import { typeDefs } from "../utils/typeDefs";
 const request = require("request-promise-native");
-import { partition } from "lodash";
 
 export async function buildCustomSchema(ogm: OGM) {
   const resolvers = {
@@ -162,156 +157,6 @@ export async function buildCustomSchema(ogm: OGM) {
     typeDefs: typeDefs,
     resolvers: resolvers,
   });
-}
-
-export function buildCypherPredicatesFromSearchVals({
-  searchVals,
-  fieldsToSearch,
-}: {
-  searchVals: QueryDashboardSamplesArgs["searchVals"];
-  fieldsToSearch: string[];
-}) {
-  if (!searchVals || searchVals.length === 0) return "";
-
-  // Split search values into two arrays: quoted and unquoted values
-  const [quotedVals, unquotedVals] = partition(
-    searchVals,
-    (val) =>
-      (val.startsWith("'") && val.endsWith("'")) ||
-      (val.startsWith('"') && val.endsWith('"'))
-  );
-
-  // Build Cypher predicates that perform exact match for quoted values and fuzzy match for unquoted values
-  return fieldsToSearch
-    .map((field) => {
-      const conditions = [];
-      if (unquotedVals.length) {
-        conditions.push(
-          `tempNode.${field} =~ '(?i).*(${unquotedVals.join("|")}).*'`
-        );
-      }
-      if (quotedVals.length) {
-        const quotedValsList = quotedVals
-          .map((val) => `"${val.slice(1, -1)}"`)
-          .join(", ");
-        conditions.push(`tempNode.${field} IN [${quotedValsList}]`);
-      }
-      return conditions.join(" OR ");
-    })
-    .filter(Boolean)
-    .join(" OR ");
-}
-
-export function buildCypherPredicateFromDateColumnFilter({
-  filters,
-  filterField,
-  dateVar,
-  safelyHandleDateString = false,
-}: {
-  filters: InputMaybe<DashboardRecordFilter[]> | undefined;
-  filterField: DashboardRecordFilter["field"];
-  /** The date variable in the current Cypher context e.g. `bc.date` from `MATCH (bc:BamComplete) RETURN bc.date` */
-  dateVar: string;
-  /**
-   * Set to True when working with date values that are unpredictable/non-standardized like Tempo event dates,
-   * which can come in date value formats such as "yyyy-MM-dd", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss.SSSSSS",
-   * empty strings, or "FAILED".
-   */
-  safelyHandleDateString?: boolean;
-}) {
-  const filterObj = filters?.find((filter) => filter.field === filterField);
-  if (!filterObj) return "";
-  const filter = JSON.parse(filterObj.filter); // as AG Grid's DateFilterModel type
-
-  const formattedDateString = safelyHandleDateString
-    ? `
-    CASE
-      WHEN size(${dateVar}) >= 10 THEN left(${dateVar}, 10) // trims date formats more granular than yyyy-MM-dd
-      ELSE '1900-01-01' // excludes record from the result
-    END`
-    : dateVar;
-
-  return `
-      apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        >= apoc.date.parse('${filter.dateFrom}', 'ms', 'yyyy-MM-dd HH:mm:ss') // AG Grid's provided date format
-      AND apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        <= apoc.date.parse('${filter.dateTo}', 'ms', 'yyyy-MM-dd HH:mm:ss')
-    `;
-}
-
-export function buildCypherPredicateFromBooleanColumnFilter({
-  filters,
-  filterField,
-  booleanVar,
-  noIncludesFalseAndNull = false,
-  trueVal = true,
-  falseVal = false,
-}: {
-  filters: InputMaybe<DashboardRecordFilter[]> | undefined;
-  filterField: DashboardRecordFilter["field"];
-  /** The boolean variable in the current Cypher context e.g. `t.billed` from `MATCH (t:Tempo) RETURN t.billed` */
-  booleanVar: string;
-  /** Set to True for user's filter selection of "No" to include both false and null values */
-  noIncludesFalseAndNull?: boolean;
-  /** The true value that appears in the database for a given field (e.g. "Yes", true) */
-  trueVal?: string | boolean;
-  /** The false value that appears in the database for a given field (e.g. "No", false) */
-  falseVal?: string | boolean;
-}) {
-  const filterObj = filters?.find((filter) => filter.field === filterField);
-  if (!filterObj) return "";
-  const filter = JSON.parse(filterObj.filter); // as AG Grid's SetFilterModel type
-
-  const formattedTrueVal =
-    typeof trueVal === "string" ? `'${trueVal}'` : trueVal;
-  const formattedFalseVal =
-    typeof falseVal === "string" ? `'${falseVal}'` : falseVal;
-
-  const filterValues = filter.values;
-  if (filterValues?.length > 0) {
-    const activeFilters = [];
-    for (const value of filterValues) {
-      if (value === "Yes") {
-        activeFilters.push(`${booleanVar} = ${formattedTrueVal}`);
-      } else if (value === "No") {
-        if (!noIncludesFalseAndNull) {
-          activeFilters.push(`${booleanVar} = ${formattedFalseVal}`);
-        } else {
-          activeFilters.push(
-            `${booleanVar} = ${formattedFalseVal} OR ${booleanVar} IS NULL`
-          );
-        }
-      } else if (value === null) {
-        activeFilters.push(`${booleanVar} IS NULL`);
-      }
-    }
-    return activeFilters.join(" OR ");
-  } else {
-    return `${booleanVar} <> ${formattedTrueVal} AND ${booleanVar} <> ${formattedFalseVal} AND ${booleanVar} IS NOT NULL`;
-  }
-}
-
-export function buildFinalCypherFilter({
-  queryFilters,
-}: {
-  queryFilters: string[];
-}) {
-  const combinedPredicates = queryFilters
-    .filter(Boolean)
-    .map((queryFilter) => `(${queryFilter})`)
-    .join(" AND ");
-
-  return combinedPredicates ? "WHERE " + combinedPredicates : "";
-}
-
-/**
- * Disable Neo4j's defaults of showing nulls first for DESC sorting
- * and empty strings first for ASC sorting
- */
-export function getNeo4jCustomSort(sort: DashboardRecordSort) {
-  return sort.sort === AgGridSortDirection.Desc
-    ? `COALESCE(resultz.${sort.colId}, '') DESC`
-    : `resultz.${sort.colId}='' ASC, resultz.${sort.colId} ASC`;
 }
 
 async function updateSampleMetadataPromises(
@@ -462,7 +307,7 @@ async function updateAllSamplesConcurrently(
         tempoUpdatePromises.push(updateTempoPromise(dashboardSample));
       }
       if (dbGapChanged) {
-        dbGapUpdatePromises.push(updateTempoPromise(dashboardSample));
+        dbGapUpdatePromises.push(updateDbGapPromise(dashboardSample));
       }
     } catch (error) {
       console.error(

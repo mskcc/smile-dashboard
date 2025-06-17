@@ -6,9 +6,9 @@ import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherPredicateFromBooleanColumnFilter,
   buildCypherPredicatesFromSearchVals,
-  buildFinalCypherFilter,
-  getNeo4jCustomSort,
-} from "../custom";
+  buildFinalCypherWhereClause,
+  getCypherCustomOrderBy,
+} from "../../utils/cypher";
 
 const FIELDS_TO_SEARCH = [
   "smilePatientId",
@@ -59,7 +59,7 @@ export function buildPatientsQueryBody({
   });
   if (inDbGapFilter) queryFilters.push(inDbGapFilter);
 
-  const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
+  const filtersAsCypher = buildFinalCypherWhereClause({ queryFilters });
 
   const patientsQueryBody = `
     MATCH (p:Patient)
@@ -159,7 +159,7 @@ export async function queryDashboardPatients({
 
     RETURN
       resultz{.*, _total: total}
-    ORDER BY ${getNeo4jCustomSort(sort)}
+    ORDER BY ${getCypherCustomOrderBy(sort)}
     SKIP ${offset}
     LIMIT ${limit}
   `;

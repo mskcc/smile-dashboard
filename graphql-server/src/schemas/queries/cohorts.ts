@@ -8,9 +8,9 @@ import {
   buildCypherPredicateFromBooleanColumnFilter,
   buildCypherPredicateFromDateColumnFilter,
   buildCypherPredicatesFromSearchVals,
-  buildFinalCypherFilter,
-  getNeo4jCustomSort,
-} from "../custom";
+  buildFinalCypherWhereClause,
+  getCypherCustomOrderBy,
+} from "../../utils/cypher";
 
 const FIELDS_TO_SEARCH = [
   "cohortId",
@@ -57,7 +57,7 @@ export function buildCohortsQueryBody({
   if (initialCohortDeliveryDateFilter)
     queryFilters.push(initialCohortDeliveryDateFilter);
 
-  const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
+  const filtersAsCypher = buildFinalCypherWhereClause({ queryFilters });
 
   const cohortsQueryBody = `
     MATCH (c:Cohort)-[:HAS_COHORT_COMPLETE]->(cc: CohortComplete)
@@ -157,7 +157,7 @@ export async function queryDashboardCohorts({
     RETURN
       resultz{.*, _total:total, _uniqueSampleCount: uniqueSampleCount}
 
-    ORDER BY ${getNeo4jCustomSort(sort)}
+    ORDER BY ${getCypherCustomOrderBy(sort)}
     SKIP ${offset}
     LIMIT ${limit}
   `;

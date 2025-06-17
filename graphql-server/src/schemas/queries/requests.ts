@@ -4,12 +4,12 @@ import {
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildFinalCypherFilter,
-  getNeo4jCustomSort,
+  buildFinalCypherWhereClause,
+  getCypherCustomOrderBy,
   buildCypherPredicateFromDateColumnFilter,
   buildCypherPredicateFromBooleanColumnFilter,
   buildCypherPredicatesFromSearchVals,
-} from "../custom";
+} from "../../utils/cypher";
 
 const FIELDS_TO_SEARCH = [
   "igoRequestId",
@@ -69,7 +69,7 @@ export function buildRequestsQueryBody({
   });
   if (cmoRequestFilter) queryFilters.push(cmoRequestFilter);
 
-  const filtersAsCypher = buildFinalCypherFilter({ queryFilters });
+  const filtersAsCypher = buildFinalCypherWhereClause({ queryFilters });
 
   const requestsQueryBody = `
     MATCH (r:Request)
@@ -168,7 +168,7 @@ export async function queryDashboardRequests({
 
     RETURN
       resultz{.*, _total: total}
-    ORDER BY ${getNeo4jCustomSort(sort)}
+    ORDER BY ${getCypherCustomOrderBy(sort)}
     SKIP ${offset}
     LIMIT ${limit}
   `;

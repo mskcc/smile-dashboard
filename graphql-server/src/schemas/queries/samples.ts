@@ -9,9 +9,9 @@ import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherPredicateFromDateColumnFilter,
   buildCypherPredicateFromBooleanColumnFilter,
-  getNeo4jCustomSort,
+  getCypherCustomOrderBy,
   buildCypherPredicatesFromSearchVals,
-} from "../custom";
+} from "../../utils/cypher";
 
 const FIELDS_TO_SEARCH = [
   "primaryId",
@@ -392,7 +392,7 @@ export function buildSamplesQueryFinal({
     RETURN
       resultz{.*, _total: total}
 
-    ORDER BY ${getNeo4jCustomSort(sort)}
+    ORDER BY ${getCypherCustomOrderBy(sort)}
     SKIP ${offset}
     LIMIT ${limit}
   `;
