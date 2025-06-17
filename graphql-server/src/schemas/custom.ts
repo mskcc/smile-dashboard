@@ -43,9 +43,15 @@ export async function buildCustomSchema(ogm: OGM) {
     Query: {
       async dashboardRequests(
         _source: undefined,
-        { searchVals, filters, sort, limit, offset }: QueryDashboardRequestsArgs
+        {
+          searchVals,
+          columnFilters,
+          sort,
+          limit,
+          offset,
+        }: QueryDashboardRequestsArgs
       ) {
-        const queryBody = buildRequestsQueryBody({ searchVals, filters });
+        const queryBody = buildRequestsQueryBody({ searchVals, columnFilters });
         return await queryDashboardRequests({
           queryBody,
           sort,
@@ -56,9 +62,15 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async dashboardPatients(
         _source: undefined,
-        { searchVals, filters, sort, limit, offset }: QueryDashboardPatientsArgs
+        {
+          searchVals,
+          columnFilters,
+          sort,
+          limit,
+          offset,
+        }: QueryDashboardPatientsArgs
       ) {
-        const queryBody = buildPatientsQueryBody({ searchVals, filters });
+        const queryBody = buildPatientsQueryBody({ searchVals, columnFilters });
         return await queryDashboardPatients({
           queryBody,
           sort,
@@ -69,9 +81,15 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async dashboardCohorts(
         _source: undefined,
-        { searchVals, filters, sort, limit, offset }: QueryDashboardCohortsArgs
+        {
+          searchVals,
+          columnFilters,
+          sort,
+          limit,
+          offset,
+        }: QueryDashboardCohortsArgs
       ) {
-        const queryBody = buildCohortsQueryBody({ searchVals, filters });
+        const queryBody = buildCohortsQueryBody({ searchVals, columnFilters });
         return await queryDashboardCohorts({
           queryBody,
           sort,
@@ -86,7 +104,7 @@ export async function buildCustomSchema(ogm: OGM) {
           searchVals,
           contexts,
           sort,
-          filters,
+          columnFilters,
           limit,
           offset,
         }: QueryDashboardSamplesArgs,
@@ -107,7 +125,7 @@ export async function buildCustomSchema(ogm: OGM) {
         const queryBody = buildSamplesQueryBody({
           searchVals,
           contexts,
-          filters,
+          columnFilters,
           addlOncotreeCodes,
         });
 

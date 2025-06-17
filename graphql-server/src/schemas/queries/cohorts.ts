@@ -5,10 +5,10 @@ import {
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildCypherPredicateFromBooleanColumnFilter,
-  buildCypherPredicateFromDateColumnFilter,
+  buildCypherPredicateFromBooleanColFilter,
+  buildCypherPredicateFromDateColFilter,
   buildCypherPredicatesFromSearchVals,
-  buildFinalCypherWhereClause,
+  buildCypherWhereClause,
   getCypherCustomOrderBy,
 } from "../../utils/cypher";
 
@@ -26,38 +26,38 @@ const FIELDS_TO_SEARCH = [
 
 export function buildCohortsQueryBody({
   searchVals,
-  filters,
+  columnFilters,
 }: {
   searchVals: QueryDashboardCohortsArgs["searchVals"];
-  filters?: QueryDashboardCohortsArgs["filters"];
+  columnFilters?: QueryDashboardCohortsArgs["columnFilters"];
 }) {
-  const queryFilters = [];
+  const queryPredicates = [];
 
-  const searchFilters = buildCypherPredicatesFromSearchVals({
+  const searchPredicates = buildCypherPredicatesFromSearchVals({
     searchVals,
     fieldsToSearch: FIELDS_TO_SEARCH,
   });
-  if (searchFilters) queryFilters.push(searchFilters);
+  if (searchPredicates) queryPredicates.push(searchPredicates);
 
-  const billedFilter = buildCypherPredicateFromBooleanColumnFilter({
-    filters,
-    filterField: "billed",
+  const billedColFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "billed",
     booleanVar: "tempNode.billed",
     trueVal: "Yes",
     falseVal: "No",
   });
-  if (billedFilter) queryFilters.push(billedFilter);
+  if (billedColFilter) queryPredicates.push(billedColFilter);
 
-  const initialCohortDeliveryDateFilter =
-    buildCypherPredicateFromDateColumnFilter({
-      filters,
-      filterField: "initialCohortDeliveryDate",
+  const initialCohortDeliveryDateColFilter =
+    buildCypherPredicateFromDateColFilter({
+      columnFilters,
+      colFilterField: "initialCohortDeliveryDate",
       dateVar: "tempNode.initialCohortDeliveryDate",
     });
-  if (initialCohortDeliveryDateFilter)
-    queryFilters.push(initialCohortDeliveryDateFilter);
+  if (initialCohortDeliveryDateColFilter)
+    queryPredicates.push(initialCohortDeliveryDateColFilter);
 
-  const filtersAsCypher = buildFinalCypherWhereClause({ queryFilters });
+  const cypherWhereClause = buildCypherWhereClause(queryPredicates);
 
   const cohortsQueryBody = `
     MATCH (c:Cohort)-[:HAS_COHORT_COMPLETE]->(cc: CohortComplete)
@@ -133,7 +133,7 @@ export function buildCohortsQueryBody({
         type: latestCC.type
       }
 
-    ${filtersAsCypher}
+    ${cypherWhereClause}
   `;
 
   return cohortsQueryBody;

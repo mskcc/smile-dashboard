@@ -4,10 +4,10 @@ import {
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildFinalCypherWhereClause,
+  buildCypherWhereClause,
   getCypherCustomOrderBy,
-  buildCypherPredicateFromDateColumnFilter,
-  buildCypherPredicateFromBooleanColumnFilter,
+  buildCypherPredicateFromDateColFilter,
+  buildCypherPredicateFromBooleanColFilter,
   buildCypherPredicatesFromSearchVals,
 } from "../../utils/cypher";
 
@@ -33,43 +33,43 @@ const FIELDS_TO_SEARCH = [
 
 export function buildRequestsQueryBody({
   searchVals,
-  filters,
+  columnFilters,
 }: {
   searchVals: QueryDashboardRequestsArgs["searchVals"];
-  filters?: QueryDashboardRequestsArgs["filters"];
+  columnFilters?: QueryDashboardRequestsArgs["columnFilters"];
 }) {
-  const queryFilters = [];
+  const queryPredicates = [];
 
-  const searchFilters = buildCypherPredicatesFromSearchVals({
+  const searchPredicates = buildCypherPredicatesFromSearchVals({
     searchVals,
     fieldsToSearch: FIELDS_TO_SEARCH,
   });
-  if (searchFilters) queryFilters.push(searchFilters);
+  if (searchPredicates) queryPredicates.push(searchPredicates);
 
-  const importDateFilter = buildCypherPredicateFromDateColumnFilter({
-    filters,
-    filterField: "importDate",
+  const importDateColFilter = buildCypherPredicateFromDateColFilter({
+    columnFilters,
+    colFilterField: "importDate",
     dateVar: "tempNode.importDate",
   });
-  if (importDateFilter) queryFilters.push(importDateFilter);
+  if (importDateColFilter) queryPredicates.push(importDateColFilter);
 
-  const bicAnalysisFilter = buildCypherPredicateFromBooleanColumnFilter({
-    filters,
-    filterField: "bicAnalysis",
+  const bicAnalysisColFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "bicAnalysis",
     booleanVar: "tempNode.bicAnalysis",
     noIncludesFalseAndNull: true,
   });
-  if (bicAnalysisFilter) queryFilters.push(bicAnalysisFilter);
+  if (bicAnalysisColFilter) queryPredicates.push(bicAnalysisColFilter);
 
-  const cmoRequestFilter = buildCypherPredicateFromBooleanColumnFilter({
-    filters,
-    filterField: "isCmoRequest",
+  const cmoRequestColFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "isCmoRequest",
     booleanVar: "tempNode.isCmoRequest",
     noIncludesFalseAndNull: true,
   });
-  if (cmoRequestFilter) queryFilters.push(cmoRequestFilter);
+  if (cmoRequestColFilter) queryPredicates.push(cmoRequestColFilter);
 
-  const filtersAsCypher = buildFinalCypherWhereClause({ queryFilters });
+  const cypherWhereClause = buildCypherWhereClause(queryPredicates);
 
   const requestsQueryBody = `
     MATCH (r:Request)
@@ -144,7 +144,7 @@ export function buildRequestsQueryBody({
       toleratedSampleErrors: toleratedSampleErrors}) as tempNode
     WITH tempNode
 
-    ${filtersAsCypher}
+    ${cypherWhereClause}
   `;
 
   return requestsQueryBody;

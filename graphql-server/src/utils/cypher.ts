@@ -1,7 +1,7 @@
 import { partition } from "lodash";
 import {
   AgGridSortDirection,
-  DashboardRecordFilter,
+  DashboardRecordColumnFilter,
   DashboardRecordSort,
   InputMaybe,
   QueryDashboardSamplesArgs,
@@ -14,12 +14,14 @@ export function isQuotedString(value: string) {
   );
 }
 
-function getParsedFilter(
-  filters: InputMaybe<DashboardRecordFilter[]> | undefined,
-  filterField: DashboardRecordFilter["field"]
+function getParsedColFilter(
+  colFilters: InputMaybe<DashboardRecordColumnFilter[]> | undefined,
+  colFilterField: DashboardRecordColumnFilter["field"]
 ) {
-  const filterObj = filters?.find((filter) => filter.field === filterField);
-  return filterObj ? JSON.parse(filterObj.filter) : null;
+  const colFilterObj = colFilters?.find(
+    (filter) => filter.field === colFilterField
+  );
+  return colFilterObj ? JSON.parse(colFilterObj.filter) : null;
 }
 
 export function buildCypherPredicatesFromSearchVals({
@@ -58,14 +60,14 @@ export function buildCypherPredicatesFromSearchVals({
     .join(" OR ");
 }
 
-export function buildCypherPredicateFromDateColumnFilter({
-  filters,
-  filterField,
+export function buildCypherPredicateFromDateColFilter({
+  columnFilters,
+  colFilterField,
   dateVar,
   safelyHandleDateString = false,
 }: {
-  filters: InputMaybe<DashboardRecordFilter[]> | undefined;
-  filterField: DashboardRecordFilter["field"];
+  columnFilters: InputMaybe<DashboardRecordColumnFilter[]> | undefined;
+  colFilterField: DashboardRecordColumnFilter["field"];
   /** The date variable in the current Cypher context e.g. `bc.date` from `MATCH (bc:BamComplete) RETURN bc.date` */
   dateVar: string;
   /**
@@ -75,8 +77,8 @@ export function buildCypherPredicateFromDateColumnFilter({
    */
   safelyHandleDateString?: boolean;
 }) {
-  const filter = getParsedFilter(filters, filterField);
-  if (!filter) return "";
+  const colFilter = getParsedColFilter(columnFilters, colFilterField);
+  if (!colFilter) return "";
 
   const formattedDateString = safelyHandleDateString
     ? `
@@ -88,22 +90,22 @@ export function buildCypherPredicateFromDateColumnFilter({
 
   return `
       apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        >= apoc.date.parse('${filter.dateFrom}', 'ms', 'yyyy-MM-dd HH:mm:ss') // AG Grid's provided date format
+        >= apoc.date.parse('${colFilter.dateFrom}', 'ms', 'yyyy-MM-dd HH:mm:ss') // AG Grid's provided date format
       AND apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        <= apoc.date.parse('${filter.dateTo}', 'ms', 'yyyy-MM-dd HH:mm:ss')
+        <= apoc.date.parse('${colFilter.dateTo}', 'ms', 'yyyy-MM-dd HH:mm:ss')
     `;
 }
 
-export function buildCypherPredicateFromBooleanColumnFilter({
-  filters,
-  filterField,
+export function buildCypherPredicateFromBooleanColFilter({
+  columnFilters,
+  colFilterField,
   booleanVar,
   noIncludesFalseAndNull = false,
   trueVal = true,
   falseVal = false,
 }: {
-  filters: InputMaybe<DashboardRecordFilter[]> | undefined;
-  filterField: DashboardRecordFilter["field"];
+  columnFilters: InputMaybe<DashboardRecordColumnFilter[]> | undefined;
+  colFilterField: DashboardRecordColumnFilter["field"];
   /** The boolean variable in the current Cypher context e.g. `t.billed` from `MATCH (t:Tempo) RETURN t.billed` */
   booleanVar: string;
   /** Set to True for user's filter selection of "No" to include both false and null values */
@@ -113,46 +115,42 @@ export function buildCypherPredicateFromBooleanColumnFilter({
   /** The false value that appears in the database for a given field (e.g. "No", false) */
   falseVal?: string | boolean;
 }) {
-  const filter = getParsedFilter(filters, filterField);
-  if (!filter) return "";
+  const colFilter = getParsedColFilter(columnFilters, colFilterField);
+  if (!colFilter) return "";
 
   const formattedTrueVal =
     typeof trueVal === "string" ? `'${trueVal}'` : trueVal;
   const formattedFalseVal =
     typeof falseVal === "string" ? `'${falseVal}'` : falseVal;
 
-  const filterValues = filter.values;
-  if (filterValues?.length > 0) {
-    const activeFilters = [];
-    for (const value of filterValues) {
+  const colFilterValues = colFilter.values;
+  if (colFilterValues?.length > 0) {
+    const activeColFilters = [];
+    for (const value of colFilterValues) {
       if (value === "Yes") {
-        activeFilters.push(`${booleanVar} = ${formattedTrueVal}`);
+        activeColFilters.push(`${booleanVar} = ${formattedTrueVal}`);
       } else if (value === "No") {
         if (!noIncludesFalseAndNull) {
-          activeFilters.push(`${booleanVar} = ${formattedFalseVal}`);
+          activeColFilters.push(`${booleanVar} = ${formattedFalseVal}`);
         } else {
-          activeFilters.push(
+          activeColFilters.push(
             `${booleanVar} = ${formattedFalseVal} OR ${booleanVar} IS NULL`
           );
         }
       } else if (value === null) {
-        activeFilters.push(`${booleanVar} IS NULL`);
+        activeColFilters.push(`${booleanVar} IS NULL`);
       }
     }
-    return activeFilters.join(" OR ");
+    return activeColFilters.join(" OR ");
   } else {
     return `${booleanVar} <> ${formattedTrueVal} AND ${booleanVar} <> ${formattedFalseVal} AND ${booleanVar} IS NOT NULL`;
   }
 }
 
-export function buildFinalCypherWhereClause({
-  queryFilters,
-}: {
-  queryFilters: string[];
-}) {
-  const combinedPredicates = queryFilters
+export function buildCypherWhereClause(queryPredicates: string[]) {
+  const combinedPredicates = queryPredicates
     .filter(Boolean)
-    .map((queryFilter) => `(${queryFilter})`)
+    .map((predicate) => `(${predicate})`)
     .join(" AND ");
 
   return combinedPredicates ? "WHERE " + combinedPredicates : "";

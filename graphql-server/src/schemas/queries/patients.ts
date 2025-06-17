@@ -4,9 +4,9 @@ import {
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
-  buildCypherPredicateFromBooleanColumnFilter,
+  buildCypherPredicateFromBooleanColFilter,
   buildCypherPredicatesFromSearchVals,
-  buildFinalCypherWhereClause,
+  buildCypherWhereClause,
   getCypherCustomOrderBy,
 } from "../../utils/cypher";
 
@@ -19,47 +19,47 @@ const FIELDS_TO_SEARCH = [
 
 export function buildPatientsQueryBody({
   searchVals,
-  filters,
+  columnFilters,
 }: {
   searchVals: QueryDashboardPatientsArgs["searchVals"];
-  filters?: QueryDashboardPatientsArgs["filters"];
+  columnFilters?: QueryDashboardPatientsArgs["columnFilters"];
 }) {
-  const queryFilters = [];
+  const queryPredicates = [];
 
-  const searchFilters = buildCypherPredicatesFromSearchVals({
+  const searchPredicates = buildCypherPredicatesFromSearchVals({
     searchVals,
     fieldsToSearch: FIELDS_TO_SEARCH,
   });
-  if (searchFilters) queryFilters.push(searchFilters);
+  if (searchPredicates) queryPredicates.push(searchPredicates);
 
-  const consentPartAFilter = buildCypherPredicateFromBooleanColumnFilter({
-    filters,
-    filterField: "consentPartA",
+  const consentPartAColFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "consentPartA",
     booleanVar: "tempNode.consentPartA",
     trueVal: "YES",
     falseVal: "NO",
   });
-  if (consentPartAFilter) queryFilters.push(consentPartAFilter);
+  if (consentPartAColFilter) queryPredicates.push(consentPartAColFilter);
 
-  const consentPartCFilter = buildCypherPredicateFromBooleanColumnFilter({
-    filters,
-    filterField: "consentPartC",
+  const consentPartCColFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "consentPartC",
     booleanVar: "tempNode.consentPartC",
     trueVal: "YES",
     falseVal: "NO",
   });
-  if (consentPartCFilter) queryFilters.push(consentPartCFilter);
+  if (consentPartCColFilter) queryPredicates.push(consentPartCColFilter);
 
-  const inDbGapFilter = buildCypherPredicateFromBooleanColumnFilter({
-    filters,
-    filterField: "inDbGap",
+  const inDbGapColFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "inDbGap",
     booleanVar: "tempNode.inDbGap",
     trueVal: true,
     falseVal: false,
   });
-  if (inDbGapFilter) queryFilters.push(inDbGapFilter);
+  if (inDbGapColFilter) queryPredicates.push(inDbGapColFilter);
 
-  const filtersAsCypher = buildFinalCypherWhereClause({ queryFilters });
+  const cypherWhereClause = buildCypherWhereClause(queryPredicates);
 
   const patientsQueryBody = `
     MATCH (p:Patient)
@@ -135,7 +135,7 @@ export function buildPatientsQueryBody({
         importDate: importDate
       }
 
-    ${filtersAsCypher}
+    ${cypherWhereClause}
   `;
 
   return patientsQueryBody;
