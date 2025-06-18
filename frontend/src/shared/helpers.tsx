@@ -674,7 +674,7 @@ const toolTipIcon =
 
 function setupEditableSampleFields(
   samplesColDefs: ColDef[],
-  editableFieldsList: String[]
+  editableFieldsList: Set<string>
 ) {
   samplesColDefs.forEach((colDef) => {
     const newClassRule = {
@@ -691,7 +691,7 @@ function setupEditableSampleFields(
       cursorNotAllowed: (params: CellClassParams) => {
         return (
           params.data?.sampleCategory === "clinical" ||
-          !editableFieldsList.includes(params.colDef.field!)
+          !editableFieldsList.has(params.colDef.field!)
         );
       },
     };
@@ -731,14 +731,14 @@ function setupEditableSampleFields(
     colDef.editable = (params) => {
       return (
         params.data?.sampleCategory !== "clinical" &&
-        editableFieldsList.includes(params.colDef.field!) &&
+        editableFieldsList.has(params.colDef.field!) &&
         params.data?.revisable === true
       );
     };
 
     if (!("headerComponentParams" in colDef)) {
       colDef.headerComponentParams = (params: IHeaderParams) => {
-        if (!editableFieldsList.includes(params.column.getColDef().field!))
+        if (!editableFieldsList.has(params.column.getColDef().field!))
           return createCustomHeader(lockIcon);
       };
     }
@@ -1110,15 +1110,7 @@ export const accessSampleColDefs: ColDef<DashboardSample>[] = [
 export const readOnlyWesSampleColDefs = _.cloneDeep(wesSampleColDefs);
 export const readOnlyAccessSampleColDefs = _.cloneDeep(accessSampleColDefs);
 
-export const defaultColDef: ColDef = {
-  sortable: true,
-  resizable: true,
-  editable: false,
-  headerComponentParams: createCustomHeader(lockIcon),
-  valueFormatter: (params) => (params.value === "null" ? "" : params.value),
-};
-
-const editableSampleFields = [
+const editableSampleFields = new Set([
   "cmoPatientId",
   "investigatorSampleId",
   "sampleType",
@@ -1135,14 +1127,18 @@ const editableSampleFields = [
   "custodianInformation",
   "accessLevel",
   "dbGapStudy",
-];
+]);
 
-const editableWesSampleFields = [
+const editableWesSampleFields = new Set([
   "billed",
   "costCenter",
   "custodianInformation",
   "accessLevel",
-];
+]);
+
+const allEditableFields = new Set(
+  Array.from(editableSampleFields).concat(Array.from(editableWesSampleFields))
+);
 
 setupEditableSampleFields(sampleColDefs, editableSampleFields);
 setupEditableSampleFields(wesSampleColDefs, editableWesSampleFields);
@@ -1155,6 +1151,28 @@ export const combinedSampleColDefs = _.uniqBy(
   ],
   "field"
 );
+
+// TODO: position tooltip to not overlap with 🚫 icon
+// TODO: style tooltip to match the rest of the app
+export const defaultColDef: ColDef = {
+  sortable: true,
+  resizable: true,
+  editable: false,
+  headerComponentParams: createCustomHeader(lockIcon),
+  valueFormatter: (params) => (params.value === "null" ? "" : params.value),
+  tooltipValueGetter: (params: ITooltipParams) => {
+    if (params.data?.sampleCategory === "clinical") {
+      return "Clinical samples are not editable";
+    }
+    if (
+      params.colDef &&
+      "field" in params.colDef &&
+      !allEditableFields.has(params.colDef.field!)
+    ) {
+      return "This column is not editable";
+    }
+  },
+};
 
 export function formatDate(date: moment.MomentInput) {
   return date ? moment(date).format("YYYY-MM-DD") : null;
