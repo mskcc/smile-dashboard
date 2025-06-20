@@ -39,6 +39,12 @@ export const props = {
   web_cert_pem: properties.get("web.web_cert_pem"),
 
   oncotree_api: properties.get("oncotree.oncotree_api"),
+
+  databricks_server_hostname: properties.get(
+    "databricks.databricks_server_hostname"
+  ),
+  databricks_http_path: properties.get("databricks.databricks_http_path"),
+  databricks_token: properties.get("databricks.databricks_token"),
 };
 
 export const REACT_APP_EXPRESS_SERVER_ORIGIN =
