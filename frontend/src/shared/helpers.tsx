@@ -325,10 +325,6 @@ function LoadingIcon() {
   );
 }
 
-const ONCOTREE_CODE_NA_TOOLTIP =
-  "This code might have been remapped (renamed) between different versions of the Oncotree API. " +
-  "For remapping details, visit the docs at https://oncotree.mskcc.org/#/home?tab=mapping";
-
 export const sampleColDefs: ColDef<DashboardSample>[] = [
   {
     field: "primaryId",
@@ -494,11 +490,6 @@ export const sampleColDefs: ColDef<DashboardSample>[] = [
         )}
       </>
     ),
-    tooltipValueGetter: (params: ITooltipParams) => {
-      if (params.value === "N/A") {
-        return ONCOTREE_CODE_NA_TOOLTIP;
-      }
-    },
     sortable: false,
   },
   {
@@ -512,11 +503,6 @@ export const sampleColDefs: ColDef<DashboardSample>[] = [
         )}
       </>
     ),
-    tooltipValueGetter: (params: ITooltipParams) => {
-      if (params.value === "N/A") {
-        return ONCOTREE_CODE_NA_TOOLTIP;
-      }
-    },
     sortable: false,
   },
   {
@@ -1152,26 +1138,36 @@ export const combinedSampleColDefs = _.uniqBy(
   "field"
 );
 
-// TODO: position tooltip to not overlap with 🚫 icon
-// TODO: style tooltip to match the rest of the app
+function getTooltipValue(params: ITooltipParams) {
+  if (!params.colDef || !("field" in params.colDef)) return undefined;
+  const field = params.colDef.field;
+  if (
+    (field === "cancerType" || field === "cancerTypeDetailed") &&
+    params.value === "N/A"
+  ) {
+    return (
+      "This code might have changed between different versions of the Oncotree API. " +
+      "For more details, visit oncotree.mskcc.org/mapping"
+    );
+  }
+  if (
+    allEditableFields.has(field!) &&
+    params.data?.sampleCategory === "clinical"
+  ) {
+    return "Clinical samples are not editable";
+  }
+  if (!allEditableFields.has(field!)) {
+    return "This column is read-only";
+  }
+}
+
 export const defaultColDef: ColDef = {
   sortable: true,
   resizable: true,
   editable: false,
   headerComponentParams: createCustomHeader(lockIcon),
   valueFormatter: (params) => (params.value === "null" ? "" : params.value),
-  tooltipValueGetter: (params: ITooltipParams) => {
-    if (params.data?.sampleCategory === "clinical") {
-      return "Clinical samples are not editable";
-    }
-    if (
-      params.colDef &&
-      "field" in params.colDef &&
-      !allEditableFields.has(params.colDef.field!)
-    ) {
-      return "This column is not editable";
-    }
-  },
+  tooltipValueGetter: (params: ITooltipParams) => getTooltipValue(params),
 };
 
 export function formatDate(date: moment.MomentInput) {
