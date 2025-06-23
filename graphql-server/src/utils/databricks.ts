@@ -1,7 +1,6 @@
 import { props } from "../utils/constants";
 import { DBSQLClient } from "@databricks/sql";
-import IDBSQLSession from "@databricks/sql/dist/contracts/IDBSQLSession";
-import IOperation from "@databricks/sql/dist/contracts/IOperation";
+import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
 
 const { databricks_server_hostname, databricks_http_path, databricks_token } =
   props;
@@ -12,35 +11,36 @@ if (!databricks_server_hostname || !databricks_http_path || !databricks_token) {
   );
 }
 
-// TODO: connect GraphQL server to the CRDB table in Databricks and query from there
-// Location: src_crdb_prod.crdb.crdb_cmo_loj_dmp_map
-// See https://docs.databricks.com/aws/en/dev-tools/nodejs-sql-driver?language=TypeScript#query-data
-export async function queryDatabricks(query: string) {
-  const client = new DBSQLClient();
-  const connectOptions = {
-    host: databricks_server_hostname,
-    path: databricks_http_path,
-    token: databricks_token,
-    userAgentEntry: "smile-dashboard", // for usage tracking
-  };
+const connectOptions = {
+  host: databricks_server_hostname,
+  path: databricks_http_path,
+  token: databricks_token,
+};
 
+export async function queryDatabricks({
+  query,
+  queryOptions,
+}: {
+  query: string;
+  queryOptions?: ExecuteStatementOptions;
+}) {
+  const client = new DBSQLClient();
   try {
     await client.connect(connectOptions);
+    const session = await client.openSession();
 
-    const session: IDBSQLSession = await client.openSession();
-    const queryOperation: IOperation = await session.executeStatement(query, {
-      runAsync: true,
-    });
+    const queryOperation = await session.executeStatement(query, queryOptions);
     const result = await queryOperation.fetchAll();
 
     await queryOperation.close();
     await session.close();
     await client.close();
 
-    console.table(result);
     return result;
   } catch (error) {
     await client.close();
-    throw error;
+    if (error instanceof Error) {
+      throw new Error("Error executing query on Databricks: " + error.message);
+    }
   }
 }
