@@ -1,5 +1,5 @@
 import { props } from "../utils/constants";
-import { DBSQLClient } from "@databricks/sql";
+import { DBSQLClient, DBSQLLogger, LogLevel } from "@databricks/sql";
 import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
 
 const { databricks_server_hostname, databricks_http_path, databricks_token } =
@@ -16,6 +16,8 @@ const connectOptions = {
   path: databricks_http_path,
   token: databricks_token,
 };
+const logger = new DBSQLLogger({ level: LogLevel.error });
+const client = new DBSQLClient({ logger: logger });
 
 export async function queryDatabricks({
   query,
@@ -24,7 +26,6 @@ export async function queryDatabricks({
   query: string;
   queryOptions?: ExecuteStatementOptions;
 }) {
-  const client = new DBSQLClient();
   try {
     await client.connect(connectOptions);
     const session = await client.openSession();
