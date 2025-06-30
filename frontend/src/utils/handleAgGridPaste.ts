@@ -5,7 +5,7 @@ import "ag-grid-enterprise";
 import {
   CellEditRequestEvent,
   CellValueChangedEvent,
-  ColDef,
+  EditableCallbackParams,
 } from "ag-grid-community";
 
 /**
@@ -18,12 +18,10 @@ import {
 export async function handleAgGridPaste({
   e,
   gridRef,
-  columnDefs,
   onCellEditRequest,
 }: {
   e: React.ClipboardEvent<HTMLDivElement>;
   gridRef: React.RefObject<AgGridReactType>;
-  columnDefs: ColDef[];
   onCellEditRequest: (params: CellValueChangedEvent) => Promise<void>;
 }) {
   e.preventDefault();
@@ -37,8 +35,10 @@ export async function handleAgGridPaste({
     : "";
 
   // Determine the locations of the cell(s) to paste over
-  let cellCoordidatesToPasteOver: Array<{ rowIndex: number; colId: string }> =
-    [];
+  let cellCoordidatesToPasteOver: Array<{
+    rowIndex: number;
+    colId: string;
+  }> = [];
   const cellRanges = gridApi.getCellRanges();
   if (cellRanges && cellRanges.length > 0) {
     cellRanges.forEach((range) => {
@@ -68,17 +68,31 @@ export async function handleAgGridPaste({
   // For each cell to paste over, call the onCellEditRequest handler
   for (const { rowIndex, colId } of cellCoordidatesToPasteOver) {
     const node = gridApi.getDisplayedRowAtIndex(rowIndex);
-    const rowData = node?.data;
-    if (!rowData) continue;
-    const oldValue = rowData[colId];
-    const newValue = clipboardValue;
-    const params = {
-      data: rowData,
-      colDef: columnDefs.find((c) => c.field === colId),
-      oldValue,
-      newValue,
+    const data = node?.data;
+    const colDef = gridApi.getColumnDef(colId);
+    if (
+      !data ||
+      !colDef ||
+      !isCellEditable({ colDef, data, node } as EditableCallbackParams)
+    ) {
+      continue;
+    }
+    await onCellEditRequest({
       node,
-    } as CellEditRequestEvent;
-    await onCellEditRequest(params);
+      data,
+      colDef,
+      oldValue: data[colId],
+      newValue: clipboardValue,
+    } as CellEditRequestEvent);
   }
+}
+
+function isCellEditable(editableFuncParams: EditableCallbackParams): boolean {
+  let isEditable = false;
+  if (typeof editableFuncParams.colDef.editable === "function") {
+    isEditable = editableFuncParams.colDef.editable(editableFuncParams);
+  } else {
+    isEditable = !!editableFuncParams.colDef.editable;
+  }
+  return isEditable;
 }

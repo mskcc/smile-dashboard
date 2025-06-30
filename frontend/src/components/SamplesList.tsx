@@ -154,7 +154,7 @@ export default function SamplesList({
 
   if (error) return <ErrorMessage error={error} />;
 
-  async function onCellEditRequest(params: CellEditRequestEvent) {
+  async function handleCellEditRequest(params: CellEditRequestEvent) {
     const primaryId = params.data.primaryId;
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
@@ -418,7 +418,11 @@ export default function SamplesList({
               }`}
               style={{ width: width }}
               onPaste={(e) =>
-                handleAgGridPaste({ e, gridRef, columnDefs, onCellEditRequest })
+                handleAgGridPaste({
+                  e,
+                  gridRef,
+                  onCellEditRequest: handleCellEditRequest,
+                })
               }
             >
               <AgGridReact
@@ -445,7 +449,7 @@ export default function SamplesList({
                     return params.data?.revisable === false;
                   },
                 }}
-                onCellEditRequest={onCellEditRequest}
+                onCellEditRequest={handleCellEditRequest}
                 readOnlyEdit={true}
                 tooltipShowDelay={0}
                 tooltipHideDelay={60000}
