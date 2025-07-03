@@ -86,8 +86,14 @@ export async function buildDatabricksSchema() {
       MRN: String!
     }
 
+    type AnchorSeqDateByDmpPatientId {
+      DMP_PATIENT_ID: String!
+      ANCHOR_SEQUENCING_DATE: String!
+    }
+
     type Query {
       patientIdsTriplets(patientIds: [String!]!): [PatientIdsTriplet]
+      anchorSeqDatesByDmpPatientIds(dmpPatientIds: [String!]!): [AnchorSeqDateByDmpPatientId]
     }
   `;
 

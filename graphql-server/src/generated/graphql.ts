@@ -25,6 +25,12 @@ export enum AgGridSortDirection {
   Desc = "desc",
 }
 
+export type AnchorSeqDateByDmpPatientId = {
+  __typename?: "AnchorSeqDateByDmpPatientId";
+  ANCHOR_SEQUENCING_DATE: Scalars["String"];
+  DMP_PATIENT_ID: Scalars["String"];
+};
+
 export type BamComplete = {
   __typename?: "BamComplete";
   date: Scalars["String"];
@@ -4060,6 +4066,9 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
+  anchorSeqDatesByDmpPatientIds?: Maybe<
+    Array<Maybe<AnchorSeqDateByDmpPatientId>>
+  >;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -4113,6 +4122,10 @@ export type Query = {
   tempos: Array<Tempo>;
   temposAggregate: TempoAggregateSelection;
   temposConnection: TemposConnection;
+};
+
+export type QueryAnchorSeqDatesByDmpPatientIdsArgs = {
+  dmpPatientIds: Array<Scalars["String"]>;
 };
 
 export type QueryBamCompletesArgs = {
@@ -11331,6 +11344,19 @@ export type GetPatientIdsTripletsQuery = {
   } | null> | null;
 };
 
+export type GetAnchorSeqDatesByDmpPatientIdsQueryVariables = Exact<{
+  dmpPatientIds: Array<Scalars["String"]> | Scalars["String"];
+}>;
+
+export type GetAnchorSeqDatesByDmpPatientIdsQuery = {
+  __typename?: "Query";
+  anchorSeqDatesByDmpPatientIds?: Array<{
+    __typename?: "AnchorSeqDateByDmpPatientId";
+    DMP_PATIENT_ID: string;
+    ANCHOR_SEQUENCING_DATE: string;
+  } | null> | null;
+};
+
 export const DashboardSamplePartsFragmentDoc = gql`
   fragment DashboardSampleParts on DashboardSample {
     smileSampleId
@@ -11608,4 +11634,16 @@ export const GetPatientIdsTripletsDocument = gql`
 export type GetPatientIdsTripletsQueryResult = Apollo.QueryResult<
   GetPatientIdsTripletsQuery,
   GetPatientIdsTripletsQueryVariables
+>;
+export const GetAnchorSeqDatesByDmpPatientIdsDocument = gql`
+  query GetAnchorSeqDatesByDmpPatientIds($dmpPatientIds: [String!]!) {
+    anchorSeqDatesByDmpPatientIds(dmpPatientIds: $dmpPatientIds) {
+      DMP_PATIENT_ID
+      ANCHOR_SEQUENCING_DATE
+    }
+  }
+`;
+export type GetAnchorSeqDatesByDmpPatientIdsQueryResult = Apollo.QueryResult<
+  GetAnchorSeqDatesByDmpPatientIdsQuery,
+  GetAnchorSeqDatesByDmpPatientIdsQueryVariables
 >;

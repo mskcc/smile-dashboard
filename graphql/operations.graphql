@@ -240,3 +240,10 @@ query GetPatientIdsTriplets($patientIds: [String!]!) {
     MRN
   }
 }
+
+query GetAnchorSeqDatesByDmpPatientIds($dmpPatientIds: [String!]!) {
+  anchorSeqDatesByDmpPatientIds(dmpPatientIds: $dmpPatientIds) {
+    DMP_PATIENT_ID
+    ANCHOR_SEQUENCING_DATE
+  }
+}

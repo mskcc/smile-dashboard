@@ -26,6 +26,12 @@ export enum AgGridSortDirection {
   Desc = "desc",
 }
 
+export type AnchorSeqDateByDmpPatientId = {
+  __typename?: "AnchorSeqDateByDmpPatientId";
+  ANCHOR_SEQUENCING_DATE: Scalars["String"];
+  DMP_PATIENT_ID: Scalars["String"];
+};
+
 export type BamComplete = {
   __typename?: "BamComplete";
   date: Scalars["String"];
@@ -4061,6 +4067,9 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
+  anchorSeqDatesByDmpPatientIds?: Maybe<
+    Array<Maybe<AnchorSeqDateByDmpPatientId>>
+  >;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -4114,6 +4123,10 @@ export type Query = {
   tempos: Array<Tempo>;
   temposAggregate: TempoAggregateSelection;
   temposConnection: TemposConnection;
+};
+
+export type QueryAnchorSeqDatesByDmpPatientIdsArgs = {
+  dmpPatientIds: Array<Scalars["String"]>;
 };
 
 export type QueryBamCompletesArgs = {
@@ -11332,6 +11345,19 @@ export type GetPatientIdsTripletsQuery = {
   } | null> | null;
 };
 
+export type GetAnchorSeqDatesByDmpPatientIdsQueryVariables = Exact<{
+  dmpPatientIds: Array<Scalars["String"]> | Scalars["String"];
+}>;
+
+export type GetAnchorSeqDatesByDmpPatientIdsQuery = {
+  __typename?: "Query";
+  anchorSeqDatesByDmpPatientIds?: Array<{
+    __typename?: "AnchorSeqDateByDmpPatientId";
+    DMP_PATIENT_ID: string;
+    ANCHOR_SEQUENCING_DATE: string;
+  } | null> | null;
+};
+
 export const DashboardSamplePartsFragmentDoc = gql`
   fragment DashboardSampleParts on DashboardSample {
     smileSampleId
@@ -11894,4 +11920,63 @@ export type GetPatientIdsTripletsLazyQueryHookResult = ReturnType<
 export type GetPatientIdsTripletsQueryResult = Apollo.QueryResult<
   GetPatientIdsTripletsQuery,
   GetPatientIdsTripletsQueryVariables
+>;
+export const GetAnchorSeqDatesByDmpPatientIdsDocument = gql`
+  query GetAnchorSeqDatesByDmpPatientIds($dmpPatientIds: [String!]!) {
+    anchorSeqDatesByDmpPatientIds(dmpPatientIds: $dmpPatientIds) {
+      DMP_PATIENT_ID
+      ANCHOR_SEQUENCING_DATE
+    }
+  }
+`;
+
+/**
+ * __useGetAnchorSeqDatesByDmpPatientIdsQuery__
+ *
+ * To run a query within a React component, call `useGetAnchorSeqDatesByDmpPatientIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAnchorSeqDatesByDmpPatientIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAnchorSeqDatesByDmpPatientIdsQuery({
+ *   variables: {
+ *      dmpPatientIds: // value for 'dmpPatientIds'
+ *   },
+ * });
+ */
+export function useGetAnchorSeqDatesByDmpPatientIdsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetAnchorSeqDatesByDmpPatientIdsQuery,
+    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetAnchorSeqDatesByDmpPatientIdsQuery,
+    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
+  >(GetAnchorSeqDatesByDmpPatientIdsDocument, options);
+}
+export function useGetAnchorSeqDatesByDmpPatientIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetAnchorSeqDatesByDmpPatientIdsQuery,
+    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetAnchorSeqDatesByDmpPatientIdsQuery,
+    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
+  >(GetAnchorSeqDatesByDmpPatientIdsDocument, options);
+}
+export type GetAnchorSeqDatesByDmpPatientIdsQueryHookResult = ReturnType<
+  typeof useGetAnchorSeqDatesByDmpPatientIdsQuery
+>;
+export type GetAnchorSeqDatesByDmpPatientIdsLazyQueryHookResult = ReturnType<
+  typeof useGetAnchorSeqDatesByDmpPatientIdsLazyQuery
+>;
+export type GetAnchorSeqDatesByDmpPatientIdsQueryResult = Apollo.QueryResult<
+  GetAnchorSeqDatesByDmpPatientIdsQuery,
+  GetAnchorSeqDatesByDmpPatientIdsQueryVariables
 >;
