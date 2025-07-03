@@ -141,6 +141,8 @@ const QUERY_RESULT_TYPEDEFS = gql`
     consentPartA: String
     consentPartC: String
     inDbGap: Boolean
+    mrn: String
+    anchorSequencingDate: String
     _total: Int
   }
 
@@ -180,6 +182,7 @@ const QUERY_TYPEDEFS = gql`
       sort: DashboardRecordSort!
       limit: Int!
       offset: Int!
+      phiEnabled: Boolean
     ): [DashboardPatient!]!
 
     dashboardCohorts(

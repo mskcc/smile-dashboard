@@ -1377,12 +1377,14 @@ export type DashboardCohort = {
 export type DashboardPatient = {
   __typename?: "DashboardPatient";
   _total?: Maybe<Scalars["Int"]>;
+  anchorSequencingDate?: Maybe<Scalars["String"]>;
   cmoPatientId?: Maybe<Scalars["String"]>;
   cmoSampleIds?: Maybe<Scalars["String"]>;
   consentPartA?: Maybe<Scalars["String"]>;
   consentPartC?: Maybe<Scalars["String"]>;
   dmpPatientId?: Maybe<Scalars["String"]>;
   inDbGap?: Maybe<Scalars["Boolean"]>;
+  mrn?: Maybe<Scalars["String"]>;
   smilePatientId: Scalars["String"];
   totalSampleCount?: Maybe<Scalars["Int"]>;
 };
@@ -4188,6 +4190,7 @@ export type QueryDashboardPatientsArgs = {
   columnFilters?: InputMaybe<Array<DashboardRecordColumnFilter>>;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
+  phiEnabled?: InputMaybe<Scalars["Boolean"]>;
   searchVals?: InputMaybe<Array<Scalars["String"]>>;
   sort: DashboardRecordSort;
 };
@@ -11062,6 +11065,7 @@ export type DashboardPatientsQueryVariables = Exact<{
   sort: DashboardRecordSort;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
+  phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 }>;
 
 export type DashboardPatientsQuery = {
@@ -11076,6 +11080,8 @@ export type DashboardPatientsQuery = {
     consentPartA?: string | null;
     consentPartC?: string | null;
     inDbGap?: boolean | null;
+    mrn?: string | null;
+    anchorSequencingDate?: string | null;
     _total?: number | null;
   }>;
 };
@@ -11503,6 +11509,7 @@ export const DashboardPatientsDocument = gql`
     $sort: DashboardRecordSort!
     $limit: Int!
     $offset: Int!
+    $phiEnabled: Boolean = false
   ) {
     dashboardPatients(
       searchVals: $searchVals
@@ -11510,6 +11517,7 @@ export const DashboardPatientsDocument = gql`
       sort: $sort
       limit: $limit
       offset: $offset
+      phiEnabled: $phiEnabled
     ) {
       smilePatientId
       cmoPatientId
@@ -11519,6 +11527,8 @@ export const DashboardPatientsDocument = gql`
       consentPartA
       consentPartC
       inDbGap
+      mrn
+      anchorSequencingDate
       _total
     }
   }

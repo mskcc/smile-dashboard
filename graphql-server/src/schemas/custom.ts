@@ -2,6 +2,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext } from "../utils/servers";
 import {
   DashboardSampleInput,
+  PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
@@ -12,6 +13,7 @@ import { connect, headers, StringCodec } from "nats";
 import { OGM } from "@neo4j/graphql-ogm";
 import {
   buildPatientsQueryBody,
+  buildPatientsQueryFinal,
   queryDashboardPatients,
 } from "./queries/patients";
 import {
@@ -37,8 +39,71 @@ import {
 } from "./queries/requests";
 import { typeDefs } from "../utils/typeDefs";
 const request = require("request-promise-native");
+import { AuthenticationError, ForbiddenError } from "apollo-server-express";
+import { applyMiddleware } from "graphql-middleware";
+import { IMiddlewareResolver } from "graphql-middleware/dist/types";
+import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
+import { queryDatabricks } from "../utils/databricks";
+
+const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
+const PHI_ID_MAPPING_TABLE =
+  "cdsi_eng_phi.id_mapping.mrn_cmo_dmp_patient_fullouter";
+
+type AuthMiddleware = {
+  Query: {
+    dashboardPatients: IMiddlewareResolver;
+  };
+};
 
 export async function buildCustomSchema(ogm: OGM) {
+  const authenticationMiddleware: AuthMiddleware = {
+    Query: {
+      dashboardPatients: async (
+        resolve,
+        parent,
+        args: QueryDashboardPatientsArgs,
+        context: ApolloServerContext,
+        info
+      ) => {
+        if (
+          args.phiEnabled &&
+          args.searchVals &&
+          args.searchVals.length > 0 &&
+          !context.req.isAuthenticated()
+        ) {
+          throw new AuthenticationError(
+            "You must be logged in to access this resource."
+          );
+        }
+        return await resolve(parent, args, context, info);
+      },
+    },
+  };
+
+  const authorizationMiddleware: AuthMiddleware = {
+    Query: {
+      dashboardPatients: async (
+        resolve,
+        parent,
+        args: QueryDashboardPatientsArgs,
+        context: ApolloServerContext,
+        info
+      ) => {
+        if (
+          args.phiEnabled &&
+          args.searchVals &&
+          args.searchVals.length > 0 &&
+          !context.req.user.groups.includes(KEYCLOAK_PHI_ACCESS_GROUP)
+        ) {
+          throw new ForbiddenError(
+            "You do not have permission to access this resource. Please contact the SMILE team for assistance."
+          );
+        }
+        return await resolve(parent, args, context, info);
+      },
+    },
+  };
+
   const resolvers = {
     Query: {
       async dashboardRequests(
@@ -68,15 +133,54 @@ export async function buildCustomSchema(ogm: OGM) {
           sort,
           limit,
           offset,
+          phiEnabled,
         }: QueryDashboardPatientsArgs
       ) {
         const queryBody = buildPatientsQueryBody({ searchVals, columnFilters });
-        return await queryDashboardPatients({
+        const queryFinal = buildPatientsQueryFinal({
           queryBody,
           sort,
           limit,
           offset,
         });
+        // TODO:
+        // - Copy over the util that removes C- prefix from CMO IDs if '^[A-Z0-9]{6}$' regex matches
+        //   and run it over searchVals before running the query
+        // - Run query to get sequencing date (see schemas/databricks.ts for reference)
+        // - Create some sort of dicts and ref them inside queryDashboardPatients (see queryDashboardSamples for reference)
+        //   to return the newly added mrn and seq date fields
+        // - Update frontend to stop querying patientIdsTriplet query
+        // - Clean up schemas/databricks.ts and anything else that is no longer needed
+        // - Look up TODOs throughout the codebase and resolve them
+        // - Test by inputting search values, then toggle "phiEnabled" for the first time. Fix if it breaks
+        if (searchVals && searchVals.length > 0 && phiEnabled) {
+          const searchValList = searchVals
+            .map((searchVal) => `'${searchVal}'`)
+            .join(",");
+          const query = `
+            SELECT
+              CMO_PATIENT_ID,
+              DMP_PATIENT_ID,
+              MRN
+            FROM
+              ${PHI_ID_MAPPING_TABLE}
+            WHERE
+              DMP_PATIENT_ID IN (${searchValList})
+              OR MRN IN (${searchValList})
+              OR CMO_PATIENT_ID IN (${searchValList})
+          `;
+          console.log(
+            "Executing query to fetch patient IDs from Databricks:",
+            query
+          );
+          const queryOptions = { runAsync: true } as ExecuteStatementOptions;
+          const res = (await queryDatabricks({
+            query,
+            queryOptions,
+          })) as Array<PatientIdsTriplet>;
+          console.log(res);
+        }
+        return await queryDashboardPatients(queryFinal);
       },
 
       async dashboardCohorts(
@@ -171,10 +275,16 @@ export async function buildCustomSchema(ogm: OGM) {
     },
   };
 
-  return makeExecutableSchema({
+  const executableSchema = makeExecutableSchema({
     typeDefs: typeDefs,
     resolvers: resolvers,
   });
+
+  return applyMiddleware(
+    executableSchema,
+    authenticationMiddleware,
+    authorizationMiddleware
+  );
 }
 
 async function updateSampleMetadataPromises(

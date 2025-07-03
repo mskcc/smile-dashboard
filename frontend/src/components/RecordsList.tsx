@@ -40,6 +40,7 @@ interface IRecordsListProps {
   columnDefs: ColDef[];
   dataName: DataName;
   useRecordsLazyQuery: typeof useHookLazyGeneric;
+  phiEnabled?: boolean;
   defaultSort: DashboardRecordSort;
   userSearchVal: string;
   setUserSearchVal: Dispatch<SetStateAction<string>>;
@@ -59,6 +60,7 @@ export default function RecordsList({
   columnDefs,
   dataName,
   useRecordsLazyQuery,
+  phiEnabled = false,
   defaultSort,
   userSearchVal,
   setUserSearchVal,
@@ -86,6 +88,7 @@ export default function RecordsList({
       sort: defaultSort,
       limit: CACHE_BLOCK_SIZE,
       offset: 0,
+      phiEnabled,
     },
   });
 

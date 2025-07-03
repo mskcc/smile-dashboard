@@ -25,6 +25,7 @@ type DatabricksQueryMiddlewareResolvers = {
   };
 };
 
+// TODO: delete this file and any other references to it
 async function requireAuthentication(
   resolve: any,
   parent: any,

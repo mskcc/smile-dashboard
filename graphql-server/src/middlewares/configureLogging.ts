@@ -6,6 +6,7 @@ import { props } from "../utils/constants";
 
 /**
  * Log only GetPatientIdsTriplets queries from logged in users
+ * TODO: update this to log DashboardPatients queries when phiEnabled is true
  */
 export function configureLogging(app: Express) {
   const logDir = path.join(process.env.SMILE_DATA_HOME!, props.log_dir);

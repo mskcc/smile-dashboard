@@ -209,6 +209,7 @@ export default function PatientsPage({
         dataName={dataName}
         defaultSort={defaultSort}
         useRecordsLazyQuery={useDashboardPatientsLazyQuery}
+        phiEnabled={phiEnabled}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
         setCustomSearchStates={setPatientIdsTriplets}

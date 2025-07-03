@@ -140,7 +140,8 @@ export function buildPatientsQueryBody({
 
   return patientsQueryBody;
 }
-export async function queryDashboardPatients({
+
+export function buildPatientsQueryFinal({
   queryBody,
   sort,
   limit,
@@ -150,8 +151,8 @@ export async function queryDashboardPatients({
   sort: QueryDashboardPatientsArgs["sort"];
   limit: QueryDashboardPatientsArgs["limit"];
   offset: QueryDashboardPatientsArgs["offset"];
-}): Promise<DashboardPatient[]> {
-  const cypherQuery = `
+}) {
+  return `
     ${queryBody}
     WITH COUNT(DISTINCT tempNode) AS total, COLLECT(DISTINCT tempNode) AS results
     UNWIND results AS resultz
@@ -163,10 +164,12 @@ export async function queryDashboardPatients({
     SKIP ${offset}
     LIMIT ${limit}
   `;
+}
 
+export async function queryDashboardPatients(patientsCypherQuery: string) {
   const session = neo4jDriver.session();
   try {
-    const result = await session.run(cypherQuery);
+    const result = await session.run(patientsCypherQuery);
     return result.records.map((record) => {
       return record.toObject().resultz;
     });

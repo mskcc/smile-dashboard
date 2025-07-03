@@ -30,8 +30,14 @@ export function initializeHttpsServer(app: Express) {
 
 export interface ApolloServerContext {
   req: {
-    user: any;
+    user: {
+      email: string;
+      sub: string; // Keycloak user ID
+      groups: Array<string>; // Keycloak user groups
+    };
     isAuthenticated: () => boolean;
+    logOut: (error: any) => void;
+    app: Express;
   };
   inMemoryCache: NodeCache;
 }
@@ -64,7 +70,7 @@ export async function initializeApolloServer(
   const apolloServer = new ApolloServer<ApolloServerContext>({
     schema: mergedSchema,
     cache: "bounded",
-    context: async ({ req }: { req: any }) => {
+    context: async ({ req }: { req: ApolloServerContext["req"] }) => {
       updateActiveUserSessions(req);
 
       return {
