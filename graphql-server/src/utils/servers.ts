@@ -1,7 +1,7 @@
 import { Express } from "express";
 import fs from "fs";
 import https from "https";
-import { props } from "./constants";
+import { props, REACT_APP_EXPRESS_SERVER_ORIGIN } from "./constants";
 import { buildNeo4jDbSchema } from "../schemas/neo4j";
 import { buildCustomSchema } from "../schemas/custom";
 import { mergeSchemas } from "@graphql-tools/schema";
@@ -16,6 +16,7 @@ import { corsOptions } from "./constants";
 import NodeCache from "node-cache";
 import { initializeInMemoryCache } from "./cache";
 import neo4j from "neo4j-driver";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 export function initializeHttpsServer(app: Express) {
   return https.createServer(
@@ -30,7 +31,7 @@ export function initializeHttpsServer(app: Express) {
 export interface ApolloServerContext {
   req: {
     user: any;
-    isAuthenticated: boolean;
+    isAuthenticated: () => boolean;
   };
   inMemoryCache: NodeCache;
 }
@@ -41,6 +42,11 @@ export const neo4jDriver = neo4j.driver(
   { disableLosslessIntegers: true } // maps Cypher Integer to JavaScript Number
 );
 
+const apolloClient = new ApolloClient({
+  uri: `${REACT_APP_EXPRESS_SERVER_ORIGIN}/graphql`,
+  cache: new InMemoryCache(),
+});
+
 export async function initializeApolloServer(
   httpsServer: https.Server,
   app: Express
@@ -48,7 +54,7 @@ export async function initializeApolloServer(
   console.info("Building, generating, and merging schemas...");
   const { neo4jDbSchema, ogm } = await buildNeo4jDbSchema();
   const customSchema = await buildCustomSchema(ogm);
-  const databricksSchema = await buildDatabricksSchema();
+  const databricksSchema = await buildDatabricksSchema(apolloClient);
   const mergedSchema = mergeSchemas({
     schemas: [neo4jDbSchema, databricksSchema, customSchema],
   });
