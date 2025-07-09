@@ -24,11 +24,7 @@ const PHI_WARNING = {
     "The information contained in this transmission from Memorial Sloan-Kettering Cancer Center is privileged, confidential and protected health information (PHI) and it is protected from disclosure under applicable law, including the Health Insurance Portability and Accountability Act of 1996, as amended (HIPAA). This transmission is intended for the sole use of approved individuals with permission and training to access this information and PHI. You are notified that your access to this transmission is logged. If you have received this transmission in error, please immediately delete this information and any attachments from any computer.",
 };
 
-const UNAUTHORIZED_WARNING = {
-  title: "Access unauthorized",
-  content:
-    "You are not authorized to access PHI data. If you would like to request access, please reach out to the administrator.",
-};
+const PHI_FIELDS = new Set(["mrn", "anchorSequencingDate"]);
 
 interface IPatientsPageProps {
   userEmail: string | null;
@@ -50,9 +46,6 @@ export default function PatientsPage({
     content: string;
   }>({ show: false, title: "", content: "" });
 
-  // TODO: openLoginPopup once if phiEnabled is true and userEmail is null
-  // if fails from 403, show UNAUTHORIZED_WARNING and switch to non-PHI mode
-
   useEffect(() => {
     async function handleLogin(event: MessageEvent) {
       if (event.data !== "success") return;
@@ -68,18 +61,14 @@ export default function PatientsPage({
     }
   }, [phiEnabled, userEmail, setUserEmail]);
 
-  const ActivePatientsListColumns = useMemo(() => {
+  const activePatientsListColumns = useMemo(() => {
     return patientColDefs.map((column) => {
-      if (column.headerName === "Patient MRN" && phiEnabled && userSearchVal) {
-        return {
-          ...column,
-          hide: false,
-        };
-      } else {
-        return column;
+      if (column.field && PHI_FIELDS.has(column.field) && phiEnabled) {
+        return { ...column, hide: false };
       }
+      return column;
     });
-  }, [phiEnabled, userSearchVal]);
+  }, [phiEnabled]);
 
   const dataName = "patients";
   const sampleQueryParamFieldName = "patientId";
@@ -92,7 +81,7 @@ export default function PatientsPage({
   return (
     <>
       <RecordsList
-        columnDefs={ActivePatientsListColumns}
+        columnDefs={activePatientsListColumns}
         dataName={dataName}
         defaultSort={defaultSort}
         useRecordsLazyQuery={useDashboardPatientsLazyQuery}
@@ -103,17 +92,9 @@ export default function PatientsPage({
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={(recordCount: number) => {
           if (recordCount && recordCount > MAX_ROWS_EXPORT) {
-            setAlertModal({
-              show: true,
-              ...MAX_ROWS_EXPORT_WARNING,
-            });
+            setAlertModal({ show: true, ...MAX_ROWS_EXPORT_WARNING });
           } else {
-            if (phiEnabled) {
-              setAlertModal({
-                show: true,
-                ...PHI_WARNING,
-              });
-            }
+            if (phiEnabled) setAlertModal({ show: true, ...PHI_WARNING });
             setShowDownloadModal(true);
           }
         }}

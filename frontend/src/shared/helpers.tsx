@@ -258,6 +258,13 @@ export const patientColDefs: ColDef<DashboardPatient>[] = [
     sortable: false,
   },
   {
+    field: "anchorSequencingDate",
+    headerName: "Anchor Sequencing Date",
+    hide: true,
+    cellStyle: { color: "crimson" },
+    sortable: false,
+  },
+  {
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
   },

@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext } from "../utils/servers";
 import {
+  AnchorSeqDateByDmpPatientId,
   DashboardSampleInput,
   PatientIdsTriplet,
   QueryDashboardCohortsArgs,
@@ -154,6 +155,8 @@ export async function buildCustomSchema(ogm: OGM) {
         // - Look up TODOs throughout the codebase and resolve them
         // - Test by inputting search values, then toggle "phiEnabled" for the first time. Fix if it breaks
         const patientIdsTriplets: PatientIdsTriplet[] = [];
+        const patientIdsTripletMap: Record<string, PatientIdsTriplet> = {};
+        const seqDatesByPatient: Record<string, string> = {};
         if (searchVals && searchVals.length > 0 && phiEnabled) {
           const searchValsWithoutCDash = searchVals.map((searchVal) =>
             searchVal.startsWith("C-") ? searchVal.slice(2) : searchVal
@@ -182,21 +185,43 @@ export async function buildCustomSchema(ogm: OGM) {
             patientIdTriplet.CMO_PATIENT_ID = `C-${patientIdTriplet.CMO_PATIENT_ID}`;
           });
           patientIdsTriplets.push(...res);
+          patientIdsTriplets.forEach((triplet) => {
+            patientIdsTripletMap[triplet.CMO_PATIENT_ID] = triplet;
+          });
+          const dmpPatientIdsList = patientIdsTriplets
+            .filter((triplet) => triplet.DMP_PATIENT_ID) // Exclude falsy values
+            .map((triplet) => `'${triplet.DMP_PATIENT_ID}'`)
+            .join(",");
+          const query2 = `
+          SELECT DMP_PATIENT_ID, ANCHOR_SEQUENCING_DATE
+          FROM ${SEQ_DATES_BY_PATIENT_TABLE}
+          WHERE DMP_PATIENT_ID IN (${dmpPatientIdsList})
+        `;
+          const queryOptions2 = { runAsync: true } as ExecuteStatementOptions;
+          const res2 = await queryDatabricks({
+            query: query2,
+            queryOptions: queryOptions2,
+          });
+          (res2 as Array<AnchorSeqDateByDmpPatientId>).forEach(
+            (anchorSeqDate) => {
+              seqDatesByPatient[anchorSeqDate.DMP_PATIENT_ID] =
+                anchorSeqDate.ANCHOR_SEQUENCING_DATE;
+            }
+          );
         }
         const patientsData = await queryDashboardPatients(queryFinal);
-        const patientIdsTripletMap: Record<string, PatientIdsTriplet> = {};
-        patientIdsTriplets.forEach((triplet) => {
-          patientIdsTripletMap[triplet.CMO_PATIENT_ID] = triplet;
-        });
-        const patientsWithMrns = patientsData.map((patient) => {
+        const patientsWithPhi = patientsData.map((patient) => {
           return {
             ...patient,
             mrn: patient.cmoPatientId
               ? patientIdsTripletMap[patient.cmoPatientId]?.MRN
               : null,
+            anchorSequencingDate: patient.dmpPatientId
+              ? seqDatesByPatient[patient.dmpPatientId] || null
+              : null,
           };
         });
-        return patientsWithMrns;
+        return patientsWithPhi;
       },
 
       async dashboardCohorts(
