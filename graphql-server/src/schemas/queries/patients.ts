@@ -166,7 +166,9 @@ export function buildPatientsQueryFinal({
   `;
 }
 
-export async function queryDashboardPatients(patientsCypherQuery: string) {
+export async function queryDashboardPatients(
+  patientsCypherQuery: string
+): Promise<DashboardPatient[]> {
   const session = neo4jDriver.session();
   try {
     const result = await session.run(patientsCypherQuery);

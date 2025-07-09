@@ -19,7 +19,6 @@ import SamplesList from "./SamplesList";
 import {
   DashboardRecordSort,
   DashboardSamplesQueryVariables,
-  PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
@@ -44,8 +43,6 @@ interface IRecordsListProps {
   defaultSort: DashboardRecordSort;
   userSearchVal: string;
   setUserSearchVal: Dispatch<SetStateAction<string>>;
-  setCustomSearchStates?: Dispatch<SetStateAction<PatientIdsTriplet[]>>;
-  searchInterceptor?: (userSearchVal: string) => Promise<string[]>;
   showDownloadModal: boolean;
   setShowDownloadModal: Dispatch<SetStateAction<boolean>>;
   handleDownload: (recordCount: number) => void;
@@ -64,8 +61,6 @@ export default function RecordsList({
   defaultSort,
   userSearchVal,
   setUserSearchVal,
-  setCustomSearchStates,
-  searchInterceptor,
   showDownloadModal,
   setShowDownloadModal,
   handleDownload,
@@ -138,13 +133,7 @@ export default function RecordsList({
   );
 
   async function refreshData(userSearchVal: string) {
-    const extraSearchVals = searchInterceptor
-      ? await searchInterceptor(userSearchVal)
-      : [];
-    const searchVals = [
-      ...parseUserSearchVal(userSearchVal),
-      ...extraSearchVals,
-    ];
+    const searchVals = parseUserSearchVal(userSearchVal);
     const newDatasource = getServerSideDatasource({ searchVals });
     gridRef.current?.api.setServerSideDatasource(newDatasource); // triggers a refresh
   }
@@ -249,7 +238,6 @@ export default function RecordsList({
         dataName={dataName}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
-        setCustomSearchStates={setCustomSearchStates}
         onSearch={async (userSearchVal) => refreshData(userSearchVal)}
         matchingResultsCount={`${
           recordCount !== undefined ? recordCount?.toLocaleString() : "Loading"

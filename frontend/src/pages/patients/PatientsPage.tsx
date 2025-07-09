@@ -1,9 +1,6 @@
 import {
   AgGridSortDirection,
-  DashboardPatientsQuery,
-  PatientIdsTriplet,
   useDashboardPatientsLazyQuery,
-  useGetPatientIdsTripletsLazyQuery,
 } from "../../generated/graphql";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -11,7 +8,6 @@ import { Col, Form } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
 import { Tooltip } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/InfoOutlined";
-import { parseUserSearchVal } from "../../utils/parseSearchQueries";
 import {
   MAX_ROWS_EXPORT,
   MAX_ROWS_EXPORT_WARNING,
@@ -21,10 +17,6 @@ import {
 import { getUserEmail } from "../../utils/getUserEmail";
 import { openLoginPopup } from "../../utils/openLoginPopup";
 import RecordsList from "../../components/RecordsList";
-
-function addCDashToCMOId(cmoId: string): string {
-  return cmoId.length === 6 ? `C-${cmoId}` : cmoId;
-}
 
 const PHI_WARNING = {
   title: "Warning",
@@ -36,12 +28,6 @@ const UNAUTHORIZED_WARNING = {
   title: "Access unauthorized",
   content:
     "You are not authorized to access PHI data. If you would like to request access, please reach out to the administrator.",
-};
-
-const NO_PHI_SEARCH_RESULTS = {
-  title: "No PHI results found",
-  content:
-    "No PHI results were found for your search. No patient IDs in your search exist in either the SMILE or CRDB databases.",
 };
 
 interface IPatientsPageProps {
@@ -58,97 +44,21 @@ export default function PatientsPage({
   const [userSearchVal, setUserSearchVal] = useState<string>("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [phiEnabled, setPhiEnabled] = useState(false);
-  const [patientIdsTriplets, setPatientIdsTriplets] = useState<
-    PatientIdsTriplet[]
-  >([]);
   const [alertModal, setAlertModal] = useState<{
     show: boolean;
     title: string;
     content: string;
   }>({ show: false, title: "", content: "" });
 
-  const [getPatientIdsTriplets] = useGetPatientIdsTripletsLazyQuery();
-
-  async function fetchPatientIdsTriplets(
-    parsedSearchVals: string[]
-  ): Promise<PatientIdsTriplet[]> {
-    // Remove C- from CMO IDs because they are stored without it in the CRDB
-    const patientIds = parsedSearchVals.map((query) =>
-      query.startsWith("C-") ? query.slice(2) : query
-    );
-
-    const { data, error } = await getPatientIdsTriplets({
-      variables: {
-        patientIds: patientIds,
-      },
-    });
-
-    if (error) {
-      if (error.message === "401") {
-        openLoginPopup();
-      }
-
-      if (error.message === "403") {
-        setAlertModal({
-          show: true,
-          ...UNAUTHORIZED_WARNING,
-        });
-      }
-
-      return [];
-    }
-
-    return (
-      data?.patientIdsTriplets?.filter(
-        (triplet): triplet is PatientIdsTriplet => triplet !== null
-      ) ?? []
-    );
-  }
-
-  async function getExtraCmoIdsFromMrnInputs(userSearchVal: string) {
-    let extraCmoIds: string[] = [];
-    if (phiEnabled && userSearchVal !== "") {
-      const parsedSearchVals = parseUserSearchVal(userSearchVal);
-
-      const patientIdsTriplets = await fetchPatientIdsTriplets(
-        parsedSearchVals
-      );
-      setPatientIdsTriplets(patientIdsTriplets);
-
-      if (patientIdsTriplets.length > 0) {
-        patientIdsTriplets.forEach((triplet) => {
-          // Add back C- to CMO IDs because they are stored without it in the CRDB
-          const cmoIdWithCDash = addCDashToCMOId(triplet.CMO_PATIENT_ID);
-          if (
-            !parsedSearchVals.includes(cmoIdWithCDash) &&
-            !parsedSearchVals.includes(triplet.DMP_PATIENT_ID ?? "")
-          ) {
-            extraCmoIds.push(cmoIdWithCDash);
-          }
-        });
-      } else if (userEmail) {
-        setAlertModal({
-          show: true,
-          ...NO_PHI_SEARCH_RESULTS,
-        });
-      }
-    }
-    return extraCmoIds;
-  }
+  // TODO: openLoginPopup once if phiEnabled is true and userEmail is null
+  // if fails from 403, show UNAUTHORIZED_WARNING and switch to non-PHI mode
 
   useEffect(() => {
     async function handleLogin(event: MessageEvent) {
       if (event.data !== "success") return;
-
-      const userEmail = await getUserEmail();
-      setUserEmail(userEmail);
-
-      setAlertModal({
-        show: true,
-        ...PHI_WARNING,
-      });
+      setUserEmail(await getUserEmail());
+      setAlertModal({ show: true, ...PHI_WARNING });
     }
-
     if (phiEnabled) {
       window.addEventListener("message", handleLogin);
       if (!userEmail) openLoginPopup();
@@ -156,43 +66,20 @@ export default function PatientsPage({
         window.removeEventListener("message", handleLogin);
       };
     }
-    // eslint-disable-next-line
-  }, [phiEnabled]);
+  }, [phiEnabled, userEmail, setUserEmail]);
 
   const ActivePatientsListColumns = useMemo(() => {
     return patientColDefs.map((column) => {
-      if (
-        column.headerName === "Patient MRN" &&
-        phiEnabled &&
-        patientIdsTriplets.length > 0 &&
-        userEmail
-      ) {
+      if (column.headerName === "Patient MRN" && phiEnabled && userSearchVal) {
         return {
           ...column,
           hide: false,
-          valueGetter: ({
-            data,
-          }: {
-            data: DashboardPatientsQuery["dashboardPatients"][number];
-          }) => {
-            const cmoId = data.cmoPatientId;
-
-            const patientIdsTriplet = patientIdsTriplets.find(
-              (triplet) => addCDashToCMOId(triplet.CMO_PATIENT_ID) === cmoId
-            );
-
-            if (patientIdsTriplet) {
-              return patientIdsTriplet.MRN;
-            } else {
-              return "";
-            }
-          },
         };
       } else {
         return column;
       }
     });
-  }, [phiEnabled, patientIdsTriplets, userEmail]);
+  }, [phiEnabled, userSearchVal]);
 
   const dataName = "patients";
   const sampleQueryParamFieldName = "patientId";
@@ -212,10 +99,6 @@ export default function PatientsPage({
         phiEnabled={phiEnabled}
         userSearchVal={userSearchVal}
         setUserSearchVal={setUserSearchVal}
-        setCustomSearchStates={setPatientIdsTriplets}
-        searchInterceptor={(userSearchVal) =>
-          getExtraCmoIdsFromMrnInputs(userSearchVal)
-        }
         showDownloadModal={showDownloadModal}
         setShowDownloadModal={setShowDownloadModal}
         handleDownload={(recordCount: number) => {

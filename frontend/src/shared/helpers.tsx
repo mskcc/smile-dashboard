@@ -251,7 +251,7 @@ export const patientColDefs: ColDef<DashboardPatient>[] = [
     sortable: false,
   },
   {
-    field: "patientMrn",
+    field: "mrn",
     headerName: "Patient MRN",
     hide: true,
     cellStyle: { color: "crimson" },
