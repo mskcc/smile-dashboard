@@ -2944,9 +2944,9 @@ export type PatientHasSampleSamplesUpdateFieldInput = {
 
 export type PatientIdsTriplet = {
   __typename?: "PatientIdsTriplet";
-  CMO_ID: Scalars["String"];
-  DMP_ID?: Maybe<Scalars["String"]>;
-  PT_MRN: Scalars["String"];
+  CMO_PATIENT_ID: Scalars["String"];
+  DMP_PATIENT_ID?: Maybe<Scalars["String"]>;
+  MRN: Scalars["String"];
 };
 
 export type PatientOptions = {
@@ -11325,9 +11325,9 @@ export type GetPatientIdsTripletsQuery = {
   __typename?: "Query";
   patientIdsTriplets?: Array<{
     __typename?: "PatientIdsTriplet";
-    CMO_ID: string;
-    DMP_ID?: string | null;
-    PT_MRN: string;
+    CMO_PATIENT_ID: string;
+    DMP_PATIENT_ID?: string | null;
+    MRN: string;
   } | null> | null;
 };
 
@@ -11599,9 +11599,9 @@ export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
 export const GetPatientIdsTripletsDocument = gql`
   query GetPatientIdsTriplets($patientIds: [String!]!) {
     patientIdsTriplets(patientIds: $patientIds) {
-      CMO_ID
-      DMP_ID
-      PT_MRN
+      CMO_PATIENT_ID
+      DMP_PATIENT_ID
+      MRN
     }
   }
 `;

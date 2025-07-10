@@ -4,8 +4,11 @@ import { applyMiddleware } from "graphql-middleware";
 import { IMiddlewareResolver } from "graphql-middleware/dist/types";
 import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
 import { queryDatabricks } from "../utils/databricks";
+import { PatientIdsTriplet } from "../generated/graphql";
 
 const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
+const PHI_ID_MAPPING_TABLE =
+  "cdsi_eng_phi.id_mapping.mrn_cmo_dmp_patient_fullouter";
 
 export async function buildDatabricksSchema() {
   const authenticationMiddleware: {
@@ -59,15 +62,15 @@ export async function buildDatabricksSchema() {
             .map((patientId) => `'${patientId}'`)
             .join(",");
           const query = `
-            SELECT CMO_ID, DMP_ID, PT_MRN
-            FROM src_crdb_prod.crdb.crdb_cmo_loj_dmp_map
-            WHERE DMP_ID IN (${patientIdList})
-              OR PT_MRN IN (${patientIdList})
-              OR CMO_ID IN (${patientIdList})
+            SELECT CMO_PATIENT_ID, DMP_PATIENT_ID, MRN
+            FROM ${PHI_ID_MAPPING_TABLE}
+            WHERE DMP_PATIENT_ID IN (${patientIdList})
+              OR MRN IN (${patientIdList})
+              OR CMO_PATIENT_ID IN (${patientIdList})
           `;
           const queryOptions = { runAsync: true } as ExecuteStatementOptions;
           const res = await queryDatabricks({ query, queryOptions });
-          return res;
+          return res as Array<PatientIdsTriplet>;
         } catch (error) {
           console.error("Error querying Patient ID triplets:", error);
           return [];
@@ -78,9 +81,9 @@ export async function buildDatabricksSchema() {
 
   const typeDefs = `
     type PatientIdsTriplet {
-      CMO_ID: String!
-      DMP_ID: String
-      PT_MRN: String!
+      CMO_PATIENT_ID: String!
+      DMP_PATIENT_ID: String
+      MRN: String!
     }
 
     type Query {

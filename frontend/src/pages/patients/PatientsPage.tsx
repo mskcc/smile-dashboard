@@ -118,10 +118,10 @@ export default function PatientsPage({
       if (patientIdsTriplets.length > 0) {
         patientIdsTriplets.forEach((triplet) => {
           // Add back C- to CMO IDs because they are stored without it in the CRDB
-          const cmoIdWithCDash = addCDashToCMOId(triplet.CMO_ID);
+          const cmoIdWithCDash = addCDashToCMOId(triplet.CMO_PATIENT_ID);
           if (
             !parsedSearchVals.includes(cmoIdWithCDash) &&
-            !parsedSearchVals.includes(triplet.DMP_ID ?? "")
+            !parsedSearchVals.includes(triplet.DMP_PATIENT_ID ?? "")
           ) {
             extraCmoIds.push(cmoIdWithCDash);
           }
@@ -178,11 +178,11 @@ export default function PatientsPage({
             const cmoId = data.cmoPatientId;
 
             const patientIdsTriplet = patientIdsTriplets.find(
-              (triplet) => addCDashToCMOId(triplet.CMO_ID) === cmoId
+              (triplet) => addCDashToCMOId(triplet.CMO_PATIENT_ID) === cmoId
             );
 
             if (patientIdsTriplet) {
-              return patientIdsTriplet.PT_MRN;
+              return patientIdsTriplet.MRN;
             } else {
               return "";
             }
