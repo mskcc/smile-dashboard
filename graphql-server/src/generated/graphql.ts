@@ -4068,9 +4068,6 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
-  anchorSeqDatesByDmpPatientIds?: Maybe<
-    Array<Maybe<AnchorSeqDateByDmpPatientId>>
-  >;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -4093,7 +4090,6 @@ export type Query = {
   patientAliases: Array<PatientAlias>;
   patientAliasesAggregate: PatientAliasAggregateSelection;
   patientAliasesConnection: PatientAliasesConnection;
-  patientIdsTriplets?: Maybe<Array<Maybe<PatientIdsTriplet>>>;
   patients: Array<Patient>;
   patientsAggregate: PatientAggregateSelection;
   patientsConnection: PatientsConnection;
@@ -4124,10 +4120,6 @@ export type Query = {
   tempos: Array<Tempo>;
   temposAggregate: TempoAggregateSelection;
   temposConnection: TemposConnection;
-};
-
-export type QueryAnchorSeqDatesByDmpPatientIdsArgs = {
-  dmpPatientIds: Array<Scalars["String"]>;
 };
 
 export type QueryBamCompletesArgs = {
@@ -4258,10 +4250,6 @@ export type QueryPatientAliasesConnectionArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   sort?: InputMaybe<Array<InputMaybe<PatientAliasSort>>>;
   where?: InputMaybe<PatientAliasWhere>;
-};
-
-export type QueryPatientIdsTripletsArgs = {
-  patientIds: Array<Scalars["String"]>;
 };
 
 export type QueryPatientsArgs = {
@@ -11336,33 +11324,6 @@ export type UpdateDashboardSamplesMutation = {
   } | null> | null;
 };
 
-export type GetPatientIdsTripletsQueryVariables = Exact<{
-  patientIds: Array<Scalars["String"]> | Scalars["String"];
-}>;
-
-export type GetPatientIdsTripletsQuery = {
-  __typename?: "Query";
-  patientIdsTriplets?: Array<{
-    __typename?: "PatientIdsTriplet";
-    CMO_PATIENT_ID: string;
-    DMP_PATIENT_ID?: string | null;
-    MRN: string;
-  } | null> | null;
-};
-
-export type GetAnchorSeqDatesByDmpPatientIdsQueryVariables = Exact<{
-  dmpPatientIds: Array<Scalars["String"]> | Scalars["String"];
-}>;
-
-export type GetAnchorSeqDatesByDmpPatientIdsQuery = {
-  __typename?: "Query";
-  anchorSeqDatesByDmpPatientIds?: Array<{
-    __typename?: "AnchorSeqDateByDmpPatientId";
-    DMP_PATIENT_ID: string;
-    ANCHOR_SEQUENCING_DATE: string;
-  } | null> | null;
-};
-
 export const DashboardSamplePartsFragmentDoc = gql`
   fragment DashboardSampleParts on DashboardSample {
     smileSampleId
@@ -11631,29 +11592,4 @@ export type UpdateDashboardSamplesMutationResult =
 export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
   UpdateDashboardSamplesMutation,
   UpdateDashboardSamplesMutationVariables
->;
-export const GetPatientIdsTripletsDocument = gql`
-  query GetPatientIdsTriplets($patientIds: [String!]!) {
-    patientIdsTriplets(patientIds: $patientIds) {
-      CMO_PATIENT_ID
-      DMP_PATIENT_ID
-      MRN
-    }
-  }
-`;
-export type GetPatientIdsTripletsQueryResult = Apollo.QueryResult<
-  GetPatientIdsTripletsQuery,
-  GetPatientIdsTripletsQueryVariables
->;
-export const GetAnchorSeqDatesByDmpPatientIdsDocument = gql`
-  query GetAnchorSeqDatesByDmpPatientIds($dmpPatientIds: [String!]!) {
-    anchorSeqDatesByDmpPatientIds(dmpPatientIds: $dmpPatientIds) {
-      DMP_PATIENT_ID
-      ANCHOR_SEQUENCING_DATE
-    }
-  }
-`;
-export type GetAnchorSeqDatesByDmpPatientIdsQueryResult = Apollo.QueryResult<
-  GetAnchorSeqDatesByDmpPatientIdsQuery,
-  GetAnchorSeqDatesByDmpPatientIdsQueryVariables
 >;

@@ -4069,9 +4069,6 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
-  anchorSeqDatesByDmpPatientIds?: Maybe<
-    Array<Maybe<AnchorSeqDateByDmpPatientId>>
-  >;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -4094,7 +4091,6 @@ export type Query = {
   patientAliases: Array<PatientAlias>;
   patientAliasesAggregate: PatientAliasAggregateSelection;
   patientAliasesConnection: PatientAliasesConnection;
-  patientIdsTriplets?: Maybe<Array<Maybe<PatientIdsTriplet>>>;
   patients: Array<Patient>;
   patientsAggregate: PatientAggregateSelection;
   patientsConnection: PatientsConnection;
@@ -4125,10 +4121,6 @@ export type Query = {
   tempos: Array<Tempo>;
   temposAggregate: TempoAggregateSelection;
   temposConnection: TemposConnection;
-};
-
-export type QueryAnchorSeqDatesByDmpPatientIdsArgs = {
-  dmpPatientIds: Array<Scalars["String"]>;
 };
 
 export type QueryBamCompletesArgs = {
@@ -4259,10 +4251,6 @@ export type QueryPatientAliasesConnectionArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   sort?: InputMaybe<Array<InputMaybe<PatientAliasSort>>>;
   where?: InputMaybe<PatientAliasWhere>;
-};
-
-export type QueryPatientIdsTripletsArgs = {
-  patientIds: Array<Scalars["String"]>;
 };
 
 export type QueryPatientsArgs = {
@@ -11337,33 +11325,6 @@ export type UpdateDashboardSamplesMutation = {
   } | null> | null;
 };
 
-export type GetPatientIdsTripletsQueryVariables = Exact<{
-  patientIds: Array<Scalars["String"]> | Scalars["String"];
-}>;
-
-export type GetPatientIdsTripletsQuery = {
-  __typename?: "Query";
-  patientIdsTriplets?: Array<{
-    __typename?: "PatientIdsTriplet";
-    CMO_PATIENT_ID: string;
-    DMP_PATIENT_ID?: string | null;
-    MRN: string;
-  } | null> | null;
-};
-
-export type GetAnchorSeqDatesByDmpPatientIdsQueryVariables = Exact<{
-  dmpPatientIds: Array<Scalars["String"]> | Scalars["String"];
-}>;
-
-export type GetAnchorSeqDatesByDmpPatientIdsQuery = {
-  __typename?: "Query";
-  anchorSeqDatesByDmpPatientIds?: Array<{
-    __typename?: "AnchorSeqDateByDmpPatientId";
-    DMP_PATIENT_ID: string;
-    ANCHOR_SEQUENCING_DATE: string;
-  } | null> | null;
-};
-
 export const DashboardSamplePartsFragmentDoc = gql`
   fragment DashboardSampleParts on DashboardSample {
     smileSampleId
@@ -11871,123 +11832,4 @@ export type UpdateDashboardSamplesMutationResult =
 export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
   UpdateDashboardSamplesMutation,
   UpdateDashboardSamplesMutationVariables
->;
-export const GetPatientIdsTripletsDocument = gql`
-  query GetPatientIdsTriplets($patientIds: [String!]!) {
-    patientIdsTriplets(patientIds: $patientIds) {
-      CMO_PATIENT_ID
-      DMP_PATIENT_ID
-      MRN
-    }
-  }
-`;
-
-/**
- * __useGetPatientIdsTripletsQuery__
- *
- * To run a query within a React component, call `useGetPatientIdsTripletsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPatientIdsTripletsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPatientIdsTripletsQuery({
- *   variables: {
- *      patientIds: // value for 'patientIds'
- *   },
- * });
- */
-export function useGetPatientIdsTripletsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetPatientIdsTripletsQuery,
-    GetPatientIdsTripletsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    GetPatientIdsTripletsQuery,
-    GetPatientIdsTripletsQueryVariables
-  >(GetPatientIdsTripletsDocument, options);
-}
-export function useGetPatientIdsTripletsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetPatientIdsTripletsQuery,
-    GetPatientIdsTripletsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    GetPatientIdsTripletsQuery,
-    GetPatientIdsTripletsQueryVariables
-  >(GetPatientIdsTripletsDocument, options);
-}
-export type GetPatientIdsTripletsQueryHookResult = ReturnType<
-  typeof useGetPatientIdsTripletsQuery
->;
-export type GetPatientIdsTripletsLazyQueryHookResult = ReturnType<
-  typeof useGetPatientIdsTripletsLazyQuery
->;
-export type GetPatientIdsTripletsQueryResult = Apollo.QueryResult<
-  GetPatientIdsTripletsQuery,
-  GetPatientIdsTripletsQueryVariables
->;
-export const GetAnchorSeqDatesByDmpPatientIdsDocument = gql`
-  query GetAnchorSeqDatesByDmpPatientIds($dmpPatientIds: [String!]!) {
-    anchorSeqDatesByDmpPatientIds(dmpPatientIds: $dmpPatientIds) {
-      DMP_PATIENT_ID
-      ANCHOR_SEQUENCING_DATE
-    }
-  }
-`;
-
-/**
- * __useGetAnchorSeqDatesByDmpPatientIdsQuery__
- *
- * To run a query within a React component, call `useGetAnchorSeqDatesByDmpPatientIdsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAnchorSeqDatesByDmpPatientIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAnchorSeqDatesByDmpPatientIdsQuery({
- *   variables: {
- *      dmpPatientIds: // value for 'dmpPatientIds'
- *   },
- * });
- */
-export function useGetAnchorSeqDatesByDmpPatientIdsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetAnchorSeqDatesByDmpPatientIdsQuery,
-    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    GetAnchorSeqDatesByDmpPatientIdsQuery,
-    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
-  >(GetAnchorSeqDatesByDmpPatientIdsDocument, options);
-}
-export function useGetAnchorSeqDatesByDmpPatientIdsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetAnchorSeqDatesByDmpPatientIdsQuery,
-    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    GetAnchorSeqDatesByDmpPatientIdsQuery,
-    GetAnchorSeqDatesByDmpPatientIdsQueryVariables
-  >(GetAnchorSeqDatesByDmpPatientIdsDocument, options);
-}
-export type GetAnchorSeqDatesByDmpPatientIdsQueryHookResult = ReturnType<
-  typeof useGetAnchorSeqDatesByDmpPatientIdsQuery
->;
-export type GetAnchorSeqDatesByDmpPatientIdsLazyQueryHookResult = ReturnType<
-  typeof useGetAnchorSeqDatesByDmpPatientIdsLazyQuery
->;
-export type GetAnchorSeqDatesByDmpPatientIdsQueryResult = Apollo.QueryResult<
-  GetAnchorSeqDatesByDmpPatientIdsQuery,
-  GetAnchorSeqDatesByDmpPatientIdsQueryVariables
 >;

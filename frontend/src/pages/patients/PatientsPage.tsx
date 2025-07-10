@@ -133,9 +133,10 @@ export default function PatientsPage({
               <Tooltip
                 title={
                   <span style={{ fontSize: 12 }}>
-                    When enabled, you can search for patients by either their
-                    MRN, CMO Patient ID, or DMP Patient ID. The results will
-                    include an additional column with the patient's MRN.
+                    Enable this to include PHI fields in the results. You will
+                    be prompted to log in at first or after some idle time upon
+                    logging in. For the PHI search to work, your search must
+                    include CMO Patient IDs and/or DMP Patient IDs.
                   </span>
                 }
               >

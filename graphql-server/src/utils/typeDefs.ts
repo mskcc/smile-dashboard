@@ -164,6 +164,17 @@ const QUERY_RESULT_TYPEDEFS = gql`
   type DashboardSample {
     ${SAMPLE_FIELDS}
   }
+
+  type PatientIdsTriplet {
+    CMO_PATIENT_ID: String!
+    DMP_PATIENT_ID: String
+    MRN: String!
+  }
+
+  type AnchorSeqDateByDmpPatientId {
+    DMP_PATIENT_ID: String!
+    ANCHOR_SEQUENCING_DATE: String!
+  }
 `;
 
 const QUERY_TYPEDEFS = gql`

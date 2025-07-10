@@ -15,7 +15,10 @@ import { OGM } from "@neo4j/graphql-ogm";
 import {
   buildPatientsQueryBody,
   buildPatientsQueryFinal,
+  mapPhiToPatientsData,
+  queryAnchorSeqDatesByDmpPatientId,
   queryDashboardPatients,
+  queryPatientIdsTriplets,
 } from "./queries/patients";
 import {
   buildCohortsQueryBody,
@@ -47,10 +50,6 @@ import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSe
 import { queryDatabricks } from "../utils/databricks";
 
 const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
-const PHI_ID_MAPPING_TABLE =
-  "cdsi_eng_phi.id_mapping.mrn_cmo_dmp_patient_fullouter";
-const SEQ_DATES_BY_PATIENT_TABLE =
-  "cdsi_eng_phi.msk_impact_dates.anchor_sequencing_date_by_patient";
 
 type AuthMiddleware = {
   Query: {
@@ -83,7 +82,6 @@ export async function buildCustomSchema(ogm: OGM) {
     },
   };
 
-  // TODO: test querying while not under the PHI access group
   const authorizationMiddleware: AuthMiddleware = {
     Query: {
       dashboardPatients: async (
@@ -147,81 +145,21 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
         });
-        // TODO:
-        // - Run query to get sequencing date (see schemas/databricks.ts for reference)
-        // - Create some sort of dicts and ref them inside queryDashboardPatients (see queryDashboardSamples for reference)
-        //   to return the newly added mrn and seq date fields
-        // - Clean up schemas/databricks.ts and anything else that is no longer needed
-        // - Look up TODOs throughout the codebase and resolve them
-        // - Test by inputting search values, then toggle "phiEnabled" for the first time. Fix if it breaks
-        const patientIdsTriplets: PatientIdsTriplet[] = [];
-        const patientIdsTripletMap: Record<string, PatientIdsTriplet> = {};
-        const seqDatesByPatient: Record<string, string> = {};
-        if (searchVals && searchVals.length > 0 && phiEnabled) {
-          const searchValsWithoutCDash = searchVals.map((searchVal) =>
-            searchVal.startsWith("C-") ? searchVal.slice(2) : searchVal
-          );
-          const searchValList = searchValsWithoutCDash
-            .map((searchVal) => `'${searchVal}'`)
-            .join(",");
-          const query = `
-            SELECT
-              CMO_PATIENT_ID,
-              DMP_PATIENT_ID,
-              MRN
-            FROM
-              ${PHI_ID_MAPPING_TABLE}
-            WHERE
-              DMP_PATIENT_ID IN (${searchValList})
-              OR MRN IN (${searchValList})
-              OR CMO_PATIENT_ID IN (${searchValList})
-          `;
-          const queryOptions = { runAsync: true } as ExecuteStatementOptions;
-          const res = (await queryDatabricks({
-            query,
-            queryOptions,
-          })) as Array<PatientIdsTriplet>;
-          res.forEach((patientIdTriplet) => {
-            patientIdTriplet.CMO_PATIENT_ID = `C-${patientIdTriplet.CMO_PATIENT_ID}`;
-          });
-          patientIdsTriplets.push(...res);
-          patientIdsTriplets.forEach((triplet) => {
-            patientIdsTripletMap[triplet.CMO_PATIENT_ID] = triplet;
-          });
-          const dmpPatientIdsList = patientIdsTriplets
-            .filter((triplet) => triplet.DMP_PATIENT_ID) // Exclude falsy values
-            .map((triplet) => `'${triplet.DMP_PATIENT_ID}'`)
-            .join(",");
-          const query2 = `
-          SELECT DMP_PATIENT_ID, ANCHOR_SEQUENCING_DATE
-          FROM ${SEQ_DATES_BY_PATIENT_TABLE}
-          WHERE DMP_PATIENT_ID IN (${dmpPatientIdsList})
-        `;
-          const queryOptions2 = { runAsync: true } as ExecuteStatementOptions;
-          const res2 = await queryDatabricks({
-            query: query2,
-            queryOptions: queryOptions2,
-          });
-          (res2 as Array<AnchorSeqDateByDmpPatientId>).forEach(
-            (anchorSeqDate) => {
-              seqDatesByPatient[anchorSeqDate.DMP_PATIENT_ID] =
-                anchorSeqDate.ANCHOR_SEQUENCING_DATE;
-            }
-          );
-        }
         const patientsData = await queryDashboardPatients(queryFinal);
-        const patientsWithPhi = patientsData.map((patient) => {
-          return {
-            ...patient,
-            mrn: patient.cmoPatientId
-              ? patientIdsTripletMap[patient.cmoPatientId]?.MRN
-              : null,
-            anchorSequencingDate: patient.dmpPatientId
-              ? seqDatesByPatient[patient.dmpPatientId] || null
-              : null,
-          };
+        if (!phiEnabled || !searchVals || searchVals?.length == 0) {
+          return patientsData;
+        }
+        const patientIdsTriplets = await queryPatientIdsTriplets(searchVals);
+        const dmpPatientIds = patientIdsTriplets
+          .map((t) => t.DMP_PATIENT_ID)
+          .filter((id): id is string => !!id);
+        const anchorSeqDatesByDmpPatientId =
+          await queryAnchorSeqDatesByDmpPatientId(dmpPatientIds);
+        return mapPhiToPatientsData({
+          patientsData,
+          patientIdsTriplets,
+          anchorSeqDatesByDmpPatientId,
         });
-        return patientsWithPhi;
       },
 
       async dashboardCohorts(

@@ -236,18 +236,3 @@ mutation UpdateDashboardSamples(
     ...DashboardDbGapParts
   }
 }
-
-query GetPatientIdsTriplets($patientIds: [String!]!) {
-  patientIdsTriplets(patientIds: $patientIds) {
-    CMO_PATIENT_ID
-    DMP_PATIENT_ID
-    MRN
-  }
-}
-
-query GetAnchorSeqDatesByDmpPatientIds($dmpPatientIds: [String!]!) {
-  anchorSeqDatesByDmpPatientIds(dmpPatientIds: $dmpPatientIds) {
-    DMP_PATIENT_ID
-    ANCHOR_SEQUENCING_DATE
-  }
-}
