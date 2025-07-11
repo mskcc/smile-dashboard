@@ -133,10 +133,11 @@ export default function PatientsPage({
               <Tooltip
                 title={
                   <span style={{ fontSize: 12 }}>
-                    Enable this to include PHI fields in the results. You will
-                    be prompted to log in at first or after some idle time upon
-                    logging in. For the PHI search to work, your search must
-                    include CMO Patient IDs and/or DMP Patient IDs.
+                    Turn on this switch to return each patient's MRN and anchor
+                    sequencing date in the results. Note that this mode only
+                    returns the PHI matching specific CMO or DMP Patient IDs
+                    entered in the search bar. When turning on this switch for
+                    the first time, you will be prompted to log in.
                   </span>
                 }
               >

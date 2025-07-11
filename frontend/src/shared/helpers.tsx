@@ -230,6 +230,12 @@ export const requestColDefs: ColDef<DashboardRequest>[] = [
   },
 ];
 
+const phiColDefProps = {
+  hide: true,
+  cellStyle: { color: "crimson" },
+  sortable: false,
+};
+
 export const patientColDefs: ColDef<DashboardPatient>[] = [
   {
     headerName: "View Samples",
@@ -253,16 +259,14 @@ export const patientColDefs: ColDef<DashboardPatient>[] = [
   {
     field: "mrn",
     headerName: "Patient MRN",
-    hide: true,
-    cellStyle: { color: "crimson" },
-    sortable: false,
+    width: 175, // prevent truncation when being un-hidden
+    ...phiColDefProps,
   },
   {
     field: "anchorSequencingDate",
     headerName: "Anchor Sequencing Date",
-    hide: true,
-    cellStyle: { color: "crimson" },
-    sortable: false,
+    width: 260, // prevent truncation when being un-hidden
+    ...phiColDefProps,
   },
   {
     field: "cmoPatientId",
