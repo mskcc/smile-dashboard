@@ -5,7 +5,6 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import App from "./App";
-import { REACT_APP_EXPRESS_SERVER_ORIGIN } from "./shared/constants";
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -21,7 +20,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: `${REACT_APP_EXPRESS_SERVER_ORIGIN}/graphql`,
+  uri: `${process.env.REACT_APP_EXPRESS_SERVER_ORIGIN}/graphql`,
   cache,
   credentials: "include",
   connectToDevTools: true,
