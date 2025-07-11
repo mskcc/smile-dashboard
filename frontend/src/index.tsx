@@ -5,6 +5,9 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { offsetLimitPagination } from "@apollo/client/utilities";
 import App from "./App";
+import { LicenseManager } from "ag-grid-enterprise";
+
+LicenseManager.setLicenseKey(process.env.REACT_APP_AG_GRID_LICENSE_KEY || "");
 
 const cache = new InMemoryCache({
   typePolicies: {
