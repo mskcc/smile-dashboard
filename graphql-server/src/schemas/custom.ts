@@ -150,8 +150,8 @@ export async function buildCustomSchema(ogm: OGM) {
           return patientsData;
         }
         const patientIdsTriplets = await queryPatientIdsTriplets(searchVals);
-        const dmpPatientIds = patientIdsTriplets
-          .map((t) => t.DMP_PATIENT_ID)
+        const dmpPatientIds = patientsData
+          .map((p) => p.dmpPatientId)
           .filter((id): id is string => !!id);
         const anchorSeqDatesByDmpPatientId =
           await queryAnchorSeqDatesByDmpPatientId(dmpPatientIds);
