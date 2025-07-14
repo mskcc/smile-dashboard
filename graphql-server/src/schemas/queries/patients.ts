@@ -11,8 +11,8 @@ import {
   buildCypherWhereClause,
   getCypherCustomOrderBy,
 } from "../../utils/cypher";
-import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
 import { queryDatabricks } from "../../utils/databricks";
+import { props } from "../../utils/constants";
 
 const FIELDS_TO_SEARCH = [
   "smilePatientId",
@@ -20,10 +20,6 @@ const FIELDS_TO_SEARCH = [
   "dmpPatientId",
   "cmoSampleIds",
 ];
-const PHI_ID_MAPPING_TABLE =
-  "cdsi_eng_phi.id_mapping.mrn_cmo_dmp_patient_fullouter";
-const SEQ_DATES_BY_PATIENT_TABLE =
-  "cdsi_eng_phi.msk_impact_dates.anchor_sequencing_date_by_patient";
 
 export function buildPatientsQueryBody({
   searchVals,
@@ -204,7 +200,7 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
       DMP_PATIENT_ID,
       MRN
     FROM
-      ${PHI_ID_MAPPING_TABLE}
+      ${props.databricks_phi_id_mapping_table}
     WHERE
       DMP_PATIENT_ID IN (${searchValList})
       OR MRN IN (${searchValList})
@@ -228,7 +224,7 @@ export async function queryAnchorSeqDatesByDmpPatientId(
       DMP_PATIENT_ID,
       ANCHOR_SEQUENCING_DATE
     FROM
-      ${SEQ_DATES_BY_PATIENT_TABLE}
+      ${props.databricks_seq_dates_by_patient_table}
     WHERE
       DMP_PATIENT_ID IN (${dmpPatientIdsList})
   `;

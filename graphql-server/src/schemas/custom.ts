@@ -145,11 +145,16 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
         });
-        const patientsData = await queryDashboardPatients(queryFinal);
+        const patientsDataPromise = queryDashboardPatients(queryFinal);
+        // Search values are required for PHI searching to restrict PHI data to specific patients
+        // searched for by users
         if (!phiEnabled || !searchVals || searchVals?.length == 0) {
-          return patientsData;
+          return await patientsDataPromise;
         }
-        const patientIdsTriplets = await queryPatientIdsTriplets(searchVals);
+        const [patientsData, patientIdsTriplets] = await Promise.all([
+          patientsDataPromise,
+          queryPatientIdsTriplets(searchVals),
+        ]);
         const dmpPatientIds = patientsData
           .map((p) => p.dmpPatientId)
           .filter((id): id is string => !!id);
