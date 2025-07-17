@@ -1,9 +1,7 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext } from "../utils/servers";
 import {
-  AnchorSeqDateByDmpPatientId,
   DashboardSampleInput,
-  PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
@@ -16,7 +14,7 @@ import {
   buildPatientsQueryBody,
   buildPatientsQueryFinal,
   mapPhiToPatientsData,
-  queryAnchorSeqDatesByDmpPatientId,
+  queryAnchorSeqDatesByPatientId,
   queryDashboardPatients,
   queryPatientIdsTriplets,
 } from "./queries/patients";
@@ -46,8 +44,6 @@ const request = require("request-promise-native");
 import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import { applyMiddleware } from "graphql-middleware";
 import { IMiddlewareResolver } from "graphql-middleware/dist/types";
-import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
-import { queryDatabricks } from "../utils/databricks";
 
 const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
 
@@ -155,15 +151,16 @@ export async function buildCustomSchema(ogm: OGM) {
           patientsDataPromise,
           queryPatientIdsTriplets(searchVals),
         ]);
-        const dmpPatientIds = patientsData
-          .map((p) => p.dmpPatientId)
+        const mrnsAndDmpPatientIds = patientIdsTriplets
+          .flatMap((triplet) => [triplet.MRN, triplet.DMP_PATIENT_ID])
           .filter((id): id is string => !!id);
-        const anchorSeqDatesByDmpPatientId =
-          await queryAnchorSeqDatesByDmpPatientId(dmpPatientIds);
+        const anchorSeqDatesByPatientId = await queryAnchorSeqDatesByPatientId(
+          mrnsAndDmpPatientIds
+        );
         return mapPhiToPatientsData({
           patientsData,
           patientIdsTriplets,
-          anchorSeqDatesByDmpPatientId,
+          anchorSeqDatesByPatientId,
         });
       },
 

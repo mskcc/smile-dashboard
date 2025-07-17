@@ -2,7 +2,7 @@ import {
   DashboardPatient,
   PatientIdsTriplet,
   QueryDashboardPatientsArgs,
-  AnchorSeqDateByDmpPatientId,
+  AnchorSeqDateByPatientId,
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
@@ -213,61 +213,80 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
   return patientIdsTriplets;
 }
 
-export async function queryAnchorSeqDatesByDmpPatientId(
-  dmpPatientIds: Array<string>
+export async function queryAnchorSeqDatesByPatientId(
+  mrnsAndDmpPatientIds: Array<string>
 ) {
-  const dmpPatientIdsList = dmpPatientIds
+  const mrnsAndDmpPatientIdsList = mrnsAndDmpPatientIds
     .map((dmpPatientId) => `'${dmpPatientId}'`)
     .join(",");
   const query = `
     SELECT
+      MRN,
       DMP_PATIENT_ID,
       ANCHOR_SEQUENCING_DATE
     FROM
       ${props.databricks_seq_dates_by_patient_table}
     WHERE
-      DMP_PATIENT_ID IN (${dmpPatientIdsList})
+      MRN IN (${mrnsAndDmpPatientIdsList})
+      OR DMP_PATIENT_ID IN (${mrnsAndDmpPatientIdsList})
   `;
-  return await queryDatabricks<AnchorSeqDateByDmpPatientId>(query);
+  return await queryDatabricks<AnchorSeqDateByPatientId>(query);
 }
 
 export function mapPhiToPatientsData({
   patientsData,
   patientIdsTriplets,
-  anchorSeqDatesByDmpPatientId,
+  anchorSeqDatesByPatientId,
 }: {
   patientsData: DashboardPatient[];
   patientIdsTriplets: Array<PatientIdsTriplet>;
-  anchorSeqDatesByDmpPatientId: Array<AnchorSeqDateByDmpPatientId>;
+  anchorSeqDatesByPatientId: Array<AnchorSeqDateByPatientId>;
 }): Array<DashboardPatient> {
+  // Create maps for quick lookup of MRN by either CMO or DMP Patient ID
   const mrnByCmoPatientIdMap: Record<string, string> = {};
   const mrnByDmpPatientIdMap: Record<string, string> = {};
   patientIdsTriplets.forEach((triplet) => {
     if (triplet.MRN) {
-      mrnByCmoPatientIdMap[triplet.CMO_PATIENT_ID] = triplet.MRN;
+      if (triplet.CMO_PATIENT_ID) {
+        mrnByCmoPatientIdMap[triplet.CMO_PATIENT_ID] = triplet.MRN;
+      }
       if (triplet.DMP_PATIENT_ID) {
         mrnByDmpPatientIdMap[triplet.DMP_PATIENT_ID] = triplet.MRN;
       }
     }
   });
+  // Create a map for quick lookup of anchor sequencing date by MRN or DMP Patient ID
+  const anchorSeqDateByMrnMap: Record<string, string> = {};
   const anchorSeqDateByDmpPatientIdMap: Record<string, string> = {};
-  anchorSeqDatesByDmpPatientId.forEach((record) => {
-    anchorSeqDateByDmpPatientIdMap[record.DMP_PATIENT_ID] =
-      record.ANCHOR_SEQUENCING_DATE;
+  anchorSeqDatesByPatientId.forEach((record) => {
+    if (record.ANCHOR_SEQUENCING_DATE) {
+      if (record.MRN) {
+        anchorSeqDateByMrnMap[record.MRN] = record.ANCHOR_SEQUENCING_DATE;
+      }
+      if (record.DMP_PATIENT_ID) {
+        anchorSeqDateByDmpPatientIdMap[record.DMP_PATIENT_ID] =
+          record.ANCHOR_SEQUENCING_DATE;
+      }
+    }
   });
+  // Map MRN and anchor sequencing date to each patient in the patients data from Neo4j
   return patientsData.map((patient) => {
     const cmoPatientId = patient.cmoPatientId;
     const dmpPatientId = patient.dmpPatientId;
+    const mrn = cmoPatientId
+      ? mrnByCmoPatientIdMap[cmoPatientId]
+      : dmpPatientId
+      ? mrnByDmpPatientIdMap[dmpPatientId]
+      : null;
+    const anchorSequencingDate = mrn
+      ? anchorSeqDateByMrnMap[mrn]
+      : dmpPatientId
+      ? anchorSeqDateByDmpPatientIdMap[dmpPatientId]
+      : null;
     return {
       ...patient,
-      mrn: cmoPatientId
-        ? mrnByCmoPatientIdMap[cmoPatientId]
-        : dmpPatientId
-        ? mrnByDmpPatientIdMap[dmpPatientId]
-        : null,
-      anchorSequencingDate: dmpPatientId
-        ? anchorSeqDateByDmpPatientIdMap[dmpPatientId]
-        : null,
+      mrn,
+      anchorSequencingDate,
     };
   });
 }

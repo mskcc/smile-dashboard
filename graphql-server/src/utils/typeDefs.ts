@@ -171,7 +171,8 @@ const QUERY_RESULT_TYPEDEFS = gql`
     MRN: String!
   }
 
-  type AnchorSeqDateByDmpPatientId {
+  type AnchorSeqDateByPatientId {
+    MRN: String!
     DMP_PATIENT_ID: String!
     ANCHOR_SEQUENCING_DATE: String!
   }

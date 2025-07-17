@@ -26,10 +26,11 @@ export enum AgGridSortDirection {
   Desc = "desc",
 }
 
-export type AnchorSeqDateByDmpPatientId = {
-  __typename?: "AnchorSeqDateByDmpPatientId";
+export type AnchorSeqDateByPatientId = {
+  __typename?: "AnchorSeqDateByPatientId";
   ANCHOR_SEQUENCING_DATE: Scalars["String"];
   DMP_PATIENT_ID: Scalars["String"];
+  MRN: Scalars["String"];
 };
 
 export type BamComplete = {

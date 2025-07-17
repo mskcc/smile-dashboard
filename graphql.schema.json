@@ -33,7 +33,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "AnchorSeqDateByDmpPatientId",
+        "name": "AnchorSeqDateByPatientId",
         "description": null,
         "fields": [
           {
@@ -54,6 +54,22 @@
           },
           {
             "name": "DMP_PATIENT_ID",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MRN",
             "description": null,
             "args": [],
             "type": {
