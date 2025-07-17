@@ -53,6 +53,20 @@ type AuthMiddleware = {
   };
 };
 
+/**
+ * Search values are required for PHI searching to restrict PHI data to specific patients searched
+ * for by users
+ */
+function canSearchPhiData({
+  phiEnabled,
+  searchVals,
+}: {
+  phiEnabled?: boolean | null;
+  searchVals?: string[] | null;
+}) {
+  return phiEnabled && Array.isArray(searchVals) && searchVals.length > 0;
+}
+
 export async function buildCustomSchema(ogm: OGM) {
   const authenticationMiddleware: AuthMiddleware = {
     Query: {
@@ -64,9 +78,10 @@ export async function buildCustomSchema(ogm: OGM) {
         info
       ) => {
         if (
-          args.phiEnabled &&
-          args.searchVals &&
-          args.searchVals.length > 0 &&
+          canSearchPhiData({
+            phiEnabled: args.phiEnabled,
+            searchVals: args.searchVals,
+          }) &&
           !context.req.isAuthenticated()
         ) {
           throw new AuthenticationError(
@@ -88,9 +103,10 @@ export async function buildCustomSchema(ogm: OGM) {
         info
       ) => {
         if (
-          args.phiEnabled &&
-          args.searchVals &&
-          args.searchVals.length > 0 &&
+          canSearchPhiData({
+            phiEnabled: args.phiEnabled,
+            searchVals: args.searchVals,
+          }) &&
           !context.req.user.groups.includes(KEYCLOAK_PHI_ACCESS_GROUP)
         ) {
           throw new ForbiddenError(
@@ -142,9 +158,7 @@ export async function buildCustomSchema(ogm: OGM) {
           offset,
         });
         const patientsDataPromise = queryDashboardPatients(queryFinal);
-        // Search values are required for PHI searching to restrict PHI data to specific patients
-        // searched for by users
-        if (!phiEnabled || !searchVals || searchVals?.length == 0) {
+        if (!searchVals || !canSearchPhiData({ phiEnabled, searchVals })) {
           return await patientsDataPromise;
         }
         const [patientsData, patientIdsTriplets] = await Promise.all([
