@@ -1,6 +1,7 @@
 import { props } from "../utils/constants";
 import { DBSQLClient, DBSQLLogger, LogLevel } from "@databricks/sql";
 import { ExecuteStatementOptions } from "@databricks/sql/dist/contracts/IDBSQLSession";
+import { ApolloServerContext } from "./servers";
 
 const { databricks_server_hostname, databricks_http_path, databricks_token } =
   props;
@@ -40,4 +41,29 @@ export async function queryDatabricks<T>(query: string): Promise<Array<T>> {
     }
     return [];
   }
+}
+
+/**
+ * We use Databricks with serverless compute, which means that the first query to a table can take a
+ * longer time to run as Databricks requires spawning a new compute instance first. This function
+ * executes a simple query on each Databricks table to reduce the latency from the cold start
+ */
+export async function warmUpDatabricksTables(
+  _req: ApolloServerContext["req"],
+  _res: any,
+  next: any
+): Promise<void> {
+  const databricksTablesToWarmUp = [
+    props.databricks_phi_id_mapping_table,
+    props.databricks_seq_dates_by_patient_table,
+  ];
+  for (const table of databricksTablesToWarmUp) {
+    const query = `SELECT 1 FROM ${table} LIMIT 1`;
+    // Execute each query without `await`-ing the result to let the query run quietly in the background
+    // and not block the event loop
+    queryDatabricks(query).catch((error) =>
+      console.error(`Error warming up table ${table}:`, error)
+    );
+  }
+  next();
 }
