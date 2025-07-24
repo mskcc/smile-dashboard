@@ -46,6 +46,7 @@ const request = require("request-promise-native");
 import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import { applyMiddleware } from "graphql-middleware";
 import { IMiddlewareResolver } from "graphql-middleware/dist/types";
+import { queryDatabricks } from "../utils/databricks";
 
 const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
 
@@ -259,6 +260,18 @@ export async function buildCustomSchema(ogm: OGM) {
           samplesCypherQuery,
           oncotreeCache,
         });
+      },
+
+      async allAnchorSeqDateByPatientId() {
+        const query = `
+          SELECT
+            MRN,
+            DMP_PATIENT_ID,
+            ANCHOR_SEQUENCING_DATE
+          FROM
+            ${props.databricks_seq_dates_by_patient_table}
+        `;
+        return await queryDatabricks<AnchorSeqDateByPatientId>(query);
       },
     },
 
