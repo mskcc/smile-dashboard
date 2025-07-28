@@ -150,6 +150,37 @@ export async function buildCustomSchema(ogm: OGM) {
           phiEnabled,
         }: QueryDashboardPatientsArgs
       ) {
+        if (!searchVals || !canSearchPhiData({ phiEnabled, searchVals })) {
+          const queryBody = buildPatientsQueryBody({
+            searchVals,
+            columnFilters,
+          });
+          const queryFinal = buildPatientsQueryFinal({
+            queryBody,
+            sort,
+            limit,
+            offset,
+          });
+
+          const patientsDataPromise = queryDashboardPatients(queryFinal);
+
+          return await patientsDataPromise;
+        }
+
+        // extend search vals with mapped patient id triplets if applicable
+        const patientIdsTriplets = await Promise.resolve(
+          queryPatientIdsTriplets(searchVals)
+        );
+        if (searchVals && canSearchPhiData({ phiEnabled, searchVals })) {
+          const mappedPatientIds = patientIdsTriplets
+            .flatMap((triplet) => [
+              triplet.DMP_PATIENT_ID,
+              triplet.CMO_PATIENT_ID,
+            ])
+            .filter((id): id is string => !!id && !searchVals.includes(id));
+          searchVals.push(...mappedPatientIds);
+        }
+
         const queryBody = buildPatientsQueryBody({ searchVals, columnFilters });
         const queryFinal = buildPatientsQueryFinal({
           queryBody,
@@ -157,14 +188,10 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
         });
-        const patientsDataPromise = queryDashboardPatients(queryFinal);
-        if (!searchVals || !canSearchPhiData({ phiEnabled, searchVals })) {
-          return await patientsDataPromise;
-        }
-        const [patientsData, patientIdsTriplets] = await Promise.all([
-          patientsDataPromise,
-          queryPatientIdsTriplets(searchVals),
-        ]);
+
+        const patientsData = await Promise.resolve(
+          queryDashboardPatients(queryFinal)
+        );
         const mrnsAndDmpPatientIds = patientIdsTriplets
           .flatMap((triplet) => [triplet.MRN, triplet.DMP_PATIENT_ID])
           .filter((id): id is string => !!id);
