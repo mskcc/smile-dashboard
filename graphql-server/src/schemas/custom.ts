@@ -1,7 +1,9 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext } from "../utils/servers";
 import {
+  AnchorSeqDateByPatientId,
   DashboardSampleInput,
+  PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
@@ -150,28 +152,9 @@ export async function buildCustomSchema(ogm: OGM) {
           phiEnabled,
         }: QueryDashboardPatientsArgs
       ) {
-        if (!searchVals || !canSearchPhiData({ phiEnabled, searchVals })) {
-          const queryBody = buildPatientsQueryBody({
-            searchVals,
-            columnFilters,
-          });
-          const queryFinal = buildPatientsQueryFinal({
-            queryBody,
-            sort,
-            limit,
-            offset,
-          });
-
-          const patientsDataPromise = queryDashboardPatients(queryFinal);
-
-          return await patientsDataPromise;
-        }
-
-        // extend search vals with mapped patient id triplets if applicable
-        const patientIdsTriplets = await Promise.resolve(
-          queryPatientIdsTriplets(searchVals)
-        );
+        let patientIdsTriplets: Array<PatientIdsTriplet> = [];
         if (searchVals && canSearchPhiData({ phiEnabled, searchVals })) {
+          patientIdsTriplets = await queryPatientIdsTriplets(searchVals);
           const mappedPatientIds = patientIdsTriplets
             .flatMap((triplet) => [
               triplet.DMP_PATIENT_ID,
@@ -181,23 +164,29 @@ export async function buildCustomSchema(ogm: OGM) {
           searchVals.push(...mappedPatientIds);
         }
 
-        const queryBody = buildPatientsQueryBody({ searchVals, columnFilters });
+        const queryBody = buildPatientsQueryBody({
+          searchVals,
+          columnFilters,
+        });
         const queryFinal = buildPatientsQueryFinal({
           queryBody,
           sort,
           limit,
           offset,
         });
+        const patientsDataPromise = queryDashboardPatients(queryFinal);
 
-        const patientsData = await Promise.resolve(
-          queryDashboardPatients(queryFinal)
-        );
+        if (!canSearchPhiData({ phiEnabled, searchVals })) {
+          return await patientsDataPromise;
+        }
+
         const mrnsAndDmpPatientIds = patientIdsTriplets
           .flatMap((triplet) => [triplet.MRN, triplet.DMP_PATIENT_ID])
           .filter((id): id is string => !!id);
-        const anchorSeqDatesByPatientId = await queryAnchorSeqDatesByPatientId(
-          mrnsAndDmpPatientIds
-        );
+        const [patientsData, anchorSeqDatesByPatientId] = await Promise.all([
+          patientsDataPromise,
+          queryAnchorSeqDatesByPatientId(mrnsAndDmpPatientIds),
+        ]);
         return mapPhiToPatientsData({
           patientsData,
           patientIdsTriplets,
