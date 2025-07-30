@@ -31,7 +31,7 @@ export function DownloadModal({
         <div className="d-flex flex-column align-items-center">
           <p>
             Downloading the most up-to-date version of your data request. Note
-            that large data requests may take up to a minute to process.
+            that large data requests may take minutes to process.
           </p>
           <Spinner fadeIn={"none"} color={"lightblue"} name="ball-grid-pulse" />
         </div>
