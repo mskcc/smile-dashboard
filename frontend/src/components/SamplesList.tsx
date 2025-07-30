@@ -62,7 +62,7 @@ interface ISampleListProps {
   userEmail?: string | null;
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
   customToolbarUI?: JSX.Element;
-  exportDropdownItems?: IExportDropdownItem[];
+  addlExportDropdownItems?: IExportDropdownItem[];
 }
 
 export default function SamplesList({
@@ -73,7 +73,7 @@ export default function SamplesList({
   userEmail,
   setUserEmail,
   customToolbarUI,
-  exportDropdownItems,
+  addlExportDropdownItems,
 }: ISampleListProps) {
   const [userSearchVal, setUserSearchVal] = useState<string>("");
   const [changes, setChanges] = useState<SampleChange[]>([]);
@@ -391,7 +391,7 @@ export default function SamplesList({
             </>
           ) : undefined
         }
-        exportDropdownItems={exportDropdownItems}
+        addlExportDropdownItems={addlExportDropdownItems}
         setColumnDefsForExport={setColumnDefsForExport}
       />
 

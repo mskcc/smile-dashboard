@@ -34,7 +34,7 @@ interface IToolbarProps {
   onDownload: () => void;
   customUILeft?: JSX.Element;
   customUIRight?: JSX.Element;
-  exportDropdownItems?: IExportDropdownItem[];
+  addlExportDropdownItems?: IExportDropdownItem[];
   setColumnDefsForExport?: Dispatch<SetStateAction<ColDef[]>>;
   setSelectedExportItem?: Dispatch<SetStateAction<IExportDropdownItem | null>>;
 }
@@ -48,7 +48,7 @@ export function Toolbar({
   onDownload,
   customUILeft,
   customUIRight,
-  exportDropdownItems,
+  addlExportDropdownItems,
   setColumnDefsForExport,
   setSelectedExportItem,
 }: IToolbarProps) {
@@ -114,7 +114,7 @@ export function Toolbar({
           >
             Export as TSV
           </Button>
-          {exportDropdownItems?.length && setColumnDefsForExport && (
+          {addlExportDropdownItems?.length && setColumnDefsForExport && (
             <>
               <Dropdown.Toggle size="sm" split id="dropdown-split-basic" />
               <Dropdown.Menu>
@@ -127,7 +127,7 @@ export function Toolbar({
                 >
                   Export as TSV
                 </Dropdown.Item>
-                {exportDropdownItems.map((item) => (
+                {addlExportDropdownItems.map((item) => (
                   <div key={item.label} className="d-flex align-items-center">
                     <Dropdown.Item
                       as="button"

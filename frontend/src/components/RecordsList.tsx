@@ -51,7 +51,7 @@ interface IRecordsListProps {
   userEmail?: string | null;
   setUserEmail?: Dispatch<SetStateAction<string | null>>;
   customToolbarUI?: JSX.Element;
-  exportDropdownItems?: IExportDropdownItem[];
+  addlExportDropdownItems?: IExportDropdownItem[];
 }
 
 export default function RecordsList({
@@ -70,7 +70,7 @@ export default function RecordsList({
   userEmail,
   setUserEmail,
   customToolbarUI,
-  exportDropdownItems,
+  addlExportDropdownItems,
 }: IRecordsListProps) {
   const [showClosingWarning, setShowClosingWarning] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -163,7 +163,11 @@ export default function RecordsList({
       );
     }
     const { data } = await fetchMore({
-      variables: { offset: 0, limit: recordCount },
+      variables: {
+        searchVals: parseUserSearchVal(userSearchVal),
+        offset: 0,
+        limit: recordCount,
+      },
     });
     return buildTsvString(
       data[recordsQueryName],
@@ -263,7 +267,7 @@ export default function RecordsList({
         }`}
         onDownload={() => handleDownload()}
         customUIRight={customToolbarUI}
-        exportDropdownItems={exportDropdownItems}
+        addlExportDropdownItems={addlExportDropdownItems}
         setColumnDefsForExport={setColumnDefsForExport}
         setSelectedExportItem={setSelectedExportItem}
       />

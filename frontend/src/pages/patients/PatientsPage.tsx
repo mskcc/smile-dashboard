@@ -3,7 +3,7 @@ import {
   useAllAnchorSeqDateByPatientIdLazyQuery,
   useDashboardPatientsLazyQuery,
 } from "../../generated/graphql";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Col, Form } from "react-bootstrap";
 import { AlertModal } from "../../components/AlertModal";
@@ -31,6 +31,13 @@ const PHI_WARNING = {
 
 const PHI_FIELDS = new Set(["mrn", "anchorSequencingDate"]);
 
+const patientColDefsWithPhiCols = patientColDefs.map((col) => {
+  if (col.field && PHI_FIELDS.has(col.field)) {
+    return { ...col, hide: false };
+  }
+  return col;
+});
+
 interface IPatientsPageProps {
   userEmail: string | null;
   setUserEmail: Dispatch<SetStateAction<string | null>>;
@@ -43,6 +50,7 @@ export default function PatientsPage({
   const params = useParams();
   const [queryAllSeqDates] = useAllAnchorSeqDateByPatientIdLazyQuery();
 
+  const [columnDefs, setColumnDefs] = useState(patientColDefs);
   const [userSearchVal, setUserSearchVal] = useState<string>("");
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [phiEnabled, setPhiEnabled] = useState(false);
@@ -67,15 +75,6 @@ export default function PatientsPage({
     }
   }, [phiEnabled, userEmail, setUserEmail]);
 
-  const activePatientsListColumns = useMemo(() => {
-    return patientColDefs.map((column) => {
-      if (column.field && PHI_FIELDS.has(column.field) && phiEnabled) {
-        return { ...column, hide: false };
-      }
-      return column;
-    });
-  }, [phiEnabled]);
-
   const dataName = "patients";
   const sampleQueryParamFieldName = "patientId";
   const sampleQueryParamValue = params[sampleQueryParamFieldName];
@@ -87,7 +86,7 @@ export default function PatientsPage({
   return (
     <>
       <RecordsList
-        columnDefs={activePatientsListColumns}
+        columnDefs={columnDefs}
         dataName={dataName}
         defaultSort={defaultSort}
         useRecordsLazyQuery={useDashboardPatientsLazyQuery}
@@ -125,7 +124,13 @@ export default function PatientsPage({
                   label="PHI-enabled"
                   checked={phiEnabled}
                   onChange={(e) => {
-                    setPhiEnabled(e.target.checked);
+                    const isPhiEnabled = e.target.checked;
+                    setPhiEnabled(isPhiEnabled);
+                    if (isPhiEnabled) {
+                      setColumnDefs(patientColDefsWithPhiCols);
+                    } else {
+                      setColumnDefs(patientColDefs);
+                    }
                   }}
                 />
               </Form>
@@ -148,7 +153,7 @@ export default function PatientsPage({
             </Col>
           </>
         }
-        exportDropdownItems={[
+        addlExportDropdownItems={[
           {
             label: "Export all anchor dates for clinical cohort",
             columnDefs: allAnchorSeqDateColDefs,
