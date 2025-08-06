@@ -178,7 +178,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     MRN: String!
   }
 
-  type AnchorSeqDateByPatientId {
+  type AnchorSeqDateData {
     MRN: String!
     DMP_PATIENT_ID: String!
     ANCHOR_SEQUENCING_DATE: String!
@@ -228,9 +228,7 @@ const QUERY_TYPEDEFS = gql`
       phiEnabled: Boolean
     ): [DashboardSample!]!
 
-    allAnchorSeqDateByPatientId(
-      phiEnabled: Boolean
-    ): [AnchorSeqDateByPatientId!]!
+    allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!
   }
 `;
 

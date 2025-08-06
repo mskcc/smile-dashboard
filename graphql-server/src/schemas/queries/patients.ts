@@ -2,7 +2,7 @@ import {
   DashboardPatient,
   PatientIdsTriplet,
   QueryDashboardPatientsArgs,
-  AnchorSeqDateByPatientId,
+  AnchorSeqDateData,
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
@@ -205,19 +205,20 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
       DMP_PATIENT_ID IN (${searchValList})
       OR MRN IN (${searchValList})
       OR CMO_PATIENT_ID IN (${searchValList})
+      AND MRN NOT LIKE 'P-%'
   `;
   const patientIdsTriplets = await queryDatabricks<PatientIdsTriplet>(query);
   patientIdsTriplets.forEach((patientIdTriplet) => {
-    patientIdTriplet.CMO_PATIENT_ID = `C-${patientIdTriplet.CMO_PATIENT_ID}`;
+    if (patientIdTriplet.CMO_PATIENT_ID) {
+      patientIdTriplet.CMO_PATIENT_ID = `C-${patientIdTriplet.CMO_PATIENT_ID}`;
+    }
   });
   return patientIdsTriplets;
 }
 
-export async function queryAnchorSeqDatesByPatientId(
-  mrnsAndDmpPatientIds: Array<string>
-) {
-  const mrnsAndDmpPatientIdsList = mrnsAndDmpPatientIds
-    .map((dmpPatientId) => `'${dmpPatientId}'`)
+export async function queryAnchorSeqDateData(searchVals: Array<string>) {
+  const searchValList = searchVals
+    .map((searchVal) => `'${searchVal}'`)
     .join(",");
   const query = `
     SELECT
@@ -228,20 +229,21 @@ export async function queryAnchorSeqDatesByPatientId(
     FROM
       ${props.databricks_seq_dates_by_patient_table}
     WHERE
-      MRN IN (${mrnsAndDmpPatientIdsList})
-      OR DMP_PATIENT_ID IN (${mrnsAndDmpPatientIdsList})
+      MRN IN (${searchValList})
+      OR DMP_PATIENT_ID IN (${searchValList})
+      OR ONCOTREE_CODE IN (${searchValList})
   `;
-  return await queryDatabricks<AnchorSeqDateByPatientId>(query);
+  return await queryDatabricks<AnchorSeqDateData>(query);
 }
 
 export function mapPhiToPatientsData({
   patientsData,
   patientIdsTriplets,
-  anchorSeqDatesByPatientId,
+  anchorSeqDatesData,
 }: {
   patientsData: DashboardPatient[];
   patientIdsTriplets: Array<PatientIdsTriplet>;
-  anchorSeqDatesByPatientId: Array<AnchorSeqDateByPatientId>;
+  anchorSeqDatesData: Array<AnchorSeqDateData>;
 }): Array<DashboardPatient> {
   // Create maps for quick lookup of MRN by either CMO or DMP Patient ID
   const mrnByCmoPatientIdMap: Record<string, string> = {};
@@ -262,7 +264,7 @@ export function mapPhiToPatientsData({
     string,
     Record<string, string>
   > = {};
-  anchorSeqDatesByPatientId.forEach((record) => {
+  anchorSeqDatesData.forEach((record) => {
     if (record.ANCHOR_SEQUENCING_DATE) {
       if (record.MRN) {
         anchorSeqDateDataByMrnMap[record.MRN] = {
@@ -306,7 +308,7 @@ export function mapPhiToPatientsData({
   });
 }
 
-export async function queryAllAnchorSeqDateByPatientId() {
+export async function queryAllAnchorSeqDateData() {
   const query = `
     SELECT
       MRN,
@@ -316,5 +318,5 @@ export async function queryAllAnchorSeqDateByPatientId() {
     FROM
       ${props.databricks_seq_dates_by_patient_table}
   `;
-  return await queryDatabricks<AnchorSeqDateByPatientId>(query);
+  return await queryDatabricks<AnchorSeqDateData>(query);
 }

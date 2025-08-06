@@ -33,7 +33,7 @@
       },
       {
         "kind": "OBJECT",
-        "name": "AnchorSeqDateByPatientId",
+        "name": "AnchorSeqDateData",
         "description": null,
         "fields": [
           {
@@ -37828,7 +37828,7 @@
         "description": null,
         "fields": [
           {
-            "name": "allAnchorSeqDateByPatientId",
+            "name": "allAnchorSeqDateData",
             "description": null,
             "args": [
               {
@@ -37855,7 +37855,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "AnchorSeqDateByPatientId",
+                    "name": "AnchorSeqDateData",
                     "ofType": null
                   }
                 }

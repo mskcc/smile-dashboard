@@ -1,6 +1,6 @@
 import {
   AgGridSortDirection,
-  useAllAnchorSeqDateByPatientIdLazyQuery,
+  useAllAnchorSeqDateDataLazyQuery,
   useDashboardPatientsLazyQuery,
 } from "../../generated/graphql";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -52,7 +52,7 @@ export default function PatientsPage({
   setUserEmail,
 }: IPatientsPageProps) {
   const params = useParams();
-  const [queryAllSeqDates] = useAllAnchorSeqDateByPatientIdLazyQuery();
+  const [queryAllSeqDates] = useAllAnchorSeqDateDataLazyQuery();
 
   const [columnDefs, setColumnDefs] = useState(patientColDefs);
   const [userSearchVal, setUserSearchVal] = useState<string>("");
@@ -165,7 +165,7 @@ export default function PatientsPage({
               const result = await queryAllSeqDates({
                 variables: { phiEnabled: phiEnabled },
               });
-              return result.data?.allAnchorSeqDateByPatientId;
+              return result.data?.allAnchorSeqDateData;
             },
             disabled: !phiEnabled || !userEmail,
             tooltip:

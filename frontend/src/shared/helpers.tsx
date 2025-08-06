@@ -15,7 +15,7 @@ import moment from "moment";
 import _ from "lodash";
 import { RecordValidation } from "../components/RecordValidation";
 import {
-  AnchorSeqDateByPatientId,
+  AnchorSeqDateData,
   DashboardCohort,
   DashboardPatient,
   DashboardRecordColumnFilter,
@@ -332,7 +332,7 @@ export const patientColDefs: ColDef<DashboardPatient>[] = [
   },
 ];
 
-export const allAnchorSeqDateColDefs: ColDef<AnchorSeqDateByPatientId>[] = [
+export const allAnchorSeqDateColDefs: ColDef<AnchorSeqDateData>[] = [
   {
     field: "MRN",
     headerName: "Patient MRN",

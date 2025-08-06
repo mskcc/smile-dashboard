@@ -25,8 +25,8 @@ export enum AgGridSortDirection {
   Desc = "desc",
 }
 
-export type AnchorSeqDateByPatientId = {
-  __typename?: "AnchorSeqDateByPatientId";
+export type AnchorSeqDateData = {
+  __typename?: "AnchorSeqDateData";
   ANCHOR_ONCOTREE_CODE: Scalars["String"];
   ANCHOR_SEQUENCING_DATE: Scalars["String"];
   DMP_PATIENT_ID: Scalars["String"];
@@ -4076,7 +4076,7 @@ export type QcCompletesConnection = {
 
 export type Query = {
   __typename?: "Query";
-  allAnchorSeqDateByPatientId: Array<AnchorSeqDateByPatientId>;
+  allAnchorSeqDateData: Array<AnchorSeqDateData>;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -4131,7 +4131,7 @@ export type Query = {
   temposConnection: TemposConnection;
 };
 
-export type QueryAllAnchorSeqDateByPatientIdArgs = {
+export type QueryAllAnchorSeqDateDataArgs = {
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 };
 
@@ -11351,14 +11351,14 @@ export type UpdateDashboardSamplesMutation = {
   } | null> | null;
 };
 
-export type AllAnchorSeqDateByPatientIdQueryVariables = Exact<{
+export type AllAnchorSeqDateDataQueryVariables = Exact<{
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 }>;
 
-export type AllAnchorSeqDateByPatientIdQuery = {
+export type AllAnchorSeqDateDataQuery = {
   __typename?: "Query";
-  allAnchorSeqDateByPatientId: Array<{
-    __typename?: "AnchorSeqDateByPatientId";
+  allAnchorSeqDateData: Array<{
+    __typename?: "AnchorSeqDateData";
     MRN: string;
     DMP_PATIENT_ID: string;
     ANCHOR_SEQUENCING_DATE: string;
@@ -11641,9 +11641,9 @@ export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
   UpdateDashboardSamplesMutation,
   UpdateDashboardSamplesMutationVariables
 >;
-export const AllAnchorSeqDateByPatientIdDocument = gql`
-  query AllAnchorSeqDateByPatientId($phiEnabled: Boolean = false) {
-    allAnchorSeqDateByPatientId(phiEnabled: $phiEnabled) {
+export const AllAnchorSeqDateDataDocument = gql`
+  query AllAnchorSeqDateData($phiEnabled: Boolean = false) {
+    allAnchorSeqDateData(phiEnabled: $phiEnabled) {
       MRN
       DMP_PATIENT_ID
       ANCHOR_SEQUENCING_DATE
@@ -11651,7 +11651,7 @@ export const AllAnchorSeqDateByPatientIdDocument = gql`
     }
   }
 `;
-export type AllAnchorSeqDateByPatientIdQueryResult = Apollo.QueryResult<
-  AllAnchorSeqDateByPatientIdQuery,
-  AllAnchorSeqDateByPatientIdQueryVariables
+export type AllAnchorSeqDateDataQueryResult = Apollo.QueryResult<
+  AllAnchorSeqDateDataQuery,
+  AllAnchorSeqDateDataQueryVariables
 >;
