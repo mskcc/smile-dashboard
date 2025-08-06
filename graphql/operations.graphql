@@ -67,6 +67,7 @@ query DashboardPatients(
     inDbGap
     mrn
     anchorSequencingDate
+    anchorOncotreeCode
     _total
   }
 }
@@ -247,5 +248,6 @@ query AllAnchorSeqDateByPatientId($phiEnabled: Boolean = false) {
     MRN
     DMP_PATIENT_ID
     ANCHOR_SEQUENCING_DATE
+    ANCHOR_ONCOTREE_CODE
   }
 }

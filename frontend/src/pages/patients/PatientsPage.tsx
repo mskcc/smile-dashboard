@@ -29,7 +29,11 @@ export const PHI_WARNING = {
     " this transmission in error, please immediately delete this information and any attachments from any computer.",
 };
 
-const PHI_FIELDS = new Set(["mrn", "anchorSequencingDate"]);
+const PHI_FIELDS = new Set([
+  "mrn",
+  "anchorSequencingDate",
+  "anchorOncotreeCode",
+]);
 
 const patientColDefsWithPhiCols = patientColDefs.map((col) => {
   if (col.field && PHI_FIELDS.has(col.field)) {

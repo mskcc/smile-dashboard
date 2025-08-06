@@ -148,6 +148,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     inDbGap: Boolean
     mrn: String
     anchorSequencingDate: String
+    anchorOncotreeCode: String
     _total: Int
   }
 
@@ -181,6 +182,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     MRN: String!
     DMP_PATIENT_ID: String!
     ANCHOR_SEQUENCING_DATE: String!
+    ANCHOR_ONCOTREE_CODE: String!
   }
 
   type SeqDateBySampleId {

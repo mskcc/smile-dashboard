@@ -28,6 +28,7 @@ export enum AgGridSortDirection {
 
 export type AnchorSeqDateByPatientId = {
   __typename?: "AnchorSeqDateByPatientId";
+  ANCHOR_ONCOTREE_CODE: Scalars["String"];
   ANCHOR_SEQUENCING_DATE: Scalars["String"];
   DMP_PATIENT_ID: Scalars["String"];
   MRN: Scalars["String"];
@@ -1380,6 +1381,7 @@ export type DashboardCohort = {
 export type DashboardPatient = {
   __typename?: "DashboardPatient";
   _total?: Maybe<Scalars["Int"]>;
+  anchorOncotreeCode?: Maybe<Scalars["String"]>;
   anchorSequencingDate?: Maybe<Scalars["String"]>;
   cmoPatientId?: Maybe<Scalars["String"]>;
   cmoSampleIds?: Maybe<Scalars["String"]>;
@@ -11089,6 +11091,7 @@ export type DashboardPatientsQuery = {
     inDbGap?: boolean | null;
     mrn?: string | null;
     anchorSequencingDate?: string | null;
+    anchorOncotreeCode?: string | null;
     _total?: number | null;
   }>;
 };
@@ -11360,6 +11363,7 @@ export type AllAnchorSeqDateByPatientIdQuery = {
     MRN: string;
     DMP_PATIENT_ID: string;
     ANCHOR_SEQUENCING_DATE: string;
+    ANCHOR_ONCOTREE_CODE: string;
   }>;
 };
 
@@ -11581,6 +11585,7 @@ export const DashboardPatientsDocument = gql`
       inDbGap
       mrn
       anchorSequencingDate
+      anchorOncotreeCode
       _total
     }
   }
@@ -11883,6 +11888,7 @@ export const AllAnchorSeqDateByPatientIdDocument = gql`
       MRN
       DMP_PATIENT_ID
       ANCHOR_SEQUENCING_DATE
+      ANCHOR_ONCOTREE_CODE
     }
   }
 `;

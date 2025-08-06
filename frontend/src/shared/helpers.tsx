@@ -270,6 +270,12 @@ export const patientColDefs: ColDef<DashboardPatient>[] = [
     ...phiColDefProps,
   },
   {
+    field: "anchorOncotreeCode",
+    headerName: "Anchor OncoTree Code",
+    width: 260, // prevent truncation when being un-hidden
+    ...phiColDefProps,
+  },
+  {
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
   },
@@ -338,6 +344,10 @@ export const allAnchorSeqDateColDefs: ColDef<AnchorSeqDateByPatientId>[] = [
   {
     field: "ANCHOR_SEQUENCING_DATE",
     headerName: "Anchor Sequencing Date",
+  },
+  {
+    field: "ANCHOR_ONCOTREE_CODE",
+    headerName: "Anchor OncoTree Code",
   },
 ];
 
