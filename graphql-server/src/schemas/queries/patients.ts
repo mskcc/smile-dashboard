@@ -239,11 +239,11 @@ export async function queryAnchorSeqDateData(searchVals: Array<string>) {
 export function mapPhiToPatientsData({
   patientsData,
   patientIdsTriplets,
-  anchorSeqDatesData,
+  anchorSeqDateData,
 }: {
   patientsData: DashboardPatient[];
   patientIdsTriplets: Array<PatientIdsTriplet>;
-  anchorSeqDatesData: Array<AnchorSeqDateData>;
+  anchorSeqDateData: Array<AnchorSeqDateData>;
 }): Array<DashboardPatient> {
   // Create maps for quick lookup of MRN by either CMO or DMP Patient ID
   const mrnByCmoPatientIdMap: Record<string, string> = {};
@@ -264,7 +264,7 @@ export function mapPhiToPatientsData({
     string,
     Record<string, string>
   > = {};
-  anchorSeqDatesData.forEach((record) => {
+  anchorSeqDateData.forEach((record) => {
     if (record.ANCHOR_SEQUENCING_DATE) {
       if (record.MRN) {
         anchorSeqDateDataByMrnMap[record.MRN] = {
