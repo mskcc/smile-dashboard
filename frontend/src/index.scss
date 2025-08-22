@@ -150,3 +150,20 @@ $standardMargin: 10px;
 .popupTableHeight {
   height: calc(100vh - 270px);
 }
+
+// Enable the use of new lines (`\n`) in column headers
+// https://stackoverflow.com/a/57214867
+.ag-header-cell-label .ag-header-cell-text {
+  white-space: pre-wrap !important;
+}
+
+// Prevent column header icons from shrinking when the column width is too small
+.ag-header-cell svg {
+  min-width: 16px;
+  min-height: 16px;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  vertical-align: middle;
+  display: inline-block;
+}
