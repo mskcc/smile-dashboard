@@ -40,7 +40,6 @@ const defaultColDef: ColDef = {
   resizable: true,
   editable: false,
   headerComponentParams: createCustomHeader(lockIcon),
-  valueFormatter: (params) => (params.value === "null" ? "" : params.value),
   tooltipValueGetter: (params: ITooltipParams) => getTooltipValue(params),
 };
 
