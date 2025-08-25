@@ -567,7 +567,7 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerTooltip:
       "Indicates whether MAF generation was successful. Valid for tumor samples only. For the MSK WES Repository cohort we only included samples with a MAF Complete Status of 'Pass' as well as QC Complete Result of 'Pass' or 'Warn'",
     headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
-    width: 270,
+    width: 285,
     wrapHeaderText: true,
   },
   {

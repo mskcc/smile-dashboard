@@ -159,11 +159,5 @@ $standardMargin: 10px;
 
 // Prevent column header icons from shrinking when the column width is too small
 .ag-header-cell svg {
-  min-width: 16px;
-  min-height: 16px;
-  width: 16px !important;
-  height: 16px !important;
-  flex-shrink: 0 !important;
-  vertical-align: middle;
-  display: inline-block;
+  flex-shrink: 0;
 }
