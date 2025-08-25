@@ -35,12 +35,21 @@ function getTooltipValue(params: ITooltipParams) {
   }
 }
 
+export function AgGridCustomTooltip(props: ITooltipParams) {
+  return (
+    <div className="ag-custom-tooltip">
+      <span>{props.value}</span>
+    </div>
+  );
+}
+
 const defaultColDef: ColDef = {
   sortable: true,
   resizable: true,
   editable: false,
   headerComponentParams: createCustomHeader(lockIcon),
   tooltipValueGetter: (params: ITooltipParams) => getTooltipValue(params),
+  tooltipComponent: AgGridCustomTooltip,
 };
 
 interface EditableGridProps {

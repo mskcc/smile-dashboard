@@ -100,12 +100,17 @@ $standardMargin: 10px;
   min-width: 100%;
 }
 
-.tooltip-styles {
-  background-color: #f8f8f8;
-  font-size: large;
-  padding: 12px;
-  border: 1px solid rgb(198, 197, 214);
+.ag-custom-tooltip {
+  padding: 6px;
+  background-color: white;
+  border: 1px solid lightgray;
+  max-width: 300px;
   border-radius: 4px;
+
+  span {
+    color: black;
+    font-size: 12px;
+  }
 }
 
 .ag-rich-select-list {
