@@ -563,11 +563,11 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   },
   {
     field: "mafCompleteStatus",
-    headerName: "MAF Complete Status \n(Data Eligible for Sharing)",
+    headerName: "MAF Complete Status (Data Eligible for Sharing)",
     headerTooltip:
       "Indicates whether MAF generation was successful. Valid for tumor samples only. For the MSK WES Repository cohort we only included samples with a MAF Complete Status of 'Pass' as well as QC Complete Result of 'Pass' or 'Warn'",
     headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
-    width: 285,
+    width: 280,
     wrapHeaderText: true,
   },
   {
