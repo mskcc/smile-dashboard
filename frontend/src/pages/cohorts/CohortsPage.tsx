@@ -95,6 +95,8 @@ export function CohortsPage() {
         gridRef={gridRef}
         colDefs={cohortColDefs}
         refreshData={refreshData}
+        selectedRowIds={[]}
+        onSelectionChanged={() => {}}
       />
 
       {hasParams && (

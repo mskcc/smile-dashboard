@@ -59,6 +59,17 @@ export function SamplesPage() {
     recordContexts,
     pollInterval: POLL_INTERVAL,
   });
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
+
+  // Callback for selection change
+  const handleSelectionChanged = (ids: string[]) => {
+    console.log("Selection Changed Event:", ids);
+    // const selectedNodes = event.api.getSelectedNodes();
+    // const ids = selectedNodes.map((node: any) => node.data?.primaryId);
+    setSelectedRowIds(ids);
+    // You can also call another function or pass these IDs up as needed
+    console.log("Selected Row IDs:", ids);
+  };
 
   const { changes, cellChangesHandlers, handleCellEditRequest, handlePaste } =
     useCellChanges({
@@ -151,7 +162,6 @@ export function SamplesPage() {
           />
         </Col>
       </Toolbar>
-
       <DataGrid
         gridRef={gridRef}
         colDefs={colDefs}
@@ -159,6 +169,8 @@ export function SamplesPage() {
         changes={changes}
         handleCellEditRequest={handleCellEditRequest}
         handlePaste={handlePaste}
+        selectedRowIds={selectedRowIds}
+        onSelectionChanged={handleSelectionChanged}
       />
 
       {isDownloading && <DownloadModal />}

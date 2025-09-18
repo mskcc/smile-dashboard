@@ -87,6 +87,8 @@ export function RequestsPage() {
         gridRef={gridRef}
         colDefs={requestColDefs}
         refreshData={refreshData}
+        selectedRowIds={[]}
+        onSelectionChanged={() => {}}
       />
 
       {hasParams && (

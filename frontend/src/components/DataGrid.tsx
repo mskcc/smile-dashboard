@@ -1,6 +1,6 @@
 import { AgGridReact } from "ag-grid-react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
-import { RefObject, ClipboardEvent } from "react";
+import { RefObject, ClipboardEvent, useState, useEffect } from "react";
 import {
   CellEditRequestEvent,
   ColDef,
@@ -68,6 +68,8 @@ interface DataGridPropsBase {
   gridRef: RefObject<AgGridReactType<any>>;
   colDefs: Array<ColDef<any>>;
   refreshData: () => void;
+  selectedRowIds: string[];
+  onSelectionChanged: (ids: string[]) => void;
 }
 
 type DataGridProps = DataGridPropsBase &
@@ -81,8 +83,27 @@ export function DataGrid({
   changes,
   handleCellEditRequest,
   handlePaste,
+  selectedRowIds,
+  onSelectionChanged,
 }: DataGridProps) {
   const navigate = useNavigate();
+
+  // Restore selection after data changes
+  useEffect(() => {
+    if (gridRef.current && gridRef.current.api && selectedRowIds.length > 0) {
+      gridRef.current.api.forEachNode((node: any) => {
+        node.setSelected(selectedRowIds.includes(node.data?.primaryId));
+      });
+    }
+  }, [selectedRowIds, gridRef, colDefs]);
+
+  // Callback for selection change
+  const handleGridSelectionChanged = (event: any) => {
+    const selectedNodes = event.api.getSelectedNodes();
+    const ids = selectedNodes.map((node: any) => node.data?.primaryId);
+    onSelectionChanged(ids);
+  };
+
   return (
     <div className="ag-theme-alpine flex-grow-1" onPaste={handlePaste}>
       <AgGridReact
@@ -109,6 +130,8 @@ export function DataGrid({
         tooltipHideDelay={60000}
         tooltipMouseTrack={true}
         suppressClipboardPaste={true}
+        rowSelection="multiple"
+        onSelectionChanged={handleGridSelectionChanged}
       />
     </div>
   );
