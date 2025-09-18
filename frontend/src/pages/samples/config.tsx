@@ -402,6 +402,16 @@ const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
 
 export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
+    headerName: "Select",
+    field: "selected",
+    checkboxSelection: true,
+    headerTooltip: "Select samples to build a cohort",
+    sortable: false,
+    hide: true,
+    width: 120,
+    headerComponentParams: createCustomHeader(""),
+  },
+  {
     field: "primaryId",
     headerName: "Primary ID",
   },

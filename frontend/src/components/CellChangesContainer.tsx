@@ -1,5 +1,5 @@
 import { Button, Modal } from "react-bootstrap";
-import { AgGridReact } from "ag-grid-react/lib/agGridReact";
+import { AgGridReact } from "ag-grid-react";
 import { SampleChange } from "../types/shared";
 import { Dispatch, SetStateAction } from "react";
 

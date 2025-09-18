@@ -11,10 +11,10 @@ export function LoginSuccessPage() {
       window.onload = () => {
         setTimeout(() => {
           window.close();
-        }, 1000);
+        }, 0);
       };
     }
   }, []);
 
-  return <p>You are logged in. :)</p>;
+  return <></>;
 }
