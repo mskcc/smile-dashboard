@@ -116,7 +116,13 @@ export function PatientsPage() {
         </Col>
       </Toolbar>
 
-      <DataGrid gridRef={gridRef} colDefs={colDefs} refreshData={refreshData} />
+      <DataGrid
+        gridRef={gridRef}
+        colDefs={colDefs}
+        refreshData={refreshData}
+        selectedRowIds={[]}
+        onSelectionChanged={() => {}}
+      />
 
       {hasParams && (
         <SamplesModal

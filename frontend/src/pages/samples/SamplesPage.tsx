@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataGrid } from "../../components/DataGrid";
-import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
+import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import { useFetchData } from "../../hooks/useFetchData";
 import {
   DashboardSample,
@@ -15,7 +15,7 @@ import {
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
 } from "./config";
-import { Col } from "react-bootstrap";
+import { Button, Col } from "react-bootstrap";
 import { FilterButtons } from "../../components/FilterButtons";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { DownloadButton } from "../../components/DownloadButton";
@@ -27,6 +27,11 @@ import { useCellChanges } from "../../hooks/useCellChanges";
 import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { POLL_INTERVAL } from "../../configs/shared";
+import {
+  CohortBuilderContainer,
+  CohortBuilderSample,
+} from "../../components/CohortBuilderContainer";
+import { NoteAddOutlined } from "@material-ui/icons";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -59,6 +64,21 @@ export function SamplesPage() {
     recordContexts,
     pollInterval: POLL_INTERVAL,
   });
+  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
+    []
+  );
+  const [showSelectedPopup, setShowSelectedPopup] = useState(false);
+  const [disableCohortBuildling, setDisableCohortBuildling] = useState(true);
+
+  useEffect(() => {
+    if (gridRef.current && gridRef.current.columnApi) {
+      if (showSelectedPopup && !disableCohortBuildling) {
+        gridRef.current.columnApi.setColumnsVisible(["selected"], true);
+      } else {
+        gridRef.current.columnApi.setColumnsVisible(["selected"], false);
+      }
+    }
+  }, [gridRef, colDefs, showSelectedPopup, disableCohortBuildling]);
 
   const { changes, cellChangesHandlers, handleCellEditRequest, handlePaste } =
     useCellChanges({
@@ -85,6 +105,12 @@ export function SamplesPage() {
   });
 
   function handleFilterButtonClick(filterButtonLabel: string) {
+    if (filterButtonLabel === "WES") {
+      setDisableCohortBuildling(false);
+    } else {
+      setDisableCohortBuildling(true);
+    }
+
     const selectedFilterButtonOption = filterButtonOptions.find(
       (option) => option.label === filterButtonLabel
     );
@@ -145,13 +171,20 @@ export function SamplesPage() {
         </Col>
 
         <Col className="text-end">
+          <Button
+            style={{ marginRight: 5, border: "none", padding: 3 }}
+            onClick={() => setShowSelectedPopup(true)}
+            title="Build new cohort for TEMPO processing"
+            disabled={disableCohortBuildling}
+          >
+            <NoteAddOutlined />
+          </Button>
           <DownloadButton
             downloadOptions={downloadOptions}
             onDownload={handleDownload}
           />
         </Col>
       </Toolbar>
-
       <DataGrid
         gridRef={gridRef}
         colDefs={colDefs}
@@ -159,9 +192,19 @@ export function SamplesPage() {
         changes={changes}
         handleCellEditRequest={handleCellEditRequest}
         handlePaste={handlePaste}
+        selectedRowIds={selectedRowIds}
+        onSelectionChanged={setSelectedRowIds}
       />
 
       {isDownloading && <DownloadModal />}
+      <br />
+      {showSelectedPopup && (
+        <CohortBuilderContainer
+          selectedRowIds={selectedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+          setShowSelectedPopup={setShowSelectedPopup}
+        />
+      )}
     </DataGridLayout>
   );
 }
