@@ -90,11 +90,13 @@ export function DataGrid({
 
   // Restore selection after data changes
   useEffect(() => {
-    if (gridRef.current && gridRef.current.api && selectedRowIds.length > 0) {
+    if (gridRef.current && gridRef.current.api) {
+      console.log("Restoring selection for IDs:", selectedRowIds);
       gridRef.current.api.forEachNode((node: any) => {
         node.setSelected(selectedRowIds.includes(node.data?.primaryId));
       });
     }
+    console.log("Calling inside of useEffect");
   }, [selectedRowIds, gridRef, colDefs]);
 
   // Callback for selection change
@@ -130,7 +132,9 @@ export function DataGrid({
         tooltipHideDelay={60000}
         tooltipMouseTrack={true}
         suppressClipboardPaste={true}
+        // these props are for checkbox selection
         rowSelection="multiple"
+        suppressRowClickSelection={true}
         onSelectionChanged={handleGridSelectionChanged}
       />
     </div>

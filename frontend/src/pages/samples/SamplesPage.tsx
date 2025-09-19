@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { DataGrid } from "../../components/DataGrid";
-import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
+import { AgGridReact } from "ag-grid-react";
+import type { AgGridReact as AgGridReactType } from "ag-grid-react";
 import { useFetchData } from "../../hooks/useFetchData";
 import {
   DashboardSample,
@@ -15,7 +16,7 @@ import {
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
 } from "./config";
-import { Col } from "react-bootstrap";
+import { Button, Col, Container, Modal } from "react-bootstrap";
 import { FilterButtons } from "../../components/FilterButtons";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { DownloadButton } from "../../components/DownloadButton";
@@ -27,6 +28,7 @@ import { useCellChanges } from "../../hooks/useCellChanges";
 import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { POLL_INTERVAL } from "../../configs/shared";
+import { PopupWindow } from "../../components/PopupWindow";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -60,6 +62,8 @@ export function SamplesPage() {
     pollInterval: POLL_INTERVAL,
   });
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
+  const [showSelectedPopup, setShowSelectedPopup] = useState(false);
+  const [isSelectedPopupClosed, setIsSelectedPopupClosed] = useState(false);
 
   // Callback for selection change
   const handleSelectionChanged = (ids: string[]) => {
@@ -67,6 +71,11 @@ export function SamplesPage() {
     // const selectedNodes = event.api.getSelectedNodes();
     // const ids = selectedNodes.map((node: any) => node.data?.primaryId);
     setSelectedRowIds(ids);
+    // setShowSelectedPopup(ids.length > 0); // Show popup if any rows are selected
+    if (isSelectedPopupClosed && ids.length > 0) {
+      setIsSelectedPopupClosed(false);
+    }
+
     // You can also call another function or pass these IDs up as needed
     console.log("Selected Row IDs:", ids);
   };
@@ -174,6 +183,74 @@ export function SamplesPage() {
       />
 
       {isDownloading && <DownloadModal />}
+
+      {/* Popup for selected IDs */}
+      {/* <Modal 
+        show={!isSelectedPopupClosed}
+        onHide={() => setIsSelectedPopupClosed(true)}
+        backdrop={false}
+        keyboard={true}
+
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Selected Row IDs</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedRowIds.length === 0 ? (
+            <div>No rows selected.</div>
+          ) : (
+            <ul>
+              {selectedRowIds.map((id) => (
+                <li key={id}>{id}</li>
+              ))}
+            </ul>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setIsSelectedPopupClosed(true)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
+      <br />
+      {/* Popup for selected IDs in a separate window */}
+      {!isSelectedPopupClosed && selectedRowIds.length > 0 && (
+        <Container
+          className="d-flex flex-column align-items-center gap-3"
+          style={{
+            border: "1px solid #ccc",
+            padding: "10px",
+            borderRadius: "5px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          {/* <div className="d-flex align-items-center gap-1" style={{ padding: 20 }}> */}
+          {/* <h4>Selected Row IDs</h4> */}
+          {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
+          <AgGridReact
+            columnDefs={[
+              {
+                headerName: "primaryId",
+                field: "primaryId",
+                sortable: true,
+                filter: true,
+              },
+            ]}
+            rowData={selectedRowIds.map((id) => ({ primaryId: id }))}
+          />
+          {/* </div> */}
+          <Button
+            variant="secondary"
+            onClick={() => setIsSelectedPopupClosed(true)}
+          >
+            Close
+          </Button>
+        </Container>
+      )}
     </DataGridLayout>
   );
+}
+
+export interface CohortBuilderSample {
+  primaryId: string;
 }

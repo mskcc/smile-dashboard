@@ -406,10 +406,9 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerName: "Select",
     field: "selected",
     checkboxSelection: true,
-    headerCheckboxSelectionFilteredOnly: true,
+    headerCheckboxSelection: true,
     headerTooltip: "Select samples to build a cohort",
     sortable: false,
-    width: 100,
   },
   {
     field: "primaryId",
@@ -806,7 +805,6 @@ const editableSampleFields = new Set([
   "custodianInformation",
   "accessLevel",
   "dbGapStudy",
-  "selected",
 ]);
 
 const editableWesSampleFields = new Set([
@@ -814,6 +812,7 @@ const editableWesSampleFields = new Set([
   "costCenter",
   "custodianInformation",
   "accessLevel",
+  "selected",
 ]);
 
 export const allEditableFields = new Set(
@@ -828,9 +827,6 @@ export function setupEditableSampleFields(
   editableFieldsList: Set<string>
 ) {
   samplesColDefs.forEach((colDef) => {
-    if (colDef.field === "selected") {
-      console.log("\nselected colDef info: ", colDef);
-    }
     const newClassRule = {
       unsubmittedChange: (params: CellClassParams) => {
         const changes: Array<SampleChange> = params.context?.getChanges();
