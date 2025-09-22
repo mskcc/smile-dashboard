@@ -216,7 +216,7 @@ export function SamplesPage() {
       {/* Popup for selected IDs in a separate window */}
       {!isSelectedPopupClosed && selectedRowIds.length > 0 && (
         <Container
-          className="d-flex flex-column align-items-center gap-3"
+          className="ag-theme-alpine flex-grow-1"
           style={{
             border: "1px solid #ccc",
             padding: "10px",
@@ -238,7 +238,7 @@ export function SamplesPage() {
             ]}
             rowData={selectedRowIds.map((id) => ({ primaryId: id }))}
           />
-          {/* </div> */}
+          <br />
           <Button
             variant="secondary"
             onClick={() => setIsSelectedPopupClosed(true)}
