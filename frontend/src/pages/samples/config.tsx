@@ -35,6 +35,15 @@ import {
 import { DownloadOption } from "../../hooks/useDownload";
 import { Checkbox } from "@material-ui/core";
 
+const SAMPLE_SELECT_COL_DEF = {
+  headerName: "Select",
+  field: "selected",
+  checkboxSelection: true,
+  // headerCheckboxSelection: true, // doesnt work with server side model
+  headerTooltip: "Select samples to build a cohort",
+  sortable: false,
+};
+
 const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   {
     fieldName: "genePanel",
@@ -87,6 +96,7 @@ const ACCESS_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
 ];
 
 export const sampleColDefs: Array<ColDef<DashboardSample>> = [
+  SAMPLE_SELECT_COL_DEF,
   {
     field: "primaryId",
     headerName: "Primary ID",
@@ -402,14 +412,7 @@ const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
 ];
 
 export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
-  {
-    headerName: "Select",
-    field: "selected",
-    checkboxSelection: true,
-    headerCheckboxSelection: true,
-    headerTooltip: "Select samples to build a cohort",
-    sortable: false,
-  },
+  SAMPLE_SELECT_COL_DEF,
   {
     field: "primaryId",
     headerName: "Primary ID",

@@ -16,7 +16,7 @@ import {
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
 } from "./config";
-import { Button, Col, Container, Modal } from "react-bootstrap";
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { FilterButtons } from "../../components/FilterButtons";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { DownloadButton } from "../../components/DownloadButton";
@@ -29,6 +29,7 @@ import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { POLL_INTERVAL } from "../../configs/shared";
 import { PopupWindow } from "../../components/PopupWindow";
+import { CohortBuilderContainer } from "../../components/CohortBuilderContainer";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -214,43 +215,64 @@ export function SamplesPage() {
       </Modal> */}
       <br />
       {/* Popup for selected IDs in a separate window */}
+      {/* {!isSelectedPopupClosed &&
+        selectedRowIds.length > 0 &&
+        makeCohortBuilder(selectedRowIds, setIsSelectedPopupClosed)} */}
+
       {!isSelectedPopupClosed && selectedRowIds.length > 0 && (
-        <Container
-          className="ag-theme-alpine flex-grow-1"
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            borderRadius: "5px",
-            backgroundColor: "#f9f9f9",
-          }}
-        >
-          {/* <div className="d-flex align-items-center gap-1" style={{ padding: 20 }}> */}
-          {/* <h4>Selected Row IDs</h4> */}
-          {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
-          <AgGridReact
-            columnDefs={[
-              {
-                headerName: "primaryId",
-                field: "primaryId",
-                sortable: true,
-                filter: true,
-              },
-            ]}
-            rowData={selectedRowIds.map((id) => ({ primaryId: id }))}
-          />
-          <br />
-          <Button
-            variant="secondary"
-            onClick={() => setIsSelectedPopupClosed(true)}
-          >
-            Close
-          </Button>
-        </Container>
+        <CohortBuilderContainer selectedRowIds={selectedRowIds} />
       )}
     </DataGridLayout>
   );
 }
 
-export interface CohortBuilderSample {
-  primaryId: string;
-}
+// export interface CohortBuilderSample {
+//   primaryId: string;
+// }
+
+// function makeCohortBuilder(
+//   selectedRowIds: string[],
+//   setIsSelectedPopupClosed: (value: boolean) => void
+// ) {
+//   return <Container
+//     className="ag-theme-alpine flex-grow-1"
+//     style={{
+//       border: "1px solid #ccc",
+//       padding: "10px",
+//       borderRadius: "5px",
+//       backgroundColor: "#f9f9f9",
+//     }}
+//   >
+//     <Row className="d-flex align-items-center justify-content-left my-2" style={{ padding: "10px" }}>
+//       <Form.Control
+//         type="search"
+//         className="d-inline-block"
+//         style={{ width: "300px", padding: "10px" }}
+//         size="sm"
+//         placeholder={`Project title`}
+//         aria-label="Project title"
+//         value={""}
+//         onChange={(e: { currentTarget: { value: any; }; }) => {
+//           const currentValue = e.currentTarget.value;
+//         } } /></Row>
+//     <br />
+//     {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
+//     <AgGridReact
+//       columnDefs={[
+//         {
+//           headerName: "primaryId",
+//           field: "primaryId",
+//           sortable: true,
+//           filter: true,
+//         },
+//       ]}
+//       rowData={selectedRowIds.map((id) => ({ primaryId: id }))} />
+//     <br />
+//     <Button
+//       variant="secondary"
+//       onClick={() => setIsSelectedPopupClosed(true)}
+//     >
+//       Close
+//     </Button>
+//   </Container>;
+// }
