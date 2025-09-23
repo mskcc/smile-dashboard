@@ -3,8 +3,10 @@ import { AgGridReact } from "ag-grid-react";
 import React, { useState } from "react";
 
 interface CohortBuilderContainerProps {
-  selectedRowIds: string[];
-  setSelectedRowIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedRowIds: CohortBuilderSample[];
+  setSelectedRowIds?: React.Dispatch<
+    React.SetStateAction<CohortBuilderSample[]>
+  >;
   showSelectedPopup: boolean;
   setShowSelectedPopup: React.Dispatch<React.SetStateAction<boolean>>;
   // gridRef: React.RefObject<AgGridReact<any>>;
@@ -23,6 +25,8 @@ export interface CohortBuilderFormMetadata {
 
 export interface CohortBuilderSample {
   primaryId: string;
+  cmoSampleName: string;
+  sampleCohortIds: string;
 }
 
 const cohortBuilderColDefs = [
@@ -31,6 +35,14 @@ const cohortBuilderColDefs = [
     field: "primaryId",
     sortable: true,
     filter: true,
+  },
+  {
+    headerName: "cmoSampleName",
+    field: "cmoSampleName",
+  },
+  {
+    headerName: "sampleCohortIds",
+    field: "sampleCohortIds",
   },
 ];
 
@@ -94,7 +106,18 @@ export function CohortBuilderContainer({
       setSelectedRowIds([]);
     }
   }
-  const formattedRowData = selectedRowIds.map((id) => ({ primaryId: id }));
+  const formattedRowData = selectedRowIds.map((v) => ({
+    primaryId: v.primaryId,
+    cmoSampleName: v.cmoSampleName,
+    sampleCohortIds: v.sampleCohortIds,
+  }));
+  const cohortBuilderData: CohortBuilderFormMetadata = {
+    endusers: [],
+    pmUsers: [],
+    projectTitle: "",
+    projectSubtitle: "",
+    cohortBuilderSamples: [],
+  };
 
   return (
     <Container

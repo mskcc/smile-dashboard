@@ -28,8 +28,10 @@ import { useCellChanges } from "../../hooks/useCellChanges";
 import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { POLL_INTERVAL } from "../../configs/shared";
-import { PopupWindow } from "../../components/PopupWindow";
-import { CohortBuilderContainer } from "../../components/CohortBuilderContainer";
+import {
+  CohortBuilderContainer,
+  CohortBuilderSample,
+} from "../../components/CohortBuilderContainer";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -62,18 +64,15 @@ export function SamplesPage() {
     recordContexts,
     pollInterval: POLL_INTERVAL,
   });
-  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
+    []
+  );
   const [showSelectedPopup, setShowSelectedPopup] = useState(false);
-  // const [isSelectedPopupClosed, setIsSelectedPopupClosed] = useState(false);
 
   // Callback for selection change
-  const handleSelectionChanged = (ids: string[]) => {
-    console.log("Selection Changed Event:", ids);
-    // const selectedNodes = event.api.getSelectedNodes();
-    // const ids = selectedNodes.map((node: any) => node.data?.primaryId);
+  const handleSelectionChanged = (ids: CohortBuilderSample[]) => {
     setSelectedRowIds(ids);
-    // setShowSelectedPopup(ids.length > 0); // Show popup if any rows are selected
-    if (showSelectedPopup && ids.length > 0) {
+    if (!showSelectedPopup && ids.length > 0) {
       setShowSelectedPopup(true);
     }
 
@@ -185,41 +184,7 @@ export function SamplesPage() {
 
       {isDownloading && <DownloadModal />}
 
-      {/* Popup for selected IDs */}
-      {/* <Modal 
-        show={!isSelectedPopupClosed}
-        onHide={() => setIsSelectedPopupClosed(true)}
-        backdrop={false}
-        keyboard={true}
-
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Selected Row IDs</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedRowIds.length === 0 ? (
-            <div>No rows selected.</div>
-          ) : (
-            <ul>
-              {selectedRowIds.map((id) => (
-                <li key={id}>{id}</li>
-              ))}
-            </ul>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsSelectedPopupClosed(true)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
-      <br />
-      {/* Popup for selected IDs in a separate window */}
-      {/* {!isSelectedPopupClosed &&
-        selectedRowIds.length > 0 &&
-        makeCohortBuilder(selectedRowIds, setIsSelectedPopupClosed)} */}
-
-      {!showSelectedPopup && selectedRowIds.length > 0 && (
+      {selectedRowIds.length > 0 && (
         <CohortBuilderContainer
           selectedRowIds={selectedRowIds}
           setSelectedRowIds={setSelectedRowIds}
@@ -230,54 +195,3 @@ export function SamplesPage() {
     </DataGridLayout>
   );
 }
-
-// export interface CohortBuilderSample {
-//   primaryId: string;
-// }
-
-// function makeCohortBuilder(
-//   selectedRowIds: string[],
-//   setIsSelectedPopupClosed: (value: boolean) => void
-// ) {
-//   return <Container
-//     className="ag-theme-alpine flex-grow-1"
-//     style={{
-//       border: "1px solid #ccc",
-//       padding: "10px",
-//       borderRadius: "5px",
-//       backgroundColor: "#f9f9f9",
-//     }}
-//   >
-//     <Row className="d-flex align-items-center justify-content-left my-2" style={{ padding: "10px" }}>
-//       <Form.Control
-//         type="search"
-//         className="d-inline-block"
-//         style={{ width: "300px", padding: "10px" }}
-//         size="sm"
-//         placeholder={`Project title`}
-//         aria-label="Project title"
-//         value={""}
-//         onChange={(e: { currentTarget: { value: any; }; }) => {
-//           const currentValue = e.currentTarget.value;
-//         } } /></Row>
-//     <br />
-//     {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
-//     <AgGridReact
-//       columnDefs={[
-//         {
-//           headerName: "primaryId",
-//           field: "primaryId",
-//           sortable: true,
-//           filter: true,
-//         },
-//       ]}
-//       rowData={selectedRowIds.map((id) => ({ primaryId: id }))} />
-//     <br />
-//     <Button
-//       variant="secondary"
-//       onClick={() => setIsSelectedPopupClosed(true)}
-//     >
-//       Close
-//     </Button>
-//   </Container>;
-// }

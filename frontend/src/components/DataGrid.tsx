@@ -11,6 +11,7 @@ import { createCustomHeader, lockIcon } from "../configs/gridIcons";
 import { SampleChange } from "../types/shared";
 import { CACHE_BLOCK_SIZE } from "../configs/shared";
 import { allEditableFields } from "../pages/samples/config";
+import { CohortBuilderSample } from "./CohortBuilderContainer";
 
 function getTooltipValue(params: ITooltipParams) {
   if (!params.colDef || !("field" in params.colDef)) return undefined;
@@ -68,8 +69,8 @@ interface DataGridPropsBase {
   gridRef: RefObject<AgGridReactType<any>>;
   colDefs: Array<ColDef<any>>;
   refreshData: () => void;
-  selectedRowIds: string[];
-  onSelectionChanged: (ids: string[]) => void;
+  selectedRowIds: CohortBuilderSample[];
+  onSelectionChanged: (ids: CohortBuilderSample[]) => void;
 }
 
 type DataGridProps = DataGridPropsBase &
@@ -92,18 +93,24 @@ export function DataGrid({
   useEffect(() => {
     if (gridRef.current && gridRef.current.api) {
       console.log("Restoring selection for IDs:", selectedRowIds);
+      const primaryIds = selectedRowIds.map((item) => item.primaryId);
       gridRef.current.api.forEachNode((node: any) => {
-        node.setSelected(selectedRowIds.includes(node.data?.primaryId));
+        node.setSelected(primaryIds.includes(node.data?.primaryId));
       });
     }
-    console.log("Calling inside of useEffect");
   }, [selectedRowIds, gridRef, colDefs]);
 
   // Callback for selection change
   const handleGridSelectionChanged = (event: any) => {
     const selectedNodes = event.api.getSelectedNodes();
-    const ids = selectedNodes.map((node: any) => node.data?.primaryId);
-    onSelectionChanged(ids);
+    const ids = selectedNodes.map((node: any) => {
+      return {
+        primaryId: node.data?.primaryId,
+        cmoSampleName: node.data?.cmoSampleName,
+        sampleCohortIds: node.data?.sampleCohortIds,
+      };
+    });
+    onSelectionChanged(ids); // on selection change also affects the visibility of the table
   };
 
   return (
