@@ -64,7 +64,7 @@ export function SamplesPage() {
   });
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
   const [showSelectedPopup, setShowSelectedPopup] = useState(false);
-  const [isSelectedPopupClosed, setIsSelectedPopupClosed] = useState(false);
+  // const [isSelectedPopupClosed, setIsSelectedPopupClosed] = useState(false);
 
   // Callback for selection change
   const handleSelectionChanged = (ids: string[]) => {
@@ -73,8 +73,8 @@ export function SamplesPage() {
     // const ids = selectedNodes.map((node: any) => node.data?.primaryId);
     setSelectedRowIds(ids);
     // setShowSelectedPopup(ids.length > 0); // Show popup if any rows are selected
-    if (isSelectedPopupClosed && ids.length > 0) {
-      setIsSelectedPopupClosed(false);
+    if (showSelectedPopup && ids.length > 0) {
+      setShowSelectedPopup(true);
     }
 
     // You can also call another function or pass these IDs up as needed
@@ -219,8 +219,13 @@ export function SamplesPage() {
         selectedRowIds.length > 0 &&
         makeCohortBuilder(selectedRowIds, setIsSelectedPopupClosed)} */}
 
-      {!isSelectedPopupClosed && selectedRowIds.length > 0 && (
-        <CohortBuilderContainer selectedRowIds={selectedRowIds} />
+      {!showSelectedPopup && selectedRowIds.length > 0 && (
+        <CohortBuilderContainer
+          selectedRowIds={selectedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+          showSelectedPopup={showSelectedPopup}
+          setShowSelectedPopup={setShowSelectedPopup}
+        />
       )}
     </DataGridLayout>
   );

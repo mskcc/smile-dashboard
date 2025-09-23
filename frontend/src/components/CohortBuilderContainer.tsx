@@ -4,6 +4,9 @@ import React, { useState } from "react";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: string[];
+  setSelectedRowIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  showSelectedPopup: boolean;
+  setShowSelectedPopup: React.Dispatch<React.SetStateAction<boolean>>;
   // gridRef: React.RefObject<AgGridReact<any>>;
   // showCohortBuilder: boolean;
   // setShowCohortBuilder: React.Dispatch<React.SetStateAction<boolean>>;
@@ -81,9 +84,16 @@ const cohortBuilderColDefs = [
 
 export function CohortBuilderContainer({
   selectedRowIds,
+  setSelectedRowIds,
+  showSelectedPopup,
+  setShowSelectedPopup,
 }: CohortBuilderContainerProps) {
-  const [isSelectedPopupClosed, setIsSelectedPopupClosed] = useState(true);
-
+  function handleCohortBuilderClose() {
+    setShowSelectedPopup(true);
+    if (setSelectedRowIds) {
+      setSelectedRowIds([]);
+    }
+  }
   const formattedRowData = selectedRowIds.map((id) => ({ primaryId: id }));
 
   return (
@@ -93,6 +103,7 @@ export function CohortBuilderContainer({
         border: "1px solid #ccc",
         borderRadius: "5px",
         backgroundColor: "#f9f9f9",
+        height: "400px",
       }}
     >
       <Row
@@ -120,10 +131,7 @@ export function CohortBuilderContainer({
         rowData={formattedRowData}
       />
       <br />
-      <Button
-        variant="secondary"
-        onClick={() => setIsSelectedPopupClosed(true)}
-      >
+      <Button variant="secondary" onClick={handleCohortBuilderClose}>
         Close
       </Button>
     </Container>
