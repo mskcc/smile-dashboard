@@ -183,7 +183,7 @@ export function SamplesPage() {
       />
 
       {isDownloading && <DownloadModal />}
-
+      <br />
       {selectedRowIds.length > 0 && (
         <CohortBuilderContainer
           selectedRowIds={selectedRowIds}

@@ -9,10 +9,6 @@ interface CohortBuilderContainerProps {
   >;
   showSelectedPopup: boolean;
   setShowSelectedPopup: React.Dispatch<React.SetStateAction<boolean>>;
-  // gridRef: React.RefObject<AgGridReact<any>>;
-  // showCohortBuilder: boolean;
-  // setShowCohortBuilder: React.Dispatch<React.SetStateAction<boolean>>;
-  // handleAddToCohort: () => void;
 }
 
 export interface CohortBuilderFormMetadata {
@@ -46,54 +42,6 @@ const cohortBuilderColDefs = [
   },
 ];
 
-// export function makeCohortBuilder(
-//   selectedRowIds: string[],
-//   setIsSelectedPopupClosed: (value: boolean) => void
-// ) {
-//   return (
-//     <Container
-//       className="ag-theme-alpine flex-grow-1"
-//       style={{
-//         border: "1px solid #ccc",
-//         borderRadius: "5px",
-//         backgroundColor: "#f9f9f9",
-//       }}
-//     >
-//       <Row
-//         className="d-flex align-items-center justify-content-left my-2"
-//         style={{ padding: "10px" }}
-//       >
-//         <Form.Control
-//           type="search"
-//           className="d-inline-block"
-//           style={{ width: "300px", padding: "10px" }}
-//           size="sm"
-//           placeholder={`Project title`}
-//           aria-label="Project title"
-//           value={""}
-//           onChange={(e: { currentTarget: { value: any } }) => {
-//             const currentValue = e.currentTarget.value;
-//           }}
-//         />
-//       </Row>
-
-//       {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
-
-//       <AgGridReact
-//         columnDefs={cohortBuilderColDefs}
-//         rowData={selectedRowIds.map((id) => ({ primaryId: id }))}
-//       />
-//       <br />
-//       <Button
-//         variant="secondary"
-//         onClick={() => setIsSelectedPopupClosed(true)}
-//       >
-//         Close
-//       </Button>
-//     </Container>
-//   );
-// }
-
 export function CohortBuilderContainer({
   selectedRowIds,
   setSelectedRowIds,
@@ -111,13 +59,14 @@ export function CohortBuilderContainer({
     cmoSampleName: v.cmoSampleName,
     sampleCohortIds: v.sampleCohortIds,
   }));
-  const cohortBuilderData: CohortBuilderFormMetadata = {
-    endusers: [],
-    pmUsers: [],
-    projectTitle: "",
-    projectSubtitle: "",
-    cohortBuilderSamples: [],
-  };
+  const [cohortBuilderData, setCohortBuilderData] =
+    useState<CohortBuilderFormMetadata>({
+      endusers: [],
+      pmUsers: [],
+      projectTitle: "",
+      projectSubtitle: "",
+      cohortBuilderSamples: [],
+    });
 
   return (
     <Container
@@ -125,30 +74,106 @@ export function CohortBuilderContainer({
       style={{
         border: "1px solid #ccc",
         borderRadius: "5px",
+        padding: "10px",
         backgroundColor: "#f9f9f9",
         height: "400px",
       }}
     >
       <Row
-        className="d-flex align-items-center justify-content-left my-2"
-        style={{ padding: "10px" }}
+        className="d-flex align-items-center justify-content-left"
+        style={{ padding: "5px" }}
       >
-        <Form.Control
-          type="search"
-          className="d-inline-block"
-          style={{ width: "300px", padding: "10px" }}
-          size="sm"
-          placeholder={`Project title`}
-          aria-label="Project title"
-          value={""}
-          onChange={(e: { currentTarget: { value: any } }) => {
-            const currentValue = e.currentTarget.value;
-          }}
-        />
+        <label className="col-form-label">
+          {"Project title:  "}
+          <Form.Control
+            type="text"
+            className="d-inline-block"
+            style={{ width: "300px" }}
+            size="sm"
+            placeholder={`Project title`}
+            aria-label="Project title"
+            value={cohortBuilderData.projectTitle}
+            onChange={(e: { currentTarget: { value: any } }) => {
+              setCohortBuilderData({
+                ...cohortBuilderData,
+                projectTitle: e.currentTarget.value,
+              });
+            }}
+          />
+        </label>
+      </Row>
+      <Row
+        className="d-flex align-items-center justify-content-left"
+        style={{ padding: "5px" }}
+      >
+        <label className="col-form-label">
+          {"Project subtitle:  "}
+          <Form.Control
+            type="text"
+            className="d-inline-block"
+            style={{ width: "300px" }}
+            size="sm"
+            placeholder={`Project subtitle`}
+            aria-label="Project subtitle"
+            value={cohortBuilderData.projectSubtitle}
+            onChange={(e: { currentTarget: { value: any } }) => {
+              setCohortBuilderData({
+                ...cohortBuilderData,
+                projectSubtitle: e.currentTarget.value,
+              });
+            }}
+          />
+        </label>
+      </Row>
+      <Row
+        className="d-flex align-items-center justify-content-left"
+        style={{ padding: "5px" }}
+      >
+        <label className="col-form-label">
+          {"End users:  "}
+          <Form.Control
+            type="text"
+            className="d-inline-block"
+            style={{ width: "300px" }}
+            size="sm"
+            placeholder={`End users`}
+            aria-label="End users"
+            value={cohortBuilderData.endusers}
+            onChange={(e: { currentTarget: { value: any } }) => {
+              setCohortBuilderData({
+                ...cohortBuilderData,
+                endusers: e.currentTarget.value,
+              });
+            }}
+          />
+        </label>
+      </Row>
+      <Row
+        className="d-flex align-items-center justify-content-left"
+        style={{ padding: "5px" }}
+      >
+        <label className="col-form-label">
+          {"PM users:  "}
+          <Form.Control
+            type="text"
+            className="d-inline-block"
+            style={{ width: "300px" }}
+            size="sm"
+            placeholder={`PM users`}
+            aria-label="PM users"
+            value={cohortBuilderData.pmUsers}
+            onChange={(e: { currentTarget: { value: any } }) => {
+              setCohortBuilderData({
+                ...cohortBuilderData,
+                pmUsers: e.currentTarget.value,
+              });
+            }}
+          />
+        </label>
       </Row>
 
       {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
-
+      <br />
       <AgGridReact
         columnDefs={cohortBuilderColDefs}
         rowData={formattedRowData}
@@ -160,43 +185,3 @@ export function CohortBuilderContainer({
     </Container>
   );
 }
-
-// export function CohortBuilderContainer({
-//   gridRef,
-//   showCohortBuilder,
-//   setShowCohortBuilder,
-//   handleAddToCohort,
-// }: CohortBuilderContainerProps) {
-//   return (
-//     <>
-//       <Modal
-//         show={showCohortBuilder}
-//         onHide={() => setShowCohortBuilder(false)}
-//         size="lg"
-//       >
-//         <Modal.Header closeButton>
-//           <Modal.Title>Add Selected Samples to Cohort</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           <p>
-//             You have selected{" "}
-//             {gridRef.current?.api.getSelectedRows().length || 0} samples to add
-//             to a new cohort.
-//           </p>
-//           <p>Would you like to proceed?</p>
-//         </Modal.Body>
-//         <Modal.Footer>
-//           <Button
-//             variant="secondary"
-//             onClick={() => setShowCohortBuilder(false)}
-//           >
-//             Cancel
-//           </Button>
-//           <Button variant="primary" onClick={handleAddToCohort}>
-//             Add to Cohort
-//           </Button>
-//         </Modal.Footer>
-//       </Modal>
-//     </>
-//   );
-// }
