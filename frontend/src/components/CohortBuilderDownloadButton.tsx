@@ -1,4 +1,4 @@
-import { Button } from "react-bootstrap";
+import { Button, Toast, ToastContainer } from "react-bootstrap";
 import jsdownload from "js-file-download";
 import {
   CohortBuilderFormMetadata,
@@ -18,6 +18,8 @@ export function CohortBuilderDownloadButton({
   cohortSamples,
 }: CohortBuilderDownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [show, setShow] = useState(true);
+  const toggleShow = () => setShow(!show);
 
   function buildCohortFileContents(
     data: CohortBuilderFormMetadata,
@@ -34,6 +36,10 @@ export function CohortBuilderDownloadButton({
     return contents;
   }
 
+  function handleToastShow() {
+    setTimeout(() => setShow(true), 3000);
+  }
+
   function handleDownload() {
     setIsDownloading(true);
     const fileContents = buildCohortFileContents(
@@ -42,6 +48,7 @@ export function CohortBuilderDownloadButton({
     );
     jsdownload(fileContents, `${cohortBuilderData.cohortId}.cohort.txt`);
     setIsDownloading(false);
+    handleToastShow();
   }
 
   return (
@@ -68,6 +75,23 @@ export function CohortBuilderDownloadButton({
       >
         Deliver & Download New TEMPO Cohort
       </Button>
+      <ToastContainer position="bottom-end" className="p-3">
+        <Toast
+          show={show}
+          onClose={toggleShow}
+          delay={6000}
+          autohide
+          animation={true}
+        >
+          <Toast.Header>
+            <strong className="me-auto">Cohort Delivery Notification</strong>
+            <small>Just now</small>
+          </Toast.Header>
+          <Toast.Body>
+            Published cohort {cohortBuilderData.cohortId} to TEMPO.
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
     </>
   );
 }
