@@ -1,6 +1,7 @@
-import { Button, Container, Form, Modal, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
 import React, { useState } from "react";
+import { CohortBuilderDownloadButton } from "./CohortBuilderDownloadButton";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -12,11 +13,11 @@ interface CohortBuilderContainerProps {
 }
 
 export interface CohortBuilderFormMetadata {
-  endusers: string[];
+  cohortId: string;
+  endUsers: string[];
   pmUsers: string[];
   projectTitle: string;
   projectSubtitle: string;
-  cohortBuilderSamples: CohortBuilderSample[];
 }
 
 export interface CohortBuilderSample {
@@ -59,129 +60,189 @@ export function CohortBuilderContainer({
     cmoSampleName: v.cmoSampleName,
     sampleCohortIds: v.sampleCohortIds,
   }));
+
   const [cohortBuilderData, setCohortBuilderData] =
     useState<CohortBuilderFormMetadata>({
-      endusers: [],
+      cohortId: "",
+      endUsers: [],
       pmUsers: [],
       projectTitle: "",
       projectSubtitle: "",
-      cohortBuilderSamples: [],
     });
 
   return (
-    <Container
-      className="ag-theme-alpine flex-grow-1"
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "5px",
-        padding: "10px",
-        backgroundColor: "#f9f9f9",
-        height: "400px",
-      }}
-    >
-      <Row
-        className="d-flex align-items-center justify-content-left"
-        style={{ padding: "5px" }}
+    <div className="d-flex flex-column" style={{ height: "calc(15vh - 10px)" }}>
+      <Container
+        className="ag-theme-alpine flex-grow-1"
+        style={{
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+          backgroundColor: "#f9f9f9",
+        }}
       >
-        <label className="col-form-label">
-          {"Project title:  "}
-          <Form.Control
-            type="text"
-            className="d-inline-block"
-            style={{ width: "300px" }}
-            size="sm"
-            placeholder={`Project title`}
-            aria-label="Project title"
-            value={cohortBuilderData.projectTitle}
-            onChange={(e: { currentTarget: { value: any } }) => {
-              setCohortBuilderData({
-                ...cohortBuilderData,
-                projectTitle: e.currentTarget.value,
-              });
-            }}
-          />
-        </label>
-      </Row>
-      <Row
-        className="d-flex align-items-center justify-content-left"
-        style={{ padding: "5px" }}
-      >
-        <label className="col-form-label">
-          {"Project subtitle:  "}
-          <Form.Control
-            type="text"
-            className="d-inline-block"
-            style={{ width: "300px" }}
-            size="sm"
-            placeholder={`Project subtitle`}
-            aria-label="Project subtitle"
-            value={cohortBuilderData.projectSubtitle}
-            onChange={(e: { currentTarget: { value: any } }) => {
-              setCohortBuilderData({
-                ...cohortBuilderData,
-                projectSubtitle: e.currentTarget.value,
-              });
-            }}
-          />
-        </label>
-      </Row>
-      <Row
-        className="d-flex align-items-center justify-content-left"
-        style={{ padding: "5px" }}
-      >
-        <label className="col-form-label">
-          {"End users:  "}
-          <Form.Control
-            type="text"
-            className="d-inline-block"
-            style={{ width: "300px" }}
-            size="sm"
-            placeholder={`End users`}
-            aria-label="End users"
-            value={cohortBuilderData.endusers}
-            onChange={(e: { currentTarget: { value: any } }) => {
-              setCohortBuilderData({
-                ...cohortBuilderData,
-                endusers: e.currentTarget.value,
-              });
-            }}
-          />
-        </label>
-      </Row>
-      <Row
-        className="d-flex align-items-center justify-content-left"
-        style={{ padding: "5px" }}
-      >
-        <label className="col-form-label">
-          {"PM users:  "}
-          <Form.Control
-            type="text"
-            className="d-inline-block"
-            style={{ width: "300px" }}
-            size="sm"
-            placeholder={`PM users`}
-            aria-label="PM users"
-            value={cohortBuilderData.pmUsers}
-            onChange={(e: { currentTarget: { value: any } }) => {
-              setCohortBuilderData({
-                ...cohortBuilderData,
-                pmUsers: e.currentTarget.value,
-              });
-            }}
-          />
-        </label>
-      </Row>
+        {/* Eventually the cohort ID will be auto-assigned. This first form component will need to be changed to a read-only field */}
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label">
+              {"Cohort ID:  "}
+              <Form.Control
+                type="text"
+                className="d-inline-block"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`Cohort ID`}
+                aria-label="Cohort ID"
+                value={cohortBuilderData.cohortId}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setCohortBuilderData({
+                    ...cohortBuilderData,
+                    cohortId: e.currentTarget.value,
+                  });
+                }}
+              />
+            </label>
+          </Col>
+          <Col className="text-end">
+            <CohortBuilderDownloadButton
+              cohortBuilderData={cohortBuilderData}
+              cohortSamples={formattedRowData}
+            />
+          </Col>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label">
+              {"Project title:  "}
+              <Form.Control
+                type="text"
+                className="d-inline-block"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`Project title`}
+                aria-label="Project title"
+                value={cohortBuilderData.projectTitle}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setCohortBuilderData({
+                    ...cohortBuilderData,
+                    projectTitle: e.currentTarget.value,
+                  });
+                }}
+              />
+            </label>
+          </Col>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label">
+              {"Project subtitle:  "}
+              <Form.Control
+                type="text"
+                className="d-inline-block"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`Project subtitle`}
+                aria-label="Project subtitle"
+                value={cohortBuilderData.projectSubtitle}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setCohortBuilderData({
+                    ...cohortBuilderData,
+                    projectSubtitle: e.currentTarget.value,
+                  });
+                }}
+              />
+            </label>
+          </Col>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label">
+              {"End users:  "}
+              <Form.Control
+                type="text"
+                className="d-inline-block"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`End users`}
+                aria-label="End users"
+                value={cohortBuilderData.endUsers}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setCohortBuilderData({
+                    ...cohortBuilderData,
+                    endUsers: e.currentTarget.value,
+                  });
+                }}
+              />
+            </label>
+          </Col>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label">
+              {"PM users:  "}
+              <Form.Control
+                type="text"
+                className="d-inline-block"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`PM users`}
+                aria-label="PM users"
+                value={cohortBuilderData.pmUsers}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setCohortBuilderData({
+                    ...cohortBuilderData,
+                    pmUsers: e.currentTarget.value,
+                  });
+                }}
+              />
+            </label>
+          </Col>
+        </Row>
 
-      {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
+        {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <div
+            className="d-flex flex-column"
+            style={{ height: "calc(50vh - 100px)" }}
+          >
+            <AgGridReact
+              columnDefs={cohortBuilderColDefs}
+              rowData={formattedRowData}
+              rowSelection={"multiple"}
+              suppressRowClickSelection={true}
+              serverSideInfiniteScroll={true}
+            />
+          </div>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <Button variant="secondary" onClick={handleCohortBuilderClose}>
+              Close
+            </Button>
+          </Col>
+        </Row>
+      </Container>
       <br />
-      <AgGridReact
-        columnDefs={cohortBuilderColDefs}
-        rowData={formattedRowData}
-      />
-      <br />
-      <Button variant="secondary" onClick={handleCohortBuilderClose}>
-        Close
-      </Button>
-    </Container>
+    </div>
   );
 }
