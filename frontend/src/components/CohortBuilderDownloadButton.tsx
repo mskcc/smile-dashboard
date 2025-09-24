@@ -28,7 +28,6 @@ export function CohortBuilderDownloadButton({
     contents += `#projectTitle:${data.projectTitle}\n`;
     contents += `#projectSubtitle:${data.projectSubtitle}\n`;
     contents += `#TUMOR_ID\n`;
-    console.log("Samples that should appear in the output file...", samples);
     samples.forEach((sample) => {
       contents += `${sample.primaryId}\n`;
     });
