@@ -2,6 +2,8 @@ import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
 import React, { useState } from "react";
 import { CohortBuilderDownloadButton } from "./CohortBuilderDownloadButton";
+import { RemoveCircleOutline } from "@material-ui/icons";
+import { createCustomHeader, toolTipIcon } from "../configs/gridIcons";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -25,36 +27,50 @@ export interface CohortBuilderSample {
   cmoSampleName: string;
   sampleCohortIds: string;
 }
-
-const cohortBuilderColDefs = [
-  {
-    headerName: "primaryId",
-    field: "primaryId",
-    sortable: true,
-    filter: true,
-  },
-  {
-    headerName: "cmoSampleName",
-    field: "cmoSampleName",
-  },
-  {
-    headerName: "sampleCohortIds",
-    field: "sampleCohortIds",
-  },
-];
-
 export function CohortBuilderContainer({
   selectedRowIds,
   setSelectedRowIds,
   showSelectedPopup,
   setShowSelectedPopup,
 }: CohortBuilderContainerProps) {
+  // Custom button for the Action column
+  const CustomButtonComponent = (props: {
+    data: any;
+    selectedRowIds: CohortBuilderSample[];
+    setSelectedRowIds?: React.Dispatch<
+      React.SetStateAction<CohortBuilderSample[]>
+    >;
+  }) => {
+    const handleClick = () => {
+      console.log("X button clicked for row:", props.data);
+      const filteredRowIds = props.selectedRowIds.filter(
+        (sample) => sample.primaryId !== props.data.primaryId
+      );
+      if (props.setSelectedRowIds) {
+        props.setSelectedRowIds(filteredRowIds);
+      }
+    };
+
+    return (
+      <Button
+        style={{ background: "transparent", border: "none", padding: 0 }}
+        onClick={handleClick}
+        title="Remove from cohort"
+      >
+        <RemoveCircleOutline
+          style={{ fontSize: 18, color: "grey", padding: 0 }}
+        />
+      </Button>
+    );
+  };
+
   function handleCohortBuilderClose() {
     setShowSelectedPopup(true);
     if (setSelectedRowIds) {
       setSelectedRowIds([]);
     }
   }
+
   const formattedRowData = selectedRowIds.map((v) => ({
     primaryId: v.primaryId,
     cmoSampleName: v.cmoSampleName,
@@ -69,6 +85,40 @@ export function CohortBuilderContainer({
       projectTitle: "",
       projectSubtitle: "",
     });
+
+  const cohortBuilderColDefs = [
+    {
+      headerName: "Action",
+      cellRenderer: (params: any) => (
+        <CustomButtonComponent
+          data={params.data}
+          selectedRowIds={selectedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+        />
+      ),
+      width: 135,
+      resizable: true,
+      headerTooltip: "Remove sample from cohort",
+      headerComponentParams: createCustomHeader(toolTipIcon),
+    },
+    {
+      headerName: "Primary ID",
+      field: "primaryId",
+      sortable: true,
+      filter: true,
+      resizable: true,
+    },
+    {
+      headerName: "CMO Sample Name",
+      field: "cmoSampleName",
+      resizable: true,
+    },
+    {
+      headerName: "Sample Cohort IDs",
+      field: "sampleCohortIds",
+      resizable: true,
+    },
+  ];
 
   return (
     <div className="d-flex flex-column" style={{ height: "calc(15vh - 10px)" }}>
