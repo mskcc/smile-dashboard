@@ -18,8 +18,8 @@ export function CohortBuilderDownloadButton({
   cohortSamples,
 }: CohortBuilderDownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
-  const [show, setShow] = useState(false);
-  const toggleShow = () => setShow(!show);
+  const [showToast, setShowToast] = useState(false);
+  const toggleShow = () => setShowToast(!showToast);
 
   function buildCohortFileContents(
     data: CohortBuilderFormMetadata,
@@ -37,10 +37,32 @@ export function CohortBuilderDownloadButton({
   }
 
   function handleToastShow() {
-    setTimeout(() => setShow(true), 3000);
+    setTimeout(() => setShowToast(true), 3000);
+  }
+
+  function handleInputValidation() {
+    // Simple validation: check required fields are filled and at least one sample
+    if (
+      cohortBuilderData.cohortId.trim() === "" ||
+      cohortBuilderData.projectTitle.trim() === "" ||
+      cohortBuilderData.projectSubtitle.trim() === "" ||
+      cohortBuilderData.endUsers.length === 0 ||
+      cohortBuilderData.pmUsers.length === 0
+    ) {
+      alert("Missing one or more required fields.");
+      return false;
+    }
+    if (cohortSamples.length === 0) {
+      alert("Cohort must contain at least one sample.");
+      return false;
+    }
+    return true;
   }
 
   function handleDownload() {
+    if (!handleInputValidation()) {
+      return;
+    }
     setIsDownloading(true);
     const fileContents = buildCohortFileContents(
       cohortBuilderData,
@@ -77,7 +99,7 @@ export function CohortBuilderDownloadButton({
       </Button>
       <ToastContainer position="bottom-end" className="p-3">
         <Toast
-          show={show}
+          show={showToast}
           onClose={toggleShow}
           delay={6000}
           autohide

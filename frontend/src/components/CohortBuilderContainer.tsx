@@ -176,12 +176,12 @@ export function CohortBuilderContainer({
             <label className="col-form-label">
               {"Cohort ID:  "}
               <Form.Control
-                required
+                name="inputCohortId"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`Cohort ID`}
+                placeholder={`Cohort ID (required)`}
                 aria-label="Cohort ID"
                 value={cohortBuilderData.cohortId}
                 onChange={(e: { currentTarget: { value: any } }) => {
@@ -208,11 +208,12 @@ export function CohortBuilderContainer({
             <label className="col-form-label">
               {"Project title:  "}
               <Form.Control
+                name="inputProjectTitle"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`Project title`}
+                placeholder={`Project title (required)`}
                 aria-label="Project title"
                 value={cohortBuilderData.projectTitle}
                 onChange={(e: { currentTarget: { value: any } }) => {
@@ -233,11 +234,12 @@ export function CohortBuilderContainer({
             <label className="col-form-label">
               {"Project subtitle:  "}
               <Form.Control
+                name="inputProjectSubtitle"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`Project subtitle`}
+                placeholder={`Project subtitle (required)`}
                 aria-label="Project subtitle"
                 value={cohortBuilderData.projectSubtitle}
                 onChange={(e: { currentTarget: { value: any } }) => {
@@ -258,11 +260,12 @@ export function CohortBuilderContainer({
             <label className="col-form-label">
               {"End users:  "}
               <Form.Control
+                name="inputEndUsers"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`End users`}
+                placeholder={`End users (required)`}
                 aria-label="End users"
                 value={cohortBuilderData.endUsers}
                 onChange={(e: { currentTarget: { value: any } }) => {
@@ -283,11 +286,12 @@ export function CohortBuilderContainer({
             <label className="col-form-label">
               {"PM users:  "}
               <Form.Control
+                name="inputPMUsers"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`PM users`}
+                placeholder={`PM users (required)`}
                 aria-label="PM users"
                 value={cohortBuilderData.pmUsers}
                 onChange={(e: { currentTarget: { value: any } }) => {
