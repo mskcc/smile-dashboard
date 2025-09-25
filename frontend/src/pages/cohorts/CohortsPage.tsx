@@ -56,6 +56,11 @@ export function CohortsPage() {
       queryName: QUERY_NAME,
     });
 
+  // remove selected samples from cohort col defs
+  const filteredWesSampleColDefs = wesSampleColDefs.filter(
+    (colDef) => colDef.field !== "selected"
+  );
+
   const downloadOptions = buildDownloadOptions({
     getCurrentData,
     currentColDefs: cohortColDefs,
@@ -101,7 +106,7 @@ export function CohortsPage() {
 
       {hasParams && (
         <SamplesModal
-          sampleColDefs={wesSampleColDefs}
+          sampleColDefs={filteredWesSampleColDefs}
           contextFieldName={ROUTE_PARAMS.cohorts}
           parentRecordName={RECORD_NAME}
         />
