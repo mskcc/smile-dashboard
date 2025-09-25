@@ -303,6 +303,9 @@ export function CohortBuilderContainer({
               />
             </label>
           </Col>
+          <Col className="text-end">
+            <span>{formattedRowData.length} samples selected</span>
+          </Col>
         </Row>
 
         {console.log("\n\n\nROW DATA FOR POPUP:", formattedRowData)}

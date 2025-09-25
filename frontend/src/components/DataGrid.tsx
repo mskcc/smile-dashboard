@@ -92,7 +92,6 @@ export function DataGrid({
   // Restore selection after data changes
   useEffect(() => {
     if (gridRef.current && gridRef.current.api) {
-      console.log("Restoring selection for IDs:", selectedRowIds);
       const primaryIds = selectedRowIds.map((item) => item.primaryId);
       gridRef.current.api.forEachNode((node: any) => {
         node.setSelected(primaryIds.includes(node.data?.primaryId));
@@ -113,6 +112,14 @@ export function DataGrid({
       };
     });
     onSelectionChanged(ids); // on selection change also affects the visibility of the table
+  };
+
+  const onRowDataChanged = (event: any) => {
+    gridRef.current?.api.forEachNode((node: any) => {
+      node.setSelected(
+        selectedRowIds.some((item) => item.primaryId === node.data?.primaryId)
+      );
+    });
   };
 
   return (
@@ -145,6 +152,7 @@ export function DataGrid({
         rowSelection="multiple"
         suppressRowClickSelection={true}
         onSelectionChanged={handleGridSelectionChanged}
+        onRowDataUpdated={onRowDataChanged}
       />
     </div>
   );
