@@ -6,7 +6,7 @@ import {
 } from "./CohortBuilderContainer";
 import { useState } from "react";
 import { CustomTooltip } from "./CustomToolTip";
-import InfoIcon from "@material-ui/icons/InfoOutlined";
+import { InfoOutlined, RemoveCircleOutline } from "@material-ui/icons";
 
 interface CohortBuilderDownloadButtonProps {
   cohortBuilderData: CohortBuilderFormMetadata;
@@ -18,7 +18,7 @@ export function CohortBuilderDownloadButton({
   cohortSamples,
 }: CohortBuilderDownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const toggleShow = () => setShow(!show);
 
   function buildCohortFileContents(
@@ -55,7 +55,7 @@ export function CohortBuilderDownloadButton({
     <>
       <CustomTooltip
         icon={
-          <InfoIcon
+          <InfoOutlined
             style={{
               fontSize: 15,
               color: "grey",

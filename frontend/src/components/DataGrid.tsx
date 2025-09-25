@@ -108,6 +108,8 @@ export function DataGrid({
         primaryId: node.data?.primaryId,
         cmoSampleName: node.data?.cmoSampleName,
         sampleCohortIds: node.data?.sampleCohortIds,
+        initialPipelineRunDate: node.data?.initialPipelineRunDate,
+        embargoDate: node.data?.embargoDate,
       };
     });
     onSelectionChanged(ids); // on selection change also affects the visibility of the table

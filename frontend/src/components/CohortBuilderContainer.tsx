@@ -3,7 +3,13 @@ import { AgGridReact } from "ag-grid-react";
 import React, { useState } from "react";
 import { CohortBuilderDownloadButton } from "./CohortBuilderDownloadButton";
 import { RemoveCircleOutline } from "@material-ui/icons";
-import { createCustomHeader, toolTipIcon } from "../configs/gridIcons";
+import {
+  createCustomHeader,
+  toolTipIcon,
+  lockIcon,
+} from "../configs/gridIcons";
+import { formatCellDate, getAgGridDateColFilterConfigs } from "../utils/agGrid";
+import { MomentInput } from "moment";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -26,6 +32,8 @@ export interface CohortBuilderSample {
   primaryId: string;
   cmoSampleName: string;
   sampleCohortIds: string;
+  initialPipelineRunDate: string | null;
+  embargoDate: string | null;
 }
 export function CohortBuilderContainer({
   selectedRowIds,
@@ -75,6 +83,8 @@ export function CohortBuilderContainer({
     primaryId: v.primaryId,
     cmoSampleName: v.cmoSampleName,
     sampleCohortIds: v.sampleCohortIds,
+    initialPipelineRunDate: v.initialPipelineRunDate,
+    embargoDate: v.embargoDate,
   }));
 
   const [cohortBuilderData, setCohortBuilderData] =
@@ -86,6 +96,7 @@ export function CohortBuilderContainer({
       projectSubtitle: "",
     });
 
+  // addning new fields here also requires changes to DataGrid -> handleGridSelectionChanged to pass these fields
   const cohortBuilderColDefs = [
     {
       headerName: "Action",
@@ -118,6 +129,32 @@ export function CohortBuilderContainer({
       field: "sampleCohortIds",
       resizable: true,
     },
+    {
+      field: "initialPipelineRunDate",
+      headerName: "Initial Pipeline Run Date",
+      headerTooltip:
+        "Date the sample is delivered in a cohort for the first time",
+      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+      valueFormatter: (params: { value: MomentInput }) =>
+        formatCellDate(params.value) ?? "",
+      ...getAgGridDateColFilterConfigs(),
+      width: 250,
+    },
+    {
+      field: "embargoDate",
+      headerName: "Embargo Date",
+      headerTooltip:
+        "Calculated date; 18 months after Initial Pipeline Run Date",
+      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+      valueFormatter: (params: { value: MomentInput }) => {
+        // console.log("Formatting date:", params);
+        return formatCellDate(params.value) ?? "";
+      },
+      ...getAgGridDateColFilterConfigs({
+        // embargoDate is 18 months ahead of initialPipelineRunDate
+        maxValidYear: new Date().getFullYear() + 2,
+      }),
+    },
   ];
 
   return (
@@ -139,6 +176,7 @@ export function CohortBuilderContainer({
             <label className="col-form-label">
               {"Cohort ID:  "}
               <Form.Control
+                required
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
@@ -263,7 +301,7 @@ export function CohortBuilderContainer({
           </Col>
         </Row>
 
-        {console.log("\n\n\nROW DATA FOR POPUP:", selectedRowIds)}
+        {console.log("\n\n\nROW DATA FOR POPUP:", formattedRowData)}
         <Row
           className="d-flex align-items-center justify-content-left"
           style={{ padding: "5px" }}
