@@ -308,7 +308,7 @@ export function CohortBuilderContainer({
           </Col>
         </Row>
 
-        {console.log("\n\n\nROW DATA FOR POPUP:", formattedRowData)}
+        {console.log("\n\n\nROW DATA FOR COHORT BUILDER:", formattedRowData)}
         <Row
           className="d-flex align-items-center justify-content-left"
           style={{ padding: "5px" }}
