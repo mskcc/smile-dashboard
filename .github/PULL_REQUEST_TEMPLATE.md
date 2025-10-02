@@ -2,8 +2,6 @@
 
 <Include a summary of the changes. Please also include relevant motivation and context. List any external dependencies that are required for this change, like new environment variables.>
 
-[#<Related ticket number>](<Zenhub link>)
-
 ## Manual testing checklist
 
 Check off items under the affected features below.
