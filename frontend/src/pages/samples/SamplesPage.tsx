@@ -200,6 +200,7 @@ export function SamplesPage() {
       <br />
       {showSelectedPopup && (
         <CohortBuilderContainer
+          gridRef={gridRef}
           selectedRowIds={selectedRowIds}
           setSelectedRowIds={setSelectedRowIds}
           setShowSelectedPopup={setShowSelectedPopup}

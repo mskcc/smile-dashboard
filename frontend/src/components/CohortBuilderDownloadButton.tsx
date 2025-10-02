@@ -31,7 +31,7 @@ export function CohortBuilderDownloadButton({
     contents += `#projectSubtitle:${data.projectSubtitle}\n`;
     contents += `#TUMOR_ID\n`;
     samples.forEach((sample) => {
-      contents += `${sample.primaryId}\n`;
+      contents += `${sample.cmoSampleName}\n`;
     });
     return contents;
   }

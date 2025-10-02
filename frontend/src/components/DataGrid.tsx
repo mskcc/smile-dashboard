@@ -113,6 +113,7 @@ export function DataGrid({
     const visibleSelected = selectedNodes.map((node: any) => ({
       primaryId: node.data?.primaryId,
       cmoSampleName: node.data?.cmoSampleName,
+      mafCompleteStatus: node.data?.mafCompleteStatus,
       sampleCohortIds: node.data?.sampleCohortIds,
       initialPipelineRunDate: node.data?.initialPipelineRunDate,
       embargoDate: node.data?.embargoDate,

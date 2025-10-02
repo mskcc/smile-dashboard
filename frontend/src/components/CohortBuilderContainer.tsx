@@ -1,6 +1,7 @@
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
-import React, { useState } from "react";
+import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
+import React, { RefObject, useState } from "react";
 import { CohortBuilderDownloadButton } from "./CohortBuilderDownloadButton";
 import { RemoveCircleOutline } from "@material-ui/icons";
 import {
@@ -10,6 +11,7 @@ import {
 } from "../configs/gridIcons";
 import { formatCellDate, getAgGridDateColFilterConfigs } from "../utils/agGrid";
 import { MomentInput } from "moment";
+import { DeselectCohortSampleButton } from "./DeselectCohortSampleButton";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -17,6 +19,7 @@ interface CohortBuilderContainerProps {
     React.SetStateAction<CohortBuilderSample[]>
   >;
   setShowSelectedPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  gridRef: RefObject<AgGridReactType<any>>;
 }
 
 export interface CohortBuilderFormMetadata {
@@ -30,55 +33,31 @@ export interface CohortBuilderFormMetadata {
 export interface CohortBuilderSample {
   primaryId: string;
   cmoSampleName: string;
+  mafCompleteStatus: string;
   sampleCohortIds: string;
   initialPipelineRunDate: string | null;
   embargoDate: string | null;
 }
 export function CohortBuilderContainer({
+  gridRef,
   selectedRowIds,
   setSelectedRowIds,
   setShowSelectedPopup,
 }: CohortBuilderContainerProps) {
-  // Custom button for the Action column
-  const CustomButtonComponent = (props: {
-    data: any;
-    selectedRowIds: CohortBuilderSample[];
-    setSelectedRowIds?: React.Dispatch<
-      React.SetStateAction<CohortBuilderSample[]>
-    >;
-  }) => {
-    const handleClick = () => {
-      const filteredRowIds = props.selectedRowIds.filter(
-        (sample) => sample.primaryId !== props.data.primaryId
-      );
-      if (props.setSelectedRowIds) {
-        props.setSelectedRowIds(filteredRowIds);
-      }
-    };
-
-    return (
-      <Button
-        style={{ background: "transparent", border: "none", padding: 0 }}
-        onClick={handleClick}
-        title="Remove from cohort"
-      >
-        <RemoveCircleOutline
-          style={{ fontSize: 18, color: "grey", padding: 0 }}
-        />
-      </Button>
-    );
-  };
-
   function handleCohortBuilderClose() {
     setShowSelectedPopup(false);
     if (setSelectedRowIds) {
       setSelectedRowIds([]);
+    }
+    if (gridRef.current?.api) {
+      gridRef.current.api.deselectAll();
     }
   }
 
   const formattedRowData = selectedRowIds.map((v) => ({
     primaryId: v.primaryId,
     cmoSampleName: v.cmoSampleName,
+    mafCompleteStatus: v.mafCompleteStatus,
     sampleCohortIds: v.sampleCohortIds,
     initialPipelineRunDate: v.initialPipelineRunDate,
     embargoDate: v.embargoDate,
@@ -93,65 +72,12 @@ export function CohortBuilderContainer({
       projectSubtitle: "",
     });
 
-  // addning new fields here also requires changes to DataGrid -> handleGridSelectionChanged to pass these fields
-  const cohortBuilderColDefs = [
-    {
-      headerName: "Action",
-      cellRenderer: (params: any) => (
-        <CustomButtonComponent
-          data={params.data}
-          selectedRowIds={selectedRowIds}
-          setSelectedRowIds={setSelectedRowIds}
-        />
-      ),
-      width: 135,
-      resizable: true,
-      headerTooltip: "Remove sample from cohort",
-      headerComponentParams: createCustomHeader(toolTipIcon),
-    },
-    {
-      headerName: "Primary ID",
-      field: "primaryId",
-      sortable: true,
-      filter: true,
-      resizable: true,
-    },
-    {
-      headerName: "CMO Sample Name",
-      field: "cmoSampleName",
-      resizable: true,
-    },
-    {
-      headerName: "Sample Cohort IDs",
-      field: "sampleCohortIds",
-      resizable: true,
-    },
-    {
-      field: "initialPipelineRunDate",
-      headerName: "Initial Pipeline Run Date",
-      headerTooltip:
-        "Date the sample is delivered in a cohort for the first time",
-      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
-      valueFormatter: (params: { value: MomentInput }) =>
-        formatCellDate(params.value) ?? "",
-      ...getAgGridDateColFilterConfigs(),
-      width: 250,
-    },
-    {
-      field: "embargoDate",
-      headerName: "Embargo Date",
-      headerTooltip:
-        "Calculated date; 18 months after Initial Pipeline Run Date",
-      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
-      valueFormatter: (params: { value: MomentInput }) => {
-        return formatCellDate(params.value) ?? "";
-      },
-      ...getAgGridDateColFilterConfigs({
-        // embargoDate is 18 months ahead of initialPipelineRunDate
-        maxValidYear: new Date().getFullYear() + 2,
-      }),
-    },
-  ];
+  // adding new fields here also requires changes to DataGrid -> handleGridSelectionChanged to pass these fields
+  const cohortBuilderColDefs = getCohortBuilderColDefs(
+    gridRef,
+    selectedRowIds,
+    setSelectedRowIds
+  );
 
   return (
     <div className="d-flex flex-column" style={{ height: "calc(15vh - 10px)" }}>
@@ -335,4 +261,81 @@ export function CohortBuilderContainer({
       <br />
     </div>
   );
+}
+
+function getCohortBuilderColDefs(
+  gridRef: React.RefObject<AgGridReact<any>>,
+  selectedRowIds: CohortBuilderSample[],
+  setSelectedRowIds:
+    | React.Dispatch<React.SetStateAction<CohortBuilderSample[]>>
+    | undefined
+) {
+  return [
+    {
+      headerName: "Action",
+      cellRenderer: (params: any) => (
+        <DeselectCohortSampleButton
+          gridRef={gridRef}
+          data={params.data}
+          selectedRowIds={selectedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+        />
+      ),
+      width: 135,
+      resizable: true,
+      headerTooltip: "Remove sample from cohort",
+      headerComponentParams: createCustomHeader(toolTipIcon),
+    },
+    {
+      headerName: "Primary ID",
+      field: "primaryId",
+      sortable: true,
+      filter: true,
+      resizable: true,
+    },
+    {
+      headerName: "CMO Sample Name",
+      field: "cmoSampleName",
+      resizable: true,
+    },
+    {
+      field: "mafCompleteStatus",
+      headerName: "MAF Complete Status (Data Eligible for Sharing)",
+      headerTooltip:
+        "Indicates whether MAF generation was successful. Valid for tumor samples only. For the MSK WES Repository cohort we only included samples with a MAF Complete Status of 'Pass' as well as QC Complete Result of 'Pass' or 'Warn'",
+      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+      width: 280,
+      wrapHeaderText: true,
+    },
+    {
+      headerName: "Sample Cohort IDs",
+      field: "sampleCohortIds",
+      resizable: true,
+    },
+    {
+      field: "initialPipelineRunDate",
+      headerName: "Initial Pipeline Run Date",
+      headerTooltip:
+        "Date the sample is delivered in a cohort for the first time",
+      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+      valueFormatter: (params: { value: MomentInput }) =>
+        formatCellDate(params.value) ?? "",
+      ...getAgGridDateColFilterConfigs(),
+      width: 250,
+    },
+    {
+      field: "embargoDate",
+      headerName: "Embargo Date",
+      headerTooltip:
+        "Calculated date; 18 months after Initial Pipeline Run Date",
+      headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+      valueFormatter: (params: { value: MomentInput }) => {
+        return formatCellDate(params.value) ?? "";
+      },
+      ...getAgGridDateColFilterConfigs({
+        // embargoDate is 18 months ahead of initialPipelineRunDate
+        maxValidYear: new Date().getFullYear() + 2,
+      }),
+    },
+  ];
 }
