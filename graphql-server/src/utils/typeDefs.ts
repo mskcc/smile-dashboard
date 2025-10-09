@@ -229,6 +229,8 @@ const QUERY_TYPEDEFS = gql`
     ): [DashboardSample!]!
 
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!
+
+    allBlockedCohortIds: [String!]!
   }
 `;
 

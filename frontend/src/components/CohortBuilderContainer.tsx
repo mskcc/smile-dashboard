@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import React, { RefObject, useState } from "react";
 import { CohortBuilderDownloadButton } from "./CohortBuilderDownloadButton";
-import { RemoveCircleOutline } from "@material-ui/icons";
 import {
   createCustomHeader,
   toolTipIcon,
@@ -12,6 +11,7 @@ import {
 import { formatCellDate, getAgGridDateColFilterConfigs } from "../utils/agGrid";
 import { MomentInput } from "moment";
 import { DeselectCohortSampleButton } from "./DeselectCohortSampleButton";
+import { useAllBlockedCohortIdsQuery } from "../generated/graphql";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -38,12 +38,15 @@ export interface CohortBuilderSample {
   initialPipelineRunDate: string | null;
   embargoDate: string | null;
 }
+
 export function CohortBuilderContainer({
   gridRef,
   selectedRowIds,
   setSelectedRowIds,
   setShowSelectedPopup,
 }: CohortBuilderContainerProps) {
+  const { data, loading, error } = useAllBlockedCohortIdsQuery();
+
   function handleCohortBuilderClose() {
     setShowSelectedPopup(false);
     if (setSelectedRowIds) {
@@ -65,7 +68,7 @@ export function CohortBuilderContainer({
 
   const [cohortBuilderData, setCohortBuilderData] =
     useState<CohortBuilderFormMetadata>({
-      cohortId: "",
+      cohortId: generateNewCohortId(),
       endUsers: [],
       pmUsers: [],
       projectTitle: "",
@@ -79,6 +82,41 @@ export function CohortBuilderContainer({
     setSelectedRowIds
   );
 
+  /**
+   * Generates and returns a randomized cohort ID.
+   * @returns string
+   */
+  function makeNewCohortId() {
+    let cohortId = "";
+    while (cohortId.length < 6) {
+      cohortId += Math.random().toString(36).slice(2);
+    }
+    return "CCS_" + cohortId.slice(0, 6).toUpperCase();
+  }
+
+  /**
+   * Determines if cohort ID passed is in use or not.
+   * @param cohortId
+   * @returns boolean
+   */
+  function isCohortIdInUse(cohortId: string) {
+    return data?.allBlockedCohortIds.includes(cohortId);
+  }
+
+  /**
+   * Generates and returns a randomized cohort ID. Verifies it is available as well.
+   * @returns string
+   */
+  function generateNewCohortId() {
+    var cohortId = makeNewCohortId();
+    if (isCohortIdInUse(cohortId)) {
+      while (isCohortIdInUse(cohortId)) {
+        cohortId = makeNewCohortId();
+      }
+    }
+    return cohortId;
+  }
+
   return (
     <div className="d-flex flex-column" style={{ height: "calc(15vh - 10px)" }}>
       <Container
@@ -89,7 +127,6 @@ export function CohortBuilderContainer({
           backgroundColor: "#f9f9f9",
         }}
       >
-        {/* Eventually the cohort ID will be auto-assigned. This first form component will need to be changed to a read-only field */}
         <Row
           className="d-flex align-items-center justify-content-left"
           style={{ padding: "5px" }}
@@ -103,15 +140,10 @@ export function CohortBuilderContainer({
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`Cohort ID (required)`}
+                readOnly={true}
+                disabled={true}
                 aria-label="Cohort ID"
                 value={cohortBuilderData.cohortId}
-                onChange={(e: { currentTarget: { value: any } }) => {
-                  setCohortBuilderData({
-                    ...cohortBuilderData,
-                    cohortId: e.currentTarget.value,
-                  });
-                }}
               />
             </label>
           </Col>

@@ -4077,6 +4077,7 @@ export type QcCompletesConnection = {
 export type Query = {
   __typename?: "Query";
   allAnchorSeqDateData: Array<AnchorSeqDateData>;
+  allBlockedCohortIds: Array<Scalars["String"]>;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -11351,6 +11352,13 @@ export type UpdateDashboardSamplesMutation = {
   } | null> | null;
 };
 
+export type AllBlockedCohortIdsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AllBlockedCohortIdsQuery = {
+  __typename?: "Query";
+  allBlockedCohortIds: Array<string>;
+};
+
 export type AllAnchorSeqDateDataQueryVariables = Exact<{
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 }>;
@@ -11640,6 +11648,15 @@ export type UpdateDashboardSamplesMutationResult =
 export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
   UpdateDashboardSamplesMutation,
   UpdateDashboardSamplesMutationVariables
+>;
+export const AllBlockedCohortIdsDocument = gql`
+  query AllBlockedCohortIds {
+    allBlockedCohortIds
+  }
+`;
+export type AllBlockedCohortIdsQueryResult = Apollo.QueryResult<
+  AllBlockedCohortIdsQuery,
+  AllBlockedCohortIdsQueryVariables
 >;
 export const AllAnchorSeqDateDataDocument = gql`
   query AllAnchorSeqDateData($phiEnabled: Boolean = false) {

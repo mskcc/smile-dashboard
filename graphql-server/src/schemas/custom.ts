@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import { ApolloServerContext } from "../utils/servers";
+import { ApolloServerContext, neo4jDriver } from "../utils/servers";
 import {
   AnchorSeqDateData,
   DashboardSampleInput,
@@ -57,6 +57,7 @@ type AuthMiddleware = {
     dashboardSamples: IMiddlewareResolver;
     dashboardPatients: IMiddlewareResolver;
     allAnchorSeqDateData: IMiddlewareResolver;
+    allBlockedCohortIds: IMiddlewareResolver;
   };
 };
 
@@ -144,6 +145,10 @@ export async function buildCustomSchema(ogm: OGM) {
         }
         return await resolve(parent, args, context, info);
       },
+
+      async allBlockedCohortIds() {
+        return queryAllBlockedCohortIds();
+      },
     },
   };
 
@@ -210,6 +215,10 @@ export async function buildCustomSchema(ogm: OGM) {
           );
         }
         return await resolve(parent, args, context, info);
+      },
+
+      async allBlockedCohortIds() {
+        return queryAllBlockedCohortIds();
       },
     },
   };
@@ -291,6 +300,10 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async allAnchorSeqDateData() {
         return await queryAllAnchorSeqDateData();
+      },
+
+      async allBlockedCohortIds() {
+        return await queryAllBlockedCohortIds();
       },
 
       async dashboardCohorts(
@@ -610,5 +623,30 @@ async function publishNatsMessage(topic: string, message: string) {
       `error connecting to ${JSON.stringify(natsConnProperties)}`,
       err
     );
+  }
+}
+
+async function queryAllBlockedCohortIds() {
+  const blockedCohortIds = props.ccs_blocked_cohort_ids
+    .split(",")
+    .map((id: string) => id.trim());
+  const neo4jCohortIds = await getCohortIdsFromNeo4j();
+  return new Set([...blockedCohortIds, ...neo4jCohortIds]);
+}
+
+async function getCohortIdsFromNeo4j() {
+  const session = neo4jDriver.session();
+  try {
+    const result = await session.run(`
+      MATCH (c:Cohort) RETURN DISTINCT c.cohortId AS cohortId
+    `);
+    return result.records.map((record) => record.get("cohortId"));
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+    return [];
+  } finally {
+    await session.close();
   }
 }

@@ -4078,6 +4078,7 @@ export type QcCompletesConnection = {
 export type Query = {
   __typename?: "Query";
   allAnchorSeqDateData: Array<AnchorSeqDateData>;
+  allBlockedCohortIds: Array<Scalars["String"]>;
   bamCompletes: Array<BamComplete>;
   bamCompletesAggregate: BamCompleteAggregateSelection;
   bamCompletesConnection: BamCompletesConnection;
@@ -11352,6 +11353,13 @@ export type UpdateDashboardSamplesMutation = {
   } | null> | null;
 };
 
+export type AllBlockedCohortIdsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AllBlockedCohortIdsQuery = {
+  __typename?: "Query";
+  allBlockedCohortIds: Array<string>;
+};
+
 export type AllAnchorSeqDateDataQueryVariables = Exact<{
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 }>;
@@ -11881,6 +11889,61 @@ export type UpdateDashboardSamplesMutationResult =
 export type UpdateDashboardSamplesMutationOptions = Apollo.BaseMutationOptions<
   UpdateDashboardSamplesMutation,
   UpdateDashboardSamplesMutationVariables
+>;
+export const AllBlockedCohortIdsDocument = gql`
+  query AllBlockedCohortIds {
+    allBlockedCohortIds
+  }
+`;
+
+/**
+ * __useAllBlockedCohortIdsQuery__
+ *
+ * To run a query within a React component, call `useAllBlockedCohortIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllBlockedCohortIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllBlockedCohortIdsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllBlockedCohortIdsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    AllBlockedCohortIdsQuery,
+    AllBlockedCohortIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    AllBlockedCohortIdsQuery,
+    AllBlockedCohortIdsQueryVariables
+  >(AllBlockedCohortIdsDocument, options);
+}
+export function useAllBlockedCohortIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    AllBlockedCohortIdsQuery,
+    AllBlockedCohortIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    AllBlockedCohortIdsQuery,
+    AllBlockedCohortIdsQueryVariables
+  >(AllBlockedCohortIdsDocument, options);
+}
+export type AllBlockedCohortIdsQueryHookResult = ReturnType<
+  typeof useAllBlockedCohortIdsQuery
+>;
+export type AllBlockedCohortIdsLazyQueryHookResult = ReturnType<
+  typeof useAllBlockedCohortIdsLazyQuery
+>;
+export type AllBlockedCohortIdsQueryResult = Apollo.QueryResult<
+  AllBlockedCohortIdsQuery,
+  AllBlockedCohortIdsQueryVariables
 >;
 export const AllAnchorSeqDateDataDocument = gql`
   query AllAnchorSeqDateData($phiEnabled: Boolean = false) {
