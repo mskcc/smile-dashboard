@@ -6055,7 +6055,7 @@ export type Sample = {
   requestsHasSample: Array<Request>;
   requestsHasSampleAggregate?: Maybe<SampleRequestRequestsHasSampleAggregationSelection>;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
-  revisable?: Maybe<Scalars["Boolean"]>;
+  revisable: Scalars["Boolean"];
   sampleAliasesIsAlias: Array<SampleAlias>;
   sampleAliasesIsAliasAggregate?: Maybe<SampleSampleAliasSampleAliasesIsAliasAggregationSelection>;
   sampleAliasesIsAliasConnection: SampleSampleAliasesIsAliasConnection;
@@ -6636,7 +6636,7 @@ export type SampleCreateInput = {
   hasTempoTempos?: InputMaybe<SampleHasTempoTemposFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
-  revisable?: InputMaybe<Scalars["Boolean"]>;
+  revisable: Scalars["Boolean"];
   sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
   sampleCategory: Scalars["String"];
   sampleClass?: InputMaybe<Scalars["String"]>;

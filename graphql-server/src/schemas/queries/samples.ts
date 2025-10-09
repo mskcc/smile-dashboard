@@ -18,6 +18,7 @@ import { props } from "../../utils/constants";
 import { queryDatabricks } from "../../utils/databricks";
 
 const FIELDS_TO_SEARCH = [
+  "smileSampleId",
   "primaryId",
   "cmoSampleName",
   "importDate",
