@@ -165,6 +165,8 @@ export function SamplesModal({
         changes={changes}
         handleCellEditRequest={handleCellEditRequest}
         handlePaste={handlePaste}
+        selectedRowIds={[]}
+        onSelectionChanged={() => {}}
       />
 
       {isDownloading && <DownloadModal />}

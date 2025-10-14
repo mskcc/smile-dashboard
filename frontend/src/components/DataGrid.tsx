@@ -1,6 +1,6 @@
 import { AgGridReact } from "ag-grid-react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
-import { RefObject, ClipboardEvent } from "react";
+import { RefObject, ClipboardEvent, useState, useEffect } from "react";
 import {
   CellEditRequestEvent,
   ColDef,
@@ -11,6 +11,7 @@ import { createCustomHeader, lockIcon } from "../configs/gridIcons";
 import { SampleChange } from "../types/shared";
 import { CACHE_BLOCK_SIZE } from "../configs/shared";
 import { allEditableFields } from "../pages/samples/config";
+import { CohortBuilderSample } from "./CohortBuilderContainer";
 
 function getTooltipValue(params: ITooltipParams) {
   if (!params.colDef || !("field" in params.colDef)) return undefined;
@@ -68,6 +69,12 @@ interface DataGridPropsBase {
   gridRef: RefObject<AgGridReactType<any>>;
   colDefs: Array<ColDef<any>>;
   refreshData: () => void;
+  selectedRowIds: CohortBuilderSample[];
+  onSelectionChanged: (
+    ids:
+      | CohortBuilderSample[]
+      | ((prev: CohortBuilderSample[]) => CohortBuilderSample[])
+  ) => void;
 }
 
 type DataGridProps = DataGridPropsBase &
@@ -81,8 +88,78 @@ export function DataGrid({
   changes,
   handleCellEditRequest,
   handlePaste,
+  selectedRowIds,
+  onSelectionChanged,
 }: DataGridProps) {
   const navigate = useNavigate();
+
+  // ensures that records removed from CohortBuilder table also updates selection in main DataGrid table
+  useEffect(() => {
+    if (gridRef.current && gridRef.current.api) {
+      gridRef.current.api.forEachNode((node: any) => {
+        const shouldBeSelected = selectedRowIds.some(
+          (item) => item.primaryId === node.data?.primaryId
+        );
+        if (node.isSelected() !== shouldBeSelected) {
+          node.setSelected(shouldBeSelected);
+        }
+      });
+    }
+  }, [selectedRowIds, gridRef, colDefs]);
+
+  // Callback for selection change
+  const handleGridSelectionChanged = (event: any) => {
+    const selectedNodes = event.api.getSelectedNodes();
+    const visibleSelected = selectedNodes.map((node: any) => ({
+      primaryId: node.data?.primaryId,
+      cmoSampleName: node.data?.cmoSampleName,
+      mafCompleteStatus: node.data?.mafCompleteStatus,
+      sampleCohortIds: node.data?.sampleCohortIds,
+      initialPipelineRunDate: node.data?.initialPipelineRunDate,
+      embargoDate: node.data?.embargoDate,
+    }));
+
+    // compute set of primaryIds currently visible in the grid (loaded blocks)
+    const visiblePrimaryIds: string[] = [];
+    event.api.forEachNode((node: any) => {
+      if (node.data?.primaryId) visiblePrimaryIds.push(node.data.primaryId);
+    });
+
+    onSelectionChanged(
+      (
+        prevSelected:
+          | CohortBuilderSample[]
+          | ((p: CohortBuilderSample[]) => CohortBuilderSample[])
+      ) => {
+        // support both functional and direct setter usage
+        const prev =
+          typeof prevSelected === "function" ? prevSelected([]) : prevSelected;
+
+        // find visible rows from prev that were deselected (visible & not present in visibleSelected)
+        const visibleDeselected = prev.filter(
+          (p) =>
+            visiblePrimaryIds.includes(p.primaryId) &&
+            !visibleSelected.some(
+              (v: { primaryId: string }) => v.primaryId === p.primaryId
+            )
+        );
+
+        // keep previous selections except explicit visible deselections
+        const keptSelections = prev.filter(
+          (p) => !visibleDeselected.some((d) => d.primaryId === p.primaryId)
+        );
+
+        // add newly selected visible rows that aren't already kept
+        const addedSelections = visibleSelected.filter(
+          (id: { primaryId: string }) =>
+            !keptSelections.some((k) => k.primaryId === id.primaryId)
+        );
+
+        return [...keptSelections, ...addedSelections];
+      }
+    );
+  };
+
   return (
     <div className="ag-theme-alpine flex-grow-1" onPaste={handlePaste}>
       <AgGridReact
@@ -109,6 +186,11 @@ export function DataGrid({
         tooltipHideDelay={60000}
         tooltipMouseTrack={true}
         suppressClipboardPaste={true}
+        // these props are for checkbox selection
+        getRowId={(params) => params.data?.primaryId} // primary id is stable row id
+        rowSelection="multiple"
+        suppressRowClickSelection={true}
+        onSelectionChanged={handleGridSelectionChanged}
       />
     </div>
   );
