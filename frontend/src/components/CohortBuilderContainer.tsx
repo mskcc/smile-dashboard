@@ -24,8 +24,8 @@ interface CohortBuilderContainerProps {
 
 export interface CohortBuilderFormMetadata {
   cohortId: string;
-  endUsers: string[];
-  pmUsers: string[];
+  endUsers: string;
+  pmUsers: string;
   projectTitle: string;
   projectSubtitle: string;
 }
@@ -69,8 +69,8 @@ export function CohortBuilderContainer({
   const [cohortBuilderData, setCohortBuilderData] =
     useState<CohortBuilderFormMetadata>({
       cohortId: generateNewCohortId(),
-      endUsers: [],
-      pmUsers: [],
+      endUsers: "",
+      pmUsers: "",
       projectTitle: "",
       projectSubtitle: "",
     });
@@ -160,7 +160,7 @@ export function CohortBuilderContainer({
         >
           <Col>
             <label className="col-form-label">
-              {"Project title:  "}
+              {"Project Title:  "}
               <Form.Control
                 name="inputProjectTitle"
                 type="text"
@@ -186,7 +186,7 @@ export function CohortBuilderContainer({
         >
           <Col>
             <label className="col-form-label">
-              {"Project subtitle:  "}
+              {"Project Subtitle:  "}
               <Form.Control
                 name="inputProjectSubtitle"
                 type="text"
@@ -212,14 +212,14 @@ export function CohortBuilderContainer({
         >
           <Col>
             <label className="col-form-label">
-              {"End users:  "}
+              {"End Users:  "}
               <Form.Control
                 name="inputEndUsers"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`End users (required)`}
+                placeholder={`mskuser1,mskuser2,... (required)`}
                 aria-label="End users"
                 value={cohortBuilderData.endUsers}
                 onChange={(e: { currentTarget: { value: any } }) => {
@@ -238,14 +238,14 @@ export function CohortBuilderContainer({
         >
           <Col>
             <label className="col-form-label">
-              {"PM users:  "}
+              {"PM Users:  "}
               <Form.Control
                 name="inputPMUsers"
                 type="text"
                 className="d-inline-block"
                 style={{ width: "300px" }}
                 size="sm"
-                placeholder={`PM users (required)`}
+                placeholder={`mskuser1,mskuser2,... (required)`}
                 aria-label="PM users"
                 value={cohortBuilderData.pmUsers}
                 onChange={(e: { currentTarget: { value: any } }) => {
