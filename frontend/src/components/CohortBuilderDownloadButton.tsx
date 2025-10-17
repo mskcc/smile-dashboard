@@ -7,6 +7,9 @@ import {
 import { useState } from "react";
 import { CustomTooltip } from "./CustomToolTip";
 import { InfoOutlined } from "@material-ui/icons";
+import { parseUserSearchVal } from "../utils/parseSearchQueries";
+import { chain } from "lodash";
+import { formatCohortUsersString } from "../utils/formatCohortUsersString";
 
 interface CohortBuilderDownloadButtonProps {
   cohortBuilderData: CohortBuilderFormMetadata;
@@ -19,14 +22,14 @@ export function CohortBuilderDownloadButton({
 }: CohortBuilderDownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const toggleShow = () => setShowToast(!showToast);
+  // const toggleShow = () => setShowToast(!showToast);
 
   function buildCohortFileContents(
     data: CohortBuilderFormMetadata,
     samples: CohortBuilderSample[]
   ): string {
-    let contents = `#endUsers:${data.endUsers}\n`;
-    contents += `#pmUsers:${data.pmUsers}\n`;
+    let contents = `#endUsers:${formatCohortUsersString(data.endUsers)}\n`;
+    contents += `#pmUsers:${formatCohortUsersString(data.pmUsers)}\n`;
     contents += `#projectTitle:${data.projectTitle}\n`;
     contents += `#projectSubtitle:${data.projectSubtitle}\n`;
     contents += `#TUMOR_ID\n`;
@@ -72,7 +75,6 @@ export function CohortBuilderDownloadButton({
     setIsDownloading(false);
     handleToastShow();
   }
-
   return (
     <>
       <CustomTooltip
@@ -87,33 +89,52 @@ export function CohortBuilderDownloadButton({
           />
         }
       >
-        Downloads a .cohort.txt file formatted for TEMPO cohort delivery and
-        auto-submits to TEMPO pipeline.
+        Downloads a .cohort.txt file formatted for uploading to TEMPO for
+        processing.
       </CustomTooltip>
-      <Button
-        size={"sm"}
-        onClick={handleDownload}
-        // disabled={!cohortBuilderData}
-      >
-        Deliver & Download New TEMPO Cohort
+      <Button size={"sm"} onClick={handleDownload}>
+        Download New TEMPO Cohort File
       </Button>
-      <ToastContainer position="bottom-end" className="p-3">
-        <Toast
-          show={showToast}
-          onClose={toggleShow}
-          delay={6000}
-          autohide
-          animation={true}
-        >
-          <Toast.Header>
-            <strong className="me-auto">Cohort Delivery Notification</strong>
-            <small>Just now</small>
-          </Toast.Header>
-          <Toast.Body>
-            Published cohort {cohortBuilderData.cohortId} to TEMPO.
-          </Toast.Body>
-        </Toast>
-      </ToastContainer>
     </>
   );
+
+  // return (
+  //   <>
+  //     <CustomTooltip
+  //       icon={
+  //         <InfoOutlined
+  //           style={{
+  //             fontSize: 15,
+  //             color: "grey",
+  //             marginRight: 10,
+  //             marginLeft: 5,
+  //           }}
+  //         />
+  //       }
+  //     >
+  //       Downloads a .cohort.txt file formatted for TEMPO cohort delivery and
+  //       auto-submits to TEMPO pipeline.
+  //     </CustomTooltip>
+  //     <Button size={"sm"} onClick={handleDownload}>
+  //       Deliver & Download New TEMPO Cohort
+  //     </Button>
+  //     <ToastContainer position="bottom-end" className="p-3">
+  //       <Toast
+  //         show={showToast}
+  //         onClose={toggleShow}
+  //         delay={6000}
+  //         autohide
+  //         animation={true}
+  //       >
+  //         <Toast.Header>
+  //           <strong className="me-auto">Cohort Delivery Notification</strong>
+  //           <small>Just now</small>
+  //         </Toast.Header>
+  //         <Toast.Body>
+  //           Published cohort {cohortBuilderData.cohortId} to TEMPO.
+  //         </Toast.Body>
+  //       </Toast>
+  //     </ToastContainer>
+  //   </>
+  // );
 }

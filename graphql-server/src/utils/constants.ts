@@ -50,6 +50,8 @@ export const props = {
   databricks_seq_dates_by_sample_table: properties.get(
     "databricks.databricks_seq_dates_by_sample_table"
   ),
+
+  ccs_blocked_cohort_ids: properties.get("ccs.blocked_cohort_ids"),
 };
 
 export const REACT_APP_EXPRESS_SERVER_ORIGIN =
