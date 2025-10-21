@@ -1,4 +1,5 @@
-import { Button, Toast, ToastContainer } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+// import { Button, Toast, ToastContainer } from "react-bootstrap";
 import jsdownload from "js-file-download";
 import {
   CohortBuilderFormMetadata,
@@ -7,8 +8,7 @@ import {
 import { useState } from "react";
 import { CustomTooltip } from "./CustomToolTip";
 import { InfoOutlined } from "@material-ui/icons";
-import { parseUserSearchVal } from "../utils/parseSearchQueries";
-import { chain } from "lodash";
+// import { chain } from "lodash";
 import { formatCohortUsersString } from "../utils/formatCohortUsersString";
 
 interface CohortBuilderDownloadButtonProps {
@@ -20,8 +20,9 @@ export function CohortBuilderDownloadButton({
   cohortBuilderData,
   cohortSamples,
 }: CohortBuilderDownloadButtonProps) {
+  // eslint-disable-next-line no-unused-vars
   const [isDownloading, setIsDownloading] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  // const [showToast, setShowToast] = useState(false);
   // const toggleShow = () => setShowToast(!showToast);
 
   function buildCohortFileContents(
@@ -39,9 +40,9 @@ export function CohortBuilderDownloadButton({
     return contents;
   }
 
-  function handleToastShow() {
-    setTimeout(() => setShowToast(true), 3000);
-  }
+  // function handleToastShow() {
+  //   setTimeout(() => setShowToast(true), 3000);
+  // }
 
   function handleInputValidation() {
     // Simple validation: check required fields are filled and at least one sample
@@ -73,7 +74,7 @@ export function CohortBuilderDownloadButton({
     );
     jsdownload(fileContents, `${cohortBuilderData.cohortId}.cohort.txt`);
     setIsDownloading(false);
-    handleToastShow();
+    // handleToastShow();
   }
   return (
     <>
