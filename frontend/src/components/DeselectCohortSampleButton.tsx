@@ -30,6 +30,7 @@ export function DeselectCohortSampleButton({
 
     // updates main samples table
     if (gridRef.current?.api) {
+      // @ts-ignore
       gridRef.current.api.getSelectedNodes().map((node: any) => {
         if (node.data.primaryId === data.primaryId) {
           node.setSelected(false);

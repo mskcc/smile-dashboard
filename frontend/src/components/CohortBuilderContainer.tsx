@@ -1,4 +1,4 @@
-import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import React, { RefObject, useState } from "react";
@@ -45,7 +45,7 @@ export function CohortBuilderContainer({
   setSelectedRowIds,
   setShowSelectedPopup,
 }: CohortBuilderContainerProps) {
-  const { data, loading, error } = useAllBlockedCohortIdsQuery();
+  const { data } = useAllBlockedCohortIdsQuery();
 
   function handleCohortBuilderClose() {
     setShowSelectedPopup(false);

@@ -242,10 +242,31 @@ const MUTATION_TYPEDEFS = gql`
     ${SAMPLE_FIELDS}
   }
 
+  input DashboardCohortInput {
+    changedFieldNames: [String!]!
+    cohortId: String!
+    totalSampleCount: Int
+    billed: String
+    initialCohortDeliveryDate: String
+    endUsers: String
+    pmUsers: String
+    projectTitle: String
+    projectSubtitle: String
+    status: String
+    type: String
+    searchableSampleIds: String
+    _total: Int
+    _uniqueSampleCount: Int
+  }
+
   type Mutation {
     updateDashboardSamples(
       newDashboardSamples: [DashboardSampleInput]
     ): [DashboardSample]
+
+    updateTempoCohort(
+      dashboardCohort: DashboardCohortInput
+    ): DashboardCohort
   }
 `;
 
