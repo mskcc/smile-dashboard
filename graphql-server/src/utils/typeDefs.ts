@@ -176,6 +176,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     CMO_PATIENT_ID: String!
     DMP_PATIENT_ID: String
     MRN: String!
+    RACE: String
   }
 
   type AnchorSeqDateData {

@@ -2986,6 +2986,7 @@ export type PatientIdsTriplet = {
   CMO_PATIENT_ID: Scalars["String"];
   DMP_PATIENT_ID?: Maybe<Scalars["String"]>;
   MRN: Scalars["String"];
+  RACE?: Maybe<Scalars["String"]>;
 };
 
 export type PatientOptions = {
