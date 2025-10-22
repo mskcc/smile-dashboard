@@ -37,6 +37,7 @@ const PHI_FIELDS = new Set([
   "mrn",
   "anchorSequencingDate",
   "anchorOncotreeCode",
+  "race",
 ]);
 
 export function PatientsPage() {

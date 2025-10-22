@@ -120,6 +120,11 @@ export const patientColDefs: ColDef<DashboardPatient>[] = [
     ...getPhiColDefProps({ widthSize: 260 }),
   },
   {
+    field: "race",
+    headerName: "Race",
+    ...getPhiColDefProps({ widthSize: 175 }),
+  },
+  {
     field: "cmoPatientId",
     headerName: "CMO Patient ID",
   },

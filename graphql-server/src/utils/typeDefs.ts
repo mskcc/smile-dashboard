@@ -149,6 +149,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     mrn: String
     anchorSequencingDate: String
     anchorOncotreeCode: String
+    race: String
     _total: Int
   }
 

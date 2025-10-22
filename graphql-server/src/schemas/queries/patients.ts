@@ -251,13 +251,17 @@ export function mapPhiToPatientsData({
   // Create maps for quick lookup of MRN by either CMO or DMP Patient ID
   const mrnByCmoPatientIdMap: Record<string, string> = {};
   const mrnByDmpPatientIdMap: Record<string, string> = {};
+  const raceByCmoPatientIdMap: Record<string, string> = {};
+  const raceByDmpPatientIdMap: Record<string, string> = {};
   patientIdsTriplets.forEach((triplet) => {
     if (triplet.MRN) {
       if (triplet.CMO_PATIENT_ID) {
         mrnByCmoPatientIdMap[triplet.CMO_PATIENT_ID] = triplet.MRN;
+        raceByCmoPatientIdMap[triplet.CMO_PATIENT_ID] = triplet.RACE || "";
       }
       if (triplet.DMP_PATIENT_ID) {
         mrnByDmpPatientIdMap[triplet.DMP_PATIENT_ID] = triplet.MRN;
+        raceByDmpPatientIdMap[triplet.DMP_PATIENT_ID] = triplet.RACE || "";
       }
     }
   });
@@ -283,6 +287,7 @@ export function mapPhiToPatientsData({
       }
     }
   });
+
   // Map MRN and anchor sequencing date to each patient in the patients data from Neo4j
   return patientsData.map((patient) => {
     const cmoPatientId = patient.cmoPatientId;
@@ -304,11 +309,17 @@ export function mapPhiToPatientsData({
       ? anchorSeqDateDataByDmpPatientIdMap[dmpPatientId]
           ?.ANCHOR_ONCOTREE_CODE ?? null
       : null;
+    const race = cmoPatientId
+      ? raceByCmoPatientIdMap[cmoPatientId]
+      : dmpPatientId
+      ? raceByDmpPatientIdMap[dmpPatientId]
+      : null;
     return {
       ...patient,
       mrn,
       anchorSequencingDate,
       anchorOncotreeCode,
+      race,
     };
   });
 }

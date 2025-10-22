@@ -1406,6 +1406,7 @@ export type DashboardPatient = {
   dmpPatientId?: Maybe<Scalars["String"]>;
   inDbGap?: Maybe<Scalars["Boolean"]>;
   mrn?: Maybe<Scalars["String"]>;
+  race?: Maybe<Scalars["String"]>;
   smilePatientId: Scalars["String"];
   totalSampleCount?: Maybe<Scalars["Int"]>;
 };
@@ -11115,6 +11116,7 @@ export type DashboardPatientsQuery = {
     mrn?: string | null;
     anchorSequencingDate?: string | null;
     anchorOncotreeCode?: string | null;
+    race?: string | null;
     _total?: number | null;
   }>;
 };
@@ -11589,6 +11591,7 @@ export const DashboardPatientsDocument = gql`
       mrn
       anchorSequencingDate
       anchorOncotreeCode
+      race
       _total
     }
   }
