@@ -414,9 +414,11 @@ export function buildSamplesQueryFinal({
 export async function queryDashboardSamples({
   samplesCypherQuery,
   oncotreeCache,
+  includeDemographics,
 }: {
   samplesCypherQuery: string;
   oncotreeCache: OncotreeCache | undefined;
+  includeDemographics: boolean;
 }): Promise<DashboardSample[]> {
   const session = neo4jDriver.session();
   try {

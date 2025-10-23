@@ -1418,6 +1418,7 @@ export type DashboardRecordColumnFilter = {
 
 export type DashboardRecordContext = {
   fieldName?: InputMaybe<Scalars["String"]>;
+  includeDemographics?: InputMaybe<Scalars["Boolean"]>;
   values: Array<Scalars["String"]>;
 };
 
@@ -4235,6 +4236,7 @@ export type QueryDashboardRequestsArgs = {
 
 export type QueryDashboardSamplesArgs = {
   columnFilters?: InputMaybe<Array<DashboardRecordColumnFilter>>;
+  includeDemographics?: InputMaybe<Scalars["Boolean"]>;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;

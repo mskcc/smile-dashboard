@@ -215,14 +215,17 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
   const allSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: allSamplesQueryBody,
     oncotreeCache,
+    includeDemographics: false,
   });
   const wesSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: wesSamplesQueryBody,
     oncotreeCache,
+    includeDemographics: false,
   });
   const accessSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: accessSamplesQueryBody,
     oncotreeCache,
+    includeDemographics: false,
   });
 
   try {
@@ -253,9 +256,11 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
 function buildSamplesQueryPromise({
   queryBody,
   oncotreeCache,
+  includeDemographics,
 }: {
   queryBody: string;
   oncotreeCache: OncotreeCache;
+  includeDemographics: boolean;
 }): Promise<Record<string, DashboardSample[]> | null> {
   return new Promise(async (resolve, reject) => {
     try {
@@ -268,6 +273,7 @@ function buildSamplesQueryPromise({
       const queryResult = await queryDashboardSamples({
         samplesCypherQuery,
         oncotreeCache,
+        includeDemographics,
       });
       resolve(queryResult ? { [samplesCypherQuery]: queryResult } : null);
     } catch (error) {

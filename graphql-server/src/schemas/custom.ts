@@ -340,6 +340,7 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
           phiEnabled,
+          includeDemographics,
         }: QueryDashboardSamplesArgs,
         { inMemoryCache }: ApolloServerContext
       ) {
@@ -376,6 +377,7 @@ export async function buildCustomSchema(ogm: OGM) {
         const samplesDataPromise = queryDashboardSamples({
           samplesCypherQuery,
           oncotreeCache,
+          includeDemographics,
         });
 
         if (!canSearchPhiData({ phiEnabled, searchVals })) {

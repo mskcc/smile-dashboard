@@ -9,6 +9,7 @@ const GENERIC_TYPEDEFS = gql`
   input DashboardRecordContext {
     fieldName: String
     values: [String!]!
+    includeDemographics: Boolean
   }
 
   # Modeling after AG Grid's SortModel type
@@ -228,6 +229,7 @@ const QUERY_TYPEDEFS = gql`
       limit: Int!
       offset: Int!
       phiEnabled: Boolean
+      includeDemographics: Boolean
     ): [DashboardSample!]!
 
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!
