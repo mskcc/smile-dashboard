@@ -26,6 +26,7 @@ interface UseDownloadParams {
   userSearchVal: string;
   recordCount: number;
   queryName: string;
+  includeDemographics?: boolean;
 }
 
 export function useDownload<T>({
@@ -35,6 +36,7 @@ export function useDownload<T>({
   userSearchVal,
   recordCount,
   queryName,
+  includeDemographics,
 }: UseDownloadParams) {
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -60,6 +62,7 @@ export function useDownload<T>({
         searchVals: parseUserSearchVal(userSearchVal),
         offset: 0,
         limit: recordCount,
+        includeDemographics,
       },
     });
     return data[queryName];

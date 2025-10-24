@@ -45,6 +45,12 @@ export function SamplesPage() {
     filterButtonOptions[0].recordContexts
   );
   const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
+  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
+    []
+  );
+  const [showSelectedPopup, setShowSelectedPopup] = useState(false);
+  const [disableCohortBuildling, setDisableCohortBuildling] = useState(true);
+  const [includeDemographics, setIncludeDemographics] = useState(false);
 
   const {
     refreshData,
@@ -63,12 +69,8 @@ export function SamplesPage() {
     userSearchVal,
     recordContexts,
     pollInterval: POLL_INTERVAL,
+    includeDemographics,
   });
-  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
-    []
-  );
-  const [showSelectedPopup, setShowSelectedPopup] = useState(false);
-  const [disableCohortBuildling, setDisableCohortBuildling] = useState(true);
 
   useEffect(() => {
     if (gridRef.current && gridRef.current.columnApi) {
@@ -98,6 +100,7 @@ export function SamplesPage() {
       userSearchVal,
       recordCount,
       queryName: QUERY_NAME,
+      includeDemographics,
     });
 
   const downloadOptions = buildDownloadOptions({
@@ -108,6 +111,7 @@ export function SamplesPage() {
   function handleFilterButtonClick(filterButtonLabel: string) {
     if (filterButtonLabel === "WES") {
       setDisableCohortBuildling(false);
+      setIncludeDemographics(true);
     } else {
       // reset everything if not WES or cohort builder disabled
       if (gridRef.current) {
@@ -116,6 +120,7 @@ export function SamplesPage() {
       setSelectedRowIds([]);
       setShowSelectedPopup(false);
       setDisableCohortBuildling(true);
+      setIncludeDemographics(false);
     }
 
     const selectedFilterButtonOption = filterButtonOptions.find(

@@ -111,6 +111,7 @@ query DashboardSamples(
   $limit: Int!
   $offset: Int!
   $phiEnabled: Boolean = false
+  $includeDemographics: Boolean = false
 ) {
   dashboardSamples(
     searchVals: $searchVals
@@ -120,6 +121,7 @@ query DashboardSamples(
     limit: $limit
     offset: $offset
     phiEnabled: $phiEnabled
+    includeDemographics: $includeDemographics
   ) {
     ...DashboardSampleParts
     ...DashboardSampleMetadataParts
@@ -127,6 +129,7 @@ query DashboardSamples(
     ...DashboardDbGapParts
     ...DashboardPatientParts
     sequencingDate
+    race
     _total
   }
 }

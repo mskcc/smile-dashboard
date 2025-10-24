@@ -220,7 +220,7 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
   const wesSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: wesSamplesQueryBody,
     oncotreeCache,
-    includeDemographics: false,
+    includeDemographics: true,
   });
   const accessSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: accessSamplesQueryBody,

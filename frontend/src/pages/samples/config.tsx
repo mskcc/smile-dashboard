@@ -355,7 +355,7 @@ const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
     headerName: "SEX",
   },
   {
-    // To be left empty for now as we don't have this data yet
+    field: "race",
     headerName: "RACE",
   },
   {

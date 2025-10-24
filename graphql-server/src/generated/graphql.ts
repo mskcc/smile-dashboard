@@ -1418,7 +1418,6 @@ export type DashboardRecordColumnFilter = {
 
 export type DashboardRecordContext = {
   fieldName?: InputMaybe<Scalars["String"]>;
-  includeDemographics?: InputMaybe<Scalars["Boolean"]>;
   values: Array<Scalars["String"]>;
 };
 
@@ -1492,6 +1491,7 @@ export type DashboardSample = {
   qcCompleteReason?: Maybe<Scalars["String"]>;
   qcCompleteResult?: Maybe<Scalars["String"]>;
   qcCompleteStatus?: Maybe<Scalars["String"]>;
+  race?: Maybe<Scalars["String"]>;
   recipe?: Maybe<Scalars["String"]>;
   revisable?: Maybe<Scalars["Boolean"]>;
   sampleCategory: Scalars["String"];
@@ -1548,6 +1548,7 @@ export type DashboardSampleInput = {
   qcCompleteReason?: InputMaybe<Scalars["String"]>;
   qcCompleteResult?: InputMaybe<Scalars["String"]>;
   qcCompleteStatus?: InputMaybe<Scalars["String"]>;
+  race?: InputMaybe<Scalars["String"]>;
   recipe?: InputMaybe<Scalars["String"]>;
   revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleCategory: Scalars["String"];
@@ -4236,7 +4237,7 @@ export type QueryDashboardRequestsArgs = {
 
 export type QueryDashboardSamplesArgs = {
   columnFilters?: InputMaybe<Array<DashboardRecordColumnFilter>>;
-  includeDemographics?: InputMaybe<Scalars["Boolean"]>;
+  includeDemographics: Scalars["Boolean"];
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
@@ -11166,6 +11167,7 @@ export type DashboardSamplesQueryVariables = Exact<{
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
+  includeDemographics?: InputMaybe<Scalars["Boolean"]>;
 }>;
 
 export type DashboardSamplesQuery = {
@@ -11173,6 +11175,7 @@ export type DashboardSamplesQuery = {
   dashboardSamples: Array<{
     __typename?: "DashboardSample";
     sequencingDate?: string | null;
+    race?: string | null;
     _total?: number | null;
     smileSampleId: string;
     revisable?: boolean | null;
@@ -11646,6 +11649,7 @@ export const DashboardSamplesDocument = gql`
     $limit: Int!
     $offset: Int!
     $phiEnabled: Boolean = false
+    $includeDemographics: Boolean = false
   ) {
     dashboardSamples(
       searchVals: $searchVals
@@ -11655,6 +11659,7 @@ export const DashboardSamplesDocument = gql`
       limit: $limit
       offset: $offset
       phiEnabled: $phiEnabled
+      includeDemographics: $includeDemographics
     ) {
       ...DashboardSampleParts
       ...DashboardSampleMetadataParts
@@ -11662,6 +11667,7 @@ export const DashboardSamplesDocument = gql`
       ...DashboardDbGapParts
       ...DashboardPatientParts
       sequencingDate
+      race
       _total
     }
   }

@@ -9,7 +9,6 @@ const GENERIC_TYPEDEFS = gql`
   input DashboardRecordContext {
     fieldName: String
     values: [String!]!
-    includeDemographics: Boolean
   }
 
   # Modeling after AG Grid's SortModel type
@@ -101,6 +100,7 @@ const SAMPLE_FIELDS = `
 
   # Databricks
   sequencingDate: String
+  race: String
 
   # results total
   _total: Int
@@ -229,7 +229,7 @@ const QUERY_TYPEDEFS = gql`
       limit: Int!
       offset: Int!
       phiEnabled: Boolean
-      includeDemographics: Boolean
+      includeDemographics: Boolean!
     ): [DashboardSample!]!
 
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!

@@ -380,7 +380,10 @@ export async function buildCustomSchema(ogm: OGM) {
           includeDemographics,
         });
 
-        if (!canSearchPhiData({ phiEnabled, searchVals })) {
+        if (
+          !canSearchPhiData({ phiEnabled, searchVals }) &&
+          !includeDemographics
+        ) {
           return await samplesDataPromise;
         }
 
