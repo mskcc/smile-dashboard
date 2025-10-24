@@ -203,12 +203,12 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
     FROM
       ${props.databricks_phi_id_mapping_table}
     JOIN 
-      ${props.databricks_cdsi_demographics_table} on ${props.databricks_cdsi_demographics_table}.MRN = ${props.databricks_phi_id_mapping_table}.MRN
+      ${props.databricks_cdsi_demographics_table} ON ${props.databricks_cdsi_demographics_table}.MRN = ${props.databricks_phi_id_mapping_table}.MRN
     WHERE
       ${props.databricks_phi_id_mapping_table}.DMP_PATIENT_ID IN (${searchValList})
-      OR ${props.databricks_phi_id_mapping_table}.MRN IN (${searchValList})
-      OR ${props.databricks_phi_id_mapping_table}.CMO_PATIENT_ID IN (${searchValList})
-      AND ${props.databricks_phi_id_mapping_table}.MRN NOT LIKE 'P-%'
+    OR ${props.databricks_phi_id_mapping_table}.MRN IN (${searchValList})
+    OR ${props.databricks_phi_id_mapping_table}.CMO_PATIENT_ID IN (${searchValList})
+    AND ${props.databricks_phi_id_mapping_table}.MRN NOT LIKE 'P-%'
   `;
   const patientIdsTriplets = await queryDatabricks<PatientIdsTriplet>(query);
   patientIdsTriplets.forEach((patientIdTriplet) => {

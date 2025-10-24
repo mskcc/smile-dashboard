@@ -16,12 +16,15 @@ import {
   DashboardSample,
   DashboardSampleInput,
 } from "../generated/graphql";
+import { queryPatientIdsTriplets } from "../schemas/queries/patients";
 
 export const ONCOTREE_CACHE_KEY = "oncotree";
 export const SAMPLES_CACHE_KEY = "samples";
+export const PATIENT_DEMOGRAPHICS_CACHE_KEY = "patientDemographics";
 
 const ONCOTREE_CACHE_TTL = 86400; // 1 day
 const SAMPLES_CACHE_TTL = 3600; // 1 hour
+const PATIENT_DEMOGRAPHICS_CACHE_TTL = 86400; // 1 day
 
 // Variables to keep in sync with the frontend
 const CACHE_BLOCK_SIZE = 500;
@@ -84,6 +87,7 @@ const RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS = 3000; // 3s
 
 export type OncotreeCache = Record<string, { name: string; mainType: string }>; // key = Oncotree code
 export type SamplesCache = Record<string, DashboardSample[]>; // key = full Cypher query
+export type PatientDemographicsCache = Record<string, string>; // key = CMO Patient ID
 
 /**
  * Source: https://oncotree.mskcc.org/#/home?tab=api
@@ -107,6 +111,7 @@ export async function initializeInMemoryCache() {
   const inMemoryCache = new NodeCache();
 
   // Warm up the cache
+  await updatePatientDemographicsCache(inMemoryCache);
   await updateOncotreeCache(inMemoryCache);
   await updateSamplesCache(inMemoryCache);
   logCacheStats(inMemoryCache);
@@ -119,6 +124,9 @@ export async function initializeInMemoryCache() {
     }
     if (key === SAMPLES_CACHE_KEY) {
       await updateSamplesCache(inMemoryCache);
+    }
+    if (key === PATIENT_DEMOGRAPHICS_CACHE_KEY) {
+      await updatePatientDemographicsCache(inMemoryCache);
     }
   });
 
@@ -189,6 +197,40 @@ async function getOncotreeCodesFromNeo4j() {
   }
 }
 
+async function updatePatientDemographicsCache(inMemoryCache: NodeCache) {
+  const cmoPatientIds = await getCmoPatientIdsFromNeo4j();
+  const ptMappings = await queryPatientIdsTriplets(cmoPatientIds);
+  const ptDemographicsCache = ptMappings.reduce((acc, result) => {
+    acc[result.CMO_PATIENT_ID] = result.RACE || "";
+    return acc;
+  }, {} as PatientDemographicsCache);
+  inMemoryCache.set(
+    PATIENT_DEMOGRAPHICS_CACHE_KEY,
+    ptDemographicsCache,
+    PATIENT_DEMOGRAPHICS_CACHE_TTL
+  );
+}
+
+async function getCmoPatientIdsFromNeo4j() {
+  const session = neo4jDriver.session();
+  try {
+    const result = await session.run(`
+      MATCH (pa:PatientAlias{namespace:'cmoId'})
+      RETURN DISTINCT pa.value AS cmoPatientId
+    `);
+    return result.records
+      .map((record) => record.get("cmoPatientId"))
+      .filter(Boolean) as string[];
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+    return [];
+  } finally {
+    await session.close();
+  }
+}
+
 async function updateSamplesCache(inMemoryCache: NodeCache) {
   // Build query bodies for all queries on Samples page
   const allSamplesQueryBody = buildSamplesQueryBody({
@@ -211,21 +253,21 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
   });
 
   // Run these queries concurrently to reduce server startup time
+  const patientDemographicsCache = inMemoryCache.get(
+    PATIENT_DEMOGRAPHICS_CACHE_KEY
+  ) as PatientDemographicsCache;
   const oncotreeCache = inMemoryCache.get(ONCOTREE_CACHE_KEY) as OncotreeCache;
   const allSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: allSamplesQueryBody,
     oncotreeCache,
-    includeDemographics: false,
   });
   const wesSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: wesSamplesQueryBody,
     oncotreeCache,
-    includeDemographics: true,
   });
   const accessSamplesQueryPromises = buildSamplesQueryPromise({
     queryBody: accessSamplesQueryBody,
     oncotreeCache,
-    includeDemographics: false,
   });
 
   try {
@@ -256,11 +298,11 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
 function buildSamplesQueryPromise({
   queryBody,
   oncotreeCache,
-  includeDemographics,
+  patientDemographicsCache,
 }: {
   queryBody: string;
   oncotreeCache: OncotreeCache;
-  includeDemographics: boolean;
+  patientDemographicsCache?: PatientDemographicsCache;
 }): Promise<Record<string, DashboardSample[]> | null> {
   return new Promise(async (resolve, reject) => {
     try {
@@ -273,7 +315,7 @@ function buildSamplesQueryPromise({
       const queryResult = await queryDashboardSamples({
         samplesCypherQuery,
         oncotreeCache,
-        includeDemographics,
+        patientDemographicsCache,
       });
       resolve(queryResult ? { [samplesCypherQuery]: queryResult } : null);
     } catch (error) {

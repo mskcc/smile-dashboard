@@ -5,7 +5,7 @@ import {
   QueryDashboardSamplesArgs,
   SeqDateBySampleId,
 } from "../../generated/graphql";
-import { OncotreeCache } from "../../utils/cache";
+import { OncotreeCache, PatientDemographicsCache } from "../../utils/cache";
 import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherPredicateFromDateColFilter,
@@ -415,48 +415,27 @@ export function buildSamplesQueryFinal({
 export async function queryDashboardSamples({
   samplesCypherQuery,
   oncotreeCache,
-  includeDemographics,
+  patientDemographicsCache,
 }: {
   samplesCypherQuery: string;
   oncotreeCache: OncotreeCache | undefined;
-  includeDemographics?: Boolean;
+  patientDemographicsCache: PatientDemographicsCache | undefined;
 }): Promise<DashboardSample[]> {
   const session = neo4jDriver.session();
   try {
     const result = await session.run(samplesCypherQuery);
-
-    // query for patient race mappings
-    const cmoPatientIds = result.records.map((record) => {
-      const recordObject = record.toObject().resultz;
-      return recordObject.cmoPatientId;
-    });
-    let patientRaceMap: Record<string, string> = {};
-    if (includeDemographics && cmoPatientIds.length > 0) {
-      const ptMappings = await queryPatientIdsTriplets(
-        Array.from(new Set(cmoPatientIds))
-      );
-      ptMappings.forEach((v) => {
-        if (v.CMO_PATIENT_ID && v.RACE) {
-          patientRaceMap[v.CMO_PATIENT_ID] = v.RACE;
-        }
-      });
-    }
     return result.records.map((record) => {
       const recordObject = record.toObject().resultz;
       const instrumentModel = getInstrumentModelByLibraries(
         recordObject.libraries
       );
-      const race = includeDemographics
-        ? patientRaceMap[recordObject.cmoPatientId]
-        : null;
-
       return {
         ...recordObject,
         cancerType: oncotreeCache?.[recordObject.oncotreeCode]?.mainType,
         cancerTypeDetailed: oncotreeCache?.[recordObject.oncotreeCode]?.name,
         instrumentModel: instrumentModel,
         platform: getPlatformByInstrumentModel(instrumentModel),
-        race: race,
+        race: patientDemographicsCache?.[recordObject.cmoPatientId],
       };
     });
   } catch (error) {
