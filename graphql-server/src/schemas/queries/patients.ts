@@ -196,16 +196,19 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
     .join(",");
   const query = `
     SELECT
-      CMO_PATIENT_ID,
-      DMP_PATIENT_ID,
-      MRN
+      ${props.databricks_phi_id_mapping_table}.CMO_PATIENT_ID AS CMO_PATIENT_ID,
+      ${props.databricks_phi_id_mapping_table}.DMP_PATIENT_ID AS DMP_PATIENT_ID,
+      ${props.databricks_phi_id_mapping_table}.MRN AS MRN,
+      ${props.databricks_cdsi_demographics_table}.RACE AS RACE
     FROM
       ${props.databricks_phi_id_mapping_table}
+    JOIN 
+      ${props.databricks_cdsi_demographics_table} ON ${props.databricks_cdsi_demographics_table}.MRN = ${props.databricks_phi_id_mapping_table}.MRN
     WHERE
-      DMP_PATIENT_ID IN (${searchValList})
-      OR MRN IN (${searchValList})
-      OR CMO_PATIENT_ID IN (${searchValList})
-      AND MRN NOT LIKE 'P-%'
+      ${props.databricks_phi_id_mapping_table}.DMP_PATIENT_ID IN (${searchValList})
+    OR ${props.databricks_phi_id_mapping_table}.MRN IN (${searchValList})
+    OR ${props.databricks_phi_id_mapping_table}.CMO_PATIENT_ID IN (${searchValList})
+    AND ${props.databricks_phi_id_mapping_table}.MRN NOT LIKE 'P-%'
   `;
   const patientIdsTriplets = await queryDatabricks<PatientIdsTriplet>(query);
   patientIdsTriplets.forEach((patientIdTriplet) => {
@@ -248,13 +251,17 @@ export function mapPhiToPatientsData({
   // Create maps for quick lookup of MRN by either CMO or DMP Patient ID
   const mrnByCmoPatientIdMap: Record<string, string> = {};
   const mrnByDmpPatientIdMap: Record<string, string> = {};
+  const raceByCmoPatientIdMap: Record<string, string> = {};
+  const raceByDmpPatientIdMap: Record<string, string> = {};
   patientIdsTriplets.forEach((triplet) => {
     if (triplet.MRN) {
       if (triplet.CMO_PATIENT_ID) {
         mrnByCmoPatientIdMap[triplet.CMO_PATIENT_ID] = triplet.MRN;
+        raceByCmoPatientIdMap[triplet.CMO_PATIENT_ID] = triplet.RACE || "";
       }
       if (triplet.DMP_PATIENT_ID) {
         mrnByDmpPatientIdMap[triplet.DMP_PATIENT_ID] = triplet.MRN;
+        raceByDmpPatientIdMap[triplet.DMP_PATIENT_ID] = triplet.RACE || "";
       }
     }
   });
@@ -280,6 +287,7 @@ export function mapPhiToPatientsData({
       }
     }
   });
+
   // Map MRN and anchor sequencing date to each patient in the patients data from Neo4j
   return patientsData.map((patient) => {
     const cmoPatientId = patient.cmoPatientId;
@@ -301,11 +309,17 @@ export function mapPhiToPatientsData({
       ? anchorSeqDateDataByDmpPatientIdMap[dmpPatientId]
           ?.ANCHOR_ONCOTREE_CODE ?? null
       : null;
+    const race = cmoPatientId
+      ? raceByCmoPatientIdMap[cmoPatientId]
+      : dmpPatientId
+      ? raceByDmpPatientIdMap[dmpPatientId]
+      : null;
     return {
       ...patient,
       mrn,
       anchorSequencingDate,
       anchorOncotreeCode,
+      race,
     };
   });
 }

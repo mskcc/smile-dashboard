@@ -1406,6 +1406,7 @@ export type DashboardPatient = {
   dmpPatientId?: Maybe<Scalars["String"]>;
   inDbGap?: Maybe<Scalars["Boolean"]>;
   mrn?: Maybe<Scalars["String"]>;
+  race?: Maybe<Scalars["String"]>;
   smilePatientId: Scalars["String"];
   totalSampleCount?: Maybe<Scalars["Int"]>;
 };
@@ -1490,6 +1491,7 @@ export type DashboardSample = {
   qcCompleteReason?: Maybe<Scalars["String"]>;
   qcCompleteResult?: Maybe<Scalars["String"]>;
   qcCompleteStatus?: Maybe<Scalars["String"]>;
+  race?: Maybe<Scalars["String"]>;
   recipe?: Maybe<Scalars["String"]>;
   revisable?: Maybe<Scalars["Boolean"]>;
   sampleCategory: Scalars["String"];
@@ -1546,6 +1548,7 @@ export type DashboardSampleInput = {
   qcCompleteReason?: InputMaybe<Scalars["String"]>;
   qcCompleteResult?: InputMaybe<Scalars["String"]>;
   qcCompleteStatus?: InputMaybe<Scalars["String"]>;
+  race?: InputMaybe<Scalars["String"]>;
   recipe?: InputMaybe<Scalars["String"]>;
   revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleCategory: Scalars["String"];
@@ -2985,6 +2988,7 @@ export type PatientIdsTriplet = {
   CMO_PATIENT_ID: Scalars["String"];
   DMP_PATIENT_ID?: Maybe<Scalars["String"]>;
   MRN: Scalars["String"];
+  RACE?: Maybe<Scalars["String"]>;
 };
 
 export type PatientOptions = {
@@ -4233,6 +4237,7 @@ export type QueryDashboardRequestsArgs = {
 
 export type QueryDashboardSamplesArgs = {
   columnFilters?: InputMaybe<Array<DashboardRecordColumnFilter>>;
+  includeDemographics: Scalars["Boolean"];
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
@@ -11114,6 +11119,7 @@ export type DashboardPatientsQuery = {
     mrn?: string | null;
     anchorSequencingDate?: string | null;
     anchorOncotreeCode?: string | null;
+    race?: string | null;
     _total?: number | null;
   }>;
 };
@@ -11161,6 +11167,7 @@ export type DashboardSamplesQueryVariables = Exact<{
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
+  includeDemographics?: InputMaybe<Scalars["Boolean"]>;
 }>;
 
 export type DashboardSamplesQuery = {
@@ -11168,6 +11175,7 @@ export type DashboardSamplesQuery = {
   dashboardSamples: Array<{
     __typename?: "DashboardSample";
     sequencingDate?: string | null;
+    race?: string | null;
     _total?: number | null;
     smileSampleId: string;
     revisable?: boolean | null;
@@ -11588,6 +11596,7 @@ export const DashboardPatientsDocument = gql`
       mrn
       anchorSequencingDate
       anchorOncotreeCode
+      race
       _total
     }
   }
@@ -11640,6 +11649,7 @@ export const DashboardSamplesDocument = gql`
     $limit: Int!
     $offset: Int!
     $phiEnabled: Boolean = false
+    $includeDemographics: Boolean = false
   ) {
     dashboardSamples(
       searchVals: $searchVals
@@ -11649,6 +11659,7 @@ export const DashboardSamplesDocument = gql`
       limit: $limit
       offset: $offset
       phiEnabled: $phiEnabled
+      includeDemographics: $includeDemographics
     ) {
       ...DashboardSampleParts
       ...DashboardSampleMetadataParts
@@ -11656,6 +11667,7 @@ export const DashboardSamplesDocument = gql`
       ...DashboardDbGapParts
       ...DashboardPatientParts
       sequencingDate
+      race
       _total
     }
   }

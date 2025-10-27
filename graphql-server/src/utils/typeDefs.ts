@@ -100,6 +100,7 @@ const SAMPLE_FIELDS = `
 
   # Databricks
   sequencingDate: String
+  race: String
 
   # results total
   _total: Int
@@ -149,6 +150,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     mrn: String
     anchorSequencingDate: String
     anchorOncotreeCode: String
+    race: String
     _total: Int
   }
 
@@ -176,6 +178,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     CMO_PATIENT_ID: String!
     DMP_PATIENT_ID: String
     MRN: String!
+    RACE: String
   }
 
   type AnchorSeqDateData {
@@ -226,6 +229,7 @@ const QUERY_TYPEDEFS = gql`
       limit: Int!
       offset: Int!
       phiEnabled: Boolean
+      includeDemographics: Boolean!
     ): [DashboardSample!]!
 
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!

@@ -29,6 +29,7 @@ interface UseFetchDataParams {
   userSearchVal: string;
   recordContexts?: Array<DashboardRecordContext>;
   pollInterval?: number;
+  includeDemographics?: Boolean;
 }
 
 export function useFetchData({
@@ -39,6 +40,7 @@ export function useFetchData({
   userSearchVal,
   recordContexts = [],
   pollInterval = 0, // 0 means no polling
+  includeDemographics,
 }: UseFetchDataParams) {
   // Manage our own loading state becase the lazy query's provided `loading` state
   // does not toggle to `true` as `setServerSideDatasource` is running
@@ -63,6 +65,7 @@ export function useFetchData({
       sort: defaultSort,
       limit: CACHE_BLOCK_SIZE,
       offset: 0,
+      includeDemographics,
     },
     pollInterval,
   });
@@ -90,6 +93,7 @@ export function useFetchData({
             offset: params.request.startRow ?? 0,
             columnFilters: getColumnFilters(params),
             phiEnabled,
+            includeDemographics,
           };
 
           const thisFetch =

@@ -12649,6 +12649,18 @@
             "deprecationReason": null
           },
           {
+            "name": "race",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "smilePatientId",
             "description": null,
             "args": [],
@@ -13548,6 +13560,18 @@
             "deprecationReason": null
           },
           {
+            "name": "race",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "recipe",
             "description": null,
             "args": [],
@@ -14205,6 +14229,18 @@
           },
           {
             "name": "qcCompleteStatus",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "race",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -26954,6 +26990,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "RACE",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -38918,6 +38966,22 @@
                       "name": "DashboardRecordColumnFilter",
                       "ofType": null
                     }
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "includeDemographics",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
                   }
                 },
                 "defaultValue": null,

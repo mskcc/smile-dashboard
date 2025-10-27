@@ -5,7 +5,7 @@ import {
   QueryDashboardSamplesArgs,
   SeqDateBySampleId,
 } from "../../generated/graphql";
-import { OncotreeCache } from "../../utils/cache";
+import { OncotreeCache, PatientDemographicsCache } from "../../utils/cache";
 import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherPredicateFromDateColFilter,
@@ -16,6 +16,7 @@ import {
 } from "../../utils/cypher";
 import { props } from "../../utils/constants";
 import { queryDatabricks } from "../../utils/databricks";
+import { queryPatientIdsTriplets } from "./patients";
 
 const FIELDS_TO_SEARCH = [
   "smileSampleId",
@@ -414,9 +415,11 @@ export function buildSamplesQueryFinal({
 export async function queryDashboardSamples({
   samplesCypherQuery,
   oncotreeCache,
+  patientDemographicsCache,
 }: {
   samplesCypherQuery: string;
   oncotreeCache: OncotreeCache | undefined;
+  patientDemographicsCache: PatientDemographicsCache | undefined;
 }): Promise<DashboardSample[]> {
   const session = neo4jDriver.session();
   try {
@@ -432,6 +435,7 @@ export async function queryDashboardSamples({
         cancerTypeDetailed: oncotreeCache?.[recordObject.oncotreeCode]?.name,
         instrumentModel: instrumentModel,
         platform: getPlatformByInstrumentModel(instrumentModel),
+        race: patientDemographicsCache?.[recordObject.cmoPatientId],
       };
     });
   } catch (error) {

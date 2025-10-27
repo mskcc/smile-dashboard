@@ -38,6 +38,8 @@ import {
 import {
   ONCOTREE_CACHE_KEY,
   OncotreeCache,
+  PATIENT_DEMOGRAPHICS_CACHE_KEY,
+  PatientDemographicsCache,
   SAMPLES_CACHE_KEY,
   SamplesCache,
   updateCacheWithNewSampleUpdates,
@@ -340,6 +342,7 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
           phiEnabled,
+          includeDemographics,
         }: QueryDashboardSamplesArgs,
         { inMemoryCache }: ApolloServerContext
       ) {
@@ -349,6 +352,9 @@ export async function buildCustomSchema(ogm: OGM) {
         const samplesCache = inMemoryCache.get(
           SAMPLES_CACHE_KEY
         ) as SamplesCache;
+        const patientDemographicsCache = inMemoryCache.get(
+          PATIENT_DEMOGRAPHICS_CACHE_KEY
+        ) as PatientDemographicsCache;
 
         const addlOncotreeCodes = getAddlOtCodesMatchingCtOrCtdVals({
           searchVals,
@@ -376,6 +382,7 @@ export async function buildCustomSchema(ogm: OGM) {
         const samplesDataPromise = queryDashboardSamples({
           samplesCypherQuery,
           oncotreeCache,
+          patientDemographicsCache,
         });
 
         if (!canSearchPhiData({ phiEnabled, searchVals })) {
