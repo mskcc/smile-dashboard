@@ -11,7 +11,11 @@ import {
 import { formatCellDate, getAgGridDateColFilterConfigs } from "../utils/agGrid";
 import { MomentInput } from "moment";
 import { DeselectCohortSampleButton } from "./DeselectCohortSampleButton";
-import { useAllBlockedCohortIdsQuery } from "../generated/graphql";
+import {
+  TempoCohortRequest,
+  useAllBlockedCohortIdsQuery,
+} from "../generated/graphql";
+import { CohortBuilderPublishButton } from "./CohortBuilderPublishButton";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -20,14 +24,6 @@ interface CohortBuilderContainerProps {
   >;
   setShowSelectedPopup: React.Dispatch<React.SetStateAction<boolean>>;
   gridRef: RefObject<AgGridReactType<any>>;
-}
-
-export interface CohortBuilderFormMetadata {
-  cohortId: string;
-  endUsers: string;
-  pmUsers: string;
-  projectTitle: string;
-  projectSubtitle: string;
 }
 
 export interface CohortBuilderSample {
@@ -57,7 +53,7 @@ export function CohortBuilderContainer({
     }
   }
 
-  const formattedRowData = selectedRowIds.map((v) => ({
+  const tempoCohortSamplesData = selectedRowIds.map((v) => ({
     primaryId: v.primaryId,
     cmoSampleName: v.cmoSampleName,
     mafCompleteStatus: v.mafCompleteStatus,
@@ -66,14 +62,15 @@ export function CohortBuilderContainer({
     embargoDate: v.embargoDate,
   }));
 
-  const [cohortBuilderData, setCohortBuilderData] =
-    useState<CohortBuilderFormMetadata>({
+  const [tempoCohortRequest, setTempoCohortRequest] =
+    useState<TempoCohortRequest>({
       cohortId: generateNewCohortId(),
       endUsers: "",
       pmUsers: "",
       projectTitle: "",
       projectSubtitle: "",
-    });
+      type: "investigator",
+    } as TempoCohortRequest);
 
   // adding new fields here also requires changes to DataGrid -> handleGridSelectionChanged to pass these fields
   const cohortBuilderColDefs = getCohortBuilderColDefs(
@@ -143,14 +140,14 @@ export function CohortBuilderContainer({
                 readOnly={true}
                 disabled={true}
                 aria-label="Cohort ID"
-                value={cohortBuilderData.cohortId}
+                value={tempoCohortRequest.cohortId}
               />
             </label>
           </Col>
           <Col className="text-end">
             <CohortBuilderDownloadButton
-              cohortBuilderData={cohortBuilderData}
-              cohortSamples={formattedRowData}
+              tempoCohortRequest={tempoCohortRequest}
+              cohortSamples={tempoCohortSamplesData}
             />
           </Col>
         </Row>
@@ -169,15 +166,21 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`Project title (required)`}
                 aria-label="Project title"
-                value={cohortBuilderData.projectTitle}
+                value={tempoCohortRequest.projectTitle}
                 onChange={(e: { currentTarget: { value: any } }) => {
-                  setCohortBuilderData({
-                    ...cohortBuilderData,
+                  setTempoCohortRequest({
+                    ...tempoCohortRequest,
                     projectTitle: e.currentTarget.value,
                   });
                 }}
               />
             </label>
+          </Col>
+          <Col className="text-end">
+            <CohortBuilderPublishButton
+              tempoCohortRequest={tempoCohortRequest}
+              cohortSamples={tempoCohortSamplesData}
+            />
           </Col>
         </Row>
         <Row
@@ -195,14 +198,43 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`Project subtitle (required)`}
                 aria-label="Project subtitle"
-                value={cohortBuilderData.projectSubtitle}
+                value={tempoCohortRequest.projectSubtitle}
                 onChange={(e: { currentTarget: { value: any } }) => {
-                  setCohortBuilderData({
-                    ...cohortBuilderData,
+                  setTempoCohortRequest({
+                    ...tempoCohortRequest,
                     projectSubtitle: e.currentTarget.value,
                   });
                 }}
               />
+            </label>
+          </Col>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label">
+              {"Project Type:  "}
+              <Form.Select
+                name="inputProjectType"
+                className="d-inline-block"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`Project Type (required)`}
+                aria-label="Project Type"
+                defaultValue={"investigator"}
+                value={tempoCohortRequest.type}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setTempoCohortRequest({
+                    ...tempoCohortRequest,
+                    type: e.currentTarget.value,
+                  });
+                }}
+              >
+                <option value="investigator">investigator</option>
+                <option value="operational">operational</option>
+              </Form.Select>
             </label>
           </Col>
         </Row>
@@ -221,10 +253,10 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`mskuser1,mskuser2,... (required)`}
                 aria-label="End users"
-                value={cohortBuilderData.endUsers}
+                value={tempoCohortRequest.endUsers}
                 onChange={(e: { currentTarget: { value: any } }) => {
-                  setCohortBuilderData({
-                    ...cohortBuilderData,
+                  setTempoCohortRequest({
+                    ...tempoCohortRequest,
                     endUsers: e.currentTarget.value,
                   });
                 }}
@@ -247,10 +279,10 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`mskuser1,mskuser2,... (required)`}
                 aria-label="PM users"
-                value={cohortBuilderData.pmUsers}
+                value={tempoCohortRequest.pmUsers}
                 onChange={(e: { currentTarget: { value: any } }) => {
-                  setCohortBuilderData({
-                    ...cohortBuilderData,
+                  setTempoCohortRequest({
+                    ...tempoCohortRequest,
                     pmUsers: e.currentTarget.value,
                   });
                 }}
@@ -258,7 +290,7 @@ export function CohortBuilderContainer({
             </label>
           </Col>
           <Col className="text-end">
-            <span>{formattedRowData.length} samples selected</span>
+            <span>{tempoCohortSamplesData.length} samples selected</span>
           </Col>
         </Row>
 
@@ -272,7 +304,7 @@ export function CohortBuilderContainer({
           >
             <AgGridReact
               columnDefs={cohortBuilderColDefs}
-              rowData={formattedRowData}
+              rowData={tempoCohortSamplesData}
               rowSelection={"multiple"}
               suppressRowClickSelection={true}
               serverSideInfiniteScroll={true}

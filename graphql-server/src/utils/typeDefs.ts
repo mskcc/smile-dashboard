@@ -192,6 +192,22 @@ const QUERY_RESULT_TYPEDEFS = gql`
     DMP_SAMPLE_ID: String!
     SEQUENCING_DATE: String!
   }
+
+  type TempoCohortSample {
+    primaryId: String!
+    cmoId: String
+    embargoDate: String
+  }
+
+  type TempoCohortRequest {
+    cohortId: String!
+    projectTitle: String!
+    projectSubtitle: String!
+    endUsers: String!
+    pmUsers: String!
+    type: String!
+    samples: [TempoCohortSample!]!
+  }
 `;
 
 const QUERY_TYPEDEFS = gql`
@@ -263,6 +279,22 @@ const MUTATION_TYPEDEFS = gql`
     _uniqueSampleCount: Int
   }
 
+  input TempoCohortSampleInput {
+    primaryId: String!
+    cmoId: String
+    embargoDate: String
+  }
+
+  input TempoCohortRequestInput {
+    cohortId: String!
+    projectTitle: String!
+    projectSubtitle: String!
+    endUsers: [String!]!
+    pmUsers: [String!]!
+    type: String!
+    samples: [TempoCohortSampleInput!]!
+  }
+
   type Mutation {
     updateDashboardSamples(
       newDashboardSamples: [DashboardSampleInput]
@@ -271,6 +303,10 @@ const MUTATION_TYPEDEFS = gql`
     updateTempoCohort(
       dashboardCohort: DashboardCohortInput
     ): DashboardCohort
+
+    publishNewTempoCohortRequest(
+      tempoCohortRequest: TempoCohortRequestInput
+    ): TempoCohortRequest
   }
 `;
 

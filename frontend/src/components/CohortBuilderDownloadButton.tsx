@@ -1,32 +1,27 @@
 import { Button } from "react-bootstrap";
-// import { Button, Toast, ToastContainer } from "react-bootstrap";
 import jsdownload from "js-file-download";
-import {
-  CohortBuilderFormMetadata,
-  CohortBuilderSample,
-} from "./CohortBuilderContainer";
+import { CohortBuilderSample } from "./CohortBuilderContainer";
 import { useState } from "react";
 import { CustomTooltip } from "./CustomToolTip";
 import { InfoOutlined } from "@material-ui/icons";
-// import { chain } from "lodash";
 import { formatCohortUsersString } from "../utils/formatCohortUsersString";
+import { TempoCohortRequest } from "../generated/graphql";
+import { validateCohortBuilderInput } from "../utils/validateCohortBuilderInput";
 
 interface CohortBuilderDownloadButtonProps {
-  cohortBuilderData: CohortBuilderFormMetadata;
+  tempoCohortRequest: TempoCohortRequest;
   cohortSamples: CohortBuilderSample[];
 }
 
 export function CohortBuilderDownloadButton({
-  cohortBuilderData,
+  tempoCohortRequest,
   cohortSamples,
 }: CohortBuilderDownloadButtonProps) {
   // eslint-disable-next-line no-unused-vars
   const [isDownloading, setIsDownloading] = useState(false);
-  // const [showToast, setShowToast] = useState(false);
-  // const toggleShow = () => setShowToast(!showToast);
 
   function buildCohortFileContents(
-    data: CohortBuilderFormMetadata,
+    data: TempoCohortRequest,
     samples: CohortBuilderSample[]
   ): string {
     let contents = `#endUsers:${formatCohortUsersString(data.endUsers)}\n`;
@@ -40,42 +35,19 @@ export function CohortBuilderDownloadButton({
     return contents;
   }
 
-  // function handleToastShow() {
-  //   setTimeout(() => setShowToast(true), 3000);
-  // }
-
-  function handleInputValidation() {
-    // Simple validation: check required fields are filled and at least one sample
-    if (
-      cohortBuilderData.cohortId.trim() === "" ||
-      cohortBuilderData.projectTitle.trim() === "" ||
-      cohortBuilderData.projectSubtitle.trim() === "" ||
-      cohortBuilderData.endUsers.length === 0 ||
-      cohortBuilderData.pmUsers.length === 0
-    ) {
-      alert("Missing one or more required fields.");
-      return false;
-    }
-    if (cohortSamples.length === 0) {
-      alert("Cohort must contain at least one sample.");
-      return false;
-    }
-    return true;
-  }
-
   function handleDownload() {
-    if (!handleInputValidation()) {
+    if (!validateCohortBuilderInput(tempoCohortRequest, cohortSamples)) {
       return;
     }
     setIsDownloading(true);
     const fileContents = buildCohortFileContents(
-      cohortBuilderData,
+      tempoCohortRequest,
       cohortSamples
     );
-    jsdownload(fileContents, `${cohortBuilderData.cohortId}.cohort.txt`);
+    jsdownload(fileContents, `${tempoCohortRequest.cohortId}.cohort.txt`);
     setIsDownloading(false);
-    // handleToastShow();
   }
+
   return (
     <>
       <CustomTooltip
@@ -98,44 +70,4 @@ export function CohortBuilderDownloadButton({
       </Button>
     </>
   );
-
-  // return (
-  //   <>
-  //     <CustomTooltip
-  //       icon={
-  //         <InfoOutlined
-  //           style={{
-  //             fontSize: 15,
-  //             color: "grey",
-  //             marginRight: 10,
-  //             marginLeft: 5,
-  //           }}
-  //         />
-  //       }
-  //     >
-  //       Downloads a .cohort.txt file formatted for TEMPO cohort delivery and
-  //       auto-submits to TEMPO pipeline.
-  //     </CustomTooltip>
-  //     <Button size={"sm"} onClick={handleDownload}>
-  //       Deliver & Download New TEMPO Cohort
-  //     </Button>
-  //     <ToastContainer position="bottom-end" className="p-3">
-  //       <Toast
-  //         show={showToast}
-  //         onClose={toggleShow}
-  //         delay={6000}
-  //         autohide
-  //         animation={true}
-  //       >
-  //         <Toast.Header>
-  //           <strong className="me-auto">Cohort Delivery Notification</strong>
-  //           <small>Just now</small>
-  //         </Toast.Header>
-  //         <Toast.Body>
-  //           Published cohort {cohortBuilderData.cohortId} to TEMPO.
-  //         </Toast.Body>
-  //       </Toast>
-  //     </ToastContainer>
-  //   </>
-  // );
 }
