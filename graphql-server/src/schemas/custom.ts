@@ -1,7 +1,6 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext, neo4jDriver } from "../utils/servers";
 import {
-  AnchorSeqDateData,
   DashboardCohort,
   DashboardCohortInput,
   DashboardSampleInput,
@@ -10,6 +9,7 @@ import {
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
   QueryDashboardSamplesArgs,
+  TempoCohortRequestInput,
 } from "../generated/graphql";
 import { props } from "../utils/constants";
 import { connect, headers, StringCodec } from "nats";
@@ -53,7 +53,6 @@ const request = require("request-promise-native");
 import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import { applyMiddleware } from "graphql-middleware";
 import { IMiddlewareResolver } from "graphql-middleware/dist/types";
-import { resolve } from "path";
 import { chain } from "lodash";
 import { randomUUID } from "crypto";
 
@@ -430,8 +429,17 @@ export async function buildCustomSchema(ogm: OGM) {
           dashboardCohort: DashboardCohortInput;
         }
       ) {
-        console.log(dashboardCohort);
         await updateTempoCohortPromise(dashboardCohort);
+      },
+      async publishNewTempoCohortRequest(
+        _source: undefined,
+        {
+          tempoCohortRequest,
+        }: {
+          tempoCohortRequest: TempoCohortRequestInput;
+        }
+      ) {
+        await publishNewTempoCohortRequestPromise(tempoCohortRequest);
       },
     },
   };
@@ -523,6 +531,18 @@ async function updateTempoPromise(newDashboardSample: DashboardSampleInput) {
       JSON.stringify(dataForTempoBillingUpdate)
     );
 
+    resolve(null);
+  });
+}
+
+async function publishNewTempoCohortRequestPromise(
+  tempoCohortRequest: TempoCohortRequestInput
+) {
+  return new Promise((resolve) => {
+    publishNatsMessage(
+      props.pub_tempo_new_cohort_submit,
+      JSON.stringify(tempoCohortRequest)
+    );
     resolve(null);
   });
 }

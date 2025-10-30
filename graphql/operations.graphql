@@ -277,3 +277,21 @@ mutation UpdateTempoCohort($dashboardCohort: DashboardCohortInput!) {
     _uniqueSampleCount
   }
 }
+
+mutation PublishNewTempoCohortRequest(
+  $tempoCohortRequest: TempoCohortRequestInput!
+) {
+  publishNewTempoCohortRequest(tempoCohortRequest: $tempoCohortRequest) {
+    cohortId
+    projectTitle
+    projectSubtitle
+    endUsers
+    pmUsers
+    type
+    samples {
+      primaryId
+      cmoId
+      embargoDate
+    }
+  }
+}

@@ -2239,6 +2239,7 @@ export type Mutation = {
   deleteSamples: DeleteInfo;
   deleteStatuses: DeleteInfo;
   deleteTempos: DeleteInfo;
+  publishNewTempoCohortRequest?: Maybe<TempoCohortRequest>;
   updateBamCompletes: UpdateBamCompletesMutationResponse;
   updateCohortCompletes: UpdateCohortCompletesMutationResponse;
   updateCohorts: UpdateCohortsMutationResponse;
@@ -2401,6 +2402,10 @@ export type MutationDeleteStatusesArgs = {
 export type MutationDeleteTemposArgs = {
   delete?: InputMaybe<TempoDeleteInput>;
   where?: InputMaybe<TempoWhere>;
+};
+
+export type MutationPublishNewTempoCohortRequestArgs = {
+  tempoCohortRequest?: InputMaybe<TempoCohortRequestInput>;
 };
 
 export type MutationUpdateBamCompletesArgs = {
@@ -10135,6 +10140,40 @@ export type TempoBamCompleteHasEventBamCompletesNodeAggregateSelection = {
   status: StringAggregateSelection;
 };
 
+export type TempoCohortRequest = {
+  __typename?: "TempoCohortRequest";
+  cohortId: Scalars["String"];
+  endUsers: Scalars["String"];
+  pmUsers: Scalars["String"];
+  projectSubtitle: Scalars["String"];
+  projectTitle: Scalars["String"];
+  samples: Array<TempoCohortSample>;
+  type: Scalars["String"];
+};
+
+export type TempoCohortRequestInput = {
+  cohortId: Scalars["String"];
+  endUsers: Array<Scalars["String"]>;
+  pmUsers: Array<Scalars["String"]>;
+  projectSubtitle: Scalars["String"];
+  projectTitle: Scalars["String"];
+  samples: Array<TempoCohortSampleInput>;
+  type: Scalars["String"];
+};
+
+export type TempoCohortSample = {
+  __typename?: "TempoCohortSample";
+  cmoId?: Maybe<Scalars["String"]>;
+  embargoDate?: Maybe<Scalars["String"]>;
+  primaryId: Scalars["String"];
+};
+
+export type TempoCohortSampleInput = {
+  cmoId?: InputMaybe<Scalars["String"]>;
+  embargoDate?: InputMaybe<Scalars["String"]>;
+  primaryId: Scalars["String"];
+};
+
 export type TempoConnectInput = {
   hasEventBamCompletes?: InputMaybe<
     Array<TempoHasEventBamCompletesConnectFieldInput>
@@ -11429,6 +11468,29 @@ export type UpdateTempoCohortMutation = {
   } | null;
 };
 
+export type PublishNewTempoCohortRequestMutationVariables = Exact<{
+  tempoCohortRequest: TempoCohortRequestInput;
+}>;
+
+export type PublishNewTempoCohortRequestMutation = {
+  __typename?: "Mutation";
+  publishNewTempoCohortRequest?: {
+    __typename?: "TempoCohortRequest";
+    cohortId: string;
+    projectTitle: string;
+    projectSubtitle: string;
+    endUsers: string;
+    pmUsers: string;
+    type: string;
+    samples: Array<{
+      __typename?: "TempoCohortSample";
+      primaryId: string;
+      cmoId?: string | null;
+      embargoDate?: string | null;
+    }>;
+  } | null;
+};
+
 export const DashboardSamplePartsFragmentDoc = gql`
   fragment DashboardSampleParts on DashboardSample {
     smileSampleId
@@ -12127,3 +12189,66 @@ export type UpdateTempoCohortMutationOptions = Apollo.BaseMutationOptions<
   UpdateTempoCohortMutation,
   UpdateTempoCohortMutationVariables
 >;
+export const PublishNewTempoCohortRequestDocument = gql`
+  mutation PublishNewTempoCohortRequest(
+    $tempoCohortRequest: TempoCohortRequestInput!
+  ) {
+    publishNewTempoCohortRequest(tempoCohortRequest: $tempoCohortRequest) {
+      cohortId
+      projectTitle
+      projectSubtitle
+      endUsers
+      pmUsers
+      type
+      samples {
+        primaryId
+        cmoId
+        embargoDate
+      }
+    }
+  }
+`;
+export type PublishNewTempoCohortRequestMutationFn = Apollo.MutationFunction<
+  PublishNewTempoCohortRequestMutation,
+  PublishNewTempoCohortRequestMutationVariables
+>;
+
+/**
+ * __usePublishNewTempoCohortRequestMutation__
+ *
+ * To run a mutation, you first call `usePublishNewTempoCohortRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublishNewTempoCohortRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publishNewTempoCohortRequestMutation, { data, loading, error }] = usePublishNewTempoCohortRequestMutation({
+ *   variables: {
+ *      tempoCohortRequest: // value for 'tempoCohortRequest'
+ *   },
+ * });
+ */
+export function usePublishNewTempoCohortRequestMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    PublishNewTempoCohortRequestMutation,
+    PublishNewTempoCohortRequestMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    PublishNewTempoCohortRequestMutation,
+    PublishNewTempoCohortRequestMutationVariables
+  >(PublishNewTempoCohortRequestDocument, options);
+}
+export type PublishNewTempoCohortRequestMutationHookResult = ReturnType<
+  typeof usePublishNewTempoCohortRequestMutation
+>;
+export type PublishNewTempoCohortRequestMutationResult =
+  Apollo.MutationResult<PublishNewTempoCohortRequestMutation>;
+export type PublishNewTempoCohortRequestMutationOptions =
+  Apollo.BaseMutationOptions<
+    PublishNewTempoCohortRequestMutation,
+    PublishNewTempoCohortRequestMutationVariables
+  >;
