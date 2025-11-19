@@ -290,7 +290,7 @@ export async function buildCustomSchema(ogm: OGM) {
         }
 
         const allMappedPatientIds = patientIdsTriplets
-          .flatMap((triplet) => [triplet.MRN, triplet.DMP_PATIENT_ID])
+          .flatMap((triplet) => [triplet.MRN, triplet.DMP_PATIENT_ID, triplet.CMO_PATIENT_ID])
           .filter((id): id is string => !!id);
         const [patientsData, anchorSeqDateData] = await Promise.all([
           patientsDataPromise,

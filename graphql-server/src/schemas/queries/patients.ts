@@ -205,9 +205,9 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
     JOIN 
       ${props.databricks_cdsi_demographics_table} ON ${props.databricks_cdsi_demographics_table}.MRN = ${props.databricks_phi_id_mapping_table}.MRN
     WHERE
-      ${props.databricks_phi_id_mapping_table}.DMP_PATIENT_ID IN (${searchValList})
+      (${props.databricks_phi_id_mapping_table}.DMP_PATIENT_ID IN (${searchValList})
     OR ${props.databricks_phi_id_mapping_table}.MRN IN (${searchValList})
-    OR ${props.databricks_phi_id_mapping_table}.CMO_PATIENT_ID IN (${searchValList})
+    OR ${props.databricks_phi_id_mapping_table}.CMO_PATIENT_ID IN (${searchValList}))
     AND ${props.databricks_phi_id_mapping_table}.MRN NOT LIKE 'P-%'
   `;
   const patientIdsTriplets = await queryDatabricks<PatientIdsTriplet>(query);
@@ -220,7 +220,13 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
 }
 
 export async function queryAnchorSeqDateData(searchVals: Array<string>) {
-  const searchValList = searchVals
+  if (!searchVals || searchVals.length === 0) {
+	return [];
+  }
+  const searchValsWithoutCDash = searchVals.map((searchVal) =>
+	searchVal.startsWith("C-") ? searchVal.slice(2) : searchVal
+  );
+  const searchValList = searchValsWithoutCDash
     .map((searchVal) => `'${searchVal}'`)
     .join(",");
   const query = `
@@ -233,6 +239,7 @@ export async function queryAnchorSeqDateData(searchVals: Array<string>) {
       ${props.databricks_seq_dates_by_patient_table}
     WHERE
       MRN IN (${searchValList})
+      OR CMO_PATIENT_ID IN (${searchValList})
       OR DMP_PATIENT_ID IN (${searchValList})
       OR ONCOTREE_CODE IN (${searchValList})
   `;
