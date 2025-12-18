@@ -221,10 +221,10 @@ export async function queryPatientIdsTriplets(searchVals: Array<string>) {
 
 export async function queryAnchorSeqDateData(searchVals: Array<string>) {
   if (!searchVals || searchVals.length === 0) {
-	return [];
+    return [];
   }
   const searchValsWithoutCDash = searchVals.map((searchVal) =>
-	searchVal.startsWith("C-") ? searchVal.slice(2) : searchVal
+    searchVal.startsWith("C-") ? searchVal.slice(2) : searchVal
   );
   const searchValList = searchValsWithoutCDash
     .map((searchVal) => `'${searchVal}'`)
