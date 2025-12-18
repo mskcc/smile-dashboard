@@ -56,6 +56,14 @@ export const SAMPLE_STATUS_MAP: StatusMap = {
       actionItem: "PMs update metadata in SMILE PM dashboard",
       responsibleParty: "PMs",
     },
+  "sample type abbreviation could not resolve based on sampleClass (igo specimenType), sampleOrigin, or sampleType (igo cmoSampleClass)":
+    {
+      item: "Sample type abbreviation not resolved",
+      description:
+        "Metadata required for CMO Sample Name generation is missing, incomplete, or flagged as invalid.",
+      actionItem: "PMs update metadata in SMILE PM dashboard",
+      responsibleParty: "PMs",
+    },
   "recipe missing": {
     item: "Recipe missing from IGO data",
     description: "Recipe field does not have a value assigned in IGO LIMS",
