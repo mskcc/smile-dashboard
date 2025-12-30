@@ -165,6 +165,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     projectSubtitle: String
     status: String
     type: String
+    pipelineVersion: String
     searchableSampleIds: String
     _total: Int
     _uniqueSampleCount: Int
@@ -274,6 +275,7 @@ const MUTATION_TYPEDEFS = gql`
     projectSubtitle: String
     status: String
     type: String
+    pipelineVersion: String
     searchableSampleIds: String
     _total: Int
     _uniqueSampleCount: Int

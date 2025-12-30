@@ -1369,6 +1369,7 @@ export type DashboardCohort = {
   cohortId: Scalars["String"];
   endUsers?: Maybe<Scalars["String"]>;
   initialCohortDeliveryDate?: Maybe<Scalars["String"]>;
+  pipelineVersion?: Maybe<Scalars["String"]>;
   pmUsers?: Maybe<Scalars["String"]>;
   projectSubtitle?: Maybe<Scalars["String"]>;
   projectTitle?: Maybe<Scalars["String"]>;
@@ -1386,6 +1387,7 @@ export type DashboardCohortInput = {
   cohortId: Scalars["String"];
   endUsers?: InputMaybe<Scalars["String"]>;
   initialCohortDeliveryDate?: InputMaybe<Scalars["String"]>;
+  pipelineVersion?: InputMaybe<Scalars["String"]>;
   pmUsers?: InputMaybe<Scalars["String"]>;
   projectSubtitle?: InputMaybe<Scalars["String"]>;
   projectTitle?: InputMaybe<Scalars["String"]>;
@@ -2566,7 +2568,7 @@ export type PatientAlias = {
   isAliasPatientsAggregate?: Maybe<PatientAliasPatientIsAliasPatientsAggregationSelection>;
   isAliasPatientsConnection: PatientAliasIsAliasPatientsConnection;
   namespace: Scalars["String"];
-  value: Scalars["String"];
+  value?: Maybe<Scalars["String"]>;
 };
 
 export type PatientAliasIsAliasPatientsArgs = {
@@ -2608,7 +2610,7 @@ export type PatientAliasConnectWhere = {
 export type PatientAliasCreateInput = {
   isAliasPatients?: InputMaybe<PatientAliasIsAliasPatientsFieldInput>;
   namespace: Scalars["String"];
-  value: Scalars["String"];
+  value?: InputMaybe<Scalars["String"]>;
 };
 
 export type PatientAliasDeleteInput = {
@@ -2795,7 +2797,7 @@ export type PatientAliasWhere = {
   value?: InputMaybe<Scalars["String"]>;
   value_CONTAINS?: InputMaybe<Scalars["String"]>;
   value_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  value_IN?: InputMaybe<Array<Scalars["String"]>>;
+  value_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   value_MATCHES?: InputMaybe<Scalars["String"]>;
   value_STARTS_WITH?: InputMaybe<Scalars["String"]>;
 };
@@ -6088,7 +6090,7 @@ export type Sample = {
   requestsHasSample: Array<Request>;
   requestsHasSampleAggregate?: Maybe<SampleRequestRequestsHasSampleAggregationSelection>;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
-  revisable: Scalars["Boolean"];
+  revisable?: Maybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias: Array<SampleAlias>;
   sampleAliasesIsAliasAggregate?: Maybe<SampleSampleAliasSampleAliasesIsAliasAggregationSelection>;
   sampleAliasesIsAliasConnection: SampleSampleAliasesIsAliasConnection;
@@ -6669,7 +6671,7 @@ export type SampleCreateInput = {
   hasTempoTempos?: InputMaybe<SampleHasTempoTemposFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
-  revisable: Scalars["Boolean"];
+  revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
   sampleCategory: Scalars["String"];
   sampleClass?: InputMaybe<Scalars["String"]>;
@@ -9170,8 +9172,8 @@ export type Status = {
   sampleMetadataHasStatus: Array<SampleMetadata>;
   sampleMetadataHasStatusAggregate?: Maybe<StatusSampleMetadataSampleMetadataHasStatusAggregationSelection>;
   sampleMetadataHasStatusConnection: StatusSampleMetadataHasStatusConnection;
-  validationReport: Scalars["String"];
-  validationStatus: Scalars["Boolean"];
+  validationReport?: Maybe<Scalars["String"]>;
+  validationStatus?: Maybe<Scalars["Boolean"]>;
 };
 
 export type StatusRequestMetadataHasStatusArgs = {
@@ -9234,8 +9236,8 @@ export type StatusConnectWhere = {
 export type StatusCreateInput = {
   requestMetadataHasStatus?: InputMaybe<StatusRequestMetadataHasStatusFieldInput>;
   sampleMetadataHasStatus?: InputMaybe<StatusSampleMetadataHasStatusFieldInput>;
-  validationReport: Scalars["String"];
-  validationStatus: Scalars["Boolean"];
+  validationReport?: InputMaybe<Scalars["String"]>;
+  validationStatus?: InputMaybe<Scalars["Boolean"]>;
 };
 
 export type StatusDeleteInput = {
@@ -9997,7 +9999,7 @@ export type StatusWhere = {
   validationReport?: InputMaybe<Scalars["String"]>;
   validationReport_CONTAINS?: InputMaybe<Scalars["String"]>;
   validationReport_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  validationReport_IN?: InputMaybe<Array<Scalars["String"]>>;
+  validationReport_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   validationReport_MATCHES?: InputMaybe<Scalars["String"]>;
   validationReport_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   validationStatus?: InputMaybe<Scalars["Boolean"]>;
@@ -10018,7 +10020,7 @@ export type StringAggregateSelection = {
 
 export type Tempo = {
   __typename?: "Tempo";
-  accessLevel: Scalars["String"];
+  accessLevel?: Maybe<Scalars["String"]>;
   billed?: Maybe<Scalars["Boolean"]>;
   billedBy?: Maybe<Scalars["String"]>;
   costCenter?: Maybe<Scalars["String"]>;
@@ -10192,7 +10194,7 @@ export type TempoConnectWhere = {
 };
 
 export type TempoCreateInput = {
-  accessLevel: Scalars["String"];
+  accessLevel?: InputMaybe<Scalars["String"]>;
   billed?: InputMaybe<Scalars["Boolean"]>;
   billedBy?: InputMaybe<Scalars["String"]>;
   costCenter?: InputMaybe<Scalars["String"]>;
@@ -10858,7 +10860,7 @@ export type TempoWhere = {
   accessLevel?: InputMaybe<Scalars["String"]>;
   accessLevel_CONTAINS?: InputMaybe<Scalars["String"]>;
   accessLevel_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  accessLevel_IN?: InputMaybe<Array<Scalars["String"]>>;
+  accessLevel_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   accessLevel_MATCHES?: InputMaybe<Scalars["String"]>;
   accessLevel_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   billed?: InputMaybe<Scalars["Boolean"]>;
@@ -11188,6 +11190,7 @@ export type DashboardCohortsQuery = {
     projectSubtitle?: string | null;
     status?: string | null;
     type?: string | null;
+    pipelineVersion?: string | null;
     searchableSampleIds?: string | null;
     _total?: number | null;
     _uniqueSampleCount?: number | null;
@@ -11462,6 +11465,7 @@ export type UpdateTempoCohortMutation = {
     projectSubtitle?: string | null;
     status?: string | null;
     type?: string | null;
+    pipelineVersion?: string | null;
     searchableSampleIds?: string | null;
     _total?: number | null;
     _uniqueSampleCount?: number | null;
@@ -11796,6 +11800,7 @@ export const DashboardCohortsDocument = gql`
       projectSubtitle
       status
       type
+      pipelineVersion
       searchableSampleIds
       _total
       _uniqueSampleCount
@@ -12140,6 +12145,7 @@ export const UpdateTempoCohortDocument = gql`
       projectSubtitle
       status
       type
+      pipelineVersion
       searchableSampleIds
       _total
       _uniqueSampleCount
