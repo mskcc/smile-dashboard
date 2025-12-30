@@ -24,6 +24,7 @@ Confirm that these download actions return a TSV file with the expected columns 
 - [ ] Filtering a column then clicking "Download as TSV"
 - [ ] Search in PHI mode then clicking "Download as TSV"
 - [ ] Clicking the dropdown download option <download option name>
+- [ ] [Samples page -> WES -> Cohort builder] Clicking the "Download New TEMPO Cohort File" (must populate all required fields and have at least one sample selected)
 
 #### AG Grid interactions
 
@@ -37,6 +38,7 @@ Confirm that these download actions return a TSV file with the expected columns 
 
 - [ ] [Samples page] Cell changes confirmation modal appears and works as expected
 - [ ] [Requests page] Validation errors are displayed in the Record Validation modal
+- [ ] [Samples page -> WES -> Cohort builder] Required fields can be populated and selected samples are displayed in the cohort builder modal
 - [ ] Warning modals appear when expected and can be dismissed (e.g. PHI warning when first logged in)
 
 ### Backend
