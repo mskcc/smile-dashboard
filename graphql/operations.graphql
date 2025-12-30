@@ -97,6 +97,7 @@ query DashboardCohorts(
     projectSubtitle
     status
     type
+    pipelineVersion
     searchableSampleIds
     _total
     _uniqueSampleCount
@@ -272,6 +273,7 @@ mutation UpdateTempoCohort($dashboardCohort: DashboardCohortInput!) {
     projectSubtitle
     status
     type
+    pipelineVersion
     searchableSampleIds
     _total
     _uniqueSampleCount

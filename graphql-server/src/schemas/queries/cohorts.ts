@@ -22,7 +22,8 @@ const FIELDS_TO_SEARCH = [
   "projectSubtitle",
   "status",
   "type",
-  "searchableSampleIds", // hidden searchable field
+  "searchableSampleIds", // hidden searchable field,
+  "pipelineVersion",
 ];
 
 export function buildCohortsQueryBody({
@@ -142,7 +143,8 @@ export function buildCohortsQueryBody({
         projectTitle: latestCC.projectTitle,
         projectSubtitle: latestCC.projectSubtitle,
         status: latestCC.status,
-        type: latestCC.type
+        type: latestCC.type,
+        pipelineVersion: latestCC.pipelineVersion
       }
 
     ${cypherWhereClause}

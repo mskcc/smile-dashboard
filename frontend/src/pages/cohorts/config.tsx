@@ -76,16 +76,20 @@ export const cohortColDefs: ColDef<DashboardCohort>[] = [
     ...getAgGridDateColFilterConfigs(),
   },
   {
+    field: "pipelineVersion",
+    headerName: "TEMPO Pipeline Version",
+  },
+  {
     field: "endUsers",
     headerName: "End Users",
     editable: true,
-    headerComponentParams: createCustomHeader(""),
+    headerComponentParams: createCustomHeader(""), // hides the lock icon
   },
   {
     field: "pmUsers",
     headerName: "PM Users",
     editable: true,
-    headerComponentParams: createCustomHeader(""),
+    headerComponentParams: createCustomHeader(""), // hides the lock icon
   },
   {
     field: "projectTitle",
