@@ -520,7 +520,7 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "custodianInformation",
     headerName: "Data Custodian",
     headerTooltip: "Lab Head Name from IGO Request .json OR added by PM",
-    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    headerComponentParams: createCustomHeader(toolTipIcon),
   },
   {
     field: "accessLevel",
