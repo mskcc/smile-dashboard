@@ -135,6 +135,11 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     ...multiLineColDef,
   },
   {
+    field: "igoDeliveryDate",
+    headerName: "IGO Delivery Date",
+    ...getAgGridDateColFilterConfigs(),
+  },
+  {
     field: "importDate",
     headerName: "Last Updated",
     ...getAgGridDateColFilterConfigs(),
@@ -338,6 +343,10 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "sampleCohortIds",
     headerName: "Sample Cohort IDs",
+  },
+  {
+    field: "igoSampleStatus",
+    headerName: "IGO Sample Status",
   },
 ];
 
@@ -651,6 +660,10 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
     width: 220,
   },
+  {
+    field: "igoSampleStatus",
+    headerName: "IGO Sample Status",
+  },
 ];
 
 const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
@@ -786,6 +799,10 @@ const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "dmpPatientAlias",
     headerName: "DMP Patient Alias",
+  },
+  {
+    field: "igoSampleStatus",
+    headerName: "IGO Sample Status",
   },
 ];
 

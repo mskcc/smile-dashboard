@@ -19,6 +19,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  BigInt: any;
 };
 
 export enum AgGridSortDirection {
@@ -369,6 +370,14 @@ export type BamCompletesConnection = {
   totalCount: Scalars["Int"];
 };
 
+export type BigIntAggregateSelection = {
+  __typename?: "BigIntAggregateSelection";
+  average?: Maybe<Scalars["BigInt"]>;
+  max?: Maybe<Scalars["BigInt"]>;
+  min?: Maybe<Scalars["BigInt"]>;
+  sum?: Maybe<Scalars["BigInt"]>;
+};
+
 export type Cohort = {
   __typename?: "Cohort";
   cohortId: Scalars["String"];
@@ -438,6 +447,7 @@ export type CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSel
     __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection";
     date: StringAggregateSelection;
     endUsers: StringAggregateSelection;
+    pipelineVersion: StringAggregateSelection;
     pmUsers: StringAggregateSelection;
     projectSubtitle: StringAggregateSelection;
     projectTitle: StringAggregateSelection;
@@ -452,6 +462,7 @@ export type CohortComplete = {
   cohortsHasCohortCompleteConnection: CohortCompleteCohortsHasCohortCompleteConnection;
   date: Scalars["String"];
   endUsers: Scalars["String"];
+  pipelineVersion?: Maybe<Scalars["String"]>;
   pmUsers: Scalars["String"];
   projectSubtitle: Scalars["String"];
   projectTitle: Scalars["String"];
@@ -485,6 +496,7 @@ export type CohortCompleteAggregateSelection = {
   count: Scalars["Int"];
   date: StringAggregateSelection;
   endUsers: StringAggregateSelection;
+  pipelineVersion: StringAggregateSelection;
   pmUsers: StringAggregateSelection;
   projectSubtitle: StringAggregateSelection;
   projectTitle: StringAggregateSelection;
@@ -632,6 +644,7 @@ export type CohortCompleteCreateInput = {
   cohortsHasCohortComplete?: InputMaybe<CohortCompleteCohortsHasCohortCompleteFieldInput>;
   date: Scalars["String"];
   endUsers: Scalars["String"];
+  pipelineVersion?: InputMaybe<Scalars["String"]>;
   pmUsers: Scalars["String"];
   projectSubtitle: Scalars["String"];
   projectTitle: Scalars["String"];
@@ -674,6 +687,7 @@ export type CohortCompleteRelationInput = {
 export type CohortCompleteSort = {
   date?: InputMaybe<SortDirection>;
   endUsers?: InputMaybe<SortDirection>;
+  pipelineVersion?: InputMaybe<SortDirection>;
   pmUsers?: InputMaybe<SortDirection>;
   projectSubtitle?: InputMaybe<SortDirection>;
   projectTitle?: InputMaybe<SortDirection>;
@@ -687,6 +701,7 @@ export type CohortCompleteUpdateInput = {
   >;
   date?: InputMaybe<Scalars["String"]>;
   endUsers?: InputMaybe<Scalars["String"]>;
+  pipelineVersion?: InputMaybe<Scalars["String"]>;
   pmUsers?: InputMaybe<Scalars["String"]>;
   projectSubtitle?: InputMaybe<Scalars["String"]>;
   projectTitle?: InputMaybe<Scalars["String"]>;
@@ -727,6 +742,12 @@ export type CohortCompleteWhere = {
   endUsers_IN?: InputMaybe<Array<Scalars["String"]>>;
   endUsers_MATCHES?: InputMaybe<Scalars["String"]>;
   endUsers_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  pipelineVersion?: InputMaybe<Scalars["String"]>;
+  pipelineVersion_CONTAINS?: InputMaybe<Scalars["String"]>;
+  pipelineVersion_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  pipelineVersion_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  pipelineVersion_MATCHES?: InputMaybe<Scalars["String"]>;
+  pipelineVersion_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   pmUsers?: InputMaybe<Scalars["String"]>;
   pmUsers_CONTAINS?: InputMaybe<Scalars["String"]>;
   pmUsers_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -909,6 +930,21 @@ export type CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput = {
   endUsers_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   endUsers_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   endUsers_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
+  pipelineVersion_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
+  pipelineVersion_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
+  pipelineVersion_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
+  pipelineVersion_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
+  pipelineVersion_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  pipelineVersion_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   pmUsers_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   pmUsers_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   pmUsers_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -1437,8 +1473,10 @@ export type DashboardRequest = {
   dataAnalystEmail?: Maybe<Scalars["String"]>;
   dataAnalystName?: Maybe<Scalars["String"]>;
   genePanel?: Maybe<Scalars["String"]>;
+  igoDeliveryDate?: Maybe<Scalars["String"]>;
   igoProjectId?: Maybe<Scalars["String"]>;
   igoRequestId: Scalars["String"];
+  ilabRequestId?: Maybe<Scalars["String"]>;
   importDate?: Maybe<Scalars["String"]>;
   investigatorEmail?: Maybe<Scalars["String"]>;
   investigatorName?: Maybe<Scalars["String"]>;
@@ -1479,6 +1517,8 @@ export type DashboardSample = {
   embargoDate?: Maybe<Scalars["String"]>;
   genePanel?: Maybe<Scalars["String"]>;
   historicalCmoSampleNames?: Maybe<Scalars["String"]>;
+  igoDeliveryDate?: Maybe<Scalars["String"]>;
+  igoSampleStatus?: Maybe<Scalars["String"]>;
   importDate?: Maybe<Scalars["String"]>;
   initialPipelineRunDate?: Maybe<Scalars["String"]>;
   instrumentModel?: Maybe<Scalars["String"]>;
@@ -1536,6 +1576,8 @@ export type DashboardSampleInput = {
   embargoDate?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
   historicalCmoSampleNames?: InputMaybe<Scalars["String"]>;
+  igoDeliveryDate?: InputMaybe<Scalars["String"]>;
+  igoSampleStatus?: InputMaybe<Scalars["String"]>;
   importDate?: InputMaybe<Scalars["String"]>;
   initialPipelineRunDate?: InputMaybe<Scalars["String"]>;
   instrumentModel?: InputMaybe<Scalars["String"]>;
@@ -3409,6 +3451,26 @@ export type ProjectHasRequestRequestsNodeAggregationWhereInput = {
   genePanel_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   genePanel_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   genePanel_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  igoDeliveryDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   igoProjectId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   igoProjectId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   igoProjectId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -3439,6 +3501,21 @@ export type ProjectHasRequestRequestsNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   investigatorEmail_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   investigatorEmail_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   investigatorEmail_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -3680,8 +3757,10 @@ export type ProjectRequestHasRequestRequestsNodeAggregateSelection = {
   dataAnalystEmail: StringAggregateSelection;
   dataAnalystName: StringAggregateSelection;
   genePanel: StringAggregateSelection;
+  igoDeliveryDate: BigIntAggregateSelection;
   igoProjectId: StringAggregateSelection;
   igoRequestId: StringAggregateSelection;
+  ilabRequestId: StringAggregateSelection;
   investigatorEmail: StringAggregateSelection;
   investigatorName: StringAggregateSelection;
   labHeadEmail: StringAggregateSelection;
@@ -4475,8 +4554,10 @@ export type Request = {
   hasSampleSamples: Array<Sample>;
   hasSampleSamplesAggregate?: Maybe<RequestSampleHasSampleSamplesAggregationSelection>;
   hasSampleSamplesConnection: RequestHasSampleSamplesConnection;
+  igoDeliveryDate?: Maybe<Scalars["BigInt"]>;
   igoProjectId: Scalars["String"];
   igoRequestId: Scalars["String"];
+  ilabRequestId?: Maybe<Scalars["String"]>;
   investigatorEmail: Scalars["String"];
   investigatorName: Scalars["String"];
   isCmoRequest: Scalars["Boolean"];
@@ -4561,8 +4642,10 @@ export type RequestAggregateSelection = {
   dataAnalystEmail: StringAggregateSelection;
   dataAnalystName: StringAggregateSelection;
   genePanel: StringAggregateSelection;
+  igoDeliveryDate: BigIntAggregateSelection;
   igoProjectId: StringAggregateSelection;
   igoRequestId: StringAggregateSelection;
+  ilabRequestId: StringAggregateSelection;
   investigatorEmail: StringAggregateSelection;
   investigatorName: StringAggregateSelection;
   labHeadEmail: StringAggregateSelection;
@@ -4602,8 +4685,10 @@ export type RequestCreateInput = {
   genePanel: Scalars["String"];
   hasMetadataRequestMetadata?: InputMaybe<RequestHasMetadataRequestMetadataFieldInput>;
   hasSampleSamples?: InputMaybe<RequestHasSampleSamplesFieldInput>;
+  igoDeliveryDate?: InputMaybe<Scalars["BigInt"]>;
   igoProjectId: Scalars["String"];
   igoRequestId: Scalars["String"];
+  ilabRequestId?: InputMaybe<Scalars["String"]>;
   investigatorEmail: Scalars["String"];
   investigatorName: Scalars["String"];
   isCmoRequest: Scalars["Boolean"];
@@ -5172,8 +5257,10 @@ export type RequestMetadataRequestRequestsHasMetadataNodeAggregateSelection = {
   dataAnalystEmail: StringAggregateSelection;
   dataAnalystName: StringAggregateSelection;
   genePanel: StringAggregateSelection;
+  igoDeliveryDate: BigIntAggregateSelection;
   igoProjectId: StringAggregateSelection;
   igoRequestId: StringAggregateSelection;
+  ilabRequestId: StringAggregateSelection;
   investigatorEmail: StringAggregateSelection;
   investigatorName: StringAggregateSelection;
   labHeadEmail: StringAggregateSelection;
@@ -5317,6 +5404,26 @@ export type RequestMetadataRequestsHasMetadataNodeAggregationWhereInput = {
   genePanel_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   genePanel_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   genePanel_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  igoDeliveryDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   igoProjectId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   igoProjectId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   igoProjectId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -5347,6 +5454,21 @@ export type RequestMetadataRequestsHasMetadataNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   investigatorEmail_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   investigatorEmail_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   investigatorEmail_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -5835,8 +5957,10 @@ export type RequestSort = {
   dataAnalystEmail?: InputMaybe<SortDirection>;
   dataAnalystName?: InputMaybe<SortDirection>;
   genePanel?: InputMaybe<SortDirection>;
+  igoDeliveryDate?: InputMaybe<SortDirection>;
   igoProjectId?: InputMaybe<SortDirection>;
   igoRequestId?: InputMaybe<SortDirection>;
+  ilabRequestId?: InputMaybe<SortDirection>;
   investigatorEmail?: InputMaybe<SortDirection>;
   investigatorName?: InputMaybe<SortDirection>;
   isCmoRequest?: InputMaybe<SortDirection>;
@@ -5863,8 +5987,12 @@ export type RequestUpdateInput = {
     Array<RequestHasMetadataRequestMetadataUpdateFieldInput>
   >;
   hasSampleSamples?: InputMaybe<Array<RequestHasSampleSamplesUpdateFieldInput>>;
+  igoDeliveryDate?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_DECREMENT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_INCREMENT?: InputMaybe<Scalars["BigInt"]>;
   igoProjectId?: InputMaybe<Scalars["String"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
+  ilabRequestId?: InputMaybe<Scalars["String"]>;
   investigatorEmail?: InputMaybe<Scalars["String"]>;
   investigatorName?: InputMaybe<Scalars["String"]>;
   isCmoRequest?: InputMaybe<Scalars["Boolean"]>;
@@ -5950,6 +6078,12 @@ export type RequestWhere = {
   hasSampleSamples_SINGLE?: InputMaybe<SampleWhere>;
   /** Return Requests where some of the related Samples match this filter */
   hasSampleSamples_SOME?: InputMaybe<SampleWhere>;
+  igoDeliveryDate?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_IN?: InputMaybe<Array<InputMaybe<Scalars["BigInt"]>>>;
+  igoDeliveryDate_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_LTE?: InputMaybe<Scalars["BigInt"]>;
   igoProjectId?: InputMaybe<Scalars["String"]>;
   igoProjectId_CONTAINS?: InputMaybe<Scalars["String"]>;
   igoProjectId_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -5962,6 +6096,12 @@ export type RequestWhere = {
   igoRequestId_IN?: InputMaybe<Array<Scalars["String"]>>;
   igoRequestId_MATCHES?: InputMaybe<Scalars["String"]>;
   igoRequestId_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  ilabRequestId?: InputMaybe<Scalars["String"]>;
+  ilabRequestId_CONTAINS?: InputMaybe<Scalars["String"]>;
+  ilabRequestId_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  ilabRequestId_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  ilabRequestId_MATCHES?: InputMaybe<Scalars["String"]>;
+  ilabRequestId_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   investigatorEmail?: InputMaybe<Scalars["String"]>;
   investigatorEmail_CONTAINS?: InputMaybe<Scalars["String"]>;
   investigatorEmail_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -8396,8 +8536,10 @@ export type SampleRequestRequestsHasSampleNodeAggregateSelection = {
   dataAnalystEmail: StringAggregateSelection;
   dataAnalystName: StringAggregateSelection;
   genePanel: StringAggregateSelection;
+  igoDeliveryDate: BigIntAggregateSelection;
   igoProjectId: StringAggregateSelection;
   igoRequestId: StringAggregateSelection;
+  ilabRequestId: StringAggregateSelection;
   investigatorEmail: StringAggregateSelection;
   investigatorName: StringAggregateSelection;
   labHeadEmail: StringAggregateSelection;
@@ -8533,6 +8675,26 @@ export type SampleRequestsHasSampleNodeAggregationWhereInput = {
   genePanel_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   genePanel_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   genePanel_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  igoDeliveryDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  igoDeliveryDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   igoProjectId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   igoProjectId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   igoProjectId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -8563,6 +8725,21 @@ export type SampleRequestsHasSampleNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
+  ilabRequestId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  ilabRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   investigatorEmail_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   investigatorEmail_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   investigatorEmail_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -11107,6 +11284,8 @@ export type DashboardRequestsQuery = {
     __typename?: "DashboardRequest";
     igoRequestId: string;
     igoProjectId?: string | null;
+    ilabRequestId?: string | null;
+    igoDeliveryDate?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     importDate?: string | null;
@@ -11247,10 +11426,12 @@ export type DashboardSamplesQuery = {
     historicalCmoSampleNames?: string | null;
     instrumentModel?: string | null;
     platform?: string | null;
+    igoSampleStatus?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
     cancerTypeDetailed?: string | null;
+    igoDeliveryDate?: string | null;
     billed?: boolean | null;
     costCenter?: string | null;
     billedBy?: string | null;
@@ -11306,10 +11487,12 @@ export type DashboardSampleMetadataPartsFragment = {
   historicalCmoSampleNames?: string | null;
   instrumentModel?: string | null;
   platform?: string | null;
+  igoSampleStatus?: string | null;
   validationReport?: string | null;
   validationStatus?: boolean | null;
   cancerType?: string | null;
   cancerTypeDetailed?: string | null;
+  igoDeliveryDate?: string | null;
 };
 
 export type DashboardTempoPartsFragment = {
@@ -11347,6 +11530,8 @@ export type RequestPartsFragment = {
   __typename?: "Request";
   igoRequestId: string;
   igoProjectId: string;
+  ilabRequestId?: string | null;
+  igoDeliveryDate?: any | null;
   genePanel: string;
   dataAnalystName: string;
   dataAnalystEmail: string;
@@ -11400,10 +11585,12 @@ export type UpdateDashboardSamplesMutation = {
     historicalCmoSampleNames?: string | null;
     instrumentModel?: string | null;
     platform?: string | null;
+    igoSampleStatus?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
     cancerTypeDetailed?: string | null;
+    igoDeliveryDate?: string | null;
     billed?: boolean | null;
     costCenter?: string | null;
     billedBy?: string | null;
@@ -11528,10 +11715,12 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     historicalCmoSampleNames
     instrumentModel
     platform
+    igoSampleStatus
     validationReport
     validationStatus
     cancerType
     cancerTypeDetailed
+    igoDeliveryDate
   }
 `;
 export const DashboardTempoPartsFragmentDoc = gql`
@@ -11569,6 +11758,8 @@ export const RequestPartsFragmentDoc = gql`
   fragment RequestParts on Request {
     igoRequestId
     igoProjectId
+    ilabRequestId
+    igoDeliveryDate
     genePanel
     dataAnalystName
     dataAnalystEmail
@@ -11604,6 +11795,8 @@ export const DashboardRequestsDocument = gql`
     ) {
       igoRequestId
       igoProjectId
+      ilabRequestId
+      igoDeliveryDate
       validationReport
       validationStatus
       importDate

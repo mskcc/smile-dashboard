@@ -58,6 +58,7 @@ const SAMPLE_FIELDS = `
   historicalCmoSampleNames: String
   instrumentModel: String
   platform: String
+  igoSampleStatus: String
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport: String
   validationStatus: Boolean
@@ -94,6 +95,9 @@ const SAMPLE_FIELDS = `
   # (s:Sample)-[:HAS_DBGAP]->(d:DbGap)
   dbGapStudy: String
 
+  # (r:Request)-[:HAS_SAMPLE]->(s:Sample)
+  igoDeliveryDate: String
+
   # (s:Sample)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias)
   ## Custom fields
   dmpPatientAlias: String
@@ -110,6 +114,8 @@ const QUERY_RESULT_TYPEDEFS = gql`
   type DashboardRequest {
     igoRequestId: String!
     igoProjectId: String
+    ilabRequestId: String
+    igoDeliveryDate: String
     validationReport: String
     validationStatus: Boolean
     importDate: String

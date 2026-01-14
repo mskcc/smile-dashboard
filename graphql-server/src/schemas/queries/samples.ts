@@ -39,6 +39,7 @@ const FIELDS_TO_SEARCH = [
   "sex",
   "recipe",
   "altId",
+  "igoSampleStatus",
   "costCenter",
   "billedBy",
   "custodianInformation",
@@ -57,6 +58,7 @@ const FIELDS_TO_SEARCH = [
   "dbGapStudy",
   "cfDNA2dBarcode",
   "sampleCohortIds",
+  "igoDeliveryDate",
 ];
 
 export function buildSamplesQueryBody({
@@ -171,6 +173,13 @@ export function buildSamplesQueryBody({
     colFilterField: "qcCompleteDate",
     dateVar: "latestQC.date",
     safelyHandleDateString: true,
+  });
+
+  // igo delivery date (request-level)
+  const igoDeliveryDateColFilter = buildCypherPredicateFromDateColFilter({
+    columnFilters,
+    colFilterField: "igoDeliveryDate",
+    dateVar: "igoDeliveryDate",
   });
 
   const samplesQueryBody = `
@@ -299,12 +308,35 @@ export function buildSamplesQueryBody({
 
     // Get DbGap data
     OPTIONAL MATCH (s)-[:HAS_DBGAP]->(d:DbGap)
+    OPTIONAL MATCH (r:Request)-[:HAS_SAMPLE]->(s)
+    WITH
+      s,
+      latestSm,
+      historicalCmoSampleNames,
+      latestSt,
+      dmpPatientAlias,
+      t,
+      latestBC,
+      latestMC,
+      latestQC,
+      sampleCohortIds,
+      cmoSampleIdFields,
+      d,
+      r,
+
+    CASE s.sampleCategory
+      WHEN "research" THEN r.igoDeliveryDate
+      ELSE null
+    END AS igoDeliveryDate
+
+    ${igoDeliveryDateColFilter && `WHERE ${igoDeliveryDateColFilter}`}
 
     WITH
       ({
         smileSampleId: s.smileSampleId,
         revisable: s.revisable,
         sampleCategory: s.sampleCategory,
+        igoDeliveryDate: apoc.date.format(igoDeliveryDate, 'ms', 'yyyy-MM-dd'),
 
         primaryId: latestSm.primaryId,
         cmoSampleName: latestSm.cmoSampleName,
@@ -333,6 +365,7 @@ export function buildSamplesQueryBody({
         altId: apoc.convert.fromJsonMap(latestSm.additionalProperties).altId,
         validationReport: latestSt.validationReport,
         validationStatus: latestSt.validationStatus,
+        igoSampleStatus: apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus,
 
         smileTempoId: t.smileTempoId,
         billed: t.billed,

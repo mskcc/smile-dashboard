@@ -14,6 +14,8 @@ import {
 const FIELDS_TO_SEARCH = [
   "igoRequestId",
   "igoProjectId",
+  "iLabRequestId",
+  "igoDeliveryDate",
   "importDate",
   "projectManagerName",
   "investigatorName",
@@ -52,6 +54,13 @@ export function buildRequestsQueryBody({
     dateVar: "tempNode.importDate",
   });
   if (importDateColFilter) queryPredicates.push(importDateColFilter);
+
+  const igoDeliveryDateColFilter = buildCypherPredicateFromDateColFilter({
+    columnFilters,
+    colFilterField: "igoDeliveryDate",
+    dateVar: "tempNode.igoDeliveryDate",
+  });
+  if (igoDeliveryDateColFilter) queryPredicates.push(igoDeliveryDateColFilter);
 
   const bicAnalysisColFilter = buildCypherPredicateFromBooleanColFilter({
     columnFilters,
@@ -123,6 +132,8 @@ export function buildRequestsQueryBody({
     WITH
       ({igoRequestId: r.igoRequestId,
       igoProjectId: r.igoProjectId,
+      igoDeliveryDate: apoc.date.format(r.igoDeliveryDate, 'ms', 'yyyy-MM-dd'),
+      ilabRequestId: r.ilabRequestId,
       validationReport: latestStatus.validationReport,
       validationStatus: latestStatus.validationStatus,
       importDate: latestImportDate,
