@@ -88,8 +88,17 @@ export const requestColDefs: ColDef<DashboardRequest>[] = [
     headerName: "IGO Project ID",
   },
   {
+    field: "igoDeliveryDate",
+    headerName: "IGO Delivery Date",
+    ...getAgGridDateColFilterConfigs(),
+  },
+  {
+    field: "ilabRequestId",
+    headerName: "iLab Request ID",
+  },
+  {
     field: "importDate",
-    headerName: "Import Date",
+    headerName: "Last Updated",
     ...getAgGridDateColFilterConfigs(),
   },
   {

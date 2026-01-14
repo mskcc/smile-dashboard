@@ -14,6 +14,8 @@ query DashboardRequests(
   ) {
     igoRequestId
     igoProjectId
+    ilabRequestId
+    igoDeliveryDate
     validationReport
     validationStatus
     importDate
@@ -170,6 +172,7 @@ fragment DashboardSampleMetadataParts on DashboardSample {
   historicalCmoSampleNames
   instrumentModel
   platform
+  igoSampleStatus
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport
   validationStatus
@@ -177,6 +180,9 @@ fragment DashboardSampleMetadataParts on DashboardSample {
   # Oncotree API
   cancerType
   cancerTypeDetailed
+
+  # (r:Request)-[:HAS_SAMPLE]->(s)
+  igoDeliveryDate
 }
 
 fragment DashboardTempoParts on DashboardSample {
@@ -219,6 +225,8 @@ fragment DashboardPatientParts on DashboardSample {
 fragment RequestParts on Request {
   igoRequestId
   igoProjectId
+  ilabRequestId
+  igoDeliveryDate
   genePanel
   dataAnalystName
   dataAnalystEmail
