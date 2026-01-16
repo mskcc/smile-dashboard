@@ -348,6 +348,12 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "igoSampleStatus",
     headerName: "IGO Sample Status",
   },
+  {
+    field: "dmpRecommendedCoverage",
+    headerName: "Recommended Coverage",
+    headerTooltip: "Recommended coverage for DMP samples",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+  },
 ];
 
 const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
@@ -664,6 +670,12 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "igoSampleStatus",
     headerName: "IGO Sample Status",
   },
+  {
+    field: "dmpRecommendedCoverage",
+    headerName: "Recommended Coverage",
+    headerTooltip: "Recommended coverage for DMP samples",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+  },
 ];
 
 const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
@@ -803,6 +815,12 @@ const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "igoSampleStatus",
     headerName: "IGO Sample Status",
+  },
+  {
+    field: "dmpRecommendedCoverage",
+    headerName: "Recommended Coverage",
+    headerTooltip: "Recommended coverage for DMP samples",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
   },
 ];
 

@@ -59,6 +59,7 @@ const FIELDS_TO_SEARCH = [
   "cfDNA2dBarcode",
   "sampleCohortIds",
   "igoDeliveryDate",
+  "dmpRecommendedCoverage",
 ];
 
 export function buildSamplesQueryBody({
@@ -300,7 +301,8 @@ export function buildSamplesQueryBody({
       latestMC[0] AS latestMC,
       latestQC[0] AS latestQC,
       coalesce(apoc.text.join([id IN sampleCohortIds WHERE id IS NOT NULL], ', '), '') AS sampleCohortIds,
-      apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields) AS cmoSampleIdFields
+      apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields) AS cmoSampleIdFields,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage
 
       ${bamCompleteDateColFilter && `WHERE ${bamCompleteDateColFilter}`}
       ${mafCompleteDateColFilter && `WHERE ${mafCompleteDateColFilter}`}
@@ -321,6 +323,7 @@ export function buildSamplesQueryBody({
       latestQC,
       sampleCohortIds,
       cmoSampleIdFields,
+      dmpRecommendedCoverage,
       d,
       r,
 
@@ -366,6 +369,7 @@ export function buildSamplesQueryBody({
         validationReport: latestSt.validationReport,
         validationStatus: latestSt.validationStatus,
         igoSampleStatus: apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus,
+        dmpRecommendedCoverage: dmpRecommendedCoverage,
 
         smileTempoId: t.smileTempoId,
         billed: t.billed,
