@@ -1513,6 +1513,7 @@ export type DashboardSample = {
   custodianInformation?: Maybe<Scalars["String"]>;
   dbGapStudy?: Maybe<Scalars["String"]>;
   dmpPatientAlias?: Maybe<Scalars["String"]>;
+  dmpRecommendedCoverage?: Maybe<Scalars["String"]>;
   embargoDate?: Maybe<Scalars["String"]>;
   genePanel?: Maybe<Scalars["String"]>;
   historicalCmoSampleNames?: Maybe<Scalars["String"]>;
@@ -1572,6 +1573,7 @@ export type DashboardSampleInput = {
   custodianInformation?: InputMaybe<Scalars["String"]>;
   dbGapStudy?: InputMaybe<Scalars["String"]>;
   dmpPatientAlias?: InputMaybe<Scalars["String"]>;
+  dmpRecommendedCoverage?: InputMaybe<Scalars["String"]>;
   embargoDate?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
   historicalCmoSampleNames?: InputMaybe<Scalars["String"]>;
@@ -11426,6 +11428,7 @@ export type DashboardSamplesQuery = {
     instrumentModel?: string | null;
     platform?: string | null;
     igoSampleStatus?: string | null;
+    dmpRecommendedCoverage?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11487,6 +11490,7 @@ export type DashboardSampleMetadataPartsFragment = {
   instrumentModel?: string | null;
   platform?: string | null;
   igoSampleStatus?: string | null;
+  dmpRecommendedCoverage?: string | null;
   validationReport?: string | null;
   validationStatus?: boolean | null;
   cancerType?: string | null;
@@ -11585,6 +11589,7 @@ export type UpdateDashboardSamplesMutation = {
     instrumentModel?: string | null;
     platform?: string | null;
     igoSampleStatus?: string | null;
+    dmpRecommendedCoverage?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11715,6 +11720,7 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     instrumentModel
     platform
     igoSampleStatus
+    dmpRecommendedCoverage
     validationReport
     validationStatus
     cancerType

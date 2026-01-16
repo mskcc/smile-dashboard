@@ -59,6 +59,7 @@ const SAMPLE_FIELDS = `
   instrumentModel: String
   platform: String
   igoSampleStatus: String
+  dmpRecommendedCoverage: String
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport: String
   validationStatus: Boolean
