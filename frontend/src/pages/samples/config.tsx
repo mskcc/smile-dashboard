@@ -384,10 +384,28 @@ const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
   {
     field: "analyteType",
     headerName: "ANALYTE_TYPE",
+    valueGetter: (params) => {
+      const analyteType = params.data?.analyteType?.toUpperCase() ?? "";
+      if (analyteType === "DNA AND RNA") {
+        return "DNA/RNA";
+      } else {
+        return analyteType;
+      }
+    },
   },
   {
     field: "tumorOrNormal",
     headerName: "IS_TUMOR",
+    valueGetter: (params) => {
+      const tumorOrNormal = params.data?.tumorOrNormal?.toUpperCase() ?? "";
+      if (tumorOrNormal === "TUMOR") {
+        return "Y";
+      } else if (tumorOrNormal === "NORMAL") {
+        return "N";
+      } else {
+        return "";
+      }
+    },
   },
   {
     field: "sampleType",
