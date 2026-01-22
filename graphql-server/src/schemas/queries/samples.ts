@@ -56,6 +56,7 @@ const FIELDS_TO_SEARCH = [
   "historicalCmoSampleNames",
   "sampleCategory",
   "dbGapStudy",
+  "irbConsentProtocol",
   "cfDNA2dBarcode",
   "sampleCohortIds",
   "igoDeliveryDate",
@@ -391,6 +392,7 @@ export function buildSamplesQueryBody({
         sampleCohortIds: sampleCohortIds,
 
         dbGapStudy: d.dbGapStudy,
+        irbConsentProtocol: d.irbConsentProtocol,
 
         dmpPatientAlias: dmpPatientAlias
       }) AS tempNode

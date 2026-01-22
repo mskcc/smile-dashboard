@@ -336,24 +336,6 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "sampleCategory",
     headerName: "SMILE Sample Category",
   },
-  {
-    field: "dbGapStudy",
-    headerName: "dbGaP Study ID",
-  },
-  {
-    field: "sampleCohortIds",
-    headerName: "Sample Cohort IDs",
-  },
-  {
-    field: "igoSampleStatus",
-    headerName: "IGO Sample Status",
-  },
-  {
-    field: "dmpRecommendedCoverage",
-    headerName: "Recommended Coverage",
-    headerTooltip: "Recommended coverage for DMP samples",
-    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
-  },
 ];
 
 const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
@@ -492,6 +474,12 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "dbGapStudy",
     headerName: "dbGaP Study ID",
+  },
+  {
+    field: "irbConsentProtocol",
+    headerName: "IRB Consent Protocol",
+    headerTooltip: "Consent protocol used for IRB approval",
+    headerComponentParams: createCustomHeader(toolTipIcon),
   },
   {
     field: "sampleCohortIds",
@@ -834,12 +822,6 @@ const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "igoSampleStatus",
     headerName: "IGO Sample Status",
   },
-  {
-    field: "dmpRecommendedCoverage",
-    headerName: "Recommended Coverage",
-    headerTooltip: "Recommended coverage for DMP samples",
-    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
-  },
 ];
 
 const editableSampleFields = new Set([
@@ -854,11 +836,6 @@ const editableSampleFields = new Set([
   "sampleOrigin",
   "tissueLocation",
   "sex",
-  "billed",
-  "costCenter",
-  "custodianInformation",
-  "accessLevel",
-  "dbGapStudy",
 ]);
 
 const editableWesSampleFields = new Set([
@@ -866,16 +843,13 @@ const editableWesSampleFields = new Set([
   "costCenter",
   "custodianInformation",
   "accessLevel",
-  "pmUsers",
-  "endUsers",
+  "dbGapStudy",
+  "irbConsentProtocol",
 ]);
 
 export const allEditableFields = new Set(
   Array.from(editableSampleFields).concat(Array.from(editableWesSampleFields))
 );
-
-const readOnlyWesSampleColDefs = _.cloneDeep(wesSampleColDefs);
-const readOnlyAccessSampleColDefs = _.cloneDeep(accessSampleColDefs);
 
 export function setupEditableSampleFields(
   samplesColDefs: Array<ColDef>,
@@ -950,15 +924,12 @@ export function setupEditableSampleFields(
   });
 }
 
-setupEditableSampleFields(sampleColDefs, editableSampleFields);
-setupEditableSampleFields(wesSampleColDefs, editableWesSampleFields);
+setupEditableSampleFields(sampleColDefs, allEditableFields);
+setupEditableSampleFields(wesSampleColDefs, allEditableFields);
+setupEditableSampleFields(accessSampleColDefs, allEditableFields);
 
 const combinedSampleColDefs = _.uniqBy(
-  [
-    ...sampleColDefs,
-    ...readOnlyWesSampleColDefs,
-    ...readOnlyAccessSampleColDefs,
-  ],
+  [...sampleColDefs, ...wesSampleColDefs, ...accessSampleColDefs],
   "field"
 );
 
@@ -970,12 +941,12 @@ export const filterButtonOptions: Array<FilterButtonOption> = [
   },
   {
     label: "WES",
-    colDefs: readOnlyWesSampleColDefs,
+    colDefs: wesSampleColDefs,
     recordContexts: WES_SAMPLE_CONTEXT,
   },
   {
     label: "ACCESS/CMO-CH",
-    colDefs: readOnlyAccessSampleColDefs,
+    colDefs: accessSampleColDefs,
     recordContexts: ACCESS_SAMPLE_CONTEXT,
   },
 ];
