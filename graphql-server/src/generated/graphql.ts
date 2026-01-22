@@ -1523,6 +1523,7 @@ export type DashboardSample = {
   initialPipelineRunDate?: Maybe<Scalars["String"]>;
   instrumentModel?: Maybe<Scalars["String"]>;
   investigatorSampleId?: Maybe<Scalars["String"]>;
+  irbConsentProtocol?: Maybe<Scalars["String"]>;
   mafCompleteDate?: Maybe<Scalars["String"]>;
   mafCompleteNormalPrimaryId?: Maybe<Scalars["String"]>;
   mafCompleteStatus?: Maybe<Scalars["String"]>;
@@ -1583,6 +1584,7 @@ export type DashboardSampleInput = {
   initialPipelineRunDate?: InputMaybe<Scalars["String"]>;
   instrumentModel?: InputMaybe<Scalars["String"]>;
   investigatorSampleId?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   mafCompleteDate?: InputMaybe<Scalars["String"]>;
   mafCompleteNormalPrimaryId?: InputMaybe<Scalars["String"]>;
   mafCompleteStatus?: InputMaybe<Scalars["String"]>;
@@ -11452,6 +11454,7 @@ export type DashboardSamplesQuery = {
     qcCompleteStatus?: string | null;
     sampleCohortIds?: string | null;
     dbGapStudy?: string | null;
+    irbConsentProtocol?: string | null;
     dmpPatientAlias?: string | null;
   }>;
 };
@@ -11522,6 +11525,7 @@ export type DashboardTempoPartsFragment = {
 export type DashboardDbGapPartsFragment = {
   __typename?: "DashboardSample";
   dbGapStudy?: string | null;
+  irbConsentProtocol?: string | null;
 };
 
 export type DashboardPatientPartsFragment = {
@@ -11613,6 +11617,7 @@ export type UpdateDashboardSamplesMutation = {
     qcCompleteStatus?: string | null;
     sampleCohortIds?: string | null;
     dbGapStudy?: string | null;
+    irbConsentProtocol?: string | null;
   } | null> | null;
 };
 
@@ -11752,6 +11757,7 @@ export const DashboardTempoPartsFragmentDoc = gql`
 export const DashboardDbGapPartsFragmentDoc = gql`
   fragment DashboardDbGapParts on DashboardSample {
     dbGapStudy
+    irbConsentProtocol
   }
 `;
 export const DashboardPatientPartsFragmentDoc = gql`

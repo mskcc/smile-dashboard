@@ -13917,6 +13917,18 @@
             "deprecationReason": null
           },
           {
+            "name": "irbConsentProtocol",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "mafCompleteDate",
             "description": null,
             "args": [],
@@ -14622,6 +14634,18 @@
           },
           {
             "name": "investigatorSampleId",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "irbConsentProtocol",
             "description": null,
             "type": {
               "kind": "SCALAR",

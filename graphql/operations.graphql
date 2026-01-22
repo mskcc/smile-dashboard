@@ -215,6 +215,7 @@ fragment DashboardTempoParts on DashboardSample {
 fragment DashboardDbGapParts on DashboardSample {
   # (s:Sample)-[:HAS_DBGAP]->(d:DbGap)
   dbGapStudy
+  irbConsentProtocol
 }
 
 fragment DashboardPatientParts on DashboardSample {

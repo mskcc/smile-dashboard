@@ -556,6 +556,7 @@ async function updateDbGapPromise(newDashboardSample: DashboardSampleInput) {
     const dataForDbGapUpdate = {
       primaryId: newDashboardSample.primaryId,
       dbGapStudy: newDashboardSample.dbGapStudy,
+      irbConsentProtocol: newDashboardSample.irbConsentProtocol,
     };
 
     publishNatsMessage(
@@ -608,11 +609,9 @@ const EDITABLE_TEMPO_FIELDS = new Set([
   "billedBy",
   "custodianInformation",
   "accessLevel",
-  "pmUsers",
-  "endUsers",
 ]);
 
-const EDITABLE_DBGAP_FIELDS = new Set(["dbGapStudy"]);
+const EDITABLE_DBGAP_FIELDS = new Set(["dbGapStudy", "irbConsentProtocol"]);
 
 async function updateAllSamplesConcurrently(
   newDashboardSamples: DashboardSampleInput[],
