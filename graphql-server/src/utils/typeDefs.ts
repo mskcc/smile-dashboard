@@ -217,6 +217,63 @@ const QUERY_RESULT_TYPEDEFS = gql`
     type: String!
     samples: [TempoCohortSample!]!
   }
+
+  type DmpTrackerRecord {
+    sample_status: String
+    duplicate_sample: String
+    request_reference_number: String
+    cmo_plate_id: String
+    date_submitted_to_dmp: String
+    pm_investigator_notification_status: String
+    specimen_type: String
+    molecular_pathology_accession_number: String
+    dmp_sample_id: String
+    patient_id: String
+    sample_id: String
+    wes_id: String
+    tumor_or_normal: String
+    sample_downstream_application: String
+    study_name: String
+    primary_investigator: String
+    fund_cost_center: String
+    tumor_type: String
+    baitset: String
+    sequencer: String
+    data_custodian: String
+    tempo_pipeline_status: String
+    tempo_output_delivery_date: String
+    project_manager: String
+    igo_project_number: String
+    igo_request_id_edited: String
+    request_date: String
+    igo_delivery_date: String
+    igo_id: String
+    alt_id: String
+    investigator_sample_id: String
+    cmo_comments: String
+    chargeback_applied: String
+    igo_request_id_not_edited: String
+    amount_of_material_requested_ng: String
+    dna_input_into_library_ng: String
+    barcode_index: String
+    truseq_barcode_id: String
+    library_concentration_ngul: String
+    orginal_dna_concentration: String
+    final_amount_ng: String
+    provided_amount_ul: String
+    well_id: String
+    dmp_comment: String
+    additional_comments: String
+    record_id_copy: String
+    record_id: String
+    id: String
+    created_by: String
+    date_created: String
+    related_directory: String
+    last_modified_by: String
+    last_modified_date: String
+    _total: Int
+  }
 `;
 
 const QUERY_TYPEDEFS = gql`
@@ -260,6 +317,14 @@ const QUERY_TYPEDEFS = gql`
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!
 
     allBlockedCohortIds: [String!]!
+
+    dmpTrackerRecords(
+      searchVals: [String!]
+      columnFilters: [DashboardRecordColumnFilter!]
+      sort: DashboardRecordSort!
+      limit: Int!
+      offset: Int!
+    ): [DmpTrackerRecord!]!
   }
 `;
 
