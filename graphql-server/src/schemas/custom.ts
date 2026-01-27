@@ -9,6 +9,7 @@ import {
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
   QueryDashboardSamplesArgs,
+  QueryDmpTrackerRecordsArgs,
   TempoCohortRequestInput,
 } from "../generated/graphql";
 import { props } from "../utils/constants";
@@ -55,6 +56,7 @@ import { applyMiddleware } from "graphql-middleware";
 import { IMiddlewareResolver } from "graphql-middleware/dist/types";
 import { chain } from "lodash";
 import { randomUUID } from "crypto";
+import { queryDmpTrackerRecords } from "../utils/databricks";
 
 const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
 
@@ -64,6 +66,7 @@ type AuthMiddleware = {
     dashboardPatients: IMiddlewareResolver;
     allAnchorSeqDateData: IMiddlewareResolver;
     allBlockedCohortIds: IMiddlewareResolver;
+    dmpTrackerRecords: IMiddlewareResolver;
   };
 };
 
@@ -152,6 +155,16 @@ export async function buildCustomSchema(ogm: OGM) {
         return await resolve(parent, args, context, info);
       },
 
+      async dmpTrackerRecords(
+        resolve,
+        parent,
+        args: QueryDmpTrackerRecordsArgs,
+        context: ApolloServerContext,
+        info
+      ) {
+        return await resolve(parent, args, context, info);
+      },
+
       async allBlockedCohortIds() {
         return queryAllBlockedCohortIds();
       },
@@ -225,6 +238,16 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async allBlockedCohortIds() {
         return queryAllBlockedCohortIds();
+      },
+
+      async dmpTrackerRecords(
+        resolve,
+        parent,
+        args: QueryDmpTrackerRecordsArgs,
+        context: ApolloServerContext,
+        info
+      ) {
+        return await resolve(parent, args, context, info);
       },
     },
   };
@@ -310,6 +333,24 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async allAnchorSeqDateData() {
         return await queryAllAnchorSeqDateData();
+      },
+
+      async dmpTrackerRecords(
+        _source: undefined,
+        {
+          searchVals,
+          columnFilters,
+          sort,
+          limit,
+          offset,
+        }: QueryDmpTrackerRecordsArgs
+      ) {
+        return await queryDmpTrackerRecords({
+          searchVals,
+          columnFilters,
+          limit,
+          offset,
+        });
       },
 
       async allBlockedCohortIds() {
