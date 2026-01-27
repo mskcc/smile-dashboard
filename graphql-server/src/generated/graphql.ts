@@ -1617,6 +1617,7 @@ export type DashboardSampleInput = {
 export type DbGap = {
   __typename?: "DbGap";
   dbGapStudy: Scalars["String"];
+  irbConsentProtocol?: Maybe<Scalars["String"]>;
   samplesHasDbgap: Array<Sample>;
   samplesHasDbgapAggregate?: Maybe<DbGapSampleSamplesHasDbgapAggregationSelection>;
   samplesHasDbgapConnection: DbGapSamplesHasDbgapConnection;
@@ -1646,6 +1647,7 @@ export type DbGapAggregateSelection = {
   __typename?: "DbGapAggregateSelection";
   count: Scalars["Int"];
   dbGapStudy: StringAggregateSelection;
+  irbConsentProtocol: StringAggregateSelection;
   smileDbGapId: StringAggregateSelection;
 };
 
@@ -1659,6 +1661,7 @@ export type DbGapConnectWhere = {
 
 export type DbGapCreateInput = {
   dbGapStudy: Scalars["String"];
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   samplesHasDbgap?: InputMaybe<DbGapSamplesHasDbgapFieldInput>;
   smileDbGapId: Scalars["String"];
 };
@@ -1846,11 +1849,13 @@ export type DbGapSamplesHasDbgapUpdateFieldInput = {
 /** Fields to sort DbGaps by. The order in which sorts are applied is not guaranteed when specifying many fields in one DbGapSort object. */
 export type DbGapSort = {
   dbGapStudy?: InputMaybe<SortDirection>;
+  irbConsentProtocol?: InputMaybe<SortDirection>;
   smileDbGapId?: InputMaybe<SortDirection>;
 };
 
 export type DbGapUpdateInput = {
   dbGapStudy?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   samplesHasDbgap?: InputMaybe<Array<DbGapSamplesHasDbgapUpdateFieldInput>>;
   smileDbGapId?: InputMaybe<Scalars["String"]>;
 };
@@ -1865,6 +1870,12 @@ export type DbGapWhere = {
   dbGapStudy_IN?: InputMaybe<Array<Scalars["String"]>>;
   dbGapStudy_MATCHES?: InputMaybe<Scalars["String"]>;
   dbGapStudy_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_CONTAINS?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  irbConsentProtocol_MATCHES?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   samplesHasDbgapAggregate?: InputMaybe<DbGapSamplesHasDbgapAggregateInput>;
   /** Return DbGaps where all of the related DbGapSamplesHasDbgapConnections match this filter */
   samplesHasDbgapConnection_ALL?: InputMaybe<DbGapSamplesHasDbgapConnectionWhere>;
@@ -1904,6 +1915,64 @@ export type DeleteInfo = {
   bookmark?: Maybe<Scalars["String"]>;
   nodesDeleted: Scalars["Int"];
   relationshipsDeleted: Scalars["Int"];
+};
+
+export type DmpTrackerRecord = {
+  __typename?: "DmpTrackerRecord";
+  _total?: Maybe<Scalars["Int"]>;
+  additional_comments?: Maybe<Scalars["String"]>;
+  alt_id?: Maybe<Scalars["String"]>;
+  amount_of_material_requested_ng?: Maybe<Scalars["String"]>;
+  baitset?: Maybe<Scalars["String"]>;
+  barcode_index?: Maybe<Scalars["String"]>;
+  chargeback_applied?: Maybe<Scalars["String"]>;
+  cmo_comments?: Maybe<Scalars["String"]>;
+  cmo_plate_id?: Maybe<Scalars["String"]>;
+  created_by?: Maybe<Scalars["String"]>;
+  data_custodian?: Maybe<Scalars["String"]>;
+  date_created?: Maybe<Scalars["String"]>;
+  date_submitted_to_dmp?: Maybe<Scalars["String"]>;
+  dmp_comment?: Maybe<Scalars["String"]>;
+  dmp_sample_id?: Maybe<Scalars["String"]>;
+  dna_input_into_library_ng?: Maybe<Scalars["String"]>;
+  duplicate_sample?: Maybe<Scalars["String"]>;
+  final_amount_ng?: Maybe<Scalars["String"]>;
+  fund_cost_center?: Maybe<Scalars["String"]>;
+  id?: Maybe<Scalars["String"]>;
+  igo_delivery_date?: Maybe<Scalars["String"]>;
+  igo_id?: Maybe<Scalars["String"]>;
+  igo_project_number?: Maybe<Scalars["String"]>;
+  igo_request_id_edited?: Maybe<Scalars["String"]>;
+  igo_request_id_not_edited?: Maybe<Scalars["String"]>;
+  investigator_sample_id?: Maybe<Scalars["String"]>;
+  last_modified_by?: Maybe<Scalars["String"]>;
+  last_modified_date?: Maybe<Scalars["String"]>;
+  library_concentration_ngul?: Maybe<Scalars["String"]>;
+  molecular_pathology_accession_number?: Maybe<Scalars["String"]>;
+  orginal_dna_concentration?: Maybe<Scalars["String"]>;
+  patient_id?: Maybe<Scalars["String"]>;
+  pm_investigator_notification_status?: Maybe<Scalars["String"]>;
+  primary_investigator?: Maybe<Scalars["String"]>;
+  project_manager?: Maybe<Scalars["String"]>;
+  provided_amount_ul?: Maybe<Scalars["String"]>;
+  record_id?: Maybe<Scalars["String"]>;
+  record_id_copy?: Maybe<Scalars["String"]>;
+  related_directory?: Maybe<Scalars["String"]>;
+  request_date?: Maybe<Scalars["String"]>;
+  request_reference_number?: Maybe<Scalars["String"]>;
+  sample_downstream_application?: Maybe<Scalars["String"]>;
+  sample_id?: Maybe<Scalars["String"]>;
+  sample_status?: Maybe<Scalars["String"]>;
+  sequencer?: Maybe<Scalars["String"]>;
+  specimen_type?: Maybe<Scalars["String"]>;
+  study_name?: Maybe<Scalars["String"]>;
+  tempo_output_delivery_date?: Maybe<Scalars["String"]>;
+  tempo_pipeline_status?: Maybe<Scalars["String"]>;
+  truseq_barcode_id?: Maybe<Scalars["String"]>;
+  tumor_or_normal?: Maybe<Scalars["String"]>;
+  tumor_type?: Maybe<Scalars["String"]>;
+  well_id?: Maybe<Scalars["String"]>;
+  wes_id?: Maybe<Scalars["String"]>;
 };
 
 export type MafComplete = {
@@ -4210,6 +4279,7 @@ export type Query = {
   dbGaps: Array<DbGap>;
   dbGapsAggregate: DbGapAggregateSelection;
   dbGapsConnection: DbGapsConnection;
+  dmpTrackerRecords: Array<DmpTrackerRecord>;
   mafCompletes: Array<MafComplete>;
   mafCompletesAggregate: MafCompleteAggregateSelection;
   mafCompletesConnection: MafCompletesConnection;
@@ -4350,6 +4420,14 @@ export type QueryDbGapsConnectionArgs = {
   first?: InputMaybe<Scalars["Int"]>;
   sort?: InputMaybe<Array<InputMaybe<DbGapSort>>>;
   where?: InputMaybe<DbGapWhere>;
+};
+
+export type QueryDmpTrackerRecordsArgs = {
+  columnFilters?: InputMaybe<Array<DashboardRecordColumnFilter>>;
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
+  searchVals?: InputMaybe<Array<Scalars["String"]>>;
+  sort: DashboardRecordSort;
 };
 
 export type QueryMafCompletesArgs = {
@@ -6830,6 +6908,7 @@ export type SampleDbGapHasDbgapDbGapsAggregationSelection = {
 export type SampleDbGapHasDbgapDbGapsNodeAggregateSelection = {
   __typename?: "SampleDbGapHasDbgapDbGapsNodeAggregateSelection";
   dbGapStudy: StringAggregateSelection;
+  irbConsentProtocol: StringAggregateSelection;
   smileDbGapId: StringAggregateSelection;
 };
 
@@ -6954,6 +7033,21 @@ export type SampleHasDbgapDbGapsNodeAggregationWhereInput = {
   dbGapStudy_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   dbGapStudy_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   dbGapStudy_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   smileDbGapId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   smileDbGapId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   smileDbGapId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -11628,6 +11722,77 @@ export type AllBlockedCohortIdsQuery = {
   allBlockedCohortIds: Array<string>;
 };
 
+export type DmpTrackerRecordsQueryVariables = Exact<{
+  sort: DashboardRecordSort;
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
+  searchVals?: InputMaybe<Array<Scalars["String"]> | Scalars["String"]>;
+  columnFilters?: InputMaybe<
+    Array<DashboardRecordColumnFilter> | DashboardRecordColumnFilter
+  >;
+}>;
+
+export type DmpTrackerRecordsQuery = {
+  __typename?: "Query";
+  dmpTrackerRecords: Array<{
+    __typename?: "DmpTrackerRecord";
+    sample_status?: string | null;
+    duplicate_sample?: string | null;
+    request_reference_number?: string | null;
+    cmo_plate_id?: string | null;
+    date_submitted_to_dmp?: string | null;
+    pm_investigator_notification_status?: string | null;
+    specimen_type?: string | null;
+    molecular_pathology_accession_number?: string | null;
+    dmp_sample_id?: string | null;
+    patient_id?: string | null;
+    sample_id?: string | null;
+    wes_id?: string | null;
+    tumor_or_normal?: string | null;
+    sample_downstream_application?: string | null;
+    study_name?: string | null;
+    primary_investigator?: string | null;
+    fund_cost_center?: string | null;
+    tumor_type?: string | null;
+    baitset?: string | null;
+    sequencer?: string | null;
+    data_custodian?: string | null;
+    tempo_pipeline_status?: string | null;
+    tempo_output_delivery_date?: string | null;
+    project_manager?: string | null;
+    igo_project_number?: string | null;
+    igo_request_id_edited?: string | null;
+    request_date?: string | null;
+    igo_delivery_date?: string | null;
+    igo_id?: string | null;
+    alt_id?: string | null;
+    investigator_sample_id?: string | null;
+    cmo_comments?: string | null;
+    chargeback_applied?: string | null;
+    igo_request_id_not_edited?: string | null;
+    amount_of_material_requested_ng?: string | null;
+    dna_input_into_library_ng?: string | null;
+    barcode_index?: string | null;
+    truseq_barcode_id?: string | null;
+    library_concentration_ngul?: string | null;
+    orginal_dna_concentration?: string | null;
+    final_amount_ng?: string | null;
+    provided_amount_ul?: string | null;
+    well_id?: string | null;
+    dmp_comment?: string | null;
+    additional_comments?: string | null;
+    record_id_copy?: string | null;
+    record_id?: string | null;
+    id?: string | null;
+    created_by?: string | null;
+    date_created?: string | null;
+    related_directory?: string | null;
+    last_modified_by?: string | null;
+    last_modified_date?: string | null;
+    _total?: number | null;
+  }>;
+};
+
 export type AllAnchorSeqDateDataQueryVariables = Exact<{
   phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 }>;
@@ -11987,6 +12152,82 @@ export const AllBlockedCohortIdsDocument = gql`
 export type AllBlockedCohortIdsQueryResult = Apollo.QueryResult<
   AllBlockedCohortIdsQuery,
   AllBlockedCohortIdsQueryVariables
+>;
+export const DmpTrackerRecordsDocument = gql`
+  query DmpTrackerRecords(
+    $sort: DashboardRecordSort!
+    $limit: Int!
+    $offset: Int!
+    $searchVals: [String!]
+    $columnFilters: [DashboardRecordColumnFilter!]
+  ) {
+    dmpTrackerRecords(
+      sort: $sort
+      limit: $limit
+      offset: $offset
+      searchVals: $searchVals
+      columnFilters: $columnFilters
+    ) {
+      sample_status
+      duplicate_sample
+      request_reference_number
+      cmo_plate_id
+      date_submitted_to_dmp
+      pm_investigator_notification_status
+      specimen_type
+      molecular_pathology_accession_number
+      dmp_sample_id
+      patient_id
+      sample_id
+      wes_id
+      tumor_or_normal
+      sample_downstream_application
+      study_name
+      primary_investigator
+      fund_cost_center
+      tumor_type
+      baitset
+      sequencer
+      data_custodian
+      tempo_pipeline_status
+      tempo_output_delivery_date
+      project_manager
+      igo_project_number
+      igo_request_id_edited
+      request_date
+      igo_delivery_date
+      igo_id
+      alt_id
+      investigator_sample_id
+      cmo_comments
+      chargeback_applied
+      igo_request_id_not_edited
+      amount_of_material_requested_ng
+      dna_input_into_library_ng
+      barcode_index
+      truseq_barcode_id
+      library_concentration_ngul
+      orginal_dna_concentration
+      final_amount_ng
+      provided_amount_ul
+      well_id
+      dmp_comment
+      additional_comments
+      record_id_copy
+      record_id
+      id
+      created_by
+      date_created
+      related_directory
+      last_modified_by
+      last_modified_date
+      _total
+    }
+  }
+`;
+export type DmpTrackerRecordsQueryResult = Apollo.QueryResult<
+  DmpTrackerRecordsQuery,
+  DmpTrackerRecordsQueryVariables
 >;
 export const AllAnchorSeqDateDataDocument = gql`
   query AllAnchorSeqDateData($phiEnabled: Boolean = false) {
