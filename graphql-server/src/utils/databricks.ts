@@ -267,6 +267,5 @@ export async function queryDmpTrackerRecords({
     LIMIT ${limit}
     OFFSET ${offset}
   `;
-  console.log(query);
   return await queryDatabricks<DmpTrackerRecord>(query);
 }
