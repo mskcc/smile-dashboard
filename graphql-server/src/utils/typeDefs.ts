@@ -59,6 +59,8 @@ const SAMPLE_FIELDS = `
   instrumentModel: String
   platform: String
   igoSampleStatus: String
+  consentPartA: String
+  consentPartC: String
   dmpRecommendedCoverage: String
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport: String
@@ -227,7 +229,6 @@ const QUERY_RESULT_TYPEDEFS = gql`
     date_submitted_to_dmp: String
     pm_investigator_notification_status: String
     specimen_type: String
-    molecular_pathology_accession_number: String
     dmp_sample_id: String
     patient_id: String
     sample_id: String
@@ -274,6 +275,11 @@ const QUERY_RESULT_TYPEDEFS = gql`
     last_modified_by: String
     last_modified_date: String
     _total: Int
+
+    # added from smile db sample data
+    consentPartA: String
+    consentPartC: String
+    dmpRecommendedCoverage: String
   }
 `;
 

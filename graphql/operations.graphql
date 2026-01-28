@@ -175,6 +175,8 @@ fragment DashboardSampleMetadataParts on DashboardSample {
   platform
   igoSampleStatus
   dmpRecommendedCoverage
+  consentPartA
+  consentPartC
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport
   validationStatus
@@ -284,7 +286,6 @@ query DmpTrackerRecords(
     date_submitted_to_dmp
     pm_investigator_notification_status
     specimen_type
-    molecular_pathology_accession_number
     dmp_sample_id
     patient_id
     sample_id
@@ -331,6 +332,11 @@ query DmpTrackerRecords(
     last_modified_by
     last_modified_date
     _total
+
+    # added from smile db sample data
+    consentPartA
+    consentPartC
+    dmpRecommendedCoverage
   }
 }
 

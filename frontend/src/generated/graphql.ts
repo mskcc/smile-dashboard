@@ -1546,6 +1546,8 @@ export type DashboardSample = {
   cmoPatientId?: Maybe<Scalars["String"]>;
   cmoSampleName?: Maybe<Scalars["String"]>;
   collectionYear?: Maybe<Scalars["String"]>;
+  consentPartA?: Maybe<Scalars["String"]>;
+  consentPartC?: Maybe<Scalars["String"]>;
   costCenter?: Maybe<Scalars["String"]>;
   custodianInformation?: Maybe<Scalars["String"]>;
   dbGapStudy?: Maybe<Scalars["String"]>;
@@ -1607,6 +1609,8 @@ export type DashboardSampleInput = {
   cmoPatientId?: InputMaybe<Scalars["String"]>;
   cmoSampleName?: InputMaybe<Scalars["String"]>;
   collectionYear?: InputMaybe<Scalars["String"]>;
+  consentPartA?: InputMaybe<Scalars["String"]>;
+  consentPartC?: InputMaybe<Scalars["String"]>;
   costCenter?: InputMaybe<Scalars["String"]>;
   custodianInformation?: InputMaybe<Scalars["String"]>;
   dbGapStudy?: InputMaybe<Scalars["String"]>;
@@ -1965,10 +1969,13 @@ export type DmpTrackerRecord = {
   chargeback_applied?: Maybe<Scalars["String"]>;
   cmo_comments?: Maybe<Scalars["String"]>;
   cmo_plate_id?: Maybe<Scalars["String"]>;
+  consentPartA?: Maybe<Scalars["String"]>;
+  consentPartC?: Maybe<Scalars["String"]>;
   created_by?: Maybe<Scalars["String"]>;
   data_custodian?: Maybe<Scalars["String"]>;
   date_created?: Maybe<Scalars["String"]>;
   date_submitted_to_dmp?: Maybe<Scalars["String"]>;
+  dmpRecommendedCoverage?: Maybe<Scalars["String"]>;
   dmp_comment?: Maybe<Scalars["String"]>;
   dmp_sample_id?: Maybe<Scalars["String"]>;
   dna_input_into_library_ng?: Maybe<Scalars["String"]>;
@@ -1985,7 +1992,6 @@ export type DmpTrackerRecord = {
   last_modified_by?: Maybe<Scalars["String"]>;
   last_modified_date?: Maybe<Scalars["String"]>;
   library_concentration_ngul?: Maybe<Scalars["String"]>;
-  molecular_pathology_accession_number?: Maybe<Scalars["String"]>;
   orginal_dna_concentration?: Maybe<Scalars["String"]>;
   patient_id?: Maybe<Scalars["String"]>;
   pm_investigator_notification_status?: Maybe<Scalars["String"]>;
@@ -11563,6 +11569,8 @@ export type DashboardSamplesQuery = {
     platform?: string | null;
     igoSampleStatus?: string | null;
     dmpRecommendedCoverage?: string | null;
+    consentPartA?: string | null;
+    consentPartC?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11626,6 +11634,8 @@ export type DashboardSampleMetadataPartsFragment = {
   platform?: string | null;
   igoSampleStatus?: string | null;
   dmpRecommendedCoverage?: string | null;
+  consentPartA?: string | null;
+  consentPartC?: string | null;
   validationReport?: string | null;
   validationStatus?: boolean | null;
   cancerType?: string | null;
@@ -11726,6 +11736,8 @@ export type UpdateDashboardSamplesMutation = {
     platform?: string | null;
     igoSampleStatus?: string | null;
     dmpRecommendedCoverage?: string | null;
+    consentPartA?: string | null;
+    consentPartC?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11781,7 +11793,6 @@ export type DmpTrackerRecordsQuery = {
     date_submitted_to_dmp?: string | null;
     pm_investigator_notification_status?: string | null;
     specimen_type?: string | null;
-    molecular_pathology_accession_number?: string | null;
     dmp_sample_id?: string | null;
     patient_id?: string | null;
     sample_id?: string | null;
@@ -11828,6 +11839,9 @@ export type DmpTrackerRecordsQuery = {
     last_modified_by?: string | null;
     last_modified_date?: string | null;
     _total?: number | null;
+    consentPartA?: string | null;
+    consentPartC?: string | null;
+    dmpRecommendedCoverage?: string | null;
   }>;
 };
 
@@ -11930,6 +11944,8 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     platform
     igoSampleStatus
     dmpRecommendedCoverage
+    consentPartA
+    consentPartC
     validationReport
     validationStatus
     cancerType
@@ -12502,7 +12518,6 @@ export const DmpTrackerRecordsDocument = gql`
       date_submitted_to_dmp
       pm_investigator_notification_status
       specimen_type
-      molecular_pathology_accession_number
       dmp_sample_id
       patient_id
       sample_id
@@ -12549,6 +12564,9 @@ export const DmpTrackerRecordsDocument = gql`
       last_modified_by
       last_modified_date
       _total
+      consentPartA
+      consentPartC
+      dmpRecommendedCoverage
     }
   }
 `;
