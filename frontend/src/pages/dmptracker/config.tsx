@@ -5,11 +5,11 @@ import { BuildDownloadOptionsParamsBase } from "../../types/shared";
 import { DownloadOption } from "../../hooks/useDownload";
 
 export const dmpTrackerColDefs: Array<ColDef<DmpTrackerRecord>> = [
+  { field: "request_reference_number", headerName: "iLabRequest ID" },
   { field: "record_id", headerName: "Record ID" },
   { field: "id", headerName: "ID" },
   { field: "sample_status", headerName: "Sample status for WES samples only" },
   { field: "duplicate_sample", headerName: "Duplicate Sample" },
-  { field: "request_reference_number", headerName: "iLabRequest ID" },
   { field: "cmo_plate_id", headerName: "CMO Plate ID" },
   { field: "date_submitted_to_dmp", headerName: "Date Submitted to DMP" },
   {
