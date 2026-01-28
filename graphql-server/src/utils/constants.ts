@@ -57,6 +57,9 @@ export const props = {
   databricks_cdsi_demographics_table: properties.get(
     "databricks.databricks_cdsi_demographics_table"
   ),
+  databricks_dmp_tracker_table: properties.get(
+    "databricks.databricks_dmp_tracker_table"
+  ),
 
   ccs_blocked_cohort_ids: properties.get("ccs.blocked_cohort_ids"),
 };
