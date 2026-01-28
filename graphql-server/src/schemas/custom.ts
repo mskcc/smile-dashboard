@@ -4,6 +4,7 @@ import {
   DashboardCohort,
   DashboardCohortInput,
   DashboardSampleInput,
+  DmpTrackerRecord,
   PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
@@ -34,6 +35,7 @@ import {
   getAddlOtCodesMatchingCtOrCtdVals,
   mapPhiToSamplesData,
   queryDashboardSamples,
+  querySelectSampleDataForCacheUpdate,
   querySeqDatesByDmpSampleId,
 } from "./queries/samples";
 import {
@@ -345,11 +347,36 @@ export async function buildCustomSchema(ogm: OGM) {
           offset,
         }: QueryDmpTrackerRecordsArgs
       ) {
-        return await queryDmpTrackerRecords({
+        const dmpIds: string[] = [];
+        const dmpTrackerRecords = await queryDmpTrackerRecords({
           searchVals,
           columnFilters,
           limit,
           offset,
+        });
+
+        dmpTrackerRecords.map((record: DmpTrackerRecord) => {
+          if (record.dmp_sample_id && record.dmp_sample_id !== "N/A") {
+            dmpIds.push(record.dmp_sample_id);
+          }
+        });
+
+        // grab select data from smile db for dmp tracker records and map to data returned
+        const mappedData = await querySelectSampleDataForCacheUpdate(dmpIds);
+        return dmpTrackerRecords.map((record) => {
+          if (!record.dmp_sample_id || record.dmp_sample_id === "N/A") {
+            return record;
+          }
+
+          return {
+            ...record,
+            dmpRecommendedCoverage:
+              mappedData[record.dmp_sample_id]?.dmpRecommendedCoverage || null,
+            consentPartA:
+              mappedData[record.dmp_sample_id]?.consentPartA || null,
+            consentPartC:
+              mappedData[record.dmp_sample_id]?.consentPartC || null,
+          };
         });
       },
 
