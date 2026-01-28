@@ -83,10 +83,6 @@ export const dmpTrackerColDefs: Array<ColGroupDef<DmpTrackerRecord>> = [
         headerName: "PM/Investigator Notification Status",
       },
       { field: "specimen_type", headerName: "Specimen Type" },
-      {
-        field: "molecular_pathology_accession_number",
-        headerName: "Molecular Pathology Accession Number ",
-      },
       { field: "sample_id", headerName: "Sample ID" },
       { field: "wes_id", headerName: "WES ID" },
       { field: "tumor_or_normal", headerName: "Sample Type (Tumor or Normal)" },
