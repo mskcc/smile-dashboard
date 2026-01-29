@@ -167,6 +167,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     totalSampleCount: Int
     billed: String
     initialCohortDeliveryDate: String
+    importDate: String
     endUsers: String
     pmUsers: String
     projectTitle: String
@@ -277,6 +278,7 @@ const MUTATION_TYPEDEFS = gql`
     totalSampleCount: Int
     billed: String
     initialCohortDeliveryDate: String
+    importDate: String
     endUsers: String
     pmUsers: String
     projectTitle: String

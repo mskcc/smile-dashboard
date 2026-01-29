@@ -76,6 +76,12 @@ export const cohortColDefs: ColDef<DashboardCohort>[] = [
     ...getAgGridDateColFilterConfigs(),
   },
   {
+    field: "importDate",
+    headerName: "Last Date Updated",
+    valueFormatter: (params) => formatCellDate(params.value) ?? "",
+    ...getAgGridDateColFilterConfigs(),
+  },
+  {
     field: "pipelineVersion",
     headerName: "TEMPO Pipeline Version",
   },
