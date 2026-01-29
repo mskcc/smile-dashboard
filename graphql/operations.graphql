@@ -93,6 +93,7 @@ query DashboardCohorts(
     totalSampleCount
     billed
     initialCohortDeliveryDate
+    importDate
     endUsers
     pmUsers
     projectTitle
@@ -277,6 +278,7 @@ mutation UpdateTempoCohort($dashboardCohort: DashboardCohortInput!) {
     totalSampleCount
     billed
     initialCohortDeliveryDate
+    importDate
     endUsers
     pmUsers
     projectTitle

@@ -16,6 +16,7 @@ const FIELDS_TO_SEARCH = [
   "cohortId",
   "billed",
   "initialCohortDeliveryDate",
+  "importDate",
   "endUsers",
   "pmUsers",
   "projectTitle",
@@ -59,6 +60,13 @@ export function buildCohortsQueryBody({
   if (initialCohortDeliveryDateColFilter)
     queryPredicates.push(initialCohortDeliveryDateColFilter);
 
+  const importDateColFilter = buildCypherPredicateFromDateColFilter({
+    columnFilters,
+    colFilterField: "importDate",
+    dateVar: "tempNode.importDate",
+  });
+  if (importDateColFilter) queryPredicates.push(importDateColFilter);
+
   const cypherWhereClause = buildCypherWhereClause(queryPredicates);
 
   const cohortsQueryBody = `
@@ -74,7 +82,6 @@ export function buildCohortsQueryBody({
           RETURN sm ORDER BY sm.importDate DESC LIMIT 1
         } AS latestSm,
         apoc.coll.min(collect(cc.date)) AS initialCohortDeliveryDate,
-        apoc.coll.max(collect(cc.date)) AS latestCohortDeliveryDate,
         count(t) AS tempoCount,
         count(CASE WHEN t.billed = true THEN 1 END) AS billedCounts
 
@@ -82,7 +89,6 @@ export function buildCohortsQueryBody({
     WITH
       c,
       initialCohortDeliveryDate,
-      latestCohortDeliveryDate,
       collect(s.smileSampleId) AS sampleIdsByCohort,
       size(collect(s)) AS totalSampleCount,
       tempoCount,
@@ -96,7 +102,6 @@ export function buildCohortsQueryBody({
     WITH
       c,
       initialCohortDeliveryDate,
-      latestCohortDeliveryDate,
       sampleIdsByCohort,
       totalSampleCount,
       CASE totalSampleCount
@@ -112,7 +117,6 @@ export function buildCohortsQueryBody({
     WITH
       c,
       initialCohortDeliveryDate,
-      latestCohortDeliveryDate,
       sampleIdsByCohort,
       totalSampleCount,
       billed,
@@ -124,12 +128,11 @@ export function buildCohortsQueryBody({
       totalSampleCount: totalSampleCount,
       searchableSampleIds: apoc.text.join(searchableSampleIds, ","),
       billed: billed,
-      initialCohortDeliveryDate: initialCohortDeliveryDate,
-      latestCohortDeliveryDate: latestCohortDeliveryDate
+      initialCohortDeliveryDate: initialCohortDeliveryDate
     }) as tempNode,
     COLLECT {
       MATCH (c)-[:HAS_COHORT_COMPLETE]->(cc: CohortComplete)
-      RETURN cc ORDER BY cc.date DESC LIMIT 1
+      RETURN cc ORDER BY cc.importDate DESC LIMIT 1
     } as latestCC
 
     WITH
@@ -138,6 +141,7 @@ export function buildCohortsQueryBody({
 
     WITH
       tempNode{.*,
+        importDate: apoc.date.format(latestCC.importDate, 'ms', 'yyyy-MM-dd HH:mm'),
         endUsers: apoc.text.join(apoc.convert.fromJsonList(latestCC.endUsers), ", "),
         pmUsers: apoc.text.join(apoc.convert.fromJsonList(latestCC.pmUsers), ", "),
         projectTitle: latestCC.projectTitle,

@@ -446,6 +446,7 @@ export type CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSel
     __typename?: "CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSelection";
     date: StringAggregateSelection;
     endUsers: StringAggregateSelection;
+    importDate: BigIntAggregateSelection;
     pipelineVersion: StringAggregateSelection;
     pmUsers: StringAggregateSelection;
     projectSubtitle: StringAggregateSelection;
@@ -461,6 +462,7 @@ export type CohortComplete = {
   cohortsHasCohortCompleteConnection: CohortCompleteCohortsHasCohortCompleteConnection;
   date: Scalars["String"];
   endUsers: Scalars["String"];
+  importDate: Scalars["BigInt"];
   pipelineVersion?: Maybe<Scalars["String"]>;
   pmUsers: Scalars["String"];
   projectSubtitle: Scalars["String"];
@@ -495,6 +497,7 @@ export type CohortCompleteAggregateSelection = {
   count: Scalars["Int"];
   date: StringAggregateSelection;
   endUsers: StringAggregateSelection;
+  importDate: BigIntAggregateSelection;
   pipelineVersion: StringAggregateSelection;
   pmUsers: StringAggregateSelection;
   projectSubtitle: StringAggregateSelection;
@@ -643,6 +646,7 @@ export type CohortCompleteCreateInput = {
   cohortsHasCohortComplete?: InputMaybe<CohortCompleteCohortsHasCohortCompleteFieldInput>;
   date: Scalars["String"];
   endUsers: Scalars["String"];
+  importDate: Scalars["BigInt"];
   pipelineVersion?: InputMaybe<Scalars["String"]>;
   pmUsers: Scalars["String"];
   projectSubtitle: Scalars["String"];
@@ -686,6 +690,7 @@ export type CohortCompleteRelationInput = {
 export type CohortCompleteSort = {
   date?: InputMaybe<SortDirection>;
   endUsers?: InputMaybe<SortDirection>;
+  importDate?: InputMaybe<SortDirection>;
   pipelineVersion?: InputMaybe<SortDirection>;
   pmUsers?: InputMaybe<SortDirection>;
   projectSubtitle?: InputMaybe<SortDirection>;
@@ -700,6 +705,9 @@ export type CohortCompleteUpdateInput = {
   >;
   date?: InputMaybe<Scalars["String"]>;
   endUsers?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["BigInt"]>;
+  importDate_DECREMENT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_INCREMENT?: InputMaybe<Scalars["BigInt"]>;
   pipelineVersion?: InputMaybe<Scalars["String"]>;
   pmUsers?: InputMaybe<Scalars["String"]>;
   projectSubtitle?: InputMaybe<Scalars["String"]>;
@@ -741,6 +749,12 @@ export type CohortCompleteWhere = {
   endUsers_IN?: InputMaybe<Array<Scalars["String"]>>;
   endUsers_MATCHES?: InputMaybe<Scalars["String"]>;
   endUsers_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["BigInt"]>;
+  importDate_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_IN?: InputMaybe<Array<Scalars["BigInt"]>>;
+  importDate_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_LTE?: InputMaybe<Scalars["BigInt"]>;
   pipelineVersion?: InputMaybe<Scalars["String"]>;
   pipelineVersion_CONTAINS?: InputMaybe<Scalars["String"]>;
   pipelineVersion_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -929,6 +943,26 @@ export type CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput = {
   endUsers_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   endUsers_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   endUsers_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   pipelineVersion_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   pipelineVersion_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   pipelineVersion_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -1403,6 +1437,7 @@ export type DashboardCohort = {
   billed?: Maybe<Scalars["String"]>;
   cohortId: Scalars["String"];
   endUsers?: Maybe<Scalars["String"]>;
+  importDate?: Maybe<Scalars["String"]>;
   initialCohortDeliveryDate?: Maybe<Scalars["String"]>;
   pipelineVersion?: Maybe<Scalars["String"]>;
   pmUsers?: Maybe<Scalars["String"]>;
@@ -1421,6 +1456,7 @@ export type DashboardCohortInput = {
   changedFieldNames: Array<Scalars["String"]>;
   cohortId: Scalars["String"];
   endUsers?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["String"]>;
   initialCohortDeliveryDate?: InputMaybe<Scalars["String"]>;
   pipelineVersion?: InputMaybe<Scalars["String"]>;
   pmUsers?: InputMaybe<Scalars["String"]>;
@@ -1617,6 +1653,7 @@ export type DashboardSampleInput = {
 export type DbGap = {
   __typename?: "DbGap";
   dbGapStudy: Scalars["String"];
+  irbConsentProtocol?: Maybe<Scalars["String"]>;
   samplesHasDbgap: Array<Sample>;
   samplesHasDbgapAggregate?: Maybe<DbGapSampleSamplesHasDbgapAggregationSelection>;
   samplesHasDbgapConnection: DbGapSamplesHasDbgapConnection;
@@ -1646,6 +1683,7 @@ export type DbGapAggregateSelection = {
   __typename?: "DbGapAggregateSelection";
   count: Scalars["Int"];
   dbGapStudy: StringAggregateSelection;
+  irbConsentProtocol: StringAggregateSelection;
   smileDbGapId: StringAggregateSelection;
 };
 
@@ -1659,6 +1697,7 @@ export type DbGapConnectWhere = {
 
 export type DbGapCreateInput = {
   dbGapStudy: Scalars["String"];
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   samplesHasDbgap?: InputMaybe<DbGapSamplesHasDbgapFieldInput>;
   smileDbGapId: Scalars["String"];
 };
@@ -1846,11 +1885,13 @@ export type DbGapSamplesHasDbgapUpdateFieldInput = {
 /** Fields to sort DbGaps by. The order in which sorts are applied is not guaranteed when specifying many fields in one DbGapSort object. */
 export type DbGapSort = {
   dbGapStudy?: InputMaybe<SortDirection>;
+  irbConsentProtocol?: InputMaybe<SortDirection>;
   smileDbGapId?: InputMaybe<SortDirection>;
 };
 
 export type DbGapUpdateInput = {
   dbGapStudy?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   samplesHasDbgap?: InputMaybe<Array<DbGapSamplesHasDbgapUpdateFieldInput>>;
   smileDbGapId?: InputMaybe<Scalars["String"]>;
 };
@@ -1865,6 +1906,12 @@ export type DbGapWhere = {
   dbGapStudy_IN?: InputMaybe<Array<Scalars["String"]>>;
   dbGapStudy_MATCHES?: InputMaybe<Scalars["String"]>;
   dbGapStudy_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_CONTAINS?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_ENDS_WITH?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  irbConsentProtocol_MATCHES?: InputMaybe<Scalars["String"]>;
+  irbConsentProtocol_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   samplesHasDbgapAggregate?: InputMaybe<DbGapSamplesHasDbgapAggregateInput>;
   /** Return DbGaps where all of the related DbGapSamplesHasDbgapConnections match this filter */
   samplesHasDbgapConnection_ALL?: InputMaybe<DbGapSamplesHasDbgapConnectionWhere>;
@@ -6830,6 +6877,7 @@ export type SampleDbGapHasDbgapDbGapsAggregationSelection = {
 export type SampleDbGapHasDbgapDbGapsNodeAggregateSelection = {
   __typename?: "SampleDbGapHasDbgapDbGapsNodeAggregateSelection";
   dbGapStudy: StringAggregateSelection;
+  irbConsentProtocol: StringAggregateSelection;
   smileDbGapId: StringAggregateSelection;
 };
 
@@ -6954,6 +7002,21 @@ export type SampleHasDbgapDbGapsNodeAggregationWhereInput = {
   dbGapStudy_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   dbGapStudy_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   dbGapStudy_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
+  irbConsentProtocol_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
+  irbConsentProtocol_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   smileDbGapId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   smileDbGapId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   smileDbGapId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -11366,6 +11429,7 @@ export type DashboardCohortsQuery = {
     totalSampleCount?: number | null;
     billed?: string | null;
     initialCohortDeliveryDate?: string | null;
+    importDate?: string | null;
     endUsers?: string | null;
     pmUsers?: string | null;
     projectTitle?: string | null;
@@ -11655,6 +11719,7 @@ export type UpdateTempoCohortMutation = {
     totalSampleCount?: number | null;
     billed?: string | null;
     initialCohortDeliveryDate?: string | null;
+    importDate?: string | null;
     endUsers?: string | null;
     pmUsers?: string | null;
     projectTitle?: string | null;
@@ -11895,6 +11960,7 @@ export const DashboardCohortsDocument = gql`
       totalSampleCount
       billed
       initialCohortDeliveryDate
+      importDate
       endUsers
       pmUsers
       projectTitle
@@ -12009,6 +12075,7 @@ export const UpdateTempoCohortDocument = gql`
       totalSampleCount
       billed
       initialCohortDeliveryDate
+      importDate
       endUsers
       pmUsers
       projectTitle
