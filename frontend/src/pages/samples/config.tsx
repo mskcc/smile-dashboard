@@ -402,7 +402,7 @@ const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
     headerName: "HISTOLOGICAL_SUBTYPE",
   },
   {
-    field: "genePanel",
+    field: "baitSet",
     headerName: "SEQUENCING_PANEL",
   },
   {
