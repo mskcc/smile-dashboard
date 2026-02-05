@@ -1,6 +1,7 @@
 import {
   DashboardRecordContext,
   DashboardSample,
+  DmpTrackerRecord,
   InputMaybe,
   QueryDashboardSamplesArgs,
   SeqDateBySampleId,
@@ -518,6 +519,9 @@ export type SampleDataForCacheUpdate = Record<
     | "historicalCmoSampleNames"
     | "importDate"
     | "revisable"
+    | "dmpRecommendedCoverage"
+    | "consentPartA"
+    | "consentPartC"
   >
 >;
 
@@ -559,7 +563,10 @@ export async function querySelectSampleDataForCacheUpdate(
       latestSm.cmoSampleName AS cmoSampleName,
       latestSm.importDate AS importDate,
       historicalCmoSampleNames,
-      s.revisable AS revisable
+      s.revisable AS revisable,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage,
+      apoc.convert.getJsonProperty(latestSm, "additionalProperties", "$.consent-parta") AS consentPartA,
+      apoc.convert.getJsonProperty(latestSm, "additionalProperties", "$.consent-partc") AS consentPartC
   `;
 
   const session = neo4jDriver.session();

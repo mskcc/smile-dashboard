@@ -7,6 +7,7 @@ import { WarningModal } from "./components/WarningModal";
 import { RequestsPage } from "./pages/requests/RequestsPage";
 import { PatientsPage } from "./pages/patients/PatientsPage";
 import { CohortsPage } from "./pages/cohorts/CohortsPage";
+import { DmpTrackerPage } from "./pages/dmptracker/DmpTrackerPage";
 import { ROUTE_PARAMS } from "./configs/shared";
 
 // Required imports for AG Grid tables to render correctly
@@ -38,6 +39,7 @@ export default function App() {
               path={`/cohorts/:${ROUTE_PARAMS.cohorts}`}
               element={<CohortsPage />}
             />
+            <Route path="/dmptracker" element={<DmpTrackerPage />} />
             <Route path="/auth/login-success" element={<LoginSuccessPage />} />
           </Routes>
         </BrowserRouter>

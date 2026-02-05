@@ -175,6 +175,8 @@ fragment DashboardSampleMetadataParts on DashboardSample {
   platform
   igoSampleStatus
   dmpRecommendedCoverage
+  consentPartA
+  consentPartC
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport
   validationStatus
@@ -261,6 +263,81 @@ mutation UpdateDashboardSamples(
 
 query AllBlockedCohortIds {
   allBlockedCohortIds
+}
+
+query DmpTrackerRecords(
+  $sort: DashboardRecordSort!
+  $limit: Int!
+  $offset: Int!
+  $searchVals: [String!]
+  $columnFilters: [DashboardRecordColumnFilter!]
+) {
+  dmpTrackerRecords(
+    sort: $sort
+    limit: $limit
+    offset: $offset
+    searchVals: $searchVals
+    columnFilters: $columnFilters
+  ) {
+    sample_status
+    duplicate_sample
+    request_reference_number
+    cmo_plate_id
+    date_submitted_to_dmp
+    pm_investigator_notification_status
+    specimen_type
+    dmp_sample_id
+    patient_id
+    sample_id
+    wes_id
+    tumor_or_normal
+    sample_downstream_application
+    study_name
+    primary_investigator
+    fund_cost_center
+    tumor_type
+    baitset
+    sequencer
+    data_custodian
+    tempo_pipeline_status
+    tempo_output_delivery_date
+    project_manager
+    igo_project_number
+    igo_request_id_edited
+    request_date
+    igo_delivery_date
+    igo_id
+    alt_id
+    investigator_sample_id
+    cmo_comments
+    chargeback_applied
+    igo_request_id_not_edited
+    amount_of_material_requested_ng
+    dna_input_into_library_ng
+    barcode_index
+    truseq_barcode_id
+    library_concentration_ngul
+    orginal_dna_concentration
+    final_amount_ng
+    provided_amount_ul
+    well_id
+    dmp_comment
+    additional_comments
+    record_id_copy
+    record_id
+    id
+    created_by
+    date_created
+    related_directory
+    last_modified_by
+    last_modified_date
+    _total
+
+    # added from smile db sample data
+    consentPartA
+    consentPartC
+    dmpRecommendedCoverage
+  }
 }
 
 query AllAnchorSeqDateData($phiEnabled: Boolean = false) {

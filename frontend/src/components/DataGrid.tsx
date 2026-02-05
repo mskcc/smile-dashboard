@@ -169,6 +169,8 @@ export function DataGrid({
       ? params.data.igoRequestId
       : params.data.smilePatientId
       ? params.data.smilePatientId
+      : params.data.id
+      ? params.data.id
       : undefined;
   };
 

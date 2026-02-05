@@ -4,11 +4,13 @@ import {
   DashboardCohort,
   DashboardCohortInput,
   DashboardSampleInput,
+  DmpTrackerRecord,
   PatientIdsTriplet,
   QueryDashboardCohortsArgs,
   QueryDashboardPatientsArgs,
   QueryDashboardRequestsArgs,
   QueryDashboardSamplesArgs,
+  QueryDmpTrackerRecordsArgs,
   TempoCohortRequestInput,
 } from "../generated/graphql";
 import { props } from "../utils/constants";
@@ -33,6 +35,7 @@ import {
   getAddlOtCodesMatchingCtOrCtdVals,
   mapPhiToSamplesData,
   queryDashboardSamples,
+  querySelectSampleDataForCacheUpdate,
   querySeqDatesByDmpSampleId,
 } from "./queries/samples";
 import {
@@ -55,6 +58,7 @@ import { applyMiddleware } from "graphql-middleware";
 import { IMiddlewareResolver } from "graphql-middleware/dist/types";
 import { chain } from "lodash";
 import { randomUUID } from "crypto";
+import { queryDmpTrackerRecords } from "../utils/databricks";
 
 const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
 
@@ -64,6 +68,7 @@ type AuthMiddleware = {
     dashboardPatients: IMiddlewareResolver;
     allAnchorSeqDateData: IMiddlewareResolver;
     allBlockedCohortIds: IMiddlewareResolver;
+    dmpTrackerRecords: IMiddlewareResolver;
   };
 };
 
@@ -152,6 +157,16 @@ export async function buildCustomSchema(ogm: OGM) {
         return await resolve(parent, args, context, info);
       },
 
+      async dmpTrackerRecords(
+        resolve,
+        parent,
+        args: QueryDmpTrackerRecordsArgs,
+        context: ApolloServerContext,
+        info
+      ) {
+        return await resolve(parent, args, context, info);
+      },
+
       async allBlockedCohortIds() {
         return queryAllBlockedCohortIds();
       },
@@ -225,6 +240,16 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async allBlockedCohortIds() {
         return queryAllBlockedCohortIds();
+      },
+
+      async dmpTrackerRecords(
+        resolve,
+        parent,
+        args: QueryDmpTrackerRecordsArgs,
+        context: ApolloServerContext,
+        info
+      ) {
+        return await resolve(parent, args, context, info);
       },
     },
   };
@@ -310,6 +335,49 @@ export async function buildCustomSchema(ogm: OGM) {
 
       async allAnchorSeqDateData() {
         return await queryAllAnchorSeqDateData();
+      },
+
+      async dmpTrackerRecords(
+        _source: undefined,
+        {
+          searchVals,
+          columnFilters,
+          sort,
+          limit,
+          offset,
+        }: QueryDmpTrackerRecordsArgs
+      ) {
+        const dmpIds: string[] = [];
+        const dmpTrackerRecords = await queryDmpTrackerRecords({
+          searchVals,
+          columnFilters,
+          limit,
+          offset,
+        });
+
+        dmpTrackerRecords.map((record: DmpTrackerRecord) => {
+          if (record.dmp_sample_id && record.dmp_sample_id !== "N/A") {
+            dmpIds.push(record.dmp_sample_id);
+          }
+        });
+
+        // grab select data from smile db for dmp tracker records and map to data returned
+        const mappedData = await querySelectSampleDataForCacheUpdate(dmpIds);
+        return dmpTrackerRecords.map((record) => {
+          if (!record.dmp_sample_id || record.dmp_sample_id === "N/A") {
+            return record;
+          }
+
+          return {
+            ...record,
+            dmpRecommendedCoverage:
+              mappedData[record.dmp_sample_id]?.dmpRecommendedCoverage || null,
+            consentPartA:
+              mappedData[record.dmp_sample_id]?.consentPartA || null,
+            consentPartC:
+              mappedData[record.dmp_sample_id]?.consentPartC || null,
+          };
+        });
       },
 
       async allBlockedCohortIds() {
