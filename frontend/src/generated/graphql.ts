@@ -1543,6 +1543,7 @@ export type DashboardSample = {
   cancerType?: Maybe<Scalars["String"]>;
   cancerTypeDetailed?: Maybe<Scalars["String"]>;
   cfDNA2dBarcode?: Maybe<Scalars["String"]>;
+  changelog?: Maybe<Scalars["String"]>;
   cmoPatientId?: Maybe<Scalars["String"]>;
   cmoSampleName?: Maybe<Scalars["String"]>;
   collectionYear?: Maybe<Scalars["String"]>;
@@ -1604,6 +1605,7 @@ export type DashboardSampleInput = {
   cancerTypeDetailed?: InputMaybe<Scalars["String"]>;
   cfDNA2dBarcode?: InputMaybe<Scalars["String"]>;
   changedFieldNames: Array<Scalars["String"]>;
+  changelog?: InputMaybe<Scalars["String"]>;
   cmoPatientId?: InputMaybe<Scalars["String"]>;
   cmoSampleName?: InputMaybe<Scalars["String"]>;
   collectionYear?: InputMaybe<Scalars["String"]>;
@@ -4867,21 +4869,26 @@ export type RequestHasMetadataRequestMetadataNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
-  importDate_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   requestMetadataJson_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   requestMetadataJson_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   requestMetadataJson_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -5069,7 +5076,7 @@ export type RequestMetadata = {
   hasStatusStatusesAggregate?: Maybe<RequestMetadataStatusHasStatusStatusesAggregationSelection>;
   hasStatusStatusesConnection: RequestMetadataHasStatusStatusesConnection;
   igoRequestId: Scalars["String"];
-  importDate: Scalars["String"];
+  importDate: Scalars["BigInt"];
   requestMetadataJson: Scalars["String"];
   requestsHasMetadata: Array<Request>;
   requestsHasMetadataAggregate?: Maybe<RequestMetadataRequestRequestsHasMetadataAggregationSelection>;
@@ -5118,7 +5125,7 @@ export type RequestMetadataAggregateSelection = {
   __typename?: "RequestMetadataAggregateSelection";
   count: Scalars["Int"];
   igoRequestId: StringAggregateSelection;
-  importDate: StringAggregateSelection;
+  importDate: BigIntAggregateSelection;
   requestMetadataJson: StringAggregateSelection;
 };
 
@@ -5145,7 +5152,7 @@ export type RequestMetadataConnection = {
 export type RequestMetadataCreateInput = {
   hasStatusStatuses?: InputMaybe<RequestMetadataHasStatusStatusesFieldInput>;
   igoRequestId: Scalars["String"];
-  importDate: Scalars["String"];
+  importDate: Scalars["BigInt"];
   requestMetadataJson: Scalars["String"];
   requestsHasMetadata?: InputMaybe<RequestMetadataRequestsHasMetadataFieldInput>;
 };
@@ -5767,7 +5774,9 @@ export type RequestMetadataUpdateInput = {
     Array<RequestMetadataHasStatusStatusesUpdateFieldInput>
   >;
   igoRequestId?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["BigInt"]>;
+  importDate_DECREMENT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_INCREMENT?: InputMaybe<Scalars["BigInt"]>;
   requestMetadataJson?: InputMaybe<Scalars["String"]>;
   requestsHasMetadata?: InputMaybe<
     Array<RequestMetadataRequestsHasMetadataUpdateFieldInput>
@@ -5801,12 +5810,12 @@ export type RequestMetadataWhere = {
   igoRequestId_IN?: InputMaybe<Array<Scalars["String"]>>;
   igoRequestId_MATCHES?: InputMaybe<Scalars["String"]>;
   igoRequestId_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
-  importDate_CONTAINS?: InputMaybe<Scalars["String"]>;
-  importDate_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  importDate_IN?: InputMaybe<Array<Scalars["String"]>>;
-  importDate_MATCHES?: InputMaybe<Scalars["String"]>;
-  importDate_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["BigInt"]>;
+  importDate_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_IN?: InputMaybe<Array<Scalars["BigInt"]>>;
+  importDate_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_LTE?: InputMaybe<Scalars["BigInt"]>;
   requestMetadataJson?: InputMaybe<Scalars["String"]>;
   requestMetadataJson_CONTAINS?: InputMaybe<Scalars["String"]>;
   requestMetadataJson_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -5983,7 +5992,7 @@ export type RequestRequestMetadataHasMetadataRequestMetadataNodeAggregateSelecti
   {
     __typename?: "RequestRequestMetadataHasMetadataRequestMetadataNodeAggregateSelection";
     igoRequestId: StringAggregateSelection;
-    importDate: StringAggregateSelection;
+    importDate: BigIntAggregateSelection;
     requestMetadataJson: StringAggregateSelection;
   };
 
@@ -7268,21 +7277,26 @@ export type SampleHasMetadataSampleMetadataNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
-  importDate_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   investigatorSampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   investigatorSampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   investigatorSampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -7733,7 +7747,7 @@ export type SampleMetadata = {
   hasStatusStatusesConnection: SampleMetadataHasStatusStatusesConnection;
   igoComplete?: Maybe<Scalars["Boolean"]>;
   igoRequestId?: Maybe<Scalars["String"]>;
-  importDate: Scalars["String"];
+  importDate: Scalars["BigInt"];
   investigatorSampleId?: Maybe<Scalars["String"]>;
   libraries: Scalars["String"];
   oncotreeCode?: Maybe<Scalars["String"]>;
@@ -7805,7 +7819,7 @@ export type SampleMetadataAggregateSelection = {
   count: Scalars["Int"];
   genePanel: StringAggregateSelection;
   igoRequestId: StringAggregateSelection;
-  importDate: StringAggregateSelection;
+  importDate: BigIntAggregateSelection;
   investigatorSampleId: StringAggregateSelection;
   libraries: StringAggregateSelection;
   oncotreeCode: StringAggregateSelection;
@@ -7856,7 +7870,7 @@ export type SampleMetadataCreateInput = {
   hasStatusStatuses?: InputMaybe<SampleMetadataHasStatusStatusesFieldInput>;
   igoComplete?: InputMaybe<Scalars["Boolean"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
-  importDate: Scalars["String"];
+  importDate: Scalars["BigInt"];
   investigatorSampleId?: InputMaybe<Scalars["String"]>;
   libraries: Scalars["String"];
   oncotreeCode?: InputMaybe<Scalars["String"]>;
@@ -8239,7 +8253,9 @@ export type SampleMetadataUpdateInput = {
   >;
   igoComplete?: InputMaybe<Scalars["Boolean"]>;
   igoRequestId?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["BigInt"]>;
+  importDate_DECREMENT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_INCREMENT?: InputMaybe<Scalars["BigInt"]>;
   investigatorSampleId?: InputMaybe<Scalars["String"]>;
   libraries?: InputMaybe<Scalars["String"]>;
   oncotreeCode?: InputMaybe<Scalars["String"]>;
@@ -8342,12 +8358,12 @@ export type SampleMetadataWhere = {
   igoRequestId_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
   igoRequestId_MATCHES?: InputMaybe<Scalars["String"]>;
   igoRequestId_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  importDate?: InputMaybe<Scalars["String"]>;
-  importDate_CONTAINS?: InputMaybe<Scalars["String"]>;
-  importDate_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  importDate_IN?: InputMaybe<Array<Scalars["String"]>>;
-  importDate_MATCHES?: InputMaybe<Scalars["String"]>;
-  importDate_STARTS_WITH?: InputMaybe<Scalars["String"]>;
+  importDate?: InputMaybe<Scalars["BigInt"]>;
+  importDate_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_IN?: InputMaybe<Array<Scalars["BigInt"]>>;
+  importDate_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_LTE?: InputMaybe<Scalars["BigInt"]>;
   investigatorSampleId?: InputMaybe<Scalars["String"]>;
   investigatorSampleId_CONTAINS?: InputMaybe<Scalars["String"]>;
   investigatorSampleId_ENDS_WITH?: InputMaybe<Scalars["String"]>;
@@ -9168,7 +9184,7 @@ export type SampleSampleMetadataHasMetadataSampleMetadataNodeAggregateSelection 
     collectionYear: StringAggregateSelection;
     genePanel: StringAggregateSelection;
     igoRequestId: StringAggregateSelection;
-    importDate: StringAggregateSelection;
+    importDate: BigIntAggregateSelection;
     investigatorSampleId: StringAggregateSelection;
     libraries: StringAggregateSelection;
     oncotreeCode: StringAggregateSelection;
@@ -9603,21 +9619,26 @@ export type StatusRequestMetadataHasStatusNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
-  importDate_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   requestMetadataJson_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   requestMetadataJson_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   requestMetadataJson_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -9667,7 +9688,7 @@ export type StatusRequestMetadataRequestMetadataHasStatusNodeAggregateSelection 
   {
     __typename?: "StatusRequestMetadataRequestMetadataHasStatusNodeAggregateSelection";
     igoRequestId: StringAggregateSelection;
-    importDate: StringAggregateSelection;
+    importDate: BigIntAggregateSelection;
     requestMetadataJson: StringAggregateSelection;
   };
 
@@ -9885,21 +9906,26 @@ export type StatusSampleMetadataHasStatusNodeAggregationWhereInput = {
   igoRequestId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   igoRequestId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
-  importDate_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
-  importDate_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  importDate_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
+  importDate_AVERAGE_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_AVERAGE_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MAX_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_MIN_LTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_EQUAL?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_GTE?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LT?: InputMaybe<Scalars["BigInt"]>;
+  importDate_SUM_LTE?: InputMaybe<Scalars["BigInt"]>;
   investigatorSampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   investigatorSampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   investigatorSampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -10167,7 +10193,7 @@ export type StatusSampleMetadataSampleMetadataHasStatusNodeAggregateSelection =
     collectionYear: StringAggregateSelection;
     genePanel: StringAggregateSelection;
     igoRequestId: StringAggregateSelection;
-    importDate: StringAggregateSelection;
+    importDate: BigIntAggregateSelection;
     investigatorSampleId: StringAggregateSelection;
     libraries: StringAggregateSelection;
     oncotreeCode: StringAggregateSelection;
@@ -11496,6 +11522,7 @@ export type DashboardSamplesQuery = {
     platform?: string | null;
     igoSampleStatus?: string | null;
     dmpRecommendedCoverage?: string | null;
+    changelog?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11559,6 +11586,7 @@ export type DashboardSampleMetadataPartsFragment = {
   platform?: string | null;
   igoSampleStatus?: string | null;
   dmpRecommendedCoverage?: string | null;
+  changelog?: string | null;
   validationReport?: string | null;
   validationStatus?: boolean | null;
   cancerType?: string | null;
@@ -11659,6 +11687,7 @@ export type UpdateDashboardSamplesMutation = {
     platform?: string | null;
     igoSampleStatus?: string | null;
     dmpRecommendedCoverage?: string | null;
+    changelog?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11792,6 +11821,7 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     platform
     igoSampleStatus
     dmpRecommendedCoverage
+    changelog
     validationReport
     validationStatus
     cancerType
