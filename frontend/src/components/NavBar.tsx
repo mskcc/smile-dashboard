@@ -41,6 +41,9 @@ export function NavBar() {
           <Link className="nav-link" to="/cohorts">
             Cohorts
           </Link>
+          <Link className="nav-link" to="/dmptracker">
+            DMP Tracker
+          </Link>
         </Nav>
         {userEmail && (
           <div className="ms-auto d-none d-md-flex">
