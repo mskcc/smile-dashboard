@@ -547,6 +547,9 @@ async function updateSampleMetadataPromises(
           newDashboardSample[key as keyof DashboardSampleInput];
       }
     });
+    // promote changelog to additional properties in sample manifest
+    sampleManifest.additionalProperties.changelog =
+      newDashboardSample.changelog || "";
 
     // Ensure validator and label generator use latest status data added during validation
     delete sampleManifest.status;
@@ -672,6 +675,7 @@ const EDITABLE_SAMPLEMETADATA_FIELDS = new Set([
   "sampleOrigin",
   "tissueLocation",
   "sex",
+  "changelog",
 ]);
 
 const EDITABLE_TEMPO_FIELDS = new Set([
