@@ -11,24 +11,44 @@ import {
 } from "../schemas/queries/samples";
 import {
   AgGridSortDirection,
+  DashboardCohort,
+  DashboardPatient,
   DashboardRecordContext,
   DashboardRecordSort,
+  DashboardRequest,
   DashboardSample,
   DashboardSampleInput,
 } from "../generated/graphql";
-import { queryPatientIdsTriplets } from "../schemas/queries/patients";
+import {
+  buildPatientsQueryBody,
+  buildPatientsQueryFinal,
+  queryDashboardPatients,
+  queryPatientIdsTriplets,
+} from "../schemas/queries/patients";
+import {
+  buildRequestsQueryBody,
+  queryDashboardRequests,
+} from "../schemas/queries/requests";
+import {
+  buildCohortsQueryBody,
+  queryDashboardCohorts,
+} from "../schemas/queries/cohorts";
+import { update } from "lodash";
 
 export const ONCOTREE_CACHE_KEY = "oncotree";
 export const SAMPLES_CACHE_KEY = "samples";
 export const PATIENT_DEMOGRAPHICS_CACHE_KEY = "patientDemographics";
+export const REQUESTS_CACHE_KEY = "requests";
+export const COHORTS_CACHE_KEY = "cohorts";
+export const PATIENTS_CACHE_KEY = "patients";
 
 const ONCOTREE_CACHE_TTL = 86400; // 1 day
-const SAMPLES_CACHE_TTL = 3600; // 1 hour
+const HOUR_CACHE_TTL = 3600; // 1 hour
 const PATIENT_DEMOGRAPHICS_CACHE_TTL = 86400; // 1 day
 
 // Variables to keep in sync with the frontend
 const CACHE_BLOCK_SIZE = 500;
-const SAMPLES_DEFAULT_SORT: DashboardRecordSort = {
+const IMPORT_DATE_DEFAULT_SORT: DashboardRecordSort = {
   colId: "importDate",
   sort: AgGridSortDirection.Desc,
 };
@@ -88,6 +108,9 @@ const RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS = 3000; // 3s
 export type OncotreeCache = Record<string, { name: string; mainType: string }>; // key = Oncotree code
 export type SamplesCache = Record<string, DashboardSample[]>; // key = full Cypher query
 export type PatientDemographicsCache = Record<string, string>; // key = CMO Patient ID
+export type RequestsCache = Record<string, DashboardRequest[]>; // key = full Cypher query
+export type CohortsCache = Record<string, DashboardCohort[]>; // key = full Cypher query
+export type PatientsCache = Record<string, DashboardPatient[]>; // key = full Cypher query
 
 /**
  * Source: https://oncotree.mskcc.org/#/home?tab=api
@@ -114,6 +137,9 @@ export async function initializeInMemoryCache() {
   await updatePatientDemographicsCache(inMemoryCache);
   await updateOncotreeCache(inMemoryCache);
   await updateSamplesCache(inMemoryCache);
+  await updateRequestsCache(inMemoryCache);
+  await updateCohortsCache(inMemoryCache);
+  await updatePatientsCache(inMemoryCache);
   logCacheStats(inMemoryCache);
 
   // Add cache item expiration handlers
@@ -127,6 +153,15 @@ export async function initializeInMemoryCache() {
     }
     if (key === PATIENT_DEMOGRAPHICS_CACHE_KEY) {
       await updatePatientDemographicsCache(inMemoryCache);
+    }
+    if (key === REQUESTS_CACHE_KEY) {
+      await updateRequestsCache(inMemoryCache);
+    }
+    if (key === COHORTS_CACHE_KEY) {
+      await updateCohortsCache(inMemoryCache);
+    }
+    if (key === PATIENTS_CACHE_KEY) {
+      await updatePatientsCache(inMemoryCache);
     }
   });
 
@@ -286,7 +321,7 @@ async function updateSamplesCache(inMemoryCache: NodeCache) {
     });
 
     // Refresh the samples cache
-    inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL);
+    inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, HOUR_CACHE_TTL);
   } catch (error) {
     console.error(
       "Error executing queries during the samples cache update:",
@@ -308,7 +343,7 @@ function buildSamplesQueryPromise({
     try {
       const samplesCypherQuery = buildSamplesQueryFinal({
         queryBody,
-        sort: SAMPLES_DEFAULT_SORT,
+        sort: IMPORT_DATE_DEFAULT_SORT,
         limit: CACHE_BLOCK_SIZE,
         offset: 0,
       });
@@ -412,8 +447,143 @@ export async function updateCacheWithNewSampleUpdates(
   });
 
   // Refresh the samples cache
-  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, SAMPLES_CACHE_TTL);
+  inMemoryCache.set(SAMPLES_CACHE_KEY, samplesCache, HOUR_CACHE_TTL);
   console.info("Updated the samples cache with dashboard updates.");
+}
+
+export async function updateCacheWithNewCohortUpdates(
+  newDashboardCohort: DashboardCohort,
+  inMemoryCache: NodeCache
+) {
+  const cohortsCache = inMemoryCache.get(COHORTS_CACHE_KEY) as CohortsCache;
+  const cachedCohorts = Object.values(cohortsCache).flat();
+
+  // Early return if no cohorts in the cache are receiving updates
+  const cachedCohortIds = new Set(cachedCohorts.map((c) => c.cohortId));
+  console.log("cachedCohortIds", cachedCohortIds);
+  const cacheNeedsUpdate = cachedCohortIds.has(newDashboardCohort.cohortId);
+  if (!cacheNeedsUpdate) {
+    console.info(
+      "No cached cohorts are being updated by new dashboard cohorts. Skipping cache update."
+    );
+    return;
+  }
+
+  for (const cohort of cachedCohorts) {
+    if (cohort.cohortId === newDashboardCohort.cohortId) {
+      // Update the fields of any cohorts in cache that match the updated cohortId
+      for (const field of ["pmUsers", "endUsers"]) {
+        if (field in cohort && field in newDashboardCohort) {
+          (cohort as any)[field] =
+            newDashboardCohort[field as keyof DashboardCohort];
+        }
+      }
+    }
+  }
+
+  // Refresh the cohorts cache
+  inMemoryCache.set(COHORTS_CACHE_KEY, cohortsCache, HOUR_CACHE_TTL);
+  console.info("Updated the cohorts cache with dashboard updates.");
+}
+
+export async function updateRequestsCache(inMemoryCache: NodeCache) {
+  const requestsQueryBody = buildRequestsQueryBody({
+    searchVals: [],
+    columnFilters: undefined,
+  });
+  const requestsData = await buildRequestsQueryPromise({
+    queryBody: requestsQueryBody,
+  });
+  if (!requestsData) return;
+
+  inMemoryCache.set(REQUESTS_CACHE_KEY, requestsData, HOUR_CACHE_TTL);
+}
+
+function buildRequestsQueryPromise({
+  queryBody,
+}: {
+  queryBody: string;
+}): Promise<Record<string, DashboardRequest[]> | null> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const queryResult = await queryDashboardRequests({
+        queryBody,
+        sort: IMPORT_DATE_DEFAULT_SORT,
+        limit: CACHE_BLOCK_SIZE,
+        offset: 0,
+      });
+      resolve(queryResult ? { [queryBody]: queryResult } : null);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export async function updateCohortsCache(inMemoryCache: NodeCache) {
+  const cohortsQueryBody = buildCohortsQueryBody({
+    searchVals: [],
+    columnFilters: undefined,
+  });
+  const cohortsData = await buildCohortsQueryPromise({
+    queryBody: cohortsQueryBody,
+  });
+  if (!cohortsData) return;
+
+  inMemoryCache.set(COHORTS_CACHE_KEY, cohortsData, HOUR_CACHE_TTL);
+}
+
+function buildCohortsQueryPromise({
+  queryBody,
+}: {
+  queryBody: string;
+}): Promise<Record<string, DashboardCohort[]> | null> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const queryResult = await queryDashboardCohorts({
+        queryBody,
+        sort: IMPORT_DATE_DEFAULT_SORT,
+        limit: CACHE_BLOCK_SIZE,
+        offset: 0,
+      });
+      resolve(queryResult ? { [queryBody]: queryResult } : null);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export async function updatePatientsCache(inMemoryCache: NodeCache) {
+  const queryBody = buildPatientsQueryBody({
+    searchVals: [],
+    columnFilters: undefined,
+  });
+  const queryFinal = buildPatientsQueryFinal({
+    queryBody,
+    sort: IMPORT_DATE_DEFAULT_SORT,
+    limit: CACHE_BLOCK_SIZE,
+    offset: 0,
+  });
+  const patientsData = await buildPatientsQueryPromise({
+    queryBody: queryFinal,
+  });
+  if (!patientsData) return;
+
+  inMemoryCache.set(PATIENTS_CACHE_KEY, patientsData, HOUR_CACHE_TTL);
+}
+
+function buildPatientsQueryPromise({
+  queryBody,
+}: {
+  queryBody: string;
+}): Promise<Record<string, DashboardPatient[]> | null> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const queryResult = await queryDashboardPatients(queryBody);
+      resolve(queryResult ? { [queryBody]: queryResult } : null);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 function logCacheStats(inMemoryCache: NodeCache) {

@@ -37,12 +37,19 @@ import {
   querySeqDatesByDmpSampleId,
 } from "./queries/samples";
 import {
+  COHORTS_CACHE_KEY,
+  CohortsCache,
   ONCOTREE_CACHE_KEY,
   OncotreeCache,
   PATIENT_DEMOGRAPHICS_CACHE_KEY,
   PatientDemographicsCache,
+  PATIENTS_CACHE_KEY,
+  PatientsCache,
+  REQUESTS_CACHE_KEY,
+  RequestsCache,
   SAMPLES_CACHE_KEY,
   SamplesCache,
+  updateCacheWithNewCohortUpdates,
   updateCacheWithNewSampleUpdates,
 } from "../utils/cache";
 import {
@@ -240,9 +247,19 @@ export async function buildCustomSchema(ogm: OGM) {
           sort,
           limit,
           offset,
-        }: QueryDashboardRequestsArgs
+        }: QueryDashboardRequestsArgs,
+        { inMemoryCache }: ApolloServerContext
       ) {
+        const requestsCache = inMemoryCache.get(
+          REQUESTS_CACHE_KEY
+        ) as RequestsCache;
+
         const queryBody = buildRequestsQueryBody({ searchVals, columnFilters });
+
+        if (requestsCache && queryBody in requestsCache) {
+          return requestsCache[queryBody];
+        }
+
         return await queryDashboardRequests({
           queryBody,
           sort,
@@ -260,8 +277,13 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
           phiEnabled,
-        }: QueryDashboardPatientsArgs
+        }: QueryDashboardPatientsArgs,
+        { inMemoryCache }: ApolloServerContext
       ) {
+        const patientsCache = inMemoryCache.get(
+          PATIENTS_CACHE_KEY
+        ) as PatientsCache;
+
         let patientIdsTriplets: Array<PatientIdsTriplet> = [];
         if (searchVals && canSearchPhiData({ phiEnabled, searchVals })) {
           patientIdsTriplets = await queryPatientIdsTriplets(searchVals);
@@ -284,6 +306,11 @@ export async function buildCustomSchema(ogm: OGM) {
           limit,
           offset,
         });
+
+        if (patientsCache && queryFinal in patientsCache) {
+          return patientsCache[queryFinal];
+        }
+
         const patientsDataPromise = queryDashboardPatients(queryFinal);
 
         if (!canSearchPhiData({ phiEnabled, searchVals })) {
@@ -325,9 +352,19 @@ export async function buildCustomSchema(ogm: OGM) {
           sort,
           limit,
           offset,
-        }: QueryDashboardCohortsArgs
+        }: QueryDashboardCohortsArgs,
+        { inMemoryCache }: ApolloServerContext
       ) {
+        const cohortsCache = inMemoryCache.get(
+          COHORTS_CACHE_KEY
+        ) as CohortsCache;
+
         const queryBody = buildCohortsQueryBody({ searchVals, columnFilters });
+
+        if (cohortsCache && queryBody in cohortsCache) {
+          return cohortsCache[queryBody];
+        }
+
         return await queryDashboardCohorts({
           queryBody,
           sort,
@@ -460,9 +497,11 @@ export async function buildCustomSchema(ogm: OGM) {
           dashboardCohort,
         }: {
           dashboardCohort: DashboardCohortInput;
-        }
+        },
+        { inMemoryCache }: ApolloServerContext
       ) {
         await updateTempoCohortPromise(dashboardCohort);
+        await updateCacheWithNewCohortUpdates(dashboardCohort, inMemoryCache);
       },
       async publishNewTempoCohortRequest(
         _source: undefined,
