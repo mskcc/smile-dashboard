@@ -521,6 +521,7 @@ export type SampleDataForCacheUpdate = Record<
     | "historicalCmoSampleNames"
     | "importDate"
     | "revisable"
+    | "changelog"
   >
 >;
 
@@ -562,7 +563,8 @@ export async function querySelectSampleDataForCacheUpdate(
       latestSm.cmoSampleName AS cmoSampleName,
       apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd') AS importDate,
       historicalCmoSampleNames,
-      s.revisable AS revisable
+      s.revisable AS revisable,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog
   `;
 
   const session = neo4jDriver.session();
