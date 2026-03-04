@@ -848,7 +848,6 @@ const editableSampleFields = new Set([
   "sampleOrigin",
   "tissueLocation",
   "sex",
-  "changelog",
 ]);
 
 const editableWesSampleFields = new Set([
