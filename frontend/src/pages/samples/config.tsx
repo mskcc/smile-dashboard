@@ -341,6 +341,15 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "sampleCategory",
     headerName: "SMILE Sample Category",
   },
+  {
+    field: "changelog",
+    headerName: "Reason for Change",
+    headerTooltip:
+      "Mandatory description of reason for making changes to sample metadata (used for auditing purposes).",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    maxWidth: 600,
+    ...multiLineColDef,
+  },
 ];
 
 const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [

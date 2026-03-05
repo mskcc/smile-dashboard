@@ -60,3 +60,6 @@ export const POLLING_PAUSE_AFTER_UPDATE = 12000; // 12s
 export const INVALID_COST_CENTER_WARNING =
   "Please update your Cost Center/Fund Number input as #####/##### " +
   "(5 digits, a forward slash, then 5 digits). For example: 12345/12345.";
+
+export const NO_CHANGELOG_WARNING =
+  "Please update Reason for Change and Author fields.";

@@ -303,7 +303,8 @@ export function buildSamplesQueryBody({
       latestQC[0] AS latestQC,
       coalesce(apoc.text.join([id IN sampleCohortIds WHERE id IS NOT NULL], ', '), '') AS sampleCohortIds,
       apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields) AS cmoSampleIdFields,
-      apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog
 
       ${bamCompleteDateColFilter && `WHERE ${bamCompleteDateColFilter}`}
       ${mafCompleteDateColFilter && `WHERE ${mafCompleteDateColFilter}`}
@@ -325,6 +326,7 @@ export function buildSamplesQueryBody({
       sampleCohortIds,
       cmoSampleIdFields,
       dmpRecommendedCoverage,
+      changelog,
       d,
       r,
 
@@ -371,6 +373,7 @@ export function buildSamplesQueryBody({
         validationStatus: latestSt.validationStatus,
         igoSampleStatus: apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus,
         dmpRecommendedCoverage: dmpRecommendedCoverage,
+        changelog: changelog,
 
         smileTempoId: t.smileTempoId,
         billed: t.billed,
@@ -518,6 +521,7 @@ export type SampleDataForCacheUpdate = Record<
     | "historicalCmoSampleNames"
     | "importDate"
     | "revisable"
+    | "changelog"
   >
 >;
 
@@ -559,7 +563,8 @@ export async function querySelectSampleDataForCacheUpdate(
       latestSm.cmoSampleName AS cmoSampleName,
       apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd') AS importDate,
       historicalCmoSampleNames,
-      s.revisable AS revisable
+      s.revisable AS revisable,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog
   `;
 
   const session = neo4jDriver.session();
