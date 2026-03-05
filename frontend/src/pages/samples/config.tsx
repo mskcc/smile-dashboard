@@ -346,7 +346,9 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     headerName: "Reason for Change",
     headerTooltip:
       "Mandatory description of reason for making changes to sample metadata (used for auditing purposes).",
-    headerComponentParams: createCustomHeader(toolTipIcon),
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    maxWidth: 600,
+    ...multiLineColDef,
   },
 ];
 
