@@ -139,6 +139,29 @@ query DashboardSamples(
   }
 }
 
+query DashboardSampleHistory(
+  $searchVals: [String!]!
+  $sort: DashboardRecordSort!
+  $limit: Int!
+  $offset: Int!
+  $phiEnabled: Boolean = false
+) {
+  dashboardSampleHistory(
+    searchVals: $searchVals
+    sort: $sort
+    limit: $limit
+    offset: $offset
+    phiEnabled: $phiEnabled
+  ) {
+    ...DashboardSampleParts
+    ...DashboardSampleMetadataParts
+    ...DashboardTempoParts
+    ...DashboardDbGapParts
+    ...DashboardPatientParts
+    _total
+  }
+}
+
 fragment DashboardSampleParts on DashboardSample {
   # (s:Sample)
   smileSampleId
@@ -147,6 +170,8 @@ fragment DashboardSampleParts on DashboardSample {
 }
 
 fragment DashboardSampleMetadataParts on DashboardSample {
+  # internal
+  recordId
   # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
   ## Root-level fields
   primaryId

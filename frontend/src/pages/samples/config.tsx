@@ -33,6 +33,7 @@ import {
   RecordChange,
 } from "../../types/shared";
 import { DownloadOption } from "../../hooks/useDownload";
+import { Button } from "react-bootstrap";
 
 const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   {
@@ -86,6 +87,30 @@ const ACCESS_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
 ];
 
 export const sampleColDefs: Array<ColDef<DashboardSample>> = [
+  {
+    field: "history",
+    headerName: "View History",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      return (
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data?.smileSampleId !== undefined) {
+                params.context.navigateFunction(
+                  `/samples/${params.data.smileSampleId}`
+                );
+              }
+            }}
+          >
+            View History
+          </Button>
+        </div>
+      );
+    },
+    sortable: false,
+  },
   {
     field: "primaryId",
     headerName: "Primary ID",

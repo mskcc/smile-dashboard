@@ -13,7 +13,10 @@ const apolloCache = new InMemoryCache({
       },
     },
     DashboardSample: {
-      keyFields: ["smileSampleId"],
+      // History records share the same smileSampleId but differ by importDate,
+      // so we include importDate as a secondary key to prevent Apollo from
+      // collapsing all history versions into a single normalized cache entry.
+      keyFields: ["smileSampleId", "recordId"],
     },
   },
 });

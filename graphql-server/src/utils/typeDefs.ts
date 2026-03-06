@@ -26,6 +26,9 @@ const GENERIC_TYPEDEFS = gql`
 `;
 
 const SAMPLE_FIELDS = `
+  # internal
+  recordId: String!
+
   # (s:Sample)
   smileSampleId: String!
   revisable: Boolean
@@ -259,6 +262,14 @@ const QUERY_TYPEDEFS = gql`
       offset: Int!
       phiEnabled: Boolean
       includeDemographics: Boolean!
+    ): [DashboardSample!]!
+
+    dashboardSampleHistory(
+      searchVals: [String!]!
+      sort: DashboardRecordSort!
+      limit: Int!
+      offset: Int!
+      phiEnabled: Boolean
     ): [DashboardSample!]!
 
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!

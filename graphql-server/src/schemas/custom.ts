@@ -29,6 +29,7 @@ import {
   queryDashboardCohorts,
 } from "./queries/cohorts";
 import {
+  buildSampleMetadataHistoryQueryBody,
   buildSamplesQueryBody,
   buildSamplesQueryFinal,
   getAddlOtCodesMatchingCtOrCtdVals,
@@ -69,6 +70,7 @@ const KEYCLOAK_PHI_ACCESS_GROUP = "mrn-search";
 type AuthMiddleware = {
   Query: {
     dashboardSamples: IMiddlewareResolver;
+    dashboardSampleHistory: IMiddlewareResolver;
     dashboardPatients: IMiddlewareResolver;
     allAnchorSeqDateData: IMiddlewareResolver;
     allBlockedCohortIds: IMiddlewareResolver;
@@ -108,6 +110,27 @@ export async function buildCustomSchema(ogm: OGM) {
           canSearchPhiData({
             phiEnabled: args.phiEnabled,
             searchVals: args.searchVals,
+          }) &&
+          !context.req.isAuthenticated()
+        ) {
+          throw new AuthenticationError(
+            "You must be logged in to access this resource."
+          );
+        }
+        return await resolve(parent, args, context, info);
+      },
+
+      async dashboardSampleHistory(
+        resolve,
+        parent,
+        args: QueryDashboardSamplesArgs,
+        context: ApolloServerContext,
+        info
+      ) {
+        if (
+          canSearchPhiData({
+            phiEnabled: args.phiEnabled,
+            searchValsIsRequired: false,
           }) &&
           !context.req.isAuthenticated()
         ) {
@@ -179,6 +202,27 @@ export async function buildCustomSchema(ogm: OGM) {
           canSearchPhiData({
             phiEnabled: args.phiEnabled,
             searchVals: args.searchVals,
+          }) &&
+          !context.req.user.groups.includes(KEYCLOAK_PHI_ACCESS_GROUP)
+        ) {
+          throw new ForbiddenError(
+            "You do not have permission to access this resource. Please contact the SMILE team for assistance."
+          );
+        }
+        return await resolve(parent, args, context, info);
+      },
+
+      async dashboardSampleHistory(
+        resolve,
+        parent,
+        args: QueryDashboardSamplesArgs,
+        context: ApolloServerContext,
+        info
+      ) {
+        if (
+          canSearchPhiData({
+            phiEnabled: args.phiEnabled,
+            searchValsIsRequired: false,
           }) &&
           !context.req.user.groups.includes(KEYCLOAK_PHI_ACCESS_GROUP)
         ) {
@@ -466,6 +510,36 @@ export async function buildCustomSchema(ogm: OGM) {
         return mapPhiToSamplesData({
           samplesData,
           seqDatesBySampleId,
+        });
+      },
+
+      async dashboardSampleHistory(
+        _source: undefined,
+        { searchVals, sort, limit, offset }: QueryDashboardSamplesArgs,
+        { inMemoryCache }: ApolloServerContext
+      ) {
+        const oncotreeCache = inMemoryCache.get(
+          ONCOTREE_CACHE_KEY
+        ) as OncotreeCache;
+        const patientDemographicsCache = inMemoryCache.get(
+          PATIENT_DEMOGRAPHICS_CACHE_KEY
+        ) as PatientDemographicsCache;
+
+        const queryBody = buildSampleMetadataHistoryQueryBody({
+          smileSampleId: searchVals ? searchVals[0] : "",
+        });
+
+        const samplesCypherQuery = buildSamplesQueryFinal({
+          queryBody,
+          sort,
+          limit,
+          offset,
+        });
+
+        return await queryDashboardSamples({
+          samplesCypherQuery,
+          oncotreeCache,
+          patientDemographicsCache,
         });
       },
     },
