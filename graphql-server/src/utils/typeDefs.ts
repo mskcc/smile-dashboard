@@ -269,7 +269,6 @@ const QUERY_TYPEDEFS = gql`
       sort: DashboardRecordSort!
       limit: Int!
       offset: Int!
-      phiEnabled: Boolean
     ): [DashboardSample!]!
 
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!

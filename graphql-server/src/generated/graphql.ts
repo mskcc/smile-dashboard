@@ -4382,7 +4382,6 @@ export type QueryDashboardRequestsArgs = {
 export type QueryDashboardSampleHistoryArgs = {
   limit: Scalars["Int"];
   offset: Scalars["Int"];
-  phiEnabled?: InputMaybe<Scalars["Boolean"]>;
   searchVals: Array<Scalars["String"]>;
   sort: DashboardRecordSort;
 };
@@ -11571,7 +11570,6 @@ export type DashboardSampleHistoryQueryVariables = Exact<{
   sort: DashboardRecordSort;
   limit: Scalars["Int"];
   offset: Scalars["Int"];
-  phiEnabled?: InputMaybe<Scalars["Boolean"]>;
 }>;
 
 export type DashboardSampleHistoryQuery = {
@@ -12147,14 +12145,12 @@ export const DashboardSampleHistoryDocument = gql`
     $sort: DashboardRecordSort!
     $limit: Int!
     $offset: Int!
-    $phiEnabled: Boolean = false
   ) {
     dashboardSampleHistory(
       searchVals: $searchVals
       sort: $sort
       limit: $limit
       offset: $offset
-      phiEnabled: $phiEnabled
     ) {
       ...DashboardSampleParts
       ...DashboardSampleMetadataParts

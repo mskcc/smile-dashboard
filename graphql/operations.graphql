@@ -144,14 +144,12 @@ query DashboardSampleHistory(
   $sort: DashboardRecordSort!
   $limit: Int!
   $offset: Int!
-  $phiEnabled: Boolean = false
 ) {
   dashboardSampleHistory(
     searchVals: $searchVals
     sort: $sort
     limit: $limit
     offset: $offset
-    phiEnabled: $phiEnabled
   ) {
     ...DashboardSampleParts
     ...DashboardSampleMetadataParts

@@ -40675,18 +40675,6 @@
                 "deprecationReason": null
               },
               {
-                "name": "phiEnabled",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
                 "name": "searchVals",
                 "description": null,
                 "type": {

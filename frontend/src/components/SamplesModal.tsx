@@ -28,7 +28,6 @@ import { DownloadModal } from "./DownloadModal";
 import { ColDef } from "ag-grid-community";
 import { POLL_INTERVAL, ROUTE_PARAMS } from "../configs/shared";
 import { RecordChange } from "../types/shared";
-import { usePhiEnabled } from "../contexts/PhiEnabledContext";
 
 const QUERY_NAME = "dashboardSamples";
 const INTIAL_SORT_FIELD_NAME = "importDate";
@@ -200,13 +199,12 @@ export function SampleHistoryModal({
   recordContext,
   parentRecordName,
 }: SampleHistoryModalProps) {
-  const smileSampleId = recordContext.values?.[0] ?? "";
   const [userSearchVal, setUserSearchVal] = useState(
     recordContext.values?.[0] ?? ""
   );
+  const [colDefs, setColDefs] = useState(sampleColDefs);
   const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
   const [changes, setChanges] = useState<Array<RecordChange>>([]);
-  const { phiEnabled } = usePhiEnabled();
 
   const { refreshData, recordCount, isLoading, error, data, fetchMore } =
     useFetchData({
@@ -215,6 +213,7 @@ export function SampleHistoryModal({
       initialSortFieldName: HISTORY_INITIAL_SORT_FIELD_NAME,
       gridRef,
       userSearchVal,
+      pollInterval: POLL_INTERVAL,
     });
 
   const firstRecord = data?.[HISTORY_QUERY_NAME]?.[0] as
@@ -236,12 +235,15 @@ export function SampleHistoryModal({
 
   const downloadOptions = buildDownloadOptions({
     getCurrentData,
-    currentColDefs: sampleColDefs,
+    currentColDefs: colDefs,
   });
 
   // always hide history column since this modal is specifically for viewing sample history and the history column doesn't add value in this context
   if (gridRef.current && gridRef.current.columnApi) {
-    gridRef.current.columnApi.setColumnsVisible(["history"], false);
+    gridRef.current.columnApi.setColumnsVisible(
+      ["history", "historicalCmoSampleNames"],
+      false
+    );
   }
 
   if (error) {
@@ -272,7 +274,7 @@ export function SampleHistoryModal({
 
       <DataGrid
         gridRef={gridRef}
-        colDefs={sampleColDefs}
+        colDefs={colDefs}
         refreshData={refreshData}
         selectedRowIds={[]}
         onSelectionChanged={() => {}}
