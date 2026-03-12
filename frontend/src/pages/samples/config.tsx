@@ -104,7 +104,7 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
               }
             }}
           >
-            View History
+            View
           </Button>
         </div>
       );
@@ -466,6 +466,30 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerComponentParams: createCustomHeader(""),
   },
   {
+    field: "history",
+    headerName: "View History",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      return (
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data?.smileSampleId !== undefined) {
+                params.context.navigateFunction(
+                  `/samples/${params.data.smileSampleId}`
+                );
+              }
+            }}
+          >
+            View
+          </Button>
+        </div>
+      );
+    },
+    sortable: false,
+  },
+  {
     field: "primaryId",
     headerName: "Primary ID",
   },
@@ -724,6 +748,30 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
 ];
 
 const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
+  {
+    field: "history",
+    headerName: "View History",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      return (
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data?.smileSampleId !== undefined) {
+                params.context.navigateFunction(
+                  `/samples/${params.data.smileSampleId}`
+                );
+              }
+            }}
+          >
+            View
+          </Button>
+        </div>
+      );
+    },
+    sortable: false,
+  },
   {
     field: "primaryId",
     headerName: "Primary ID",
