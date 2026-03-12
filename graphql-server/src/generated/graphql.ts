@@ -1542,6 +1542,7 @@ export type DashboardSample = {
   cancerType?: Maybe<Scalars["String"]>;
   cancerTypeDetailed?: Maybe<Scalars["String"]>;
   cfDNA2dBarcode?: Maybe<Scalars["String"]>;
+  changelog?: Maybe<Scalars["String"]>;
   cmoPatientId?: Maybe<Scalars["String"]>;
   cmoSampleName?: Maybe<Scalars["String"]>;
   collectionYear?: Maybe<Scalars["String"]>;
@@ -1574,6 +1575,7 @@ export type DashboardSample = {
   qcCompleteStatus?: Maybe<Scalars["String"]>;
   race?: Maybe<Scalars["String"]>;
   recipe?: Maybe<Scalars["String"]>;
+  recordId: Scalars["String"];
   revisable?: Maybe<Scalars["Boolean"]>;
   sampleCategory: Scalars["String"];
   sampleClass?: Maybe<Scalars["String"]>;
@@ -1604,6 +1606,7 @@ export type DashboardSampleInput = {
   cancerTypeDetailed?: InputMaybe<Scalars["String"]>;
   cfDNA2dBarcode?: InputMaybe<Scalars["String"]>;
   changedFieldNames: Array<Scalars["String"]>;
+  changelog?: InputMaybe<Scalars["String"]>;
   cmoPatientId?: InputMaybe<Scalars["String"]>;
   cmoSampleName?: InputMaybe<Scalars["String"]>;
   collectionYear?: InputMaybe<Scalars["String"]>;
@@ -1636,6 +1639,7 @@ export type DashboardSampleInput = {
   qcCompleteStatus?: InputMaybe<Scalars["String"]>;
   race?: InputMaybe<Scalars["String"]>;
   recipe?: InputMaybe<Scalars["String"]>;
+  recordId: Scalars["String"];
   revisable?: InputMaybe<Scalars["Boolean"]>;
   sampleCategory: Scalars["String"];
   sampleClass?: InputMaybe<Scalars["String"]>;
@@ -4255,6 +4259,7 @@ export type Query = {
   dashboardCohorts: Array<DashboardCohort>;
   dashboardPatients: Array<DashboardPatient>;
   dashboardRequests: Array<DashboardRequest>;
+  dashboardSampleHistory: Array<DashboardSample>;
   dashboardSamples: Array<DashboardSample>;
   dbGaps: Array<DbGap>;
   dbGapsAggregate: DbGapAggregateSelection;
@@ -4371,6 +4376,13 @@ export type QueryDashboardRequestsArgs = {
   limit: Scalars["Int"];
   offset: Scalars["Int"];
   searchVals?: InputMaybe<Array<Scalars["String"]>>;
+  sort: DashboardRecordSort;
+};
+
+export type QueryDashboardSampleHistoryArgs = {
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
+  searchVals: Array<Scalars["String"]>;
   sort: DashboardRecordSort;
 };
 
@@ -11497,6 +11509,7 @@ export type DashboardSamplesQuery = {
     smileSampleId: string;
     revisable?: boolean | null;
     sampleCategory: string;
+    recordId: string;
     primaryId?: string | null;
     cmoSampleName?: string | null;
     importDate?: string | null;
@@ -11523,6 +11536,78 @@ export type DashboardSamplesQuery = {
     platform?: string | null;
     igoSampleStatus?: string | null;
     dmpRecommendedCoverage?: string | null;
+    changelog?: string | null;
+    validationReport?: string | null;
+    validationStatus?: boolean | null;
+    cancerType?: string | null;
+    cancerTypeDetailed?: string | null;
+    igoDeliveryDate?: string | null;
+    billed?: boolean | null;
+    costCenter?: string | null;
+    billedBy?: string | null;
+    custodianInformation?: string | null;
+    accessLevel?: string | null;
+    initialPipelineRunDate?: string | null;
+    embargoDate?: string | null;
+    bamCompleteDate?: string | null;
+    bamCompleteStatus?: string | null;
+    mafCompleteDate?: string | null;
+    mafCompleteNormalPrimaryId?: string | null;
+    mafCompleteStatus?: string | null;
+    qcCompleteDate?: string | null;
+    qcCompleteResult?: string | null;
+    qcCompleteReason?: string | null;
+    qcCompleteStatus?: string | null;
+    sampleCohortIds?: string | null;
+    dbGapStudy?: string | null;
+    irbConsentProtocol?: string | null;
+    dmpPatientAlias?: string | null;
+  }>;
+};
+
+export type DashboardSampleHistoryQueryVariables = Exact<{
+  searchVals: Array<Scalars["String"]> | Scalars["String"];
+  sort: DashboardRecordSort;
+  limit: Scalars["Int"];
+  offset: Scalars["Int"];
+}>;
+
+export type DashboardSampleHistoryQuery = {
+  __typename?: "Query";
+  dashboardSampleHistory: Array<{
+    __typename?: "DashboardSample";
+    _total?: number | null;
+    smileSampleId: string;
+    revisable?: boolean | null;
+    sampleCategory: string;
+    recordId: string;
+    primaryId?: string | null;
+    cmoSampleName?: string | null;
+    importDate?: string | null;
+    cmoPatientId?: string | null;
+    investigatorSampleId?: string | null;
+    sampleType?: string | null;
+    species?: string | null;
+    genePanel?: string | null;
+    baitSet?: string | null;
+    preservation?: string | null;
+    tumorOrNormal?: string | null;
+    sampleClass?: string | null;
+    oncotreeCode?: string | null;
+    collectionYear?: string | null;
+    sampleOrigin?: string | null;
+    tissueLocation?: string | null;
+    sex?: string | null;
+    cfDNA2dBarcode?: string | null;
+    recipe?: string | null;
+    altId?: string | null;
+    analyteType?: string | null;
+    historicalCmoSampleNames?: string | null;
+    instrumentModel?: string | null;
+    platform?: string | null;
+    igoSampleStatus?: string | null;
+    dmpRecommendedCoverage?: string | null;
+    changelog?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11560,6 +11645,7 @@ export type DashboardSamplePartsFragment = {
 
 export type DashboardSampleMetadataPartsFragment = {
   __typename?: "DashboardSample";
+  recordId: string;
   primaryId?: string | null;
   cmoSampleName?: string | null;
   importDate?: string | null;
@@ -11586,6 +11672,7 @@ export type DashboardSampleMetadataPartsFragment = {
   platform?: string | null;
   igoSampleStatus?: string | null;
   dmpRecommendedCoverage?: string | null;
+  changelog?: string | null;
   validationReport?: string | null;
   validationStatus?: boolean | null;
   cancerType?: string | null;
@@ -11660,6 +11747,7 @@ export type UpdateDashboardSamplesMutation = {
     smileSampleId: string;
     revisable?: boolean | null;
     sampleCategory: string;
+    recordId: string;
     primaryId?: string | null;
     cmoSampleName?: string | null;
     importDate?: string | null;
@@ -11686,6 +11774,7 @@ export type UpdateDashboardSamplesMutation = {
     platform?: string | null;
     igoSampleStatus?: string | null;
     dmpRecommendedCoverage?: string | null;
+    changelog?: string | null;
     validationReport?: string | null;
     validationStatus?: boolean | null;
     cancerType?: string | null;
@@ -11793,6 +11882,7 @@ export const DashboardSamplePartsFragmentDoc = gql`
 `;
 export const DashboardSampleMetadataPartsFragmentDoc = gql`
   fragment DashboardSampleMetadataParts on DashboardSample {
+    recordId
     primaryId
     cmoSampleName
     importDate
@@ -11819,6 +11909,7 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     platform
     igoSampleStatus
     dmpRecommendedCoverage
+    changelog
     validationReport
     validationStatus
     cancerType
@@ -12047,6 +12138,37 @@ export const DashboardSamplesDocument = gql`
 export type DashboardSamplesQueryResult = Apollo.QueryResult<
   DashboardSamplesQuery,
   DashboardSamplesQueryVariables
+>;
+export const DashboardSampleHistoryDocument = gql`
+  query DashboardSampleHistory(
+    $searchVals: [String!]!
+    $sort: DashboardRecordSort!
+    $limit: Int!
+    $offset: Int!
+  ) {
+    dashboardSampleHistory(
+      searchVals: $searchVals
+      sort: $sort
+      limit: $limit
+      offset: $offset
+    ) {
+      ...DashboardSampleParts
+      ...DashboardSampleMetadataParts
+      ...DashboardTempoParts
+      ...DashboardDbGapParts
+      ...DashboardPatientParts
+      _total
+    }
+  }
+  ${DashboardSamplePartsFragmentDoc}
+  ${DashboardSampleMetadataPartsFragmentDoc}
+  ${DashboardTempoPartsFragmentDoc}
+  ${DashboardDbGapPartsFragmentDoc}
+  ${DashboardPatientPartsFragmentDoc}
+`;
+export type DashboardSampleHistoryQueryResult = Apollo.QueryResult<
+  DashboardSampleHistoryQuery,
+  DashboardSampleHistoryQueryVariables
 >;
 export const UpdateDashboardSamplesDocument = gql`
   mutation UpdateDashboardSamples(

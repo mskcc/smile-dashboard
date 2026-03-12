@@ -24,6 +24,7 @@ import {
   POLLING_PAUSE_AFTER_UPDATE,
 } from "../configs/shared";
 import { formatCohortUsersString } from "../utils/formatCohortUsersString";
+import _ from "lodash";
 
 interface UseCellChangesParams {
   gridRef: RefObject<AgGridReactType<any>>;
@@ -178,13 +179,33 @@ export function useCellChanges({
     }
   }
 
-  async function handleSubmitUpdates() {
+  async function handleSubmitUpdates(author: string, reasonForChange: string) {
     if (changes.length === 0) {
       console.error("No changes available to submit.");
       return;
     }
 
-    const changesByRecordId = groupChangesByRecordId(changes);
+    const formattedChangelog = `${author}: ${reasonForChange}`;
+    const recordIds = _.uniq(changes.map((c) => c.recordId));
+
+    const changesWithReason = [...changes];
+
+    recordIds.forEach((r) => {
+      const change = changes.find((c) => c.recordId === r);
+      if (!change) {
+        return;
+      }
+
+      changesWithReason.push({
+        recordId: r,
+        fieldName: "changelog",
+        oldValue: change.rowNode.data.changelog,
+        newValue: formattedChangelog,
+        rowNode: change.rowNode,
+      });
+    });
+
+    const changesByRecordId = groupChangesByRecordId(changesWithReason);
     if (isSampleLevelChanges) {
       const newDashboardSamples = buildNewDashboardSamples(changesByRecordId);
 

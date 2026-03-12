@@ -139,6 +139,27 @@ query DashboardSamples(
   }
 }
 
+query DashboardSampleHistory(
+  $searchVals: [String!]!
+  $sort: DashboardRecordSort!
+  $limit: Int!
+  $offset: Int!
+) {
+  dashboardSampleHistory(
+    searchVals: $searchVals
+    sort: $sort
+    limit: $limit
+    offset: $offset
+  ) {
+    ...DashboardSampleParts
+    ...DashboardSampleMetadataParts
+    ...DashboardTempoParts
+    ...DashboardDbGapParts
+    ...DashboardPatientParts
+    _total
+  }
+}
+
 fragment DashboardSampleParts on DashboardSample {
   # (s:Sample)
   smileSampleId
@@ -147,6 +168,8 @@ fragment DashboardSampleParts on DashboardSample {
 }
 
 fragment DashboardSampleMetadataParts on DashboardSample {
+  # internal
+  recordId
   # (s:Sample)-[:HAS_METADATA]->(sm:SampleMetadata)
   ## Root-level fields
   primaryId
@@ -176,6 +199,7 @@ fragment DashboardSampleMetadataParts on DashboardSample {
   platform
   igoSampleStatus
   dmpRecommendedCoverage
+  changelog
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport
   validationStatus

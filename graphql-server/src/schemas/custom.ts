@@ -29,6 +29,7 @@ import {
   queryDashboardCohorts,
 } from "./queries/cohorts";
 import {
+  buildSampleMetadataHistoryQueryBody,
   buildSamplesQueryBody,
   buildSamplesQueryFinal,
   getAddlOtCodesMatchingCtOrCtdVals,
@@ -468,6 +469,36 @@ export async function buildCustomSchema(ogm: OGM) {
           seqDatesBySampleId,
         });
       },
+
+      async dashboardSampleHistory(
+        _source: undefined,
+        { searchVals, sort, limit, offset }: QueryDashboardSamplesArgs,
+        { inMemoryCache }: ApolloServerContext
+      ) {
+        const oncotreeCache = inMemoryCache.get(
+          ONCOTREE_CACHE_KEY
+        ) as OncotreeCache;
+        const patientDemographicsCache = inMemoryCache.get(
+          PATIENT_DEMOGRAPHICS_CACHE_KEY
+        ) as PatientDemographicsCache;
+
+        const queryBody = buildSampleMetadataHistoryQueryBody({
+          smileSampleId: searchVals ? searchVals[0] : "",
+        });
+
+        const samplesCypherQuery = buildSamplesQueryFinal({
+          queryBody,
+          sort,
+          limit,
+          offset,
+        });
+
+        return await queryDashboardSamples({
+          samplesCypherQuery,
+          oncotreeCache,
+          patientDemographicsCache,
+        });
+      },
     },
 
     Mutation: {
@@ -547,6 +578,9 @@ async function updateSampleMetadataPromises(
           newDashboardSample[key as keyof DashboardSampleInput];
       }
     });
+    // promote changelog to additional properties in sample manifest
+    sampleManifest.additionalProperties.changelog =
+      newDashboardSample.changelog || "";
 
     // Ensure validator and label generator use latest status data added during validation
     delete sampleManifest.status;
@@ -672,6 +706,7 @@ const EDITABLE_SAMPLEMETADATA_FIELDS = new Set([
   "sampleOrigin",
   "tissueLocation",
   "sex",
+  "changelog",
 ]);
 
 const EDITABLE_TEMPO_FIELDS = new Set([
