@@ -33,6 +33,10 @@ export default function App() {
               element={<PatientsPage />}
             />
             <Route path="/samples" element={<SamplesPage />} />
+            <Route
+              path={`/samples/:${ROUTE_PARAMS.samples}`}
+              element={<SamplesPage />}
+            />
             <Route path="/cohorts/" element={<CohortsPage />} />
             <Route
               path={`/cohorts/:${ROUTE_PARAMS.cohorts}`}

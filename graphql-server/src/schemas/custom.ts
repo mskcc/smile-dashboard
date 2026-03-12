@@ -29,6 +29,7 @@ import {
   queryDashboardCohorts,
 } from "./queries/cohorts";
 import {
+  buildSampleMetadataHistoryQueryBody,
   buildSamplesQueryBody,
   buildSamplesQueryFinal,
   getAddlOtCodesMatchingCtOrCtdVals,
@@ -466,6 +467,36 @@ export async function buildCustomSchema(ogm: OGM) {
         return mapPhiToSamplesData({
           samplesData,
           seqDatesBySampleId,
+        });
+      },
+
+      async dashboardSampleHistory(
+        _source: undefined,
+        { searchVals, sort, limit, offset }: QueryDashboardSamplesArgs,
+        { inMemoryCache }: ApolloServerContext
+      ) {
+        const oncotreeCache = inMemoryCache.get(
+          ONCOTREE_CACHE_KEY
+        ) as OncotreeCache;
+        const patientDemographicsCache = inMemoryCache.get(
+          PATIENT_DEMOGRAPHICS_CACHE_KEY
+        ) as PatientDemographicsCache;
+
+        const queryBody = buildSampleMetadataHistoryQueryBody({
+          smileSampleId: searchVals ? searchVals[0] : "",
+        });
+
+        const samplesCypherQuery = buildSamplesQueryFinal({
+          queryBody,
+          sort,
+          limit,
+          offset,
+        });
+
+        return await queryDashboardSamples({
+          samplesCypherQuery,
+          oncotreeCache,
+          patientDemographicsCache,
         });
       },
     },

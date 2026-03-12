@@ -14,6 +14,7 @@ import {
   filterButtonOptions,
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
+  sampleColDefs,
 } from "./config";
 import { Button, Col } from "react-bootstrap";
 import { FilterButtons } from "../../components/FilterButtons";
@@ -26,12 +27,14 @@ import { useTogglePhiColumnsVisibility } from "../../hooks/useTogglePhiColumns";
 import { useCellChanges } from "../../hooks/useCellChanges";
 import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
-import { POLL_INTERVAL } from "../../configs/shared";
+import { POLL_INTERVAL, ROUTE_PARAMS } from "../../configs/shared";
 import {
   CohortBuilderContainer,
   CohortBuilderSample,
 } from "../../components/CohortBuilderContainer";
 import { NoteAddOutlined } from "@material-ui/icons";
+import { SampleHistoryModal } from "../../components/SamplesModal";
+import { useParams } from "react-router-dom";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -40,6 +43,8 @@ const PHI_FIELDS = new Set(["sequencingDate", "molecularAccessionNumber"]);
 
 export function SamplesPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
+  const hasParams = Object.keys(useParams()).length > 0;
+  const smileSampleId = useParams()[ROUTE_PARAMS.samples];
   const [colDefs, setColDefs] = useState(filterButtonOptions[0].colDefs);
   const [recordContexts, setRecordContexts] = useState(
     filterButtonOptions[0].recordContexts
@@ -217,6 +222,17 @@ export function SamplesPage() {
           selectedRowIds={selectedRowIds}
           setSelectedRowIds={setSelectedRowIds}
           setShowSelectedPopup={setShowSelectedPopup}
+        />
+      )}
+
+      {hasParams && smileSampleId && (
+        <SampleHistoryModal
+          sampleColDefs={sampleColDefs}
+          recordContext={{
+            fieldName: "smileSampleId",
+            values: [smileSampleId],
+          }}
+          parentRecordName="samples"
         />
       )}
     </DataGridLayout>

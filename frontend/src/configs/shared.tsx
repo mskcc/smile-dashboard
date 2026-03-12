@@ -18,6 +18,7 @@ export const ROUTE_PARAMS = {
   requests: "igoRequestId",
   patients: "patientId",
   cohorts: "cohortId",
+  samples: "smileSampleId",
 } as const;
 
 export function getPhiColDefProps({
