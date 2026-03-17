@@ -874,6 +874,7 @@ export function setupEditableSampleFields(
       },
       cursorNotAllowed: (params: CellClassParams) => {
         return (
+          (!params.context?.userEmail && params.colDef.field !== "billed") ||
           params.data?.sampleCategory === "clinical" ||
           !editableFieldsList.has(params.colDef.field!)
         );
@@ -914,6 +915,7 @@ export function setupEditableSampleFields(
 
     colDef.editable = (params) => {
       return (
+        (params.context?.userEmail || params.colDef.field === "billed") &&
         params.data?.sampleCategory !== "clinical" &&
         editableFieldsList.has(params.colDef.field!) &&
         params.data?.revisable === true
