@@ -181,6 +181,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     type: String
     pipelineVersion: String
     searchableSampleIds: String
+    changelog: String
     _total: Int
     _uniqueSampleCount: Int
   }
@@ -300,6 +301,7 @@ const MUTATION_TYPEDEFS = gql`
     type: String
     pipelineVersion: String
     searchableSampleIds: String
+    changelog: String
     _total: Int
     _uniqueSampleCount: Int
   }

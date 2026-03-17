@@ -102,6 +102,7 @@ query DashboardCohorts(
     type
     pipelineVersion
     searchableSampleIds
+    changelog
     _total
     _uniqueSampleCount
   }
@@ -312,6 +313,7 @@ mutation UpdateTempoCohort($dashboardCohort: DashboardCohortInput!) {
     type
     pipelineVersion
     searchableSampleIds
+    changelog
     _total
     _uniqueSampleCount
   }
