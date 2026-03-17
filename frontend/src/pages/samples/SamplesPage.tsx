@@ -35,6 +35,7 @@ import {
 import { NoteAddOutlined } from "@material-ui/icons";
 import { SampleHistoryModal } from "../../components/SamplesModal";
 import { useParams } from "react-router-dom";
+import { useUserEmail } from "../../contexts/UserEmailContext";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -54,8 +55,25 @@ export function SamplesPage() {
     []
   );
   const [showSelectedPopup, setShowSelectedPopup] = useState(false);
-  const [disableCohortBuildling, setDisableCohortBuildling] = useState(true);
-  const [includeDemographics, setIncludeDemographics] = useState(false);
+  const [selectedFilterLabel, setSelectedFilterLabel] = useState(
+    filterButtonOptions[0].label
+  );
+  const { userEmail } = useUserEmail();
+
+  const isWesAndLoggedIn = selectedFilterLabel === "WES" && !!userEmail;
+  const disableCohortBuildling = !isWesAndLoggedIn;
+  const includeDemographics = isWesAndLoggedIn;
+
+  // Reset cohort builder when transitioning from enabled to disabled
+  const prevIsWesAndLoggedIn = useRef(isWesAndLoggedIn);
+  useEffect(() => {
+    if (prevIsWesAndLoggedIn.current && !isWesAndLoggedIn) {
+      gridRef.current?.api?.deselectAll();
+      setSelectedRowIds([]);
+      setShowSelectedPopup(false);
+    }
+    prevIsWesAndLoggedIn.current = isWesAndLoggedIn;
+  }, [isWesAndLoggedIn]);
 
   const {
     refreshData,
@@ -114,19 +132,7 @@ export function SamplesPage() {
   });
 
   function handleFilterButtonClick(filterButtonLabel: string) {
-    if (filterButtonLabel === "WES") {
-      setDisableCohortBuildling(false);
-      setIncludeDemographics(true);
-    } else {
-      // reset everything if not WES or cohort builder disabled
-      if (gridRef.current) {
-        gridRef.current.api.deselectAll();
-      }
-      setSelectedRowIds([]);
-      setShowSelectedPopup(false);
-      setDisableCohortBuildling(true);
-      setIncludeDemographics(false);
-    }
+    setSelectedFilterLabel(filterButtonLabel);
 
     const selectedFilterButtonOption = filterButtonOptions.find(
       (option) => option.label === filterButtonLabel

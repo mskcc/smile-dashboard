@@ -1,4 +1,4 @@
-import { RefObject, ClipboardEvent, useState } from "react";
+import { RefObject, ClipboardEvent, useState, useEffect } from "react";
 import { useUserEmail } from "../contexts/UserEmailContext";
 import { useWarningModal } from "../contexts/WarningContext";
 import {
@@ -49,6 +49,15 @@ export function useCellChanges({
   const [updateDashboardSamplesMutation] = useUpdateDashboardSamplesMutation();
   const [updateTempoCohortMutation] = useUpdateTempoCohortMutation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  // Discard unsaved changes when the user logs out.
+  // Intentionally excludes `changes` and `handleDiscardChanges` from deps —
+  // this should only fire on logout, not on every change.
+  useEffect(() => {
+    if (!userEmail && changes.length > 0) {
+      handleDiscardChanges();
+    } // eslint-disable-next-line
+  }, [userEmail]);
 
   async function handleCellEditRequest(params: CellEditRequestEvent) {
     const recordId = isSampleLevelChanges

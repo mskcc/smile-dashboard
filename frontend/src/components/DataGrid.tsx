@@ -12,6 +12,7 @@ import { RecordChange } from "../types/shared";
 import { CACHE_BLOCK_SIZE } from "../configs/shared";
 import { allEditableFields } from "../pages/samples/config";
 import { CohortBuilderSample } from "./CohortBuilderContainer";
+import { useUserEmail } from "../contexts/UserEmailContext";
 
 function getTooltipValue(params: ITooltipParams) {
   if (!params.colDef || !("field" in params.colDef)) return undefined;
@@ -30,6 +31,12 @@ function getTooltipValue(params: ITooltipParams) {
     params.data?.sampleCategory === "clinical"
   ) {
     return "Clinical samples are not editable";
+  }
+  if (allEditableFields.has(field!) && !params.context?.userEmail) {
+    if (field === "billed") {
+      return "Click to log in and mark sample as billed";
+    }
+    return "Must be logged in to make changes to sample data";
   }
   if (!allEditableFields.has(field!)) {
     return "This column is read-only";
@@ -92,6 +99,7 @@ export function DataGrid({
   onSelectionChanged,
 }: DataGridProps) {
   const navigate = useNavigate();
+  const { userEmail } = useUserEmail();
 
   // ensures that records removed from CohortBuilder table also updates selection in main DataGrid table
   useEffect(() => {
@@ -189,6 +197,7 @@ export function DataGrid({
         context={{
           getChanges: () => changes,
           navigateFunction: navigate,
+          userEmail,
         }}
         rowClassRules={{
           unlocked: (params) => params.data?.revisable === true,
