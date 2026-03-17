@@ -61,6 +61,7 @@ const FIELDS_TO_SEARCH = [
   "sampleCohortIds",
   "igoDeliveryDate",
   "dmpRecommendedCoverage",
+  "changelog",
 ];
 
 export function buildSamplesQueryBody({
