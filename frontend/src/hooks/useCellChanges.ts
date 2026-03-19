@@ -158,7 +158,12 @@ export function useCellChanges({
   async function handlePaste(e: ClipboardEvent<HTMLDivElement>) {
     if (!handleCellEditRequest) return;
     try {
-      await handleAgGridPaste({ e, gridRef, handleCellEditRequest });
+      await handleAgGridPaste({
+        e,
+        gridRef,
+        handleCellEditRequest,
+        context: { userEmail },
+      });
     } catch (error) {
       if (error instanceof Error) {
         setWarningModalContent(error.message);
