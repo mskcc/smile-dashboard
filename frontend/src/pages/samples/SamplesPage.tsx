@@ -36,6 +36,7 @@ import { NoteAddOutlined } from "@material-ui/icons";
 import { SampleHistoryModal } from "../../components/SamplesModal";
 import { useParams } from "react-router-dom";
 import { useUserEmail } from "../../contexts/UserEmailContext";
+import { useCellDoubleClicked } from "../../hooks/useCellDoubleClicked";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -59,6 +60,7 @@ export function SamplesPage() {
     filterButtonOptions[0].label
   );
   const { userEmail } = useUserEmail();
+  const { handleCellDoubleClicked } = useCellDoubleClicked();
 
   const isWesAndLoggedIn = selectedFilterLabel === "WES" && !!userEmail;
   const disableCohortBuildling = !isWesAndLoggedIn;
@@ -218,6 +220,7 @@ export function SamplesPage() {
         handlePaste={handlePaste}
         selectedRowIds={selectedRowIds}
         onSelectionChanged={setSelectedRowIds}
+        onCellDoubleClicked={handleCellDoubleClicked}
       />
 
       {isDownloading && <DownloadModal />}

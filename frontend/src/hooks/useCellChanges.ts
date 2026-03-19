@@ -6,7 +6,6 @@ import {
   IServerSideGetRowsParams,
 } from "ag-grid-community";
 import { getUserEmail } from "../utils/getUserEmail";
-import { openLoginPopup } from "../utils/openLoginPopup";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import {
   DashboardCohort,
@@ -17,6 +16,7 @@ import {
   useUpdateTempoCohortMutation,
 } from "../generated/graphql";
 import { handleAgGridPaste } from "../utils/handleAgGridPaste";
+import { awaitLoginPopup } from "../utils/awaitLoginPopup";
 import { RecordChange } from "../types/shared";
 import { formatCellDate, isInvalidCostCenter } from "../utils/agGrid";
 import {
@@ -88,21 +88,7 @@ export function useCellChanges({
       let currUserEmail = userEmail;
 
       if (!currUserEmail) {
-        currUserEmail = await new Promise<string | undefined>((resolve) => {
-          window.addEventListener("message", handleLogin);
-
-          function handleLogin(event: MessageEvent) {
-            if (event.data === "success") {
-              getUserEmail().then((email) => {
-                window.removeEventListener("message", handleLogin);
-                resolve(email);
-              });
-            }
-          }
-
-          openLoginPopup();
-        });
-
+        currUserEmail = await awaitLoginPopup();
         if (!currUserEmail) return;
         setUserEmail(currUserEmail);
       }

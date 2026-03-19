@@ -2,6 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import { RefObject, ClipboardEvent, useEffect } from "react";
 import {
+  CellDoubleClickedEvent,
   CellEditRequestEvent,
   ColDef,
   ITooltipParams,
@@ -82,6 +83,7 @@ interface DataGridPropsBase {
       | CohortBuilderSample[]
       | ((prev: CohortBuilderSample[]) => CohortBuilderSample[])
   ) => void;
+  onCellDoubleClicked?: (params: CellDoubleClickedEvent) => void;
 }
 
 type DataGridProps = DataGridPropsBase &
@@ -97,6 +99,7 @@ export function DataGrid({
   handlePaste,
   selectedRowIds,
   onSelectionChanged,
+  onCellDoubleClicked,
 }: DataGridProps) {
   const navigate = useNavigate();
   const { userEmail } = useUserEmail();
@@ -204,6 +207,7 @@ export function DataGrid({
           locked: (params) => params.data?.revisable === false,
         }}
         onCellEditRequest={handleCellEditRequest}
+        onCellDoubleClicked={onCellDoubleClicked}
         readOnlyEdit={true}
         tooltipShowDelay={0}
         tooltipHideDelay={60000}

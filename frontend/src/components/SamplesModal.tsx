@@ -28,6 +28,7 @@ import { DownloadModal } from "./DownloadModal";
 import { ColDef } from "ag-grid-community";
 import { POLL_INTERVAL, ROUTE_PARAMS } from "../configs/shared";
 import { RecordChange } from "../types/shared";
+import { useCellDoubleClicked } from "../hooks/useCellDoubleClicked";
 
 const QUERY_NAME = "dashboardSamples";
 const INTIAL_SORT_FIELD_NAME = "importDate";
@@ -50,6 +51,7 @@ export function SamplesModal({
   const [colDefs, setColDefs] = useState(sampleColDefs);
   const parentRecordId = useParams()[ROUTE_PARAMS[parentRecordName]];
   const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
+  const { handleCellDoubleClicked } = useCellDoubleClicked();
 
   const {
     refreshData,
@@ -171,6 +173,7 @@ export function SamplesModal({
         handlePaste={handlePaste}
         selectedRowIds={[]}
         onSelectionChanged={() => {}}
+        onCellDoubleClicked={handleCellDoubleClicked}
       />
 
       {isDownloading && <DownloadModal />}
