@@ -73,6 +73,7 @@ type AuthMiddleware = {
     dashboardPatients: IMiddlewareResolver;
     allAnchorSeqDateData: IMiddlewareResolver;
     allBlockedCohortIds: IMiddlewareResolver;
+    dashboardCohorts: IMiddlewareResolver;
   };
 };
 
@@ -161,8 +162,34 @@ export async function buildCustomSchema(ogm: OGM) {
         return await resolve(parent, args, context, info);
       },
 
-      async allBlockedCohortIds() {
-        return queryAllBlockedCohortIds();
+      async allBlockedCohortIds(
+        resolve,
+        parent,
+        args,
+        context: ApolloServerContext,
+        info
+      ) {
+        if (!context.req.isAuthenticated()) {
+          throw new AuthenticationError(
+            "You must be logged in to access this resource."
+          );
+        }
+        return await resolve(parent, args, context, info);
+      },
+
+      async dashboardCohorts(
+        resolve,
+        parent,
+        args,
+        context: ApolloServerContext,
+        info
+      ) {
+        if (!context.req.isAuthenticated()) {
+          throw new AuthenticationError(
+            "You must be logged in to access this resource."
+          );
+        }
+        return await resolve(parent, args, context, info);
       },
     },
   };
@@ -232,8 +259,12 @@ export async function buildCustomSchema(ogm: OGM) {
         return await resolve(parent, args, context, info);
       },
 
-      async allBlockedCohortIds() {
-        return queryAllBlockedCohortIds();
+      async allBlockedCohortIds(resolve, parent, args, context, info) {
+        return await resolve(parent, args, context, info);
+      },
+
+      async dashboardCohorts(resolve, parent, args, context, info) {
+        return await resolve(parent, args, context, info);
       },
     },
   };

@@ -1,5 +1,5 @@
 import { Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUserEmail } from "../contexts/UserEmailContext";
 import { usePhiEnabled } from "../contexts/PhiEnabledContext";
 import { openLoginPopup } from "../utils/openLoginPopup";
@@ -8,15 +8,10 @@ import { getUserEmail } from "../utils/getUserEmail";
 export function NavBar() {
   const { userEmail, setUserEmail } = useUserEmail();
   const { setPhiEnabled } = usePhiEnabled();
+  const navigate = useNavigate();
 
   function handleLogout() {
-    fetch(`${process.env.REACT_APP_EXPRESS_SERVER_ORIGIN}/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-      mode: "no-cors",
-    });
-    setUserEmail(undefined);
-    setPhiEnabled(false);
+    navigate("/auth/logging-out");
   }
 
   async function handleLogin() {
