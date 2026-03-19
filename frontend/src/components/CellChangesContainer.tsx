@@ -49,7 +49,8 @@ export function CellChangesContainer({
   }
 
   const disableSubmitUpdates =
-    changelog.trim() === "" || authorChangelog.trim() === "";
+    isSampleLevelChanges &&
+    (changelog.trim() === "" || authorChangelog.trim() === "");
 
   function handleUpdateModalHide() {
     setShowUpdateModal(false);
@@ -97,26 +98,30 @@ export function CellChangesContainer({
                 groupDefaultExpanded={1}
               />
             </div>
-            <Form.Group className="d-flex align-items-center mt-3">
-              <Form.Label className="mb-0 me-2 text-nowrap">
-                Reason for Change:
-              </Form.Label>
-              <Form.Control
-                type="text"
-                size="sm"
-                className="me-3"
-                value={changelog}
-                onChange={(e) => setChangelog(e.target.value)}
-              />
-              <Form.Label className="mb-0 me-2 text-nowrap">Author:</Form.Label>
-              <Form.Control
-                style={{ width: "30%" }}
-                type="text"
-                size="sm"
-                value={authorChangelog}
-                onChange={(e) => setAuthorChangelog(e.target.value)}
-              />
-            </Form.Group>
+            {isSampleLevelChanges && (
+              <Form.Group className="d-flex align-items-center mt-3">
+                <Form.Label className="mb-0 me-2 text-nowrap">
+                  Reason for Change:
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  size="sm"
+                  className="me-3"
+                  value={changelog}
+                  onChange={(e) => setChangelog(e.target.value)}
+                />
+                <Form.Label className="mb-0 me-2 text-nowrap">
+                  Author:
+                </Form.Label>
+                <Form.Control
+                  style={{ width: "30%" }}
+                  type="text"
+                  size="sm"
+                  value={authorChangelog}
+                  onChange={(e) => setAuthorChangelog(e.target.value)}
+                />
+              </Form.Group>
+            )}
           </Modal.Body>
 
           <Modal.Footer>
