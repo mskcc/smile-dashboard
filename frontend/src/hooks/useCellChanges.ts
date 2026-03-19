@@ -185,25 +185,27 @@ export function useCellChanges({
       return;
     }
 
-    const formattedChangelog = `${author}: ${reasonForChange}`;
     const recordIds = _.uniq(changes.map((c) => c.recordId));
 
     const changesWithReason = [...changes];
 
-    recordIds.forEach((r) => {
-      const change = changes.find((c) => c.recordId === r);
-      if (!change) {
-        return;
-      }
+    if (isSampleLevelChanges) {
+      const formattedChangelog = `${author}: ${reasonForChange}`;
+      recordIds.forEach((r) => {
+        const change = changes.find((c) => c.recordId === r);
+        if (!change) {
+          return;
+        }
 
-      changesWithReason.push({
-        recordId: r,
-        fieldName: "changelog",
-        oldValue: change.rowNode.data.changelog,
-        newValue: formattedChangelog,
-        rowNode: change.rowNode,
+        changesWithReason.push({
+          recordId: r,
+          fieldName: "changelog",
+          oldValue: change.rowNode.data.changelog,
+          newValue: formattedChangelog,
+          rowNode: change.rowNode,
+        });
       });
-    });
+    }
 
     const changesByRecordId = groupChangesByRecordId(changesWithReason);
     if (isSampleLevelChanges) {
