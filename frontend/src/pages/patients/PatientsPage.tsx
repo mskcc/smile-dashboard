@@ -14,6 +14,7 @@ import {
   buildDownloadOptions,
   patientColDefs,
   phiModeSwitchTooltipContent,
+  PHI_FIELDS,
 } from "./config";
 import { Col } from "react-bootstrap";
 import { ErrorMessage } from "../../components/ErrorMessage";
@@ -33,12 +34,6 @@ import { useUserEmail } from "../../contexts/UserEmailContext";
 const QUERY_NAME = "dashboardPatients";
 const INITIAL_SORT_FIELD_NAME = "importDate";
 const RECORD_NAME = "patients";
-const PHI_FIELDS = new Set([
-  "mrn",
-  "anchorSequencingDate",
-  "anchorOncotreeCode",
-  "race",
-]);
 
 export function PatientsPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
@@ -83,6 +78,12 @@ export function PatientsPage() {
       userSearchVal,
     });
 
+  // When not logged in, remove PHI columns from the ColDefs entirely so they
+  // don't appear in AG Grid's column menu or any other UI surface.
+  const authFilteredColDefs = userEmail
+    ? colDefs
+    : colDefs.filter((col) => !PHI_FIELDS.has(col.field!));
+
   if (error) {
     return <ErrorMessage error={error} />;
   }
@@ -119,7 +120,7 @@ export function PatientsPage() {
 
       <DataGrid
         gridRef={gridRef}
-        colDefs={colDefs}
+        colDefs={authFilteredColDefs}
         refreshData={refreshData}
         selectedRowIds={[]}
         onSelectionChanged={() => {}}

@@ -60,7 +60,7 @@ export function SamplesPage() {
   const [selectedFilterLabel, setSelectedFilterLabel] = useState(
     filterButtonOptions[0].label
   );
-  const { userEmail, isLoadingUserEmail } = useUserEmail();
+  const { userEmail } = useUserEmail();
   const { handleCellDoubleClicked } = useCellDoubleClicked();
 
   const isWesAndLoggedIn = selectedFilterLabel === "WES" && !!userEmail;
@@ -134,28 +134,13 @@ export function SamplesPage() {
     currentColDefs: colDefs,
   });
 
-  // Show/hide billing fields based on auth state.
-  // Runs on login/logout; skips while auth state is still being determined.
-  useEffect(() => {
-    if (isLoadingUserEmail) return;
-    setColDefs((prev) =>
-      prev.map((col) =>
-        BILLING_FIELDS.has(col.field!) ? { ...col, hide: !userEmail } : col
-      )
-    );
-  }, [userEmail, isLoadingUserEmail]);
-
   function handleFilterButtonClick(filterButtonLabel: string) {
     setSelectedFilterLabel(filterButtonLabel);
 
     const selectedFilterButtonOption = filterButtonOptions.find(
       (option) => option.label === filterButtonLabel
     );
-    // Apply current auth state to billing fields when colDefs are reset by a filter change
-    const newColDefs = selectedFilterButtonOption!.colDefs.map((col) =>
-      BILLING_FIELDS.has(col.field!) ? { ...col, hide: !userEmail } : col
-    );
-    setColDefs(newColDefs);
+    setColDefs(selectedFilterButtonOption!.colDefs);
     setRecordContexts(selectedFilterButtonOption!.recordContexts);
     refreshData();
   }
@@ -166,6 +151,16 @@ export function SamplesPage() {
       phiFields: PHI_FIELDS,
       userSearchVal,
     });
+
+  // When not logged in, remove PHI and billing columns from the ColDefs entirely
+  // so they don't appear in AG Grid's column menu or any other UI surface.
+  // When logged in, pass the full ColDefs (PHI visibility is then controlled by
+  // the phiEnabled + search toggle; billing columns are always visible).
+  const authFilteredColDefs = userEmail
+    ? colDefs
+    : colDefs.filter(
+        (col) => !PHI_FIELDS.has(col.field!) && !BILLING_FIELDS.has(col.field!)
+      );
 
   if (error) {
     return <ErrorMessage error={error} />;
@@ -229,7 +224,7 @@ export function SamplesPage() {
       </Toolbar>
       <DataGrid
         gridRef={gridRef}
-        colDefs={colDefs}
+        colDefs={authFilteredColDefs}
         refreshData={refreshData}
         changes={changes}
         handleCellEditRequest={handleCellEditRequest}

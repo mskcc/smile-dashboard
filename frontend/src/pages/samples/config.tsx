@@ -100,7 +100,6 @@ const ACCESS_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
 
 export const sampleColDefs: Array<ColDef<DashboardSample>> = [
   {
-    field: "history",
     headerName: "View History",
     cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
       return (
@@ -477,7 +476,6 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerComponentParams: createCustomHeader(""),
   },
   {
-    field: "history",
     headerName: "View History",
     cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
       return (
@@ -583,7 +581,6 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "billed",
     headerName: "Billed",
-    hide: true,
     editable: true,
     cellEditor: "agRichSelectCellEditor",
     cellEditorPopup: true,
@@ -599,7 +596,6 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "costCenter",
     headerName: "Cost Center/Fund Number",
-    hide: true,
     cellClassRules: {
       "costCenter-validation-error": (params: CellClassParams) => {
         return isInvalidCostCenter(params.colDef.field!, params.value);
@@ -762,7 +758,6 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
 
 const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
-    field: "history",
     headerName: "View History",
     cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
       return (

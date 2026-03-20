@@ -242,12 +242,11 @@ export function SampleHistoryModal({
   });
 
   // always hide history column since this modal is specifically for viewing sample history and the history column doesn't add value in this context
-  if (gridRef.current && gridRef.current.columnApi) {
-    gridRef.current.columnApi.setColumnsVisible(
-      ["history", "historicalCmoSampleNames"],
-      false
-    );
-  }
+  const historyFilteredColDefs = colDefs.filter(
+    (colDef) =>
+      colDef.field !== "historicalCmoSampleNames" &&
+      colDef.headerName !== "View History"
+  );
 
   if (error) {
     return <ErrorMessage error={error} />;
@@ -277,7 +276,7 @@ export function SampleHistoryModal({
 
       <DataGrid
         gridRef={gridRef}
-        colDefs={colDefs}
+        colDefs={historyFilteredColDefs}
         refreshData={refreshData}
         selectedRowIds={[]}
         onSelectionChanged={() => {}}
