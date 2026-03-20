@@ -15,6 +15,8 @@ import {
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
   sampleColDefs,
+  BILLING_FIELDS,
+  PHI_FIELDS,
 } from "./config";
 import { Button, Col } from "react-bootstrap";
 import { FilterButtons } from "../../components/FilterButtons";
@@ -41,7 +43,6 @@ import { useCellDoubleClicked } from "../../hooks/useCellDoubleClicked";
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
 const RECORD_NAME = "samples";
-const PHI_FIELDS = new Set(["sequencingDate", "molecularAccessionNumber"]);
 
 export function SamplesPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
@@ -59,7 +60,7 @@ export function SamplesPage() {
   const [selectedFilterLabel, setSelectedFilterLabel] = useState(
     filterButtonOptions[0].label
   );
-  const { userEmail } = useUserEmail();
+  const { userEmail, isLoadingUserEmail } = useUserEmail();
   const { handleCellDoubleClicked } = useCellDoubleClicked();
 
   const isWesAndLoggedIn = selectedFilterLabel === "WES" && !!userEmail;
@@ -133,13 +134,28 @@ export function SamplesPage() {
     currentColDefs: colDefs,
   });
 
+  // Show/hide billing fields based on auth state.
+  // Runs on login/logout; skips while auth state is still being determined.
+  useEffect(() => {
+    if (isLoadingUserEmail) return;
+    setColDefs((prev) =>
+      prev.map((col) =>
+        BILLING_FIELDS.has(col.field!) ? { ...col, hide: !userEmail } : col
+      )
+    );
+  }, [userEmail, isLoadingUserEmail]);
+
   function handleFilterButtonClick(filterButtonLabel: string) {
     setSelectedFilterLabel(filterButtonLabel);
 
     const selectedFilterButtonOption = filterButtonOptions.find(
       (option) => option.label === filterButtonLabel
     );
-    setColDefs(selectedFilterButtonOption!.colDefs);
+    // Apply current auth state to billing fields when colDefs are reset by a filter change
+    const newColDefs = selectedFilterButtonOption!.colDefs.map((col) =>
+      BILLING_FIELDS.has(col.field!) ? { ...col, hide: !userEmail } : col
+    );
+    setColDefs(newColDefs);
     setRecordContexts(selectedFilterButtonOption!.recordContexts);
     refreshData();
   }

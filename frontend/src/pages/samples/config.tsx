@@ -35,6 +35,18 @@ import {
 import { DownloadOption } from "../../hooks/useDownload";
 import { Button } from "react-bootstrap";
 
+/**
+ * Auth-gated fields.
+ */
+export const BILLING_FIELDS = new Set(["billed", "costCenter"]);
+export const PHI_FIELDS = new Set([
+  "sequencingDate",
+  "molecularAccessionNumber",
+]);
+
+/**
+ * Applies the context in which sample records are filtered for SamplesPage.
+ */
 const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   {
     fieldName: "genePanel",
@@ -571,6 +583,7 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "billed",
     headerName: "Billed",
+    hide: true,
     editable: true,
     cellEditor: "agRichSelectCellEditor",
     cellEditorPopup: true,
@@ -586,6 +599,7 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "costCenter",
     headerName: "Cost Center/Fund Number",
+    hide: true,
     cellClassRules: {
       "costCenter-validation-error": (params: CellClassParams) => {
         return isInvalidCostCenter(params.colDef.field!, params.value);
