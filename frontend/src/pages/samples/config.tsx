@@ -35,6 +35,18 @@ import {
 import { DownloadOption } from "../../hooks/useDownload";
 import { Button } from "react-bootstrap";
 
+/**
+ * Auth-gated fields.
+ */
+export const BILLING_FIELDS = new Set(["billed", "costCenter"]);
+export const PHI_FIELDS = new Set([
+  "sequencingDate",
+  "molecularAccessionNumber",
+]);
+
+/**
+ * Applies the context in which sample records are filtered for SamplesPage.
+ */
 const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   {
     fieldName: "genePanel",
@@ -88,7 +100,6 @@ const ACCESS_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
 
 export const sampleColDefs: Array<ColDef<DashboardSample>> = [
   {
-    field: "history",
     headerName: "View History",
     cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
       return (
@@ -465,7 +476,6 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerComponentParams: createCustomHeader(""),
   },
   {
-    field: "history",
     headerName: "View History",
     cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
       return (
@@ -748,7 +758,6 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
 
 const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
-    field: "history",
     headerName: "View History",
     cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
       return (
@@ -955,6 +964,7 @@ export function setupEditableSampleFields(
       },
       cursorNotAllowed: (params: CellClassParams) => {
         return (
+          (!params.context?.userEmail && params.colDef.field !== "billed") ||
           params.data?.sampleCategory === "clinical" ||
           !editableFieldsList.has(params.colDef.field!)
         );
@@ -995,6 +1005,7 @@ export function setupEditableSampleFields(
 
     colDef.editable = (params) => {
       return (
+        (params.context?.userEmail || params.colDef.field === "billed") &&
         params.data?.sampleCategory !== "clinical" &&
         editableFieldsList.has(params.colDef.field!) &&
         params.data?.revisable === true

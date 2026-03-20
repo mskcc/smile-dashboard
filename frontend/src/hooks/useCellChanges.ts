@@ -1,4 +1,4 @@
-import { RefObject, ClipboardEvent, useState } from "react";
+import { RefObject, ClipboardEvent, useState, useEffect } from "react";
 import { useUserEmail } from "../contexts/UserEmailContext";
 import { useWarningModal } from "../contexts/WarningContext";
 import {
@@ -6,7 +6,6 @@ import {
   IServerSideGetRowsParams,
 } from "ag-grid-community";
 import { getUserEmail } from "../utils/getUserEmail";
-import { openLoginPopup } from "../utils/openLoginPopup";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import {
   DashboardCohort,
@@ -17,6 +16,7 @@ import {
   useUpdateTempoCohortMutation,
 } from "../generated/graphql";
 import { handleAgGridPaste } from "../utils/handleAgGridPaste";
+import { awaitLoginPopup } from "../utils/awaitLoginPopup";
 import { RecordChange } from "../types/shared";
 import { formatCellDate, isInvalidCostCenter } from "../utils/agGrid";
 import {
@@ -50,6 +50,15 @@ export function useCellChanges({
   const [updateTempoCohortMutation] = useUpdateTempoCohortMutation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
+  // Discard unsaved changes when the user logs out.
+  // Intentionally excludes `changes` and `handleDiscardChanges` from deps —
+  // this should only fire on logout, not on every change.
+  useEffect(() => {
+    if (!userEmail && changes.length > 0) {
+      handleDiscardChanges();
+    } // eslint-disable-next-line
+  }, [userEmail]);
+
   async function handleCellEditRequest(params: CellEditRequestEvent) {
     const recordId = isSampleLevelChanges
       ? params.data.primaryId
@@ -79,21 +88,7 @@ export function useCellChanges({
       let currUserEmail = userEmail;
 
       if (!currUserEmail) {
-        currUserEmail = await new Promise<string | undefined>((resolve) => {
-          window.addEventListener("message", handleLogin);
-
-          function handleLogin(event: MessageEvent) {
-            if (event.data === "success") {
-              getUserEmail().then((email) => {
-                window.removeEventListener("message", handleLogin);
-                resolve(email);
-              });
-            }
-          }
-
-          openLoginPopup();
-        });
-
+        currUserEmail = await awaitLoginPopup();
         if (!currUserEmail) return;
         setUserEmail(currUserEmail);
       }
@@ -149,7 +144,12 @@ export function useCellChanges({
   async function handlePaste(e: ClipboardEvent<HTMLDivElement>) {
     if (!handleCellEditRequest) return;
     try {
-      await handleAgGridPaste({ e, gridRef, handleCellEditRequest });
+      await handleAgGridPaste({
+        e,
+        gridRef,
+        handleCellEditRequest,
+        context: { userEmail },
+      });
     } catch (error) {
       if (error instanceof Error) {
         setWarningModalContent(error.message);

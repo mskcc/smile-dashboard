@@ -17,6 +17,16 @@ import { DownloadOption } from "../../hooks/useDownload";
 import { BuildDownloadOptionsParamsBase } from "../../types/shared";
 import { LazyQueryExecFunction } from "@apollo/client";
 
+/**
+ * Auth-gated fields.
+ */
+export const PHI_FIELDS = new Set([
+  "mrn",
+  "anchorSequencingDate",
+  "anchorOncotreeCode",
+  "race",
+]);
+
 export const allAnchorSeqDateColDefs: Array<ColDef<AnchorSeqDateData>> = [
   {
     field: "MRN",
