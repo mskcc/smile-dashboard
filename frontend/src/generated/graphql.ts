@@ -1436,7 +1436,6 @@ export type DashboardCohort = {
   _total?: Maybe<Scalars["Int"]>;
   _uniqueSampleCount?: Maybe<Scalars["Int"]>;
   billed?: Maybe<Scalars["String"]>;
-  changelog?: Maybe<Scalars["String"]>;
   cohortId: Scalars["String"];
   endUsers?: Maybe<Scalars["String"]>;
   importDate?: Maybe<Scalars["String"]>;
@@ -11480,7 +11479,6 @@ export type DashboardCohortsQuery = {
     type?: string | null;
     pipelineVersion?: string | null;
     searchableSampleIds?: string | null;
-    changelog?: string | null;
     _total?: number | null;
     _uniqueSampleCount?: number | null;
   }>;
@@ -11849,7 +11847,6 @@ export type UpdateTempoCohortMutation = {
     type?: string | null;
     pipelineVersion?: string | null;
     searchableSampleIds?: string | null;
-    changelog?: string | null;
     _total?: number | null;
     _uniqueSampleCount?: number | null;
   } | null;
@@ -12196,7 +12193,6 @@ export const DashboardCohortsDocument = gql`
       type
       pipelineVersion
       searchableSampleIds
-      changelog
       _total
       _uniqueSampleCount
     }
@@ -12625,7 +12621,6 @@ export const UpdateTempoCohortDocument = gql`
       type
       pipelineVersion
       searchableSampleIds
-      changelog
       _total
       _uniqueSampleCount
     }
