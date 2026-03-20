@@ -33,7 +33,20 @@ import {
   RecordChange,
 } from "../../types/shared";
 import { DownloadOption } from "../../hooks/useDownload";
+import { Button } from "react-bootstrap";
 
+/**
+ * Auth-gated fields.
+ */
+export const BILLING_FIELDS = new Set(["billed", "costCenter"]);
+export const PHI_FIELDS = new Set([
+  "sequencingDate",
+  "molecularAccessionNumber",
+]);
+
+/**
+ * Applies the context in which sample records are filtered for SamplesPage.
+ */
 const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   {
     fieldName: "genePanel",
@@ -86,6 +99,29 @@ const ACCESS_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
 ];
 
 export const sampleColDefs: Array<ColDef<DashboardSample>> = [
+  {
+    headerName: "View History",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      return (
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data?.smileSampleId !== undefined) {
+                params.context.navigateFunction(
+                  `/samples/${params.data.smileSampleId}`
+                );
+              }
+            }}
+          >
+            View
+          </Button>
+        </div>
+      );
+    },
+    sortable: false,
+  },
   {
     field: "primaryId",
     headerName: "Primary ID",
@@ -341,6 +377,14 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     field: "sampleCategory",
     headerName: "SMILE Sample Category",
   },
+  {
+    field: "changelog",
+    headerName: "Reason for Change",
+    headerTooltip:
+      "Mandatory description of reason for making changes to sample metadata (used for auditing purposes).",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    maxWidth: 600,
+  },
 ];
 
 const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
@@ -430,6 +474,29 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     hide: true,
     width: 120,
     headerComponentParams: createCustomHeader(""),
+  },
+  {
+    headerName: "View History",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      return (
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data?.smileSampleId !== undefined) {
+                params.context.navigateFunction(
+                  `/samples/${params.data.smileSampleId}`
+                );
+              }
+            }}
+          >
+            View
+          </Button>
+        </div>
+      );
+    },
+    sortable: false,
   },
   {
     field: "primaryId",
@@ -691,6 +758,29 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
 
 const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
+    headerName: "View History",
+    cellRenderer: (params: ICellRendererParams<DashboardSample>) => {
+      return (
+        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => {
+              if (params.data?.smileSampleId !== undefined) {
+                params.context.navigateFunction(
+                  `/samples/${params.data.smileSampleId}`
+                );
+              }
+            }}
+          >
+            View
+          </Button>
+        </div>
+      );
+    },
+    sortable: false,
+  },
+  {
     field: "primaryId",
     headerName: "Primary ID",
   },
@@ -874,6 +964,7 @@ export function setupEditableSampleFields(
       },
       cursorNotAllowed: (params: CellClassParams) => {
         return (
+          (!params.context?.userEmail && params.colDef.field !== "billed") ||
           params.data?.sampleCategory === "clinical" ||
           !editableFieldsList.has(params.colDef.field!)
         );
@@ -914,6 +1005,7 @@ export function setupEditableSampleFields(
 
     colDef.editable = (params) => {
       return (
+        (params.context?.userEmail || params.colDef.field === "billed") &&
         params.data?.sampleCategory !== "clinical" &&
         editableFieldsList.has(params.colDef.field!) &&
         params.data?.revisable === true

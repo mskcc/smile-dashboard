@@ -21,10 +21,12 @@ export async function handleAgGridPaste({
   e,
   gridRef,
   handleCellEditRequest,
+  context,
 }: {
   e: React.ClipboardEvent<HTMLDivElement>;
   gridRef: React.RefObject<AgGridReactType>;
   handleCellEditRequest: (params: CellEditRequestEvent) => Promise<void>;
+  context?: Record<string, any>;
 }) {
   e.preventDefault();
   if (!gridRef.current || !gridRef.current.api) return;
@@ -69,6 +71,7 @@ export async function handleAgGridPaste({
         rowIndex: pasteArea.rowIndices[r],
         colId,
         newValue: clipboardValue,
+        context,
       });
     }
   } else {
@@ -80,6 +83,7 @@ export async function handleAgGridPaste({
           rowIndex: pasteArea.rowIndices[r],
           colId: pasteArea.colIds[c],
           newValue: clipboardData[r][c],
+          context,
         });
       }
     }
@@ -129,12 +133,14 @@ export async function updateCell({
   rowIndex,
   colId,
   newValue,
+  context,
 }: {
   gridApi: GridApi;
   handleCellEditRequest: (params: CellEditRequestEvent) => Promise<void>;
   rowIndex: number;
   colId: string;
   newValue: any;
+  context?: Record<string, any>;
 }) {
   const node = gridApi.getDisplayedRowAtIndex(rowIndex);
   const data = node?.data;
@@ -142,7 +148,7 @@ export async function updateCell({
   if (
     !data ||
     !colDef ||
-    !cellIsEditable({ colDef, data, node } as EditableCallbackParams)
+    !cellIsEditable({ colDef, data, node, context } as EditableCallbackParams)
   ) {
     return;
   }
@@ -152,6 +158,7 @@ export async function updateCell({
     colDef,
     oldValue: data[colId],
     newValue,
+    context,
   } as CellEditRequestEvent);
 }
 

@@ -1,4 +1,4 @@
-import { RefObject, ClipboardEvent, useState } from "react";
+import { RefObject, ClipboardEvent, useState, useEffect } from "react";
 import { useUserEmail } from "../contexts/UserEmailContext";
 import { useWarningModal } from "../contexts/WarningContext";
 import {
@@ -6,7 +6,6 @@ import {
   IServerSideGetRowsParams,
 } from "ag-grid-community";
 import { getUserEmail } from "../utils/getUserEmail";
-import { openLoginPopup } from "../utils/openLoginPopup";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import {
   DashboardCohort,
@@ -17,6 +16,7 @@ import {
   useUpdateTempoCohortMutation,
 } from "../generated/graphql";
 import { handleAgGridPaste } from "../utils/handleAgGridPaste";
+import { awaitLoginPopup } from "../utils/awaitLoginPopup";
 import { RecordChange } from "../types/shared";
 import { formatCellDate, isInvalidCostCenter } from "../utils/agGrid";
 import {
@@ -24,6 +24,7 @@ import {
   POLLING_PAUSE_AFTER_UPDATE,
 } from "../configs/shared";
 import { formatCohortUsersString } from "../utils/formatCohortUsersString";
+import _ from "lodash";
 
 interface UseCellChangesParams {
   gridRef: RefObject<AgGridReactType<any>>;
@@ -48,6 +49,15 @@ export function useCellChanges({
   const [updateDashboardSamplesMutation] = useUpdateDashboardSamplesMutation();
   const [updateTempoCohortMutation] = useUpdateTempoCohortMutation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  // Discard unsaved changes when the user logs out.
+  // Intentionally excludes `changes` and `handleDiscardChanges` from deps —
+  // this should only fire on logout, not on every change.
+  useEffect(() => {
+    if (!userEmail && changes.length > 0) {
+      handleDiscardChanges();
+    } // eslint-disable-next-line
+  }, [userEmail]);
 
   async function handleCellEditRequest(params: CellEditRequestEvent) {
     const recordId = isSampleLevelChanges
@@ -78,21 +88,7 @@ export function useCellChanges({
       let currUserEmail = userEmail;
 
       if (!currUserEmail) {
-        currUserEmail = await new Promise<string | undefined>((resolve) => {
-          window.addEventListener("message", handleLogin);
-
-          function handleLogin(event: MessageEvent) {
-            if (event.data === "success") {
-              getUserEmail().then((email) => {
-                window.removeEventListener("message", handleLogin);
-                resolve(email);
-              });
-            }
-          }
-
-          openLoginPopup();
-        });
-
+        currUserEmail = await awaitLoginPopup();
         if (!currUserEmail) return;
         setUserEmail(currUserEmail);
       }
@@ -148,7 +144,12 @@ export function useCellChanges({
   async function handlePaste(e: ClipboardEvent<HTMLDivElement>) {
     if (!handleCellEditRequest) return;
     try {
-      await handleAgGridPaste({ e, gridRef, handleCellEditRequest });
+      await handleAgGridPaste({
+        e,
+        gridRef,
+        handleCellEditRequest,
+        context: { userEmail },
+      });
     } catch (error) {
       if (error instanceof Error) {
         setWarningModalContent(error.message);
@@ -178,13 +179,35 @@ export function useCellChanges({
     }
   }
 
-  async function handleSubmitUpdates() {
+  async function handleSubmitUpdates(author: string, reasonForChange: string) {
     if (changes.length === 0) {
       console.error("No changes available to submit.");
       return;
     }
 
-    const changesByRecordId = groupChangesByRecordId(changes);
+    const recordIds = _.uniq(changes.map((c) => c.recordId));
+
+    const changesWithReason = [...changes];
+
+    if (isSampleLevelChanges) {
+      const formattedChangelog = `${author}: ${reasonForChange}`;
+      recordIds.forEach((r) => {
+        const change = changes.find((c) => c.recordId === r);
+        if (!change) {
+          return;
+        }
+
+        changesWithReason.push({
+          recordId: r,
+          fieldName: "changelog",
+          oldValue: change.rowNode.data.changelog,
+          newValue: formattedChangelog,
+          rowNode: change.rowNode,
+        });
+      });
+    }
+
+    const changesByRecordId = groupChangesByRecordId(changesWithReason);
     if (isSampleLevelChanges) {
       const newDashboardSamples = buildNewDashboardSamples(changesByRecordId);
 

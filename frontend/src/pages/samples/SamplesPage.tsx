@@ -14,6 +14,9 @@ import {
   filterButtonOptions,
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
+  sampleColDefs,
+  BILLING_FIELDS,
+  PHI_FIELDS,
 } from "./config";
 import { Button, Col } from "react-bootstrap";
 import { FilterButtons } from "../../components/FilterButtons";
@@ -26,20 +29,25 @@ import { useTogglePhiColumnsVisibility } from "../../hooks/useTogglePhiColumns";
 import { useCellChanges } from "../../hooks/useCellChanges";
 import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
-import { POLL_INTERVAL } from "../../configs/shared";
+import { POLL_INTERVAL, ROUTE_PARAMS } from "../../configs/shared";
 import {
   CohortBuilderContainer,
   CohortBuilderSample,
 } from "../../components/CohortBuilderContainer";
 import { NoteAddOutlined } from "@material-ui/icons";
+import { SampleHistoryModal } from "../../components/SamplesModal";
+import { useParams } from "react-router-dom";
+import { useUserEmail } from "../../contexts/UserEmailContext";
+import { useCellDoubleClicked } from "../../hooks/useCellDoubleClicked";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
 const RECORD_NAME = "samples";
-const PHI_FIELDS = new Set(["sequencingDate", "molecularAccessionNumber"]);
 
 export function SamplesPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
+  const hasParams = Object.keys(useParams()).length > 0;
+  const smileSampleId = useParams()[ROUTE_PARAMS.samples];
   const [colDefs, setColDefs] = useState(filterButtonOptions[0].colDefs);
   const [recordContexts, setRecordContexts] = useState(
     filterButtonOptions[0].recordContexts
@@ -49,8 +57,26 @@ export function SamplesPage() {
     []
   );
   const [showSelectedPopup, setShowSelectedPopup] = useState(false);
-  const [disableCohortBuildling, setDisableCohortBuildling] = useState(true);
-  const [includeDemographics, setIncludeDemographics] = useState(false);
+  const [selectedFilterLabel, setSelectedFilterLabel] = useState(
+    filterButtonOptions[0].label
+  );
+  const { userEmail } = useUserEmail();
+  const { handleCellDoubleClicked } = useCellDoubleClicked();
+
+  const isWesAndLoggedIn = selectedFilterLabel === "WES" && !!userEmail;
+  const disableCohortBuildling = !isWesAndLoggedIn;
+  const includeDemographics = isWesAndLoggedIn;
+
+  // Reset cohort builder when transitioning from enabled to disabled
+  const prevIsWesAndLoggedIn = useRef(isWesAndLoggedIn);
+  useEffect(() => {
+    if (prevIsWesAndLoggedIn.current && !isWesAndLoggedIn) {
+      gridRef.current?.api?.deselectAll();
+      setSelectedRowIds([]);
+      setShowSelectedPopup(false);
+    }
+    prevIsWesAndLoggedIn.current = isWesAndLoggedIn;
+  }, [isWesAndLoggedIn]);
 
   const {
     refreshData,
@@ -109,19 +135,7 @@ export function SamplesPage() {
   });
 
   function handleFilterButtonClick(filterButtonLabel: string) {
-    if (filterButtonLabel === "WES") {
-      setDisableCohortBuildling(false);
-      setIncludeDemographics(true);
-    } else {
-      // reset everything if not WES or cohort builder disabled
-      if (gridRef.current) {
-        gridRef.current.api.deselectAll();
-      }
-      setSelectedRowIds([]);
-      setShowSelectedPopup(false);
-      setDisableCohortBuildling(true);
-      setIncludeDemographics(false);
-    }
+    setSelectedFilterLabel(filterButtonLabel);
 
     const selectedFilterButtonOption = filterButtonOptions.find(
       (option) => option.label === filterButtonLabel
@@ -137,6 +151,16 @@ export function SamplesPage() {
       phiFields: PHI_FIELDS,
       userSearchVal,
     });
+
+  // When not logged in, remove PHI and billing columns from the ColDefs entirely
+  // so they don't appear in AG Grid's column menu or any other UI surface.
+  // When logged in, pass the full ColDefs (PHI visibility is then controlled by
+  // the phiEnabled + search toggle; billing columns are always visible).
+  const authFilteredColDefs = userEmail
+    ? colDefs
+    : colDefs.filter(
+        (col) => !PHI_FIELDS.has(col.field!) && !BILLING_FIELDS.has(col.field!)
+      );
 
   if (error) {
     return <ErrorMessage error={error} />;
@@ -200,13 +224,14 @@ export function SamplesPage() {
       </Toolbar>
       <DataGrid
         gridRef={gridRef}
-        colDefs={colDefs}
+        colDefs={authFilteredColDefs}
         refreshData={refreshData}
         changes={changes}
         handleCellEditRequest={handleCellEditRequest}
         handlePaste={handlePaste}
         selectedRowIds={selectedRowIds}
         onSelectionChanged={setSelectedRowIds}
+        onCellDoubleClicked={handleCellDoubleClicked}
       />
 
       {isDownloading && <DownloadModal />}
@@ -217,6 +242,17 @@ export function SamplesPage() {
           selectedRowIds={selectedRowIds}
           setSelectedRowIds={setSelectedRowIds}
           setShowSelectedPopup={setShowSelectedPopup}
+        />
+      )}
+
+      {hasParams && smileSampleId && (
+        <SampleHistoryModal
+          sampleColDefs={sampleColDefs}
+          recordContext={{
+            fieldName: "smileSampleId",
+            values: [smileSampleId],
+          }}
+          parentRecordName="samples"
         />
       )}
     </DataGridLayout>

@@ -26,6 +26,9 @@ const GENERIC_TYPEDEFS = gql`
 `;
 
 const SAMPLE_FIELDS = `
+  # internal
+  recordId: String!
+
   # (s:Sample)
   smileSampleId: String!
   revisable: Boolean
@@ -60,6 +63,7 @@ const SAMPLE_FIELDS = `
   platform: String
   igoSampleStatus: String
   dmpRecommendedCoverage: String
+  changelog: String
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport: String
   validationStatus: Boolean
@@ -260,6 +264,13 @@ const QUERY_TYPEDEFS = gql`
       includeDemographics: Boolean!
     ): [DashboardSample!]!
 
+    dashboardSampleHistory(
+      searchVals: [String!]!
+      sort: DashboardRecordSort!
+      limit: Int!
+      offset: Int!
+    ): [DashboardSample!]!
+
     allAnchorSeqDateData(phiEnabled: Boolean): [AnchorSeqDateData!]!
 
     allBlockedCohortIds: [String!]!
@@ -289,6 +300,7 @@ const MUTATION_TYPEDEFS = gql`
     type: String
     pipelineVersion: String
     searchableSampleIds: String
+    changelog: String
     _total: Int
     _uniqueSampleCount: Int
   }

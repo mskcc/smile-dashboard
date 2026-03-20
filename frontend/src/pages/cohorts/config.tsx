@@ -134,7 +134,10 @@ export function setupEditableCohortFields(
         return changedValue !== undefined;
       },
       cursorNotAllowed: (params: CellClassParams) => {
-        return !editableFieldsList.has(params.colDef.field!);
+        return (
+          !params.context?.userEmail ||
+          !editableFieldsList.has(params.colDef.field!)
+        );
       },
     };
 
@@ -171,7 +174,10 @@ export function setupEditableCohortFields(
     }
 
     colDef.editable = (params) => {
-      return editableFieldsList.has(params.colDef.field!);
+      return (
+        params.context?.userEmail &&
+        editableFieldsList.has(params.colDef.field!)
+      );
     };
   });
 }

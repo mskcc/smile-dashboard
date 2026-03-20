@@ -61,6 +61,7 @@ const FIELDS_TO_SEARCH = [
   "sampleCohortIds",
   "igoDeliveryDate",
   "dmpRecommendedCoverage",
+  "changelog",
 ];
 
 export function buildSamplesQueryBody({
@@ -196,7 +197,16 @@ export function buildSamplesQueryBody({
 
     WITH
       s,
-      latestSm[0] AS latestSm,
+      latestSm[0] AS latestSm
+    
+    // Filters for either the WES Samples or Request Samples view, if applicable
+    ${genePanelContext && `WHERE ${genePanelContext}`}
+    ${baitSetContext && `OR ${baitSetContext}`}
+    ${requestContext && `WHERE ${requestContext}`}
+
+    WITH 
+      s,
+      latestSm,
       COLLECT {
       	MATCH (s)-[:HAS_METADATA]->(sm:SampleMetadata)
         WITH
@@ -219,12 +229,6 @@ export function buildSamplesQueryBody({
           ]
         ),
       ", ") AS historicalCmoSampleNames
-
-    // Filters for either the WES Samples or Request Samples view, if applicable
-    ${genePanelContext && `WHERE ${genePanelContext}`}
-    ${baitSetContext && `OR ${baitSetContext}`}
-
-    ${requestContext && `WHERE ${requestContext}`}
 
     // Get SampleMetadata's Status
     OPTIONAL MATCH (latestSm)-[:HAS_STATUS]->(st:Status)
@@ -303,7 +307,8 @@ export function buildSamplesQueryBody({
       latestQC[0] AS latestQC,
       coalesce(apoc.text.join([id IN sampleCohortIds WHERE id IS NOT NULL], ', '), '') AS sampleCohortIds,
       apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields) AS cmoSampleIdFields,
-      apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog
 
       ${bamCompleteDateColFilter && `WHERE ${bamCompleteDateColFilter}`}
       ${mafCompleteDateColFilter && `WHERE ${mafCompleteDateColFilter}`}
@@ -325,6 +330,7 @@ export function buildSamplesQueryBody({
       sampleCohortIds,
       cmoSampleIdFields,
       dmpRecommendedCoverage,
+      changelog,
       d,
       r,
 
@@ -337,6 +343,7 @@ export function buildSamplesQueryBody({
 
     WITH
       ({
+        recordId: s.smileSampleId,
         smileSampleId: s.smileSampleId,
         revisable: s.revisable,
         sampleCategory: s.sampleCategory,
@@ -371,6 +378,7 @@ export function buildSamplesQueryBody({
         validationStatus: latestSt.validationStatus,
         igoSampleStatus: apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus,
         dmpRecommendedCoverage: dmpRecommendedCoverage,
+        changelog: changelog,
 
         smileTempoId: t.smileTempoId,
         billed: t.billed,
@@ -401,6 +409,160 @@ export function buildSamplesQueryBody({
   `;
 
   return samplesQueryBody;
+}
+
+/**
+ * Builds a Cypher query body that returns one DashboardSample per SampleMetadata version
+ * for a given sample, representing its full versioned metadata history.
+ * Unlike buildSamplesQueryBody (which returns only latestSm), this iterates over all
+ * SampleMetadata nodes associated with the sample.
+ */
+export function buildSampleMetadataHistoryQueryBody({
+  smileSampleId,
+}: {
+  smileSampleId: string;
+}) {
+  const sampleMetadataHistoryQueryBody = `
+    // Get Sample and all SampleMetadata (versioned history)
+    MATCH (s:Sample {smileSampleId: '${smileSampleId}'})-[:HAS_METADATA]->(sm:SampleMetadata)
+
+    // Get each SampleMetadata's Status
+    OPTIONAL MATCH (sm)-[:HAS_STATUS]->(st:Status)
+
+    // Get Patient info
+    OPTIONAL MATCH (s)<-[:HAS_SAMPLE]-(p:Patient)<-[:IS_ALIAS]-(pa:PatientAlias)
+    WITH
+      s,
+      sm,
+      st,
+      head([pa IN collect(pa) WHERE pa.namespace = 'dmpId' | pa.value]) AS dmpPatientAlias
+
+    // Get Tempo data
+    OPTIONAL MATCH (s)-[:HAS_TEMPO]->(t:Tempo)
+    WITH
+      s,
+      sm,
+      st,
+      dmpPatientAlias,
+      t,
+      COLLECT {
+        OPTIONAL MATCH (t)-[:HAS_EVENT]->(bc:BamComplete)
+        RETURN bc ORDER BY bc.date DESC LIMIT 1
+      } AS latestBC,
+      COLLECT {
+        OPTIONAL MATCH (t)-[:HAS_EVENT]->(mc:MafComplete)
+        RETURN mc ORDER BY mc.date DESC LIMIT 1
+      } AS latestMC,
+      COLLECT {
+        OPTIONAL MATCH (t)-[:HAS_EVENT]->(qc:QcComplete)
+        RETURN qc ORDER BY qc.date DESC LIMIT 1
+      } AS latestQC,
+      COLLECT {
+        OPTIONAL MATCH (s)<-[:HAS_COHORT_SAMPLE]-(c:Cohort)
+        RETURN DISTINCT c.cohortId
+      } AS sampleCohortIds
+
+    WITH
+      s,
+      sm,
+      st,
+      dmpPatientAlias,
+      t,
+      latestBC[0] AS latestBC,
+      latestMC[0] AS latestMC,
+      latestQC[0] AS latestQC,
+      coalesce(apoc.text.join([id IN sampleCohortIds WHERE id IS NOT NULL], ', '), '') AS sampleCohortIds,
+      apoc.convert.fromJsonMap(sm.cmoSampleIdFields) AS cmoSampleIdFields,
+      apoc.convert.fromJsonMap(sm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage,
+      apoc.convert.fromJsonMap(sm.additionalProperties).changelog AS changelog
+
+    // Get DbGap data
+    OPTIONAL MATCH (s)-[:HAS_DBGAP]->(d:DbGap)
+    OPTIONAL MATCH (r:Request)-[:HAS_SAMPLE]->(s)
+    WITH
+      s,
+      sm,
+      st,
+      dmpPatientAlias,
+      t,
+      latestBC,
+      latestMC,
+      latestQC,
+      sampleCohortIds,
+      cmoSampleIdFields,
+      dmpRecommendedCoverage,
+      changelog,
+      d,
+      r,
+
+    CASE s.sampleCategory
+      WHEN "research" THEN r.igoDeliveryDate
+      ELSE null
+    END AS igoDeliveryDate
+
+    WITH
+      ({
+        recordId: elementId(sm),
+        smileSampleId: s.smileSampleId,
+        revisable: s.revisable,
+        sampleCategory: s.sampleCategory,
+        igoDeliveryDate: apoc.date.format(igoDeliveryDate, 'ms', 'yyyy-MM-dd'),
+
+        primaryId: sm.primaryId,
+        cmoSampleName: sm.cmoSampleName,
+        importDate: apoc.date.format(sm.importDate, 'ms', 'yyyy-MM-dd HH:mm'),
+        validationReport: st.validationReport,
+        validationStatus: st.validationStatus,
+        cmoPatientId: sm.cmoPatientId,
+        investigatorSampleId: sm.investigatorSampleId,
+        sampleType: sm.sampleType,
+        species: sm.species,
+        genePanel: sm.genePanel,
+        baitSet: sm.baitSet,
+        preservation: sm.preservation,
+        tumorOrNormal: sm.tumorOrNormal,
+        sampleClass: sm.sampleClass,
+        oncotreeCode: sm.oncotreeCode,
+        collectionYear: sm.collectionYear,
+        sampleOrigin: sm.sampleOrigin,
+        tissueLocation: sm.tissueLocation,
+        sex: sm.sex,
+        cfDNA2dBarcode: sm.cfDNA2dBarcode,
+        libraries: sm.libraries,
+        recipe: cmoSampleIdFields.recipe,
+        analyteType: cmoSampleIdFields.naToExtract,
+        altId: apoc.convert.fromJsonMap(sm.additionalProperties).altId,
+        igoSampleStatus: apoc.convert.fromJsonMap(sm.additionalProperties).igoSampleStatus,
+        dmpRecommendedCoverage: dmpRecommendedCoverage,
+        changelog: changelog,
+
+        smileTempoId: t.smileTempoId,
+        billed: t.billed,
+        costCenter: t.costCenter,
+        billedBy: t.billedBy,
+        custodianInformation: t.custodianInformation,
+        accessLevel: t.accessLevel,
+        initialPipelineRunDate: t.initialPipelineRunDate,
+        embargoDate: t.embargoDate,
+        bamCompleteDate: latestBC.date,
+        bamCompleteStatus: latestBC.status,
+        mafCompleteDate: latestMC.date,
+        mafCompleteNormalPrimaryId: latestMC.normalPrimaryId,
+        mafCompleteStatus: latestMC.status,
+        qcCompleteDate: latestQC.date,
+        qcCompleteResult: latestQC.result,
+        qcCompleteReason: latestQC.reason,
+        qcCompleteStatus: latestQC.status,
+        sampleCohortIds: sampleCohortIds,
+
+        dbGapStudy: d.dbGapStudy,
+        irbConsentProtocol: d.irbConsentProtocol,
+
+        dmpPatientAlias: dmpPatientAlias
+      }) AS tempNode
+  `;
+
+  return sampleMetadataHistoryQueryBody;
 }
 
 function buildCypherPredicateFromContext({
@@ -518,6 +680,7 @@ export type SampleDataForCacheUpdate = Record<
     | "historicalCmoSampleNames"
     | "importDate"
     | "revisable"
+    | "changelog"
   >
 >;
 
@@ -559,7 +722,8 @@ export async function querySelectSampleDataForCacheUpdate(
       latestSm.cmoSampleName AS cmoSampleName,
       apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd') AS importDate,
       historicalCmoSampleNames,
-      s.revisable AS revisable
+      s.revisable AS revisable,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog
   `;
 
   const session = neo4jDriver.session();

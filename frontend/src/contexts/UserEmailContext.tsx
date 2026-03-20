@@ -12,6 +12,7 @@ import { getUserEmail } from "../utils/getUserEmail";
 interface UserEmailContextType {
   userEmail: string | undefined;
   setUserEmail: Dispatch<SetStateAction<string | undefined>>;
+  isLoadingUserEmail: boolean;
 }
 
 const UserEmailContext = createContext<UserEmailContextType | undefined>(
@@ -20,17 +21,21 @@ const UserEmailContext = createContext<UserEmailContextType | undefined>(
 
 export function UserEmailProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
+  const [isLoadingUserEmail, setIsLoadingUserEmail] = useState(true);
 
   useEffect(() => {
     async function getAndSetUserEmail() {
       const currentUserEmail = await getUserEmail();
       setUserEmail(currentUserEmail);
+      setIsLoadingUserEmail(false);
     }
     getAndSetUserEmail();
   }, []);
 
   return (
-    <UserEmailContext.Provider value={{ userEmail, setUserEmail }}>
+    <UserEmailContext.Provider
+      value={{ userEmail, setUserEmail, isLoadingUserEmail }}
+    >
       {children}
     </UserEmailContext.Provider>
   );
