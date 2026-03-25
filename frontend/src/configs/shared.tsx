@@ -59,8 +59,9 @@ export const PHI_WARNING =
 export const POLLING_PAUSE_AFTER_UPDATE = 12000; // 12s
 
 export const INVALID_COST_CENTER_WARNING =
-  "Please update your Cost Center/Fund Number input as #####/##### " +
-  "(5 digits, a forward slash, then 5 digits). For example: 12345/12345.";
+  "Please update your Cost Center/Fund Number input as CC#######/##### " +
+  "(CC followed by 7 alphanumeric characters, a forward slash, then 5 digits). For example: CC1234567/12345. " +
+  "Please note that 5 digit legacy Cost Center formats (#####/#####) will also be accepted temporarily.";
 
 export const NO_CHANGELOG_WARNING =
   "Please update Reason for Change and Author fields.";
