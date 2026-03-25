@@ -57,7 +57,8 @@ export function getAgGridBooleanValueFormatter({
 
 export function isInvalidCostCenter(fieldName: string, value: string) {
   if (!value || fieldName !== "costCenter") return false;
-  if (value.length !== 11) return true;
-  const validCostCenter = new RegExp("^\\d{5}/\\d{5}$");
+  if (value.length < 11 || value.length > 15) return true;
+  // support both legacy cost centers and restamped cost centers
+  const validCostCenter = new RegExp("^\\w{5,9}/\\d{5}$");
   return !validCostCenter.test(value);
 }
