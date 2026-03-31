@@ -1,7 +1,17 @@
-import { Dispatch, ReactNode, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
+import jsdownload from "js-file-download";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  AgGridSortDirection,
   DashboardRecordContext,
   DashboardSample,
   useDashboardSampleHistoryLazyQuery,
@@ -9,9 +19,14 @@ import {
 } from "../generated/graphql";
 import { useFetchData } from "../hooks/useFetchData";
 import { useCellChanges } from "../hooks/useCellChanges";
-import { useDownload } from "../hooks/useDownload";
+import {
+  useDownload,
+  DownloadOption,
+  buildTsvString,
+} from "../hooks/useDownload";
 import {
   buildDownloadOptions,
+  fieldToHeaderName,
   phiModeSwitchTooltipContent,
 } from "../pages/samples/config";
 import { useTogglePhiColumnsVisibility } from "../hooks/useTogglePhiColumns";
@@ -26,12 +41,16 @@ import { DownloadButton } from "../components/DownloadButton";
 import { DataGrid } from "./DataGrid";
 import { DownloadModal } from "./DownloadModal";
 import { ColDef } from "ag-grid-community";
-import { POLL_INTERVAL, ROUTE_PARAMS } from "../configs/shared";
+import {
+  CACHE_BLOCK_SIZE,
+  POLL_INTERVAL,
+  ROUTE_PARAMS,
+} from "../configs/shared";
 import { RecordChange } from "../types/shared";
 import { useCellDoubleClicked } from "../hooks/useCellDoubleClicked";
 
 const QUERY_NAME = "dashboardSamples";
-const INTIAL_SORT_FIELD_NAME = "importDate";
+const INITIAL_SORT_FIELD_NAME = "importDate";
 const PHI_FIELDS = new Set(["sequencingDate"]);
 
 interface SamplesModalProps {
@@ -65,7 +84,7 @@ export function SamplesModal({
   } = useFetchData({
     useRecordsLazyQuery: useDashboardSamplesLazyQuery,
     queryName: QUERY_NAME,
-    initialSortFieldName: INTIAL_SORT_FIELD_NAME,
+    initialSortFieldName: INITIAL_SORT_FIELD_NAME,
     gridRef,
     userSearchVal,
     recordContexts: [
@@ -152,6 +171,7 @@ export function SamplesModal({
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
               isSampleLevelChanges={true}
+              fieldToHeaderName={fieldToHeaderName}
             />
           )}
         </Col>
@@ -183,70 +203,161 @@ export function SamplesModal({
 
 const HISTORY_QUERY_NAME = "dashboardSampleHistory";
 const HISTORY_INITIAL_SORT_FIELD_NAME = "importDate";
+const HISTORY_EXCLUDED_FIELDS = new Set<keyof DashboardSample>([
+  "__typename",
+  "_total",
+  "recordId",
+  "importDate",
+  "changelog",
+  "validationReport",
+  "validationStatus",
+]);
+
+interface SampleHistoryRow {
+  fieldName: string;
+  lastUpdated: string;
+  groupLabel: string;
+  oldValue: string;
+  newValue: string;
+  reasonForChange: string;
+}
+
+function computeHistoryDiffs(records: DashboardSample[]): SampleHistoryRow[] {
+  if (records.length < 2) return [];
+
+  // Sort ascending (oldest first) so we diff each version against the one before it
+  const sorted = [...records].sort(
+    (a, b) =>
+      new Date(a.importDate ?? "").getTime() -
+      new Date(b.importDate ?? "").getTime()
+  );
+
+  const diffs: SampleHistoryRow[] = [];
+  for (let i = 1; i < sorted.length; i++) {
+    const older = sorted[i - 1];
+    const newer = sorted[i];
+    const reasonForChange = newer.changelog ?? "";
+    const lastUpdated = newer.importDate ?? "";
+    const groupLabel = reasonForChange
+      ? `${lastUpdated} — ${reasonForChange}`
+      : lastUpdated;
+    for (const key of Object.keys(newer) as (keyof DashboardSample)[]) {
+      if (HISTORY_EXCLUDED_FIELDS.has(key)) continue;
+      const oldVal = older[key] == null ? "" : String(older[key]);
+      const newVal = newer[key] == null ? "" : String(newer[key]);
+      if (oldVal !== newVal) {
+        diffs.push({
+          fieldName: key,
+          lastUpdated,
+          groupLabel,
+          oldValue: oldVal,
+          newValue: newVal,
+          reasonForChange,
+        });
+      }
+    }
+  }
+
+  // Most recent changes first
+  return diffs.sort(
+    (a, b) =>
+      new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
+  );
+}
+
+const historyColDefs: ColDef<SampleHistoryRow>[] = [
+  { field: "groupLabel", rowGroup: true, hide: true },
+  {
+    field: "fieldName",
+    headerName: "Column",
+    valueFormatter: (p) => fieldToHeaderName(p.value),
+  },
+  { field: "oldValue", headerName: "Old Value" },
+  { field: "newValue", headerName: "New Value" },
+];
+
+// Flat col defs used only for TSV export (no grouping, all fields visible)
+const historyExportColDefs: ColDef<SampleHistoryRow>[] = [
+  { field: "lastUpdated", headerName: "Last Updated" },
+  { field: "reasonForChange", headerName: "Reason for Change" },
+  ...historyColDefs.filter((c) => !c.rowGroup),
+];
+
+const historyAutoGroupColumnDef: ColDef = {
+  headerName: "Last Updated",
+  field: "groupLabel",
+  sort: "desc",
+  valueFormatter: (params) =>
+    (params.node?.parent?.childrenAfterGroup?.length ?? 0) > 1
+      ? ""
+      : params.value ?? "",
+};
 
 interface SampleHistoryModalProps {
-  sampleColDefs: Array<ColDef>;
-  /** { fieldName: 'smileSampleId', values: [$smileSampleId] } */
   recordContext: DashboardRecordContext;
   parentRecordName: keyof typeof ROUTE_PARAMS;
 }
 
-/**
- * Displays a paginated, read-only table of all SampleMetadata versions for a
- * single sample. Uses `useDashboardSampleHistoryLazyQuery` directly because the
- * history resolver takes `smileSampleId` instead of the `recordContexts` /
- * `searchVals` interface accepted by `useFetchData`.
- */
 export function SampleHistoryModal({
-  sampleColDefs,
   recordContext,
   parentRecordName,
 }: SampleHistoryModalProps) {
-  const [userSearchVal, setUserSearchVal] = useState(
-    recordContext.values?.[0] ?? ""
-  );
-  const [colDefs, setColDefs] = useState(sampleColDefs);
-  const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
-  const [changes, setChanges] = useState<Array<RecordChange>>([]);
+  const smileSampleId = recordContext.values?.[0] ?? "";
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  const { refreshData, recordCount, isLoading, error, data, fetchMore } =
-    useFetchData({
-      useRecordsLazyQuery: useDashboardSampleHistoryLazyQuery,
-      queryName: HISTORY_QUERY_NAME,
-      initialSortFieldName: HISTORY_INITIAL_SORT_FIELD_NAME,
-      gridRef,
-      userSearchVal,
-      pollInterval: POLL_INTERVAL,
+  const [fetchHistory, { data, loading: isLoading, error }] =
+    useDashboardSampleHistoryLazyQuery({
+      variables: {
+        searchVals: [smileSampleId],
+        sort: {
+          colId: HISTORY_INITIAL_SORT_FIELD_NAME,
+          sort: AgGridSortDirection.Desc,
+        },
+        limit: CACHE_BLOCK_SIZE,
+        offset: 0,
+      },
     });
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
+  const historyRecords = useMemo(
+    () => (data?.[HISTORY_QUERY_NAME] ?? []) as DashboardSample[],
+    [data]
+  );
+  const diffs = useMemo(
+    () => computeHistoryDiffs(historyRecords),
+    [historyRecords]
+  );
 
   const firstRecord = data?.[HISTORY_QUERY_NAME]?.[0] as
     | DashboardSample
     | undefined;
   const displayText = `${firstRecord?.primaryId ?? "sample"} metadata history`;
+  const downloadFileName = `${
+    firstRecord?.primaryId ?? "sample"
+  }_metadata_history`;
 
-  const { isDownloading, handleDownload, getCurrentData } =
-    useDownload<DashboardSample>({
-      gridRef,
-      downloadFileName: `${
-        firstRecord?.primaryId ?? "sample"
-      }_metadata_history`,
-      fetchMore,
-      userSearchVal,
-      recordCount,
-      queryName: HISTORY_QUERY_NAME,
+  const historyDownloadOptions: DownloadOption[] = [
+    {
+      buttonLabel: "Download as TSV",
+      columnDefsForDownload: historyExportColDefs,
+      dataGetter: async () => diffs,
+    },
+  ];
+
+  async function handleDownload(downloadOption: DownloadOption) {
+    setIsDownloading(true);
+    const data = await downloadOption.dataGetter();
+    const tsvString = buildTsvString({
+      rows: data,
+      colDefs: downloadOption.columnDefsForDownload,
+      columns: [],
     });
-
-  const downloadOptions = buildDownloadOptions({
-    getCurrentData,
-    currentColDefs: colDefs,
-  });
-
-  // always hide history column since this modal is specifically for viewing sample history and the history column doesn't add value in this context
-  const historyFilteredColDefs = colDefs.filter(
-    (colDef) =>
-      colDef.field !== "historicalCmoSampleNames" &&
-      colDef.headerName !== "View History"
-  );
+    jsdownload(tsvString, `${downloadFileName}.tsv`);
+    setIsDownloading(false);
+  }
 
   if (error) {
     return <ErrorMessage error={error} />;
@@ -254,8 +365,6 @@ export function SampleHistoryModal({
 
   return (
     <ModalContainerWithClosingWarning
-      changes={changes}
-      setChanges={setChanges}
       parentRecordName={parentRecordName}
       displayText={displayText}
     >
@@ -268,19 +377,21 @@ export function SampleHistoryModal({
 
         <Col className="text-end">
           <DownloadButton
-            downloadOptions={downloadOptions}
+            downloadOptions={historyDownloadOptions}
             onDownload={handleDownload}
           />
         </Col>
       </Toolbar>
-
-      <DataGrid
-        gridRef={gridRef}
-        colDefs={historyFilteredColDefs}
-        refreshData={refreshData}
-        selectedRowIds={[]}
-        onSelectionChanged={() => {}}
-      />
+      <div className="ag-theme-alpine flex-grow-1">
+        <AgGridReactType
+          rowData={diffs}
+          columnDefs={historyColDefs}
+          groupRemoveSingleChildren={true}
+          autoGroupColumnDef={historyAutoGroupColumnDef}
+          groupDefaultExpanded={1}
+          onFirstDataRendered={(e) => e.columnApi.autoSizeAllColumns()}
+        />
+      </div>
 
       {isDownloading && <DownloadModal />}
     </ModalContainerWithClosingWarning>
@@ -288,15 +399,15 @@ export function SampleHistoryModal({
 }
 
 interface ModalContainerProps {
-  changes: Array<RecordChange>;
-  setChanges: Dispatch<SetStateAction<Array<RecordChange>>>;
+  changes?: Array<RecordChange>;
+  setChanges?: Dispatch<SetStateAction<Array<RecordChange>>>;
   parentRecordName: keyof typeof ROUTE_PARAMS;
   children: ReactNode;
   displayText?: string;
 }
 
 function ModalContainerWithClosingWarning({
-  changes,
+  changes = [],
   setChanges,
   parentRecordName,
   children,
@@ -320,7 +431,7 @@ function ModalContainerWithClosingWarning({
 
   function handleClosingWarningContinue() {
     setShowClosingWarning(false);
-    setChanges([]);
+    setChanges?.([]);
     navigate(`/${parentRecordName}`);
   }
 

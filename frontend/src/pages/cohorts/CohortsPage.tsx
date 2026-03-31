@@ -10,7 +10,11 @@ import {
 import { Title } from "../../components/Title";
 import { Toolbar } from "../../components/Toolbar";
 import { SearchBar } from "../../components/SearchBar";
-import { buildDownloadOptions, cohortColDefs } from "./config";
+import {
+  buildDownloadOptions,
+  cohortColDefs,
+  fieldToHeaderName,
+} from "./config";
 import { Col } from "react-bootstrap";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { DownloadButton } from "../../components/DownloadButton";
@@ -106,6 +110,7 @@ export function CohortsPage() {
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
               isSampleLevelChanges={false}
+              fieldToHeaderName={fieldToHeaderName}
             />
           )}
         </Col>

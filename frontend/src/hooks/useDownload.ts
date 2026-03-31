@@ -81,7 +81,7 @@ interface BuildTsvStringParams {
   colDefs: Array<ColDef>;
 }
 
-function buildTsvString({
+export function buildTsvString({
   rows,
   columns,
   colDefs,

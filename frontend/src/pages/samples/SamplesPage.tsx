@@ -11,10 +11,10 @@ import { Toolbar } from "../../components/Toolbar";
 import { SearchBar } from "../../components/SearchBar";
 import {
   buildDownloadOptions,
+  fieldToHeaderName,
   filterButtonOptions,
   filterButtonsTooltipContent,
   phiModeSwitchTooltipContent,
-  sampleColDefs,
   BILLING_FIELDS,
   PHI_FIELDS,
 } from "./config";
@@ -203,6 +203,7 @@ export function SamplesPage() {
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
               isSampleLevelChanges={true}
+              fieldToHeaderName={fieldToHeaderName}
             />
           )}
         </Col>
@@ -247,7 +248,6 @@ export function SamplesPage() {
 
       {hasParams && smileSampleId && (
         <SampleHistoryModal
-          sampleColDefs={sampleColDefs}
           recordContext={{
             fieldName: "smileSampleId",
             values: [smileSampleId],

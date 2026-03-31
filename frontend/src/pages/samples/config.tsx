@@ -1075,6 +1075,16 @@ export function buildDownloadOptions({
   ];
 }
 
+const fieldToHeaderNameMap = new Map(
+  sampleColDefs
+    .filter((col) => col.field && col.headerName)
+    .map((col) => [col.field!, col.headerName!])
+);
+
+export function fieldToHeaderName(field: string): string {
+  return fieldToHeaderNameMap.get(field) ?? field;
+}
+
 export const phiModeSwitchTooltipContent =
   "Turn on this switch to return samples' sequencing dates in the results." +
   " The table will display sequencing dates only after you (1) have logged" +

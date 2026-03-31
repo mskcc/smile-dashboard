@@ -4,12 +4,20 @@ import { RecordChange } from "../types/shared";
 import { Dispatch, SetStateAction, useState } from "react";
 import { NO_CHANGELOG_WARNING } from "../configs/shared";
 
-const updateModalColumnDefs = [
-  { field: "recordId", rowGroup: true, hide: true },
-  { field: "fieldName" },
-  { field: "oldValue" },
-  { field: "newValue" },
-];
+function buildUpdateModalColumnDefs(fieldToHeaderName?: (f: string) => string) {
+  return [
+    { field: "recordId", rowGroup: true, hide: true },
+    {
+      field: "fieldName",
+      headerName: "Column",
+      valueFormatter: fieldToHeaderName
+        ? (p: { value: string }) => fieldToHeaderName(p.value)
+        : undefined,
+    },
+    { field: "oldValue" },
+    { field: "newValue" },
+  ];
+}
 
 const autoGroupColumnDef = {
   headerName: "Primary Id",
@@ -19,6 +27,7 @@ const autoGroupColumnDef = {
 interface CellChangesContainerProps {
   isSampleLevelChanges: boolean;
   changes: Array<RecordChange>;
+  fieldToHeaderName?: (field: string) => string;
   cellChangesHandlers: {
     handleDiscardChanges: () => void;
     handleConfirmUpdates: () => void;
@@ -38,6 +47,7 @@ export function CellChangesContainer({
     setShowUpdateModal,
   },
   isSampleLevelChanges,
+  fieldToHeaderName,
 }: CellChangesContainerProps) {
   const [changelog, setChangelog] = useState("");
   const [authorChangelog, setAuthorChangelog] = useState("");
@@ -92,10 +102,11 @@ export function CellChangesContainer({
             <div className="ag-theme-alpine" style={{ height: 350 }}>
               <AgGridReact
                 rowData={changes}
-                columnDefs={updateModalColumnDefs}
+                columnDefs={buildUpdateModalColumnDefs(fieldToHeaderName)}
                 groupRemoveSingleChildren={true}
                 autoGroupColumnDef={autoGroupColumnDef}
                 groupDefaultExpanded={1}
+                onFirstDataRendered={(e) => e.columnApi.autoSizeAllColumns()}
               />
             </div>
             {isSampleLevelChanges && (
