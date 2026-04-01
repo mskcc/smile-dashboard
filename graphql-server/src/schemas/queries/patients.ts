@@ -127,15 +127,15 @@ export function buildPatientsQueryBody({
       COUNT(latestSm) AS totalSampleCount,
       apoc.text.join(COLLECT(latestSm.primaryId), ", ") AS cmoSampleIds,
       apoc.coll.max(COLLECT(latestSm.importDate)) AS importDate,
-      collect(DISTINCT latestSm.consentPartA) AS consentPartA,
-      collect(DISTINCT latestSm.consentPartC) AS consentPartC
+      [x IN collect(DISTINCT latestSm.consentPartA) WHERE x IS NOT NULL AND x <> ""][0] AS consentPartA,
+      [x IN collect(DISTINCT latestSm.consentPartC) WHERE x IS NOT NULL AND x <> ""][0] AS consentPartC
 
     WITH
       tempNode{.*,
         totalSampleCount: totalSampleCount,
         cmoSampleIds: cmoSampleIds,
-        consentPartA: consentPartA[0],
-        consentPartC: consentPartC[0],
+        consentPartA: consentPartA,
+        consentPartC: consentPartC,
         importDate: importDate
       }
 
