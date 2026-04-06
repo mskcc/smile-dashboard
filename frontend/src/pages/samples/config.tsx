@@ -34,6 +34,7 @@ import {
 } from "../../types/shared";
 import { DownloadOption } from "../../hooks/useDownload";
 import { Button } from "react-bootstrap";
+import { buildFieldToHeaderName } from "../../utils/fieldToHeaderName";
 
 /**
  * Auth-gated fields.
@@ -1075,15 +1076,7 @@ export function buildDownloadOptions({
   ];
 }
 
-const fieldToHeaderNameMap = new Map(
-  sampleColDefs
-    .filter((col) => col.field && col.headerName)
-    .map((col) => [col.field!, col.headerName!])
-);
-
-export function fieldToHeaderName(field: string): string {
-  return fieldToHeaderNameMap.get(field) ?? field;
-}
+export const fieldToHeaderName = buildFieldToHeaderName(sampleColDefs);
 
 export const phiModeSwitchTooltipContent =
   "Turn on this switch to return samples' sequencing dates in the results." +

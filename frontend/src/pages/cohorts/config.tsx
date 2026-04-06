@@ -16,6 +16,7 @@ import {
   RecordChange,
 } from "../../types/shared";
 import { createCustomHeader } from "../../configs/gridIcons";
+import { buildFieldToHeaderName } from "../../utils/fieldToHeaderName";
 
 type BuildDownloadOptionsParams = BuildDownloadOptionsParamsBase & {
   // Put additional parameters here if needed
@@ -184,12 +185,4 @@ export function setupEditableCohortFields(
 
 setupEditableCohortFields(cohortColDefs, editableCohortFields);
 
-const fieldToHeaderNameMap = new Map(
-  cohortColDefs
-    .filter((col) => col.field && col.headerName)
-    .map((col) => [col.field!, col.headerName!])
-);
-
-export function fieldToHeaderName(field: string): string {
-  return fieldToHeaderNameMap.get(field) ?? field;
-}
+export const fieldToHeaderName = buildFieldToHeaderName(cohortColDefs);
