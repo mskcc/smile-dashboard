@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   DashboardRecordContext,
   DashboardSample,
-  useDashboardSampleHistoryLazyQuery,
   useDashboardSamplesLazyQuery,
 } from "../generated/graphql";
 import { useFetchData } from "../hooks/useFetchData";
@@ -12,6 +11,7 @@ import { useCellChanges } from "../hooks/useCellChanges";
 import { useDownload } from "../hooks/useDownload";
 import {
   buildDownloadOptions,
+  fieldToHeaderName,
   phiModeSwitchTooltipContent,
 } from "../pages/samples/config";
 import { useTogglePhiColumnsVisibility } from "../hooks/useTogglePhiColumns";
@@ -29,9 +29,14 @@ import { ColDef } from "ag-grid-community";
 import { POLL_INTERVAL, ROUTE_PARAMS } from "../configs/shared";
 import { RecordChange } from "../types/shared";
 import { useCellDoubleClicked } from "../hooks/useCellDoubleClicked";
+import {
+  useFetchSampleHistory,
+  historyColDefs,
+  historyAutoGroupColumnDef,
+} from "../hooks/useFetchSampleHistory";
 
 const QUERY_NAME = "dashboardSamples";
-const INTIAL_SORT_FIELD_NAME = "importDate";
+const INITIAL_SORT_FIELD_NAME = "importDate";
 const PHI_FIELDS = new Set(["sequencingDate"]);
 
 interface SamplesModalProps {
@@ -65,7 +70,7 @@ export function SamplesModal({
   } = useFetchData({
     useRecordsLazyQuery: useDashboardSamplesLazyQuery,
     queryName: QUERY_NAME,
-    initialSortFieldName: INTIAL_SORT_FIELD_NAME,
+    initialSortFieldName: INITIAL_SORT_FIELD_NAME,
     gridRef,
     userSearchVal,
     recordContexts: [
@@ -152,6 +157,7 @@ export function SamplesModal({
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
               isSampleLevelChanges={true}
+              fieldToHeaderName={fieldToHeaderName}
             />
           )}
         </Col>
@@ -181,72 +187,26 @@ export function SamplesModal({
   );
 }
 
-const HISTORY_QUERY_NAME = "dashboardSampleHistory";
-const HISTORY_INITIAL_SORT_FIELD_NAME = "importDate";
-
 interface SampleHistoryModalProps {
-  sampleColDefs: Array<ColDef>;
-  /** { fieldName: 'smileSampleId', values: [$smileSampleId] } */
   recordContext: DashboardRecordContext;
   parentRecordName: keyof typeof ROUTE_PARAMS;
 }
 
-/**
- * Displays a paginated, read-only table of all SampleMetadata versions for a
- * single sample. Uses `useDashboardSampleHistoryLazyQuery` directly because the
- * history resolver takes `smileSampleId` instead of the `recordContexts` /
- * `searchVals` interface accepted by `useFetchData`.
- */
 export function SampleHistoryModal({
-  sampleColDefs,
   recordContext,
   parentRecordName,
 }: SampleHistoryModalProps) {
-  const [userSearchVal, setUserSearchVal] = useState(
-    recordContext.values?.[0] ?? ""
-  );
-  const [colDefs, setColDefs] = useState(sampleColDefs);
-  const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
-  const [changes, setChanges] = useState<Array<RecordChange>>([]);
+  const smileSampleId = recordContext.values?.[0] ?? "";
 
-  const { refreshData, recordCount, isLoading, error, data, fetchMore } =
-    useFetchData({
-      useRecordsLazyQuery: useDashboardSampleHistoryLazyQuery,
-      queryName: HISTORY_QUERY_NAME,
-      initialSortFieldName: HISTORY_INITIAL_SORT_FIELD_NAME,
-      gridRef,
-      userSearchVal,
-      pollInterval: POLL_INTERVAL,
-    });
-
-  const firstRecord = data?.[HISTORY_QUERY_NAME]?.[0] as
-    | DashboardSample
-    | undefined;
-  const displayText = `${firstRecord?.primaryId ?? "sample"} metadata history`;
-
-  const { isDownloading, handleDownload, getCurrentData } =
-    useDownload<DashboardSample>({
-      gridRef,
-      downloadFileName: `${
-        firstRecord?.primaryId ?? "sample"
-      }_metadata_history`,
-      fetchMore,
-      userSearchVal,
-      recordCount,
-      queryName: HISTORY_QUERY_NAME,
-    });
-
-  const downloadOptions = buildDownloadOptions({
-    getCurrentData,
-    currentColDefs: colDefs,
-  });
-
-  // always hide history column since this modal is specifically for viewing sample history and the history column doesn't add value in this context
-  const historyFilteredColDefs = colDefs.filter(
-    (colDef) =>
-      colDef.field !== "historicalCmoSampleNames" &&
-      colDef.headerName !== "View History"
-  );
+  const {
+    diffs,
+    isLoading,
+    error,
+    displayText,
+    isDownloading,
+    historyDownloadOptions,
+    handleDownload,
+  } = useFetchSampleHistory(smileSampleId);
 
   if (error) {
     return <ErrorMessage error={error} />;
@@ -254,8 +214,6 @@ export function SampleHistoryModal({
 
   return (
     <ModalContainerWithClosingWarning
-      changes={changes}
-      setChanges={setChanges}
       parentRecordName={parentRecordName}
       displayText={displayText}
     >
@@ -268,19 +226,21 @@ export function SampleHistoryModal({
 
         <Col className="text-end">
           <DownloadButton
-            downloadOptions={downloadOptions}
+            downloadOptions={historyDownloadOptions}
             onDownload={handleDownload}
           />
         </Col>
       </Toolbar>
-
-      <DataGrid
-        gridRef={gridRef}
-        colDefs={historyFilteredColDefs}
-        refreshData={refreshData}
-        selectedRowIds={[]}
-        onSelectionChanged={() => {}}
-      />
+      <div className="ag-theme-alpine flex-grow-1">
+        <AgGridReactType
+          rowData={diffs}
+          columnDefs={historyColDefs}
+          groupRemoveSingleChildren={true}
+          autoGroupColumnDef={historyAutoGroupColumnDef}
+          groupDefaultExpanded={1}
+          onFirstDataRendered={(e) => e.columnApi.autoSizeAllColumns()}
+        />
+      </div>
 
       {isDownloading && <DownloadModal />}
     </ModalContainerWithClosingWarning>
@@ -288,15 +248,15 @@ export function SampleHistoryModal({
 }
 
 interface ModalContainerProps {
-  changes: Array<RecordChange>;
-  setChanges: Dispatch<SetStateAction<Array<RecordChange>>>;
+  changes?: Array<RecordChange>;
+  setChanges?: Dispatch<SetStateAction<Array<RecordChange>>>;
   parentRecordName: keyof typeof ROUTE_PARAMS;
   children: ReactNode;
   displayText?: string;
 }
 
 function ModalContainerWithClosingWarning({
-  changes,
+  changes = [],
   setChanges,
   parentRecordName,
   children,
@@ -320,7 +280,7 @@ function ModalContainerWithClosingWarning({
 
   function handleClosingWarningContinue() {
     setShowClosingWarning(false);
-    setChanges([]);
+    setChanges?.([]);
     navigate(`/${parentRecordName}`);
   }
 

@@ -34,6 +34,7 @@ import {
 } from "../../types/shared";
 import { DownloadOption } from "../../hooks/useDownload";
 import { Button } from "react-bootstrap";
+import { buildFieldToHeaderName } from "../../utils/fieldToHeaderName";
 
 /**
  * Auth-gated fields.
@@ -1101,6 +1102,8 @@ export function buildDownloadOptions({
     },
   ];
 }
+
+export const fieldToHeaderName = buildFieldToHeaderName(sampleColDefs);
 
 export const phiModeSwitchTooltipContent =
   "Turn on this switch to return samples' sequencing dates in the results." +
