@@ -1555,6 +1555,7 @@ export type DashboardSample = {
   embargoDate?: Maybe<Scalars["String"]>;
   genePanel?: Maybe<Scalars["String"]>;
   historicalCmoSampleNames?: Maybe<Scalars["String"]>;
+  igoComplete?: Maybe<Scalars["Boolean"]>;
   igoDeliveryDate?: Maybe<Scalars["String"]>;
   igoSampleStatus?: Maybe<Scalars["String"]>;
   importDate?: Maybe<Scalars["String"]>;
@@ -1619,6 +1620,7 @@ export type DashboardSampleInput = {
   embargoDate?: InputMaybe<Scalars["String"]>;
   genePanel?: InputMaybe<Scalars["String"]>;
   historicalCmoSampleNames?: InputMaybe<Scalars["String"]>;
+  igoComplete?: InputMaybe<Scalars["Boolean"]>;
   igoDeliveryDate?: InputMaybe<Scalars["String"]>;
   igoSampleStatus?: InputMaybe<Scalars["String"]>;
   importDate?: InputMaybe<Scalars["String"]>;
@@ -1660,7 +1662,6 @@ export type DashboardSampleInput = {
 export type DbGap = {
   __typename?: "DbGap";
   dbGapStudy: Scalars["String"];
-  irbConsentProtocol?: Maybe<Scalars["String"]>;
   samplesHasDbgap: Array<Sample>;
   samplesHasDbgapAggregate?: Maybe<DbGapSampleSamplesHasDbgapAggregationSelection>;
   samplesHasDbgapConnection: DbGapSamplesHasDbgapConnection;
@@ -1690,7 +1691,6 @@ export type DbGapAggregateSelection = {
   __typename?: "DbGapAggregateSelection";
   count: Scalars["Int"];
   dbGapStudy: StringAggregateSelection;
-  irbConsentProtocol: StringAggregateSelection;
   smileDbGapId: StringAggregateSelection;
 };
 
@@ -1704,7 +1704,6 @@ export type DbGapConnectWhere = {
 
 export type DbGapCreateInput = {
   dbGapStudy: Scalars["String"];
-  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   samplesHasDbgap?: InputMaybe<DbGapSamplesHasDbgapFieldInput>;
   smileDbGapId: Scalars["String"];
 };
@@ -1892,13 +1891,11 @@ export type DbGapSamplesHasDbgapUpdateFieldInput = {
 /** Fields to sort DbGaps by. The order in which sorts are applied is not guaranteed when specifying many fields in one DbGapSort object. */
 export type DbGapSort = {
   dbGapStudy?: InputMaybe<SortDirection>;
-  irbConsentProtocol?: InputMaybe<SortDirection>;
   smileDbGapId?: InputMaybe<SortDirection>;
 };
 
 export type DbGapUpdateInput = {
   dbGapStudy?: InputMaybe<Scalars["String"]>;
-  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
   samplesHasDbgap?: InputMaybe<Array<DbGapSamplesHasDbgapUpdateFieldInput>>;
   smileDbGapId?: InputMaybe<Scalars["String"]>;
 };
@@ -1913,12 +1910,6 @@ export type DbGapWhere = {
   dbGapStudy_IN?: InputMaybe<Array<Scalars["String"]>>;
   dbGapStudy_MATCHES?: InputMaybe<Scalars["String"]>;
   dbGapStudy_STARTS_WITH?: InputMaybe<Scalars["String"]>;
-  irbConsentProtocol?: InputMaybe<Scalars["String"]>;
-  irbConsentProtocol_CONTAINS?: InputMaybe<Scalars["String"]>;
-  irbConsentProtocol_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  irbConsentProtocol_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-  irbConsentProtocol_MATCHES?: InputMaybe<Scalars["String"]>;
-  irbConsentProtocol_STARTS_WITH?: InputMaybe<Scalars["String"]>;
   samplesHasDbgapAggregate?: InputMaybe<DbGapSamplesHasDbgapAggregateInput>;
   /** Return DbGaps where all of the related DbGapSamplesHasDbgapConnections match this filter */
   samplesHasDbgapConnection_ALL?: InputMaybe<DbGapSamplesHasDbgapConnectionWhere>;
@@ -2667,7 +2658,7 @@ export type PatientAlias = {
   isAliasPatientsAggregate?: Maybe<PatientAliasPatientIsAliasPatientsAggregationSelection>;
   isAliasPatientsConnection: PatientAliasIsAliasPatientsConnection;
   namespace: Scalars["String"];
-  value?: Maybe<Scalars["String"]>;
+  value: Scalars["String"];
 };
 
 export type PatientAliasIsAliasPatientsArgs = {
@@ -2709,7 +2700,7 @@ export type PatientAliasConnectWhere = {
 export type PatientAliasCreateInput = {
   isAliasPatients?: InputMaybe<PatientAliasIsAliasPatientsFieldInput>;
   namespace: Scalars["String"];
-  value?: InputMaybe<Scalars["String"]>;
+  value: Scalars["String"];
 };
 
 export type PatientAliasDeleteInput = {
@@ -2896,7 +2887,7 @@ export type PatientAliasWhere = {
   value?: InputMaybe<Scalars["String"]>;
   value_CONTAINS?: InputMaybe<Scalars["String"]>;
   value_ENDS_WITH?: InputMaybe<Scalars["String"]>;
-  value_IN?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+  value_IN?: InputMaybe<Array<Scalars["String"]>>;
   value_MATCHES?: InputMaybe<Scalars["String"]>;
   value_STARTS_WITH?: InputMaybe<Scalars["String"]>;
 };
@@ -6899,7 +6890,6 @@ export type SampleDbGapHasDbgapDbGapsAggregationSelection = {
 export type SampleDbGapHasDbgapDbGapsNodeAggregateSelection = {
   __typename?: "SampleDbGapHasDbgapDbGapsNodeAggregateSelection";
   dbGapStudy: StringAggregateSelection;
-  irbConsentProtocol: StringAggregateSelection;
   smileDbGapId: StringAggregateSelection;
 };
 
@@ -7024,21 +7014,6 @@ export type SampleHasDbgapDbGapsNodeAggregationWhereInput = {
   dbGapStudy_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
   dbGapStudy_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
   dbGapStudy_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
-  irbConsentProtocol_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
-  irbConsentProtocol_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
-  irbConsentProtocol_AVERAGE_LENGTH_LT?: InputMaybe<Scalars["Float"]>;
-  irbConsentProtocol_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars["Float"]>;
-  irbConsentProtocol_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_LONGEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_LONGEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_LONGEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_LONGEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_SHORTEST_LENGTH_GT?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_SHORTEST_LENGTH_LT?: InputMaybe<Scalars["Int"]>;
-  irbConsentProtocol_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars["Int"]>;
   smileDbGapId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars["Float"]>;
   smileDbGapId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars["Float"]>;
   smileDbGapId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars["Float"]>;
@@ -11529,6 +11504,7 @@ export type DashboardSamplesQuery = {
     tissueLocation?: string | null;
     sex?: string | null;
     cfDNA2dBarcode?: string | null;
+    igoComplete?: boolean | null;
     recipe?: string | null;
     altId?: string | null;
     analyteType?: string | null;
@@ -11600,6 +11576,7 @@ export type DashboardSampleHistoryQuery = {
     tissueLocation?: string | null;
     sex?: string | null;
     cfDNA2dBarcode?: string | null;
+    igoComplete?: boolean | null;
     recipe?: string | null;
     altId?: string | null;
     analyteType?: string | null;
@@ -11665,6 +11642,7 @@ export type DashboardSampleMetadataPartsFragment = {
   tissueLocation?: string | null;
   sex?: string | null;
   cfDNA2dBarcode?: string | null;
+  igoComplete?: boolean | null;
   recipe?: string | null;
   altId?: string | null;
   analyteType?: string | null;
@@ -11767,6 +11745,7 @@ export type UpdateDashboardSamplesMutation = {
     tissueLocation?: string | null;
     sex?: string | null;
     cfDNA2dBarcode?: string | null;
+    igoComplete?: boolean | null;
     recipe?: string | null;
     altId?: string | null;
     analyteType?: string | null;
@@ -11902,6 +11881,7 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     tissueLocation
     sex
     cfDNA2dBarcode
+    igoComplete
     recipe
     altId
     analyteType

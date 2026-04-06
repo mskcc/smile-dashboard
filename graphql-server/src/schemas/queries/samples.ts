@@ -58,6 +58,7 @@ const FIELDS_TO_SEARCH = [
   "dbGapStudy",
   "irbConsentProtocol",
   "cfDNA2dBarcode",
+  "igoComplete",
   "sampleCohortIds",
   "igoDeliveryDate",
   "dmpRecommendedCoverage",
@@ -132,6 +133,12 @@ export function buildSamplesQueryBody({
     colFilterField: "importDate",
     dateVar: "latestSm.importDate",
   });
+  const igoCompleteFilter = buildCypherPredicateFromBooleanColFilter({
+    columnFilters,
+    colFilterField: "igoComplete",
+    booleanVar: "latestSm.igoComplete",
+    noIncludesFalseAndNull: true,
+  });
 
   // Column filters in the Cohort Samples view
   const billedColFilter = buildCypherPredicateFromBooleanColFilter({
@@ -198,7 +205,7 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm[0] AS latestSm
-    
+
     // Filters for either the WES Samples or Request Samples view, if applicable
     ${genePanelContext && `WHERE ${genePanelContext}`}
     ${baitSetContext && `OR ${baitSetContext}`}
@@ -238,6 +245,7 @@ export function buildSamplesQueryBody({
       historicalCmoSampleNames,
       st AS latestSt
     ${importDateColFilter && `WHERE ${importDateColFilter}`}
+    ${igoCompleteFilter && `WHERE ${igoCompleteFilter}`}
 
     // Filters for Patient Samples view, if applicable
     ${
@@ -370,6 +378,7 @@ export function buildSamplesQueryBody({
         tissueLocation: latestSm.tissueLocation,
         sex: latestSm.sex,
         cfDNA2dBarcode: latestSm.cfDNA2dBarcode,
+        igoComplete: latestSm.igoComplete,
         libraries: latestSm.libraries,
         recipe: cmoSampleIdFields.recipe,
         analyteType: cmoSampleIdFields.naToExtract,
@@ -528,6 +537,7 @@ export function buildSampleMetadataHistoryQueryBody({
         tissueLocation: sm.tissueLocation,
         sex: sm.sex,
         cfDNA2dBarcode: sm.cfDNA2dBarcode,
+        igoComplete: sm.igoComplete,
         libraries: sm.libraries,
         recipe: cmoSampleIdFields.recipe,
         analyteType: cmoSampleIdFields.naToExtract,

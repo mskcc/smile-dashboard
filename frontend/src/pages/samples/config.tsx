@@ -374,6 +374,15 @@ export const sampleColDefs: Array<ColDef<DashboardSample>> = [
     headerName: "Recipe",
   },
   {
+    field: "igoComplete",
+    headerName: "IGO Complete?",
+    ...getAgGridBooleanColFilterConfigs(),
+    ...getAgGridBooleanValueFormatter({
+      trueVal: true,
+      falseVal: false,
+    }),
+  },
+  {
     field: "sampleCategory",
     headerName: "SMILE Sample Category",
   },
@@ -749,6 +758,15 @@ export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
     headerName: "IGO Sample Status",
   },
   {
+    field: "igoComplete",
+    headerName: "IGO Complete?",
+    ...getAgGridBooleanColFilterConfigs(),
+    ...getAgGridBooleanValueFormatter({
+      trueVal: true,
+      falseVal: false,
+    }),
+  },
+  {
     field: "dmpRecommendedCoverage",
     headerName: "Recommended Coverage",
     headerTooltip: "Recommended coverage for DMP samples",
@@ -916,6 +934,15 @@ const accessSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     field: "igoSampleStatus",
     headerName: "IGO Sample Status",
+  },
+  {
+    field: "igoComplete",
+    headerName: "IGO Complete?",
+    ...getAgGridBooleanColFilterConfigs(),
+    ...getAgGridBooleanValueFormatter({
+      trueVal: true,
+      falseVal: false,
+    }),
   },
 ];
 
