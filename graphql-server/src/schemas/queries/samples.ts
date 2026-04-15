@@ -16,7 +16,6 @@ import {
 } from "../../utils/cypher";
 import { props } from "../../utils/constants";
 import { queryDatabricks } from "../../utils/databricks";
-import { queryPatientIdsTriplets } from "./patients";
 
 const FIELDS_TO_SEARCH = [
   "smileSampleId",

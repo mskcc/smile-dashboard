@@ -35,7 +35,6 @@ import {
   buildCohortsQueryFinal,
   queryDashboardCohorts,
 } from "../schemas/queries/cohorts";
-import { update } from "lodash";
 
 export const ONCOTREE_CACHE_KEY = "oncotree";
 export const SAMPLES_CACHE_KEY = "samples";

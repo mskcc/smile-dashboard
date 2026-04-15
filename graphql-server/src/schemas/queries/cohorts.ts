@@ -1,7 +1,6 @@
 import {
   DashboardCohort,
   QueryDashboardCohortsArgs,
-  QueryDashboardPatientsArgs,
 } from "../../generated/graphql";
 import { neo4jDriver } from "../../utils/servers";
 import {
