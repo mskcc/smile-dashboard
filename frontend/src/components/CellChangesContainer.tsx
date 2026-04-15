@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { RecordChange } from "../types/shared";
 import { Dispatch, SetStateAction, useState } from "react";
 import { NO_CHANGELOG_WARNING } from "../configs/shared";
+import { useUserEmail } from "../contexts/UserEmailContext";
 
 function buildUpdateModalColumnDefs(fieldToHeaderName?: (f: string) => string) {
   return [
@@ -50,6 +51,8 @@ export function CellChangesContainer({
   fieldToHeaderName,
 }: CellChangesContainerProps) {
   const [changelog, setChangelog] = useState("");
+  const { userEmail } = useUserEmail();
+  const username = userEmail?.split("@")[0];
 
   if (isSampleLevelChanges) {
     autoGroupColumnDef.headerName = "Primary ID";
@@ -114,8 +117,19 @@ export function CellChangesContainer({
                 <Form.Control
                   type="text"
                   size="sm"
+                  className="me-3"
                   value={changelog}
                   onChange={(e) => setChangelog(e.target.value)}
+                />
+                <Form.Label className="mb-0 me-2 text-nowrap">
+                  Author:
+                </Form.Label>
+                <Form.Control
+                  style={{ width: "30%" }}
+                  type="text"
+                  size="sm"
+                  value={username ?? ""}
+                  disabled
                 />
               </Form.Group>
             )}
