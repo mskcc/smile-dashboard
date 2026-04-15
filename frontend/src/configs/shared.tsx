@@ -64,4 +64,4 @@ export const INVALID_COST_CENTER_WARNING =
   "Please note that 5 digit legacy Cost Center formats (#####/#####) will also be accepted temporarily.";
 
 export const NO_CHANGELOG_WARNING =
-  "Please update Reason for Change and Author fields.";
+  "Reason for Change field must be filled in before submitting updates.";

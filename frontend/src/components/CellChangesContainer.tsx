@@ -31,7 +31,7 @@ interface CellChangesContainerProps {
   cellChangesHandlers: {
     handleDiscardChanges: () => void;
     handleConfirmUpdates: () => void;
-    handleSubmitUpdates: (author: string, reasonForChange: string) => void;
+    handleSubmitUpdates: (reasonForChange: string) => void;
     showUpdateModal: boolean;
     setShowUpdateModal: Dispatch<SetStateAction<boolean>>;
   };
@@ -50,7 +50,6 @@ export function CellChangesContainer({
   fieldToHeaderName,
 }: CellChangesContainerProps) {
   const [changelog, setChangelog] = useState("");
-  const [authorChangelog, setAuthorChangelog] = useState("");
 
   if (isSampleLevelChanges) {
     autoGroupColumnDef.headerName = "Primary ID";
@@ -58,9 +57,7 @@ export function CellChangesContainer({
     autoGroupColumnDef.headerName = "Cohort ID";
   }
 
-  const disableSubmitUpdates =
-    isSampleLevelChanges &&
-    (changelog.trim() === "" || authorChangelog.trim() === "");
+  const disableSubmitUpdates = isSampleLevelChanges && changelog.trim() === "";
 
   function handleUpdateModalHide() {
     setShowUpdateModal(false);
@@ -117,19 +114,8 @@ export function CellChangesContainer({
                 <Form.Control
                   type="text"
                   size="sm"
-                  className="me-3"
                   value={changelog}
                   onChange={(e) => setChangelog(e.target.value)}
-                />
-                <Form.Label className="mb-0 me-2 text-nowrap">
-                  Author:
-                </Form.Label>
-                <Form.Control
-                  style={{ width: "30%" }}
-                  type="text"
-                  size="sm"
-                  value={authorChangelog}
-                  onChange={(e) => setAuthorChangelog(e.target.value)}
                 />
               </Form.Group>
             )}
@@ -144,7 +130,7 @@ export function CellChangesContainer({
             </Button>
             <Button
               className="btn btn-success"
-              onClick={() => handleSubmitUpdates(authorChangelog, changelog)}
+              onClick={() => handleSubmitUpdates(changelog)}
               disabled={disableSubmitUpdates}
             >
               Submit Updates

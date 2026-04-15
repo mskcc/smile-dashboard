@@ -179,7 +179,7 @@ export function useCellChanges({
     }
   }
 
-  async function handleSubmitUpdates(author: string, reasonForChange: string) {
+  async function handleSubmitUpdates(reasonForChange: string) {
     if (changes.length === 0) {
       console.error("No changes available to submit.");
       return;
@@ -189,8 +189,15 @@ export function useCellChanges({
 
     const changesWithReason = [...changes];
 
+    const username = userEmail?.split("@")[0];
+    if (!username) {
+      console.error("User email is unexpectedly empty.");
+    }
+
     if (isSampleLevelChanges) {
-      const formattedChangelog = `${author}: ${reasonForChange}`;
+      const formattedChangelog = username
+        ? `${username}: ${reasonForChange}`
+        : reasonForChange;
       recordIds.forEach((r) => {
         const change = changes.find((c) => c.recordId === r);
         if (!change) {
