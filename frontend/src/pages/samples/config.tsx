@@ -1048,14 +1048,13 @@ export function setupEditableSampleFields(
     }
   });
 }
-
 setupEditableSampleFields(sampleColDefs, allEditableFields);
 setupEditableSampleFields(wesSampleColDefs, allEditableFields);
 setupEditableSampleFields(accessSampleColDefs, allEditableFields);
 
 const combinedSampleColDefs = _.uniqBy(
   [...sampleColDefs, ...wesSampleColDefs, ...accessSampleColDefs],
-  "field"
+  (col) => col.field ?? col.headerName
 );
 
 export const filterButtonOptions: Array<FilterButtonOption> = [
