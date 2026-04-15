@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import { RecordChange } from "../types/shared";
 import { Dispatch, SetStateAction, useState } from "react";
 import { NO_CHANGELOG_WARNING } from "../configs/shared";
+import { useUserEmail } from "../contexts/UserEmailContext";
 
 function buildUpdateModalColumnDefs(fieldToHeaderName?: (f: string) => string) {
   return [
@@ -31,7 +32,7 @@ interface CellChangesContainerProps {
   cellChangesHandlers: {
     handleDiscardChanges: () => void;
     handleConfirmUpdates: () => void;
-    handleSubmitUpdates: (author: string, reasonForChange: string) => void;
+    handleSubmitUpdates: (reasonForChange: string) => void;
     showUpdateModal: boolean;
     setShowUpdateModal: Dispatch<SetStateAction<boolean>>;
   };
@@ -50,7 +51,8 @@ export function CellChangesContainer({
   fieldToHeaderName,
 }: CellChangesContainerProps) {
   const [changelog, setChangelog] = useState("");
-  const [authorChangelog, setAuthorChangelog] = useState("");
+  const { userEmail } = useUserEmail();
+  const username = userEmail?.split("@")[0];
 
   if (isSampleLevelChanges) {
     autoGroupColumnDef.headerName = "Primary ID";
@@ -58,9 +60,7 @@ export function CellChangesContainer({
     autoGroupColumnDef.headerName = "Cohort ID";
   }
 
-  const disableSubmitUpdates =
-    isSampleLevelChanges &&
-    (changelog.trim() === "" || authorChangelog.trim() === "");
+  const disableSubmitUpdates = isSampleLevelChanges && changelog.trim() === "";
 
   function handleUpdateModalHide() {
     setShowUpdateModal(false);
@@ -128,8 +128,8 @@ export function CellChangesContainer({
                   style={{ width: "30%" }}
                   type="text"
                   size="sm"
-                  value={authorChangelog}
-                  onChange={(e) => setAuthorChangelog(e.target.value)}
+                  value={username ?? ""}
+                  disabled
                 />
               </Form.Group>
             )}
@@ -144,7 +144,7 @@ export function CellChangesContainer({
             </Button>
             <Button
               className="btn btn-success"
-              onClick={() => handleSubmitUpdates(authorChangelog, changelog)}
+              onClick={() => handleSubmitUpdates(changelog)}
               disabled={disableSubmitUpdates}
             >
               Submit Updates
