@@ -156,18 +156,18 @@ export function buildCohortsQueryBody({
 
   return cohortsQueryBody;
 }
-export async function queryDashboardCohorts({
+export function buildCohortsQueryFinal({
   queryBody,
   sort,
   limit,
   offset,
 }: {
   queryBody: string;
-  sort: QueryDashboardPatientsArgs["sort"];
-  limit: QueryDashboardPatientsArgs["limit"];
-  offset: QueryDashboardPatientsArgs["offset"];
-}): Promise<DashboardCohort[]> {
-  const cypherQuery = `
+  sort: QueryDashboardCohortsArgs["sort"];
+  limit: QueryDashboardCohortsArgs["limit"];
+  offset: QueryDashboardCohortsArgs["offset"];
+}) {
+  return `
     ${queryBody}
     WITH COUNT(DISTINCT tempNode) AS total, size(apoc.coll.toSet(apoc.coll.flatten(collect(tempNode.sampleIdsByCohort)))) AS uniqueSampleCount, collect(DISTINCT tempNode) AS results
     WITH total, uniqueSampleCount, results
@@ -179,6 +179,25 @@ export async function queryDashboardCohorts({
     SKIP ${offset}
     LIMIT ${limit}
   `;
+}
+
+export async function queryDashboardCohorts({
+  queryBody,
+  sort,
+  limit,
+  offset,
+}: {
+  queryBody: string;
+  sort: QueryDashboardCohortsArgs["sort"];
+  limit: QueryDashboardCohortsArgs["limit"];
+  offset: QueryDashboardCohortsArgs["offset"];
+}): Promise<DashboardCohort[]> {
+  const cypherQuery = buildCohortsQueryFinal({
+    queryBody,
+    sort,
+    limit,
+    offset,
+  });
 
   const session = neo4jDriver.session();
   try {

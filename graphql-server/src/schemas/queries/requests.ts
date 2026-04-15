@@ -160,7 +160,7 @@ export function buildRequestsQueryBody({
 
   return requestsQueryBody;
 }
-export async function queryDashboardRequests({
+export function buildRequestsQueryFinal({
   queryBody,
   sort,
   limit,
@@ -170,8 +170,8 @@ export async function queryDashboardRequests({
   sort: QueryDashboardRequestsArgs["sort"];
   limit: QueryDashboardRequestsArgs["limit"];
   offset: QueryDashboardRequestsArgs["offset"];
-}): Promise<DashboardRequest[]> {
-  const cypherQuery = `
+}) {
+  return `
     ${queryBody}
     WITH COUNT(DISTINCT tempNode) AS total, COLLECT(DISTINCT tempNode) AS results
     UNWIND results as resultz
@@ -183,6 +183,25 @@ export async function queryDashboardRequests({
     SKIP ${offset}
     LIMIT ${limit}
   `;
+}
+
+export async function queryDashboardRequests({
+  queryBody,
+  sort,
+  limit,
+  offset,
+}: {
+  queryBody: string;
+  sort: QueryDashboardRequestsArgs["sort"];
+  limit: QueryDashboardRequestsArgs["limit"];
+  offset: QueryDashboardRequestsArgs["offset"];
+}): Promise<DashboardRequest[]> {
+  const cypherQuery = buildRequestsQueryFinal({
+    queryBody,
+    sort,
+    limit,
+    offset,
+  });
 
   const session = neo4jDriver.session();
   try {
