@@ -27,13 +27,14 @@ import {
 } from "../schemas/queries/patients";
 import {
   buildRequestsQueryBody,
+  buildRequestsQueryFinal,
   queryDashboardRequests,
 } from "../schemas/queries/requests";
 import {
   buildCohortsQueryBody,
+  buildCohortsQueryFinal,
   queryDashboardCohorts,
 } from "../schemas/queries/cohorts";
-import { update } from "lodash";
 
 export const ONCOTREE_CACHE_KEY = "oncotree";
 export const SAMPLES_CACHE_KEY = "samples";
@@ -506,13 +507,19 @@ function buildRequestsQueryPromise({
 }): Promise<Record<string, DashboardRequest[]> | null> {
   return new Promise(async (resolve, reject) => {
     try {
+      const requestsCypherQuery = buildRequestsQueryFinal({
+        queryBody,
+        sort: IMPORT_DATE_DEFAULT_SORT,
+        limit: CACHE_BLOCK_SIZE,
+        offset: 0,
+      });
       const queryResult = await queryDashboardRequests({
         queryBody,
         sort: IMPORT_DATE_DEFAULT_SORT,
         limit: CACHE_BLOCK_SIZE,
         offset: 0,
       });
-      resolve(queryResult ? { [queryBody]: queryResult } : null);
+      resolve(queryResult ? { [requestsCypherQuery]: queryResult } : null);
     } catch (error) {
       reject(error);
     }
@@ -539,13 +546,19 @@ function buildCohortsQueryPromise({
 }): Promise<Record<string, DashboardCohort[]> | null> {
   return new Promise(async (resolve, reject) => {
     try {
+      const cohortsCypherQuery = buildCohortsQueryFinal({
+        queryBody,
+        sort: IMPORT_DATE_DEFAULT_SORT,
+        limit: CACHE_BLOCK_SIZE,
+        offset: 0,
+      });
       const queryResult = await queryDashboardCohorts({
         queryBody,
         sort: IMPORT_DATE_DEFAULT_SORT,
         limit: CACHE_BLOCK_SIZE,
         offset: 0,
       });
-      resolve(queryResult ? { [queryBody]: queryResult } : null);
+      resolve(queryResult ? { [cohortsCypherQuery]: queryResult } : null);
     } catch (error) {
       reject(error);
     }

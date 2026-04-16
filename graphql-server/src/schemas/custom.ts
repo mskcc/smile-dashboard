@@ -26,6 +26,7 @@ import {
 } from "./queries/patients";
 import {
   buildCohortsQueryBody,
+  buildCohortsQueryFinal,
   queryDashboardCohorts,
 } from "./queries/cohorts";
 import {
@@ -55,6 +56,7 @@ import {
 } from "../utils/cache";
 import {
   buildRequestsQueryBody,
+  buildRequestsQueryFinal,
   queryDashboardRequests,
 } from "./queries/requests";
 import { typeDefs } from "../utils/typeDefs";
@@ -287,9 +289,15 @@ export async function buildCustomSchema(ogm: OGM) {
         ) as RequestsCache;
 
         const queryBody = buildRequestsQueryBody({ searchVals, columnFilters });
+        const requestsCypherQuery = buildRequestsQueryFinal({
+          queryBody,
+          sort,
+          limit,
+          offset,
+        });
 
-        if (requestsCache && queryBody in requestsCache) {
-          return requestsCache[queryBody];
+        if (requestsCache && requestsCypherQuery in requestsCache) {
+          return requestsCache[requestsCypherQuery];
         }
 
         return await queryDashboardRequests({
@@ -392,9 +400,15 @@ export async function buildCustomSchema(ogm: OGM) {
         ) as CohortsCache;
 
         const queryBody = buildCohortsQueryBody({ searchVals, columnFilters });
+        const cohortsCypherQuery = buildCohortsQueryFinal({
+          queryBody,
+          sort,
+          limit,
+          offset,
+        });
 
-        if (cohortsCache && queryBody in cohortsCache) {
-          return cohortsCache[queryBody];
+        if (cohortsCache && cohortsCypherQuery in cohortsCache) {
+          return cohortsCache[cohortsCypherQuery];
         }
 
         return await queryDashboardCohorts({

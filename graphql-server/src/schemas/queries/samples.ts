@@ -16,7 +16,6 @@ import {
 } from "../../utils/cypher";
 import { props } from "../../utils/constants";
 import { queryDatabricks } from "../../utils/databricks";
-import { queryPatientIdsTriplets } from "./patients";
 
 const FIELDS_TO_SEARCH = [
   "smileSampleId",
@@ -361,8 +360,6 @@ export function buildSamplesQueryBody({
         cmoSampleName: latestSm.cmoSampleName,
         importDate: apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd'),
         historicalCmoSampleNames: historicalCmoSampleNames,
-        validationReport: latestSt.validationReport,
-        validationStatus: latestSt.validationStatus,
         cmoPatientId: latestSm.cmoPatientId,
         investigatorSampleId: latestSm.investigatorSampleId,
         sampleType: latestSm.sampleType,
@@ -383,11 +380,11 @@ export function buildSamplesQueryBody({
         recipe: cmoSampleIdFields.recipe,
         analyteType: cmoSampleIdFields.naToExtract,
         altId: apoc.convert.fromJsonMap(latestSm.additionalProperties).altId,
-        validationReport: latestSt.validationReport,
-        validationStatus: latestSt.validationStatus,
         igoSampleStatus: apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus,
         dmpRecommendedCoverage: dmpRecommendedCoverage,
         changelog: changelog,
+        validationReport: latestSt.validationReport,
+        validationStatus: latestSt.validationStatus,
 
         smileTempoId: t.smileTempoId,
         billed: t.billed,
