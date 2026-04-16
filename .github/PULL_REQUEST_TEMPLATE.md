@@ -25,7 +25,7 @@ Confirm that these download actions return a TSV file with the expected columns 
 - [ ] Search in PHI mode then clicking "Download as TSV"
 - [ ] Clicking the dropdown download option <download option name>
 - [ ] [Samples page -> WES -> Cohort builder] Clicking the "Download New TEMPO Cohort File" (must populate all required fields and have at least one sample selected)
-- [ ] Downloads work when viewing Sample Metadata History
+- [ ] Viewing a sample's data diff and clicking "Download as TSV"
 
 #### AG Grid interactions
 
