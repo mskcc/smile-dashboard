@@ -729,7 +729,7 @@ async function updateTempoCohortPromise(dashboardCohort: DashboardCohort) {
       status: dashboardCohort.status,
       projectTitle: dashboardCohort.projectTitle,
       projectSubtitle: dashboardCohort.projectSubtitle,
-      //pipelineVersion: to be added soon - will need default value if null/empty
+      pipelineVersion: dashboardCohort.pipelineVersion || "",
     };
     publishNatsMessage(
       props.pub_tempo_cohort_update,
