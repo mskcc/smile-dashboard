@@ -1557,6 +1557,7 @@ export type DashboardSample = {
   historicalCmoSampleNames?: Maybe<Scalars["String"]>;
   igoComplete?: Maybe<Scalars["Boolean"]>;
   igoDeliveryDate?: Maybe<Scalars["String"]>;
+  igoQcReports?: Maybe<Array<Maybe<IgoQcReport>>>;
   igoSampleStatus?: Maybe<Scalars["String"]>;
   importDate?: Maybe<Scalars["String"]>;
   initialPipelineRunDate?: Maybe<Scalars["String"]>;
@@ -1949,6 +1950,14 @@ export type DeleteInfo = {
   bookmark?: Maybe<Scalars["String"]>;
   nodesDeleted: Scalars["Int"];
   relationshipsDeleted: Scalars["Int"];
+};
+
+export type IgoQcReport = {
+  __typename?: "IgoQcReport";
+  IGORecommendation?: Maybe<Scalars["String"]>;
+  comments?: Maybe<Scalars["String"]>;
+  investigatorDecision?: Maybe<Scalars["String"]>;
+  qcReportType?: Maybe<Scalars["String"]>;
 };
 
 export type MafComplete = {
@@ -11539,6 +11548,13 @@ export type DashboardSamplesQuery = {
     dbGapStudy?: string | null;
     irbConsentProtocol?: string | null;
     dmpPatientAlias?: string | null;
+    igoQcReports?: Array<{
+      __typename?: "IgoQcReport";
+      qcReportType?: string | null;
+      IGORecommendation?: string | null;
+      comments?: string | null;
+      investigatorDecision?: string | null;
+    } | null> | null;
   }>;
 };
 
@@ -11657,6 +11673,17 @@ export type DashboardSampleMetadataPartsFragment = {
   cancerType?: string | null;
   cancerTypeDetailed?: string | null;
   igoDeliveryDate?: string | null;
+};
+
+export type IgoQcReportPartsFragment = {
+  __typename?: "DashboardSample";
+  igoQcReports?: Array<{
+    __typename?: "IgoQcReport";
+    qcReportType?: string | null;
+    IGORecommendation?: string | null;
+    comments?: string | null;
+    investigatorDecision?: string | null;
+  } | null> | null;
 };
 
 export type DashboardTempoPartsFragment = {
@@ -11898,6 +11925,16 @@ export const DashboardSampleMetadataPartsFragmentDoc = gql`
     igoDeliveryDate
   }
 `;
+export const IgoQcReportPartsFragmentDoc = gql`
+  fragment IgoQcReportParts on DashboardSample {
+    igoQcReports {
+      qcReportType
+      IGORecommendation
+      comments
+      investigatorDecision
+    }
+  }
+`;
 export const DashboardTempoPartsFragmentDoc = gql`
   fragment DashboardTempoParts on DashboardSample {
     billed
@@ -12104,6 +12141,7 @@ export const DashboardSamplesDocument = gql`
       ...DashboardTempoParts
       ...DashboardDbGapParts
       ...DashboardPatientParts
+      ...IgoQcReportParts
       sequencingDate
       molecularAccessionNumber
       race
@@ -12115,6 +12153,7 @@ export const DashboardSamplesDocument = gql`
   ${DashboardTempoPartsFragmentDoc}
   ${DashboardDbGapPartsFragmentDoc}
   ${DashboardPatientPartsFragmentDoc}
+  ${IgoQcReportPartsFragmentDoc}
 `;
 export type DashboardSamplesQueryResult = Apollo.QueryResult<
   DashboardSamplesQuery,

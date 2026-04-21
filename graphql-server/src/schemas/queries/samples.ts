@@ -376,6 +376,7 @@ export function buildSamplesQueryBody({
         sex: latestSm.sex,
         cfDNA2dBarcode: latestSm.cfDNA2dBarcode,
         igoComplete: latestSm.igoComplete,
+        igoQcReports: apoc.convert.fromJsonList(latestSm.qcReports),
         libraries: latestSm.libraries,
         recipe: cmoSampleIdFields.recipe,
         analyteType: cmoSampleIdFields.naToExtract,
