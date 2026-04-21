@@ -55,6 +55,7 @@ const SAMPLE_FIELDS = `
   sex: String
   cfDNA2dBarcode: String
   igoComplete: Boolean
+
   ## Custom fields
   recipe: String
   altId: String
@@ -65,6 +66,7 @@ const SAMPLE_FIELDS = `
   igoSampleStatus: String
   dmpRecommendedCoverage: String
   changelog: String
+
   ## (sm:SampleMetadata)-[:HAS_STATUS]->(s:Status)
   validationReport: String
   validationStatus: Boolean
@@ -188,6 +190,14 @@ const QUERY_RESULT_TYPEDEFS = gql`
 
   type DashboardSample {
     ${SAMPLE_FIELDS}
+    igoQcReports: [IgoQcReport]
+   }
+
+  type IgoQcReport {
+    qcReportType: String
+    IGORecommendation: String
+    comments: String
+    investigatorDecision: String
   }
 
   type PatientIdsTriplet {

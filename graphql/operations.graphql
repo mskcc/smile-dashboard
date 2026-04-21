@@ -132,6 +132,7 @@ query DashboardSamples(
     ...DashboardTempoParts
     ...DashboardDbGapParts
     ...DashboardPatientParts
+    ...IgoQcReportParts
     sequencingDate
     molecularAccessionNumber
     race
@@ -211,6 +212,15 @@ fragment DashboardSampleMetadataParts on DashboardSample {
 
   # (r:Request)-[:HAS_SAMPLE]->(s)
   igoDeliveryDate
+}
+
+fragment IgoQcReportParts on DashboardSample {
+  igoQcReports {
+    qcReportType
+    IGORecommendation
+    comments
+    investigatorDecision
+  }
 }
 
 fragment DashboardTempoParts on DashboardSample {
