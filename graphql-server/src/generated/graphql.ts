@@ -11806,6 +11806,13 @@ export type UpdateDashboardSamplesMutation = {
     sampleCohortIds?: string | null;
     dbGapStudy?: string | null;
     irbConsentProtocol?: string | null;
+    igoQcReports?: Array<{
+      __typename?: "IgoQcReport";
+      qcReportType?: string | null;
+      IGORecommendation?: string | null;
+      comments?: string | null;
+      investigatorDecision?: string | null;
+    } | null> | null;
   } | null> | null;
 };
 
@@ -12199,12 +12206,14 @@ export const UpdateDashboardSamplesDocument = gql`
       ...DashboardSampleMetadataParts
       ...DashboardTempoParts
       ...DashboardDbGapParts
+      ...IgoQcReportParts
     }
   }
   ${DashboardSamplePartsFragmentDoc}
   ${DashboardSampleMetadataPartsFragmentDoc}
   ${DashboardTempoPartsFragmentDoc}
   ${DashboardDbGapPartsFragmentDoc}
+  ${IgoQcReportPartsFragmentDoc}
 `;
 export type UpdateDashboardSamplesMutationFn = Apollo.MutationFunction<
   UpdateDashboardSamplesMutation,
