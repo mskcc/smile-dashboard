@@ -103,7 +103,7 @@ const ACCESS_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   },
 ];
 
-const MAX_RETRIES_UPON_FALSE_SAMPLE_STATUS = 3;
+const MAX_RETRIES_UPON_FALSE_SAMPLE_STATUS = 5;
 const RETRY_INTERVAL_UPON_FALSE_SAMPLE_STATUS = 3000; // 3s
 
 export type OncotreeCache = Record<string, { name: string; mainType: string }>; // key = Oncotree code

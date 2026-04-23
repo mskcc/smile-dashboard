@@ -292,6 +292,7 @@ mutation UpdateDashboardSamples(
     ...DashboardSampleMetadataParts
     ...DashboardTempoParts
     ...DashboardDbGapParts
+    ...IgoQcReportParts
   }
 }
 

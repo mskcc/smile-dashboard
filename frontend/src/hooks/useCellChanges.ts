@@ -315,6 +315,7 @@ function buildNewDashboardSamples(
       (sampleData as any)[change.fieldName] = change.newValue;
     }
     delete sampleData.__typename;
+    delete sampleData.igoQcReports;
     newDashboardSamplesByPrimaryId.set(primaryId, {
       ...sampleData,
       revisable: false,
