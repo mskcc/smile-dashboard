@@ -36,7 +36,7 @@ import {
 } from "../../components/CohortBuilderContainer";
 import { CohortBuilderWindow } from "../../components/CohortBuilderWindow";
 import { TempoCohortRequest } from "../../generated/graphql";
-import { NoteAddOutlined, OpenInNew } from "@material-ui/icons";
+import { Close, NoteAddOutlined, OpenInNew } from "@material-ui/icons";
 import { SampleHistoryModal } from "../../components/SamplesModal";
 import { useParams } from "react-router-dom";
 import { useUserEmail } from "../../contexts/UserEmailContext";
@@ -293,7 +293,7 @@ export function SamplesPage() {
                   title="Close cohort builder"
                   className="cohort-builder-close-btn"
                 >
-                  &times;
+                  <Close fontSize="small" />
                 </button>
               </div>
             </div>
