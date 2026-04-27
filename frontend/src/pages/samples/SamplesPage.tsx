@@ -34,7 +34,10 @@ import {
   CohortBuilderContainer,
   CohortBuilderSample,
 } from "../../components/CohortBuilderContainer";
-import { NoteAddOutlined } from "@material-ui/icons";
+import { CohortBuilderWindow } from "../../components/CohortBuilderWindow";
+import { TempoCohortRequest } from "../../generated/graphql";
+import { Close, NoteAddOutlined, OpenInNew } from "@material-ui/icons";
+import { CustomTooltip } from "../../components/CustomToolTip";
 import { SampleHistoryModal } from "../../components/SamplesModal";
 import { useParams } from "react-router-dom";
 import { useUserEmail } from "../../contexts/UserEmailContext";
@@ -53,10 +56,45 @@ export function SamplesPage() {
     filterButtonOptions[0].recordContexts
   );
   const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
+  const cohortBuilderRef = useRef<HTMLDivElement>(null);
   const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
     []
   );
-  const [showSelectedPopup, setShowSelectedPopup] = useState(false);
+  const [cohortBuilderMode, setCohortBuilderMode] = useState<
+    "hidden" | "inline" | "window"
+  >("hidden");
+  const [tempoCohortRequest, setTempoCohortRequest] =
+    useState<TempoCohortRequest>({
+      cohortId: "",
+      endUsers: "",
+      pmUsers: "",
+      projectTitle: "",
+      projectSubtitle: "",
+      samples: [],
+      type: "investigator",
+    });
+
+  const showCohortBuilder = cohortBuilderMode !== "hidden";
+
+  function handleCohortBuilderClose() {
+    setCohortBuilderMode("hidden");
+    setSelectedRowIds([]);
+    gridRef.current?.api?.deselectAll();
+    setTempoCohortRequest({
+      cohortId: "",
+      endUsers: "",
+      pmUsers: "",
+      projectTitle: "",
+      projectSubtitle: "",
+      samples: [],
+      type: "investigator",
+    });
+  }
+
+  function handleCohortBuilderPopOut() {
+    setCohortBuilderMode("window");
+  }
+
   const [selectedFilterLabel, setSelectedFilterLabel] = useState(
     filterButtonOptions[0].label
   );
@@ -73,7 +111,7 @@ export function SamplesPage() {
     if (prevIsWesAndLoggedIn.current && !isWesAndLoggedIn) {
       gridRef.current?.api?.deselectAll();
       setSelectedRowIds([]);
-      setShowSelectedPopup(false);
+      setCohortBuilderMode("hidden");
     }
     prevIsWesAndLoggedIn.current = isWesAndLoggedIn;
   }, [isWesAndLoggedIn]);
@@ -100,13 +138,13 @@ export function SamplesPage() {
 
   useEffect(() => {
     if (gridRef.current && gridRef.current.columnApi) {
-      if (showSelectedPopup && !disableCohortBuildling) {
+      if (showCohortBuilder && !disableCohortBuildling) {
         gridRef.current.columnApi.setColumnsVisible(["selected"], true);
       } else {
         gridRef.current.columnApi.setColumnsVisible(["selected"], false);
       }
     }
-  }, [gridRef, colDefs, showSelectedPopup, disableCohortBuildling]);
+  }, [gridRef, colDefs, showCohortBuilder, disableCohortBuildling]);
 
   const { changes, cellChangesHandlers, handleCellEditRequest, handlePaste } =
     useCellChanges({
@@ -209,42 +247,105 @@ export function SamplesPage() {
         </Col>
 
         <Col className="text-end">
-          <Button
-            style={{ marginRight: 5, border: "none", padding: 3 }}
-            onClick={() => setShowSelectedPopup(true)}
-            title="Build a new cohort for TEMPO processing"
-            disabled={disableCohortBuildling}
-          >
-            <NoteAddOutlined />
-          </Button>
+          {disableCohortBuildling ? (
+            <CustomTooltip
+              icon={
+                <Button
+                  style={{ marginRight: 5, border: "none", padding: 3 }}
+                  onClick={() => setCohortBuilderMode("inline")}
+                  title="Build a new cohort for TEMPO processing"
+                  disabled
+                >
+                  <NoteAddOutlined />
+                </Button>
+              }
+            >
+              Must be on the WES tab and logged in to access cohort builder
+            </CustomTooltip>
+          ) : (
+            <Button
+              style={{ marginRight: 5, border: "none", padding: 3 }}
+              onClick={() => setCohortBuilderMode("inline")}
+              title="Build a new cohort for TEMPO processing"
+            >
+              <NoteAddOutlined />
+            </Button>
+          )}
           <DownloadButton
             downloadOptions={downloadOptions}
             onDownload={handleDownload}
           />
         </Col>
       </Toolbar>
-      <DataGrid
-        gridRef={gridRef}
-        colDefs={authFilteredColDefs}
-        refreshData={refreshData}
-        changes={changes}
-        handleCellEditRequest={handleCellEditRequest}
-        handlePaste={handlePaste}
-        selectedRowIds={selectedRowIds}
-        onSelectionChanged={setSelectedRowIds}
-        onCellDoubleClicked={handleCellDoubleClicked}
-      />
+      <div
+        ref={cohortBuilderRef}
+        className="d-flex flex-row flex-grow-1"
+        style={{ minHeight: 0 }}
+      >
+        <DataGrid
+          gridRef={gridRef}
+          colDefs={authFilteredColDefs}
+          refreshData={refreshData}
+          changes={changes}
+          handleCellEditRequest={handleCellEditRequest}
+          handlePaste={handlePaste}
+          selectedRowIds={selectedRowIds}
+          onSelectionChanged={setSelectedRowIds}
+          onCellDoubleClicked={handleCellDoubleClicked}
+        />
+        {cohortBuilderMode === "inline" && (
+          <div className="cohort-builder-inline-panel">
+            <div className="cohort-builder-inline-header">
+              <span>Cohort Builder</span>
+              <div className="d-flex gap-2 align-items-center">
+                <button
+                  onClick={handleCohortBuilderPopOut}
+                  title="Open in floating window"
+                  className="cohort-builder-close-btn"
+                >
+                  <OpenInNew fontSize="small" />
+                </button>
+                <button
+                  onClick={handleCohortBuilderClose}
+                  title="Close cohort builder"
+                  className="cohort-builder-close-btn"
+                >
+                  <Close fontSize="small" />
+                </button>
+              </div>
+            </div>
+            <div className="cohort-builder-inline-body">
+              <CohortBuilderContainer
+                gridRef={gridRef}
+                selectedRowIds={selectedRowIds}
+                setSelectedRowIds={setSelectedRowIds}
+                onClose={handleCohortBuilderClose}
+                tempoCohortRequest={tempoCohortRequest}
+                setTempoCohortRequest={setTempoCohortRequest}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {cohortBuilderMode === "window" && (
+        <CohortBuilderWindow
+          containerRef={cohortBuilderRef}
+          onClose={handleCohortBuilderClose}
+          onSnapToSide={() => setCohortBuilderMode("inline")}
+        >
+          <CohortBuilderContainer
+            gridRef={gridRef}
+            selectedRowIds={selectedRowIds}
+            setSelectedRowIds={setSelectedRowIds}
+            onClose={handleCohortBuilderClose}
+            tempoCohortRequest={tempoCohortRequest}
+            setTempoCohortRequest={setTempoCohortRequest}
+          />
+        </CohortBuilderWindow>
+      )}
 
       {isDownloading && <DownloadModal />}
-      <br />
-      {showSelectedPopup && (
-        <CohortBuilderContainer
-          gridRef={gridRef}
-          selectedRowIds={selectedRowIds}
-          setSelectedRowIds={setSelectedRowIds}
-          setShowSelectedPopup={setShowSelectedPopup}
-        />
-      )}
 
       {hasParams && smileSampleId && (
         <SampleHistoryModal

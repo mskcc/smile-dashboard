@@ -1,7 +1,7 @@
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
-import React, { RefObject, useState } from "react";
+import React, { RefObject, useEffect } from "react";
 import { CohortBuilderDownloadButton } from "./CohortBuilderDownloadButton";
 import {
   createCustomHeader,
@@ -22,8 +22,12 @@ interface CohortBuilderContainerProps {
   setSelectedRowIds?: React.Dispatch<
     React.SetStateAction<CohortBuilderSample[]>
   >;
-  setShowSelectedPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose: () => void;
   gridRef: RefObject<AgGridReactType<any>>;
+  tempoCohortRequest: TempoCohortRequest;
+  setTempoCohortRequest: React.Dispatch<
+    React.SetStateAction<TempoCohortRequest>
+  >;
 }
 
 export interface CohortBuilderSample {
@@ -39,18 +43,14 @@ export function CohortBuilderContainer({
   gridRef,
   selectedRowIds,
   setSelectedRowIds,
-  setShowSelectedPopup,
+  onClose,
+  tempoCohortRequest,
+  setTempoCohortRequest,
 }: CohortBuilderContainerProps) {
   const { data } = useAllBlockedCohortIdsQuery();
 
   function handleCohortBuilderClose() {
-    setShowSelectedPopup(false);
-    if (setSelectedRowIds) {
-      setSelectedRowIds([]);
-    }
-    if (gridRef.current?.api) {
-      gridRef.current.api.deselectAll();
-    }
+    onClose();
   }
 
   const tempoCohortSamplesData = selectedRowIds.map((v) => ({
@@ -62,15 +62,32 @@ export function CohortBuilderContainer({
     embargoDate: v.embargoDate,
   }));
 
-  const [tempoCohortRequest, setTempoCohortRequest] =
-    useState<TempoCohortRequest>({
-      cohortId: generateNewCohortId(),
-      endUsers: "",
-      pmUsers: "",
-      projectTitle: "",
-      projectSubtitle: "",
-      type: "investigator",
-    } as TempoCohortRequest);
+  useEffect(() => {
+    if (!tempoCohortRequest.cohortId && data) {
+      const blockedIds = data.allBlockedCohortIds;
+
+      const makeNewCohortId = () => {
+        let cohortId = "";
+        while (cohortId.length < 6) {
+          cohortId += Math.random().toString(36).slice(2);
+        }
+        return "CCS_" + cohortId.slice(0, 6).toUpperCase();
+      };
+
+      const generateNewCohortId = () => {
+        let cohortId = makeNewCohortId();
+        while (blockedIds.includes(cohortId)) {
+          cohortId = makeNewCohortId();
+        }
+        return cohortId;
+      };
+
+      setTempoCohortRequest((prev) => ({
+        ...prev,
+        cohortId: generateNewCohortId(),
+      }));
+    }
+  }, [data, tempoCohortRequest.cohortId, setTempoCohortRequest]);
 
   // adding new fields here also requires changes to DataGrid -> handleGridSelectionChanged to pass these fields
   const cohortBuilderColDefs = getCohortBuilderColDefs(
@@ -79,48 +96,12 @@ export function CohortBuilderContainer({
     setSelectedRowIds
   );
 
-  /**
-   * Generates and returns a randomized cohort ID.
-   * @returns string
-   */
-  function makeNewCohortId() {
-    let cohortId = "";
-    while (cohortId.length < 6) {
-      cohortId += Math.random().toString(36).slice(2);
-    }
-    return "CCS_" + cohortId.slice(0, 6).toUpperCase();
-  }
-
-  /**
-   * Determines if cohort ID passed is in use or not.
-   * @param cohortId
-   * @returns boolean
-   */
-  function isCohortIdInUse(cohortId: string) {
-    return data?.allBlockedCohortIds.includes(cohortId);
-  }
-
-  /**
-   * Generates and returns a randomized cohort ID. Verifies it is available as well.
-   * @returns string
-   */
-  function generateNewCohortId() {
-    var cohortId = makeNewCohortId();
-    if (isCohortIdInUse(cohortId)) {
-      while (isCohortIdInUse(cohortId)) {
-        cohortId = makeNewCohortId();
-      }
-    }
-    return cohortId;
-  }
-
   return (
-    <div className="d-flex flex-column" style={{ height: "calc(15vh - 10px)" }}>
+    <div className="d-flex flex-column" style={{ height: "100%" }}>
       <Container
         className="ag-theme-alpine flex-grow-1"
         style={{
           border: "1px solid #ccc",
-          borderRadius: "5px",
           backgroundColor: "#f9f9f9",
         }}
       >
@@ -322,7 +303,6 @@ export function CohortBuilderContainer({
           </Col>
         </Row>
       </Container>
-      <br />
     </div>
   );
 }
