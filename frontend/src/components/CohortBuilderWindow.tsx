@@ -1,6 +1,6 @@
 import { ReactNode, RefObject, useLayoutEffect, useRef, useState } from "react";
 
-import { Close, Dock } from "@material-ui/icons";
+import { Close, FirstPage } from "@material-ui/icons";
 import { Rnd } from "react-rnd";
 
 interface CohortBuilderWindowProps {
@@ -57,7 +57,7 @@ export function CohortBuilderWindow({
               title="Snap to side panel"
               className="cohort-builder-close-btn"
             >
-              <Dock fontSize="small" />
+              <FirstPage fontSize="small" />
             </button>
             <button
               onClick={onClose}

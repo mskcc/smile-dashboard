@@ -37,6 +37,7 @@ import {
 import { CohortBuilderWindow } from "../../components/CohortBuilderWindow";
 import { TempoCohortRequest } from "../../generated/graphql";
 import { Close, NoteAddOutlined, OpenInNew } from "@material-ui/icons";
+import { CustomTooltip } from "../../components/CustomToolTip";
 import { SampleHistoryModal } from "../../components/SamplesModal";
 import { useParams } from "react-router-dom";
 import { useUserEmail } from "../../contexts/UserEmailContext";
@@ -246,14 +247,30 @@ export function SamplesPage() {
         </Col>
 
         <Col className="text-end">
-          <Button
-            style={{ marginRight: 5, border: "none", padding: 3 }}
-            onClick={() => setCohortBuilderMode("inline")}
-            title="Build a new cohort for TEMPO processing"
-            disabled={disableCohortBuildling}
-          >
-            <NoteAddOutlined />
-          </Button>
+          {disableCohortBuildling ? (
+            <CustomTooltip
+              icon={
+                <Button
+                  style={{ marginRight: 5, border: "none", padding: 3 }}
+                  onClick={() => setCohortBuilderMode("inline")}
+                  title="Build a new cohort for TEMPO processing"
+                  disabled
+                >
+                  <NoteAddOutlined />
+                </Button>
+              }
+            >
+              Must be on the WES tab and logged in to access cohort builder
+            </CustomTooltip>
+          ) : (
+            <Button
+              style={{ marginRight: 5, border: "none", padding: 3 }}
+              onClick={() => setCohortBuilderMode("inline")}
+              title="Build a new cohort for TEMPO processing"
+            >
+              <NoteAddOutlined />
+            </Button>
+          )}
           <DownloadButton
             downloadOptions={downloadOptions}
             onDownload={handleDownload}
