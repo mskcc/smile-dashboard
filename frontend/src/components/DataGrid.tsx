@@ -6,6 +6,7 @@ import {
   CellEditRequestEvent,
   ColDef,
   ITooltipParams,
+  RowClassRules,
 } from "ag-grid-community";
 import { useNavigate } from "react-router-dom";
 import { createCustomHeader, lockIcon } from "../configs/gridIcons";
@@ -84,6 +85,7 @@ interface DataGridPropsBase {
       | ((prev: CohortBuilderSample[]) => CohortBuilderSample[])
   ) => void;
   onCellDoubleClicked?: (params: CellDoubleClickedEvent) => void;
+  rowClassRules?: RowClassRules;
 }
 
 type DataGridProps = DataGridPropsBase &
@@ -100,6 +102,7 @@ export function DataGrid({
   selectedRowIds,
   onSelectionChanged,
   onCellDoubleClicked,
+  rowClassRules,
 }: DataGridProps) {
   const navigate = useNavigate();
   const { userEmail } = useUserEmail();
@@ -205,6 +208,7 @@ export function DataGrid({
         rowClassRules={{
           unlocked: (params) => params.data?.revisable === true,
           locked: (params) => params.data?.revisable === false,
+          ...rowClassRules,
         }}
         onCellEditRequest={handleCellEditRequest}
         onCellDoubleClicked={onCellDoubleClicked}
