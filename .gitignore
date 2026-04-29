@@ -24,8 +24,8 @@ dist/
 *.code-workspace
 
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+yarn-debug.log
+yarn-error.log
 *.properties
 *.pem
 
