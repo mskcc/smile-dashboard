@@ -155,6 +155,9 @@ export function buildCohortsQueryBody({
 
   return cohortsQueryBody;
 }
+// Must match the PINNED_COHORT_IDS constant in frontend/src/pages/cohorts/CohortsPage.tsx.
+const PINNED_COHORT_IDS = ["MSKWESRP"];
+
 export function buildCohortsQueryFinal({
   queryBody,
   sort,
@@ -174,7 +177,9 @@ export function buildCohortsQueryFinal({
     RETURN
       resultz{.*, _total:total, _uniqueSampleCount: uniqueSampleCount}
 
-    ORDER BY ${getCypherCustomOrderBy(sort)}
+    ORDER BY CASE WHEN resultz.cohortId IN ${JSON.stringify(
+      PINNED_COHORT_IDS
+    )} THEN 0 ELSE 1 END ASC, ${getCypherCustomOrderBy(sort)}
     SKIP ${offset}
     LIMIT ${limit}
   `;

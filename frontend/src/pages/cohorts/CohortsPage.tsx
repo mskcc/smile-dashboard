@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { DataGrid } from "../../components/DataGrid";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import { useFetchData } from "../../hooks/useFetchData";
@@ -31,6 +31,9 @@ import { CellChangesContainer } from "../../components/CellChangesContainer";
 const QUERY_NAME = "dashboardCohorts";
 const INITIAL_SORT_FIELD_NAME = "initialCohortDeliveryDate";
 const RECORD_NAME = "cohorts";
+
+// Must match the PINNED_COHORT_IDS constant in graphql-server/src/schemas/queries/cohorts.ts.
+const PINNED_COHORT_IDS = ["MSKWESRP"];
 
 export function CohortsPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
@@ -74,6 +77,21 @@ export function CohortsPage() {
       recordCount,
       queryName: QUERY_NAME,
     });
+
+  // Adds a bold bottom border only to the last pinned cohort row to visually separate
+  // the pinned rows from the rest of the table.
+  const cohortRowClassRules = useMemo(
+    () => ({
+      "pinned-cohort-separator": (params: any) => {
+        if (!PINNED_COHORT_IDS.includes(params.data?.cohortId)) return false;
+        const nextRow = params.api.getDisplayedRowAtIndex(
+          params.node.rowIndex + 1
+        );
+        return !PINNED_COHORT_IDS.includes(nextRow?.data?.cohortId);
+      },
+    }),
+    []
+  );
 
   // remove selected samples from cohort col defs
   const filteredWesSampleColDefs = wesSampleColDefs.filter(
@@ -132,6 +150,7 @@ export function CohortsPage() {
         handlePaste={handlePaste}
         selectedRowIds={[]}
         onSelectionChanged={() => {}}
+        rowClassRules={cohortRowClassRules}
       />
 
       {hasParams && (
