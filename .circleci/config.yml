@@ -6,7 +6,7 @@ defaults: &defaults
   working_directory: /tmp/repo
   docker:
     # specify the version you desire here
-    - image: cimg/node:16.20.2-browsers
+    - image: cimg/node:18.20.2-browsers
   resource_class: large
 
 version: 2
@@ -32,6 +32,9 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/
+      - run:
+          name: Add GitHub to known_hosts
+          command: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: 'Check code style with Prettier'
           command: cd /tmp/repo/ && yarn run prettierCheckCircleCI
