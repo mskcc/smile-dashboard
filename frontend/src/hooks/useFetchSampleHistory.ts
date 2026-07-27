@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import jsdownload from "js-file-download";
 import { ColDef } from "ag-grid-community";
 import {
   AgGridSortDirection,
   DashboardSample,
   useDashboardSampleHistoryLazyQuery,
 } from "../generated/graphql";
-import { buildTsvString, DownloadOption } from "./useDownload";
+import { downloadFiles, DownloadOption } from "./useDownload";
 import { fieldToHeaderName } from "../pages/samples/config";
 import { CACHE_BLOCK_SIZE } from "../configs/shared";
 
@@ -142,20 +141,18 @@ export function useFetchSampleHistory(smileSampleId: string) {
   const historyDownloadOptions: DownloadOption[] = [
     {
       buttonLabel: "Download as TSV",
-      columnDefsForDownload: historyExportColDefs,
-      dataGetter: async () => diffs,
+      files: [
+        {
+          columnDefsForDownload: historyExportColDefs,
+          dataGetter: async () => diffs,
+        },
+      ],
     },
   ];
 
   async function handleDownload(downloadOption: DownloadOption) {
     setIsDownloading(true);
-    const data = await downloadOption.dataGetter();
-    const tsvString = buildTsvString({
-      rows: data,
-      colDefs: downloadOption.columnDefsForDownload,
-      columns: [],
-    });
-    jsdownload(tsvString, `${downloadFileName}.tsv`);
+    await downloadFiles(downloadOption, downloadFileName);
     setIsDownloading(false);
   }
 

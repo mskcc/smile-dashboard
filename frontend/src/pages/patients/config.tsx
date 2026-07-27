@@ -68,18 +68,26 @@ export function buildDownloadOptions({
   return [
     {
       buttonLabel: "Download as TSV",
-      columnDefsForDownload: currentColumnDefs,
-      dataGetter: getCurrentData,
+      files: [
+        {
+          columnDefsForDownload: currentColumnDefs,
+          dataGetter: getCurrentData,
+        },
+      ],
     },
     {
       buttonLabel: "Export all anchor dates for clinical cohort",
-      columnDefsForDownload: allAnchorSeqDateColDefs,
-      dataGetter: async () => {
-        const result = await queryAllSeqDates({
-          variables: { phiEnabled: phiEnabled },
-        });
-        return result.data!.allAnchorSeqDateData || [];
-      },
+      files: [
+        {
+          columnDefsForDownload: allAnchorSeqDateColDefs,
+          dataGetter: async () => {
+            const result = await queryAllSeqDates({
+              variables: { phiEnabled: phiEnabled },
+            });
+            return result.data!.allAnchorSeqDateData || [];
+          },
+        },
+      ],
       disabled: !phiEnabled || !userEmail,
       tooltipContent:
         "You must enable PHI and log in to export anchor sequencing dates",

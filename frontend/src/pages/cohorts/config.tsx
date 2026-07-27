@@ -34,8 +34,12 @@ export function buildDownloadOptions({
   return [
     {
       buttonLabel: "Download as TSV",
-      columnDefsForDownload: currentColumnDefs,
-      dataGetter: getCurrentData,
+      files: [
+        {
+          columnDefsForDownload: currentColumnDefs,
+          dataGetter: getCurrentData,
+        },
+      ],
     },
   ];
 }

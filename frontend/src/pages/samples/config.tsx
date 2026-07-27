@@ -490,6 +490,120 @@ const dbGapPhenotypeColumns: Array<ColDef<DashboardSample>> = [
   },
 ];
 
+const dbGapConsentColumns: Array<ColDef<DashboardSample>> = [
+  {
+    field: "cmoPatientId",
+    headerName: "SUBJECT_ID",
+  },
+  {
+    field: "consent",
+    headerName: "CONSENT",
+    valueGetter: "1",
+  },
+  {
+    field: "sex",
+    headerName: "SEX",
+    valueGetter: (params) => {
+      const sex = params.data?.sex ?? "";
+      if (sex === "Male") {
+        return "1";
+      } else if (sex === "Female") {
+        return "2";
+      } else {
+        return "";
+      }
+    },
+  },
+  {
+    field: "subjectSource",
+    headerName: "SUBJECT_SOURCE",
+  },
+  {
+    field: "sourceSubjectId",
+    headerName: "SOURCE_SUBJECT_ID",
+  },
+  {
+    field: "subjectSource2",
+    headerName: "SUBJECT_SOURCE2",
+  },
+  {
+    field: "sourceSubjectId2",
+    headerName: "SOURCE_SUBJECT_ID2",
+  },
+];
+
+const dbGapSSMColumns: Array<ColDef<DashboardSample>> = [
+  {
+    field: "cmoPatientId",
+    headerName: "SUBJECT_ID",
+  },
+  {
+    field: "cmoSampleName",
+    headerName: "SAMPLE_ID",
+  },
+];
+
+const dbGapSubjectColumns: Array<ColDef<DashboardSample>> = [
+  {
+    field: "cmoPatientId",
+    headerName: "SUBJECT_ID",
+  },
+  {
+    field: "race",
+    headerName: "RACE",
+  },
+  {
+    field: "cancerType",
+    headerName: "CANCER_TYPE",
+  },
+];
+
+const dbGapSampleColumns: Array<ColDef<DashboardSample>> = [
+  {
+    field: "cmoSampleName",
+    headerName: "SAMPLE_ID",
+  },
+  {
+    field: "tissueLocation",
+    headerName: "BODY_SITE",
+  },
+  {
+    field: "analyteType",
+    headerName: "ANALYTE_TYPE",
+    valueGetter: "DNA",
+  },
+  {
+    field: "tumorOrNormal",
+    headerName: "IS_TUMOR",
+    valueGetter: (params) => {
+      const tumorOrNormal = params.data?.tumorOrNormal?.toUpperCase() ?? "";
+      if (tumorOrNormal === "TUMOR") {
+        return "Y";
+      } else if (tumorOrNormal === "NORMAL") {
+        return "N";
+      } else {
+        return "";
+      }
+    },
+  },
+  {
+    field: "sampleType",
+    headerName: "SAMPLE_TYPE",
+  },
+  {
+    field: "cancerType",
+    headerName: "HISTOLOGICAL_TYPE",
+  },
+  {
+    field: "cancerTypeDetailed",
+    headerName: "HISTOLOGICAL_SUBTYPE",
+  },
+  {
+    field: "baitSet",
+    headerName: "SEQUENCING_PANEL",
+  },
+];
+
 export const wesSampleColDefs: Array<ColDef<DashboardSample>> = [
   {
     headerName: "Select",
@@ -1137,13 +1251,45 @@ export function buildDownloadOptions({
   return [
     {
       buttonLabel: "Download as TSV",
-      columnDefsForDownload: currentColumnDefs,
-      dataGetter: getCurrentData,
+      files: [
+        {
+          columnDefsForDownload: currentColumnDefs,
+          dataGetter: getCurrentData,
+        },
+      ],
     },
     {
       buttonLabel: "Download in Phenotype format for dbGaP",
-      columnDefsForDownload: dbGapPhenotypeColumns,
-      dataGetter: getCurrentData,
+      files: [
+        {
+          columnDefsForDownload: dbGapPhenotypeColumns,
+          dataGetter: getCurrentData,
+        },
+        {
+          fileName: "2a_Subject_Consent_DS_v8_v9_PR_JW",
+          columnDefsForDownload: dbGapConsentColumns,
+          dataGetter: getCurrentData,
+          fileExtension: "txt",
+        },
+        {
+          fileName: "3a_SSM_DS_v8_v9_PR_JW",
+          columnDefsForDownload: dbGapSSMColumns,
+          dataGetter: getCurrentData,
+          fileExtension: "txt",
+        },
+        {
+          fileName: "5a_Subject_Phenotypes_DS_v8_v9_PR_JW",
+          columnDefsForDownload: dbGapSubjectColumns,
+          dataGetter: getCurrentData,
+          fileExtension: "txt",
+        },
+        {
+          fileName: "6a_Sample_Attributes_DS_v8_V9_PR_JW",
+          columnDefsForDownload: dbGapSampleColumns,
+          dataGetter: getCurrentData,
+          fileExtension: "txt",
+        },
+      ],
     },
   ];
 }
