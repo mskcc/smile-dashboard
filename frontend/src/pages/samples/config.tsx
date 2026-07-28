@@ -504,10 +504,10 @@ const dbGapConsentColumns: Array<ColDef<DashboardSample>> = [
     field: "sex",
     headerName: "SEX",
     valueGetter: (params) => {
-      const sex = params.data?.sex ?? "";
-      if (sex === "Male") {
+      const sex = params.data?.sex?.toUpperCase() ?? "";
+      if (sex === "MALE") {
         return "1";
-      } else if (sex === "Female") {
+      } else if (sex === "FEMALE") {
         return "2";
       } else {
         return "";
