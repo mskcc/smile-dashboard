@@ -20,6 +20,7 @@
     "graphql": "^16.6.0",
     "js-file-download": "^0.4.12",
     "json": "^9.0.6",
+    "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "neo4j-graphql-cli": "^0.0.11",
     "pre-commit": "^1.2.2",
