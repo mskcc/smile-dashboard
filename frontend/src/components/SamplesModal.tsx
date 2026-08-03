@@ -1,4 +1,11 @@
-import { Dispatch, ReactNode, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -15,6 +22,8 @@ import {
   buildDownloadOptions,
   fieldToHeaderName,
   phiModeSwitchTooltipContent,
+  TUMOR_ONLY_CONTEXT,
+  WES_SAMPLE_CONTEXT,
 } from "../pages/samples/config";
 import { useTogglePhiColumnsVisibility } from "../hooks/useTogglePhiColumns";
 import { ErrorMessage } from "./ErrorMessage";
@@ -43,14 +52,32 @@ import {
   historyColDefs,
   historyAutoGroupColumnDef,
 } from "../hooks/useFetchSampleHistory";
-import { Refresh } from "@material-ui/icons";
+import { CircularProgress } from "@material-ui/core";
+import { Close, Edit, Refresh } from "@material-ui/icons";
 import { useUserEmail } from "../contexts/UserEmailContext";
 import { awaitLoginPopup } from "../utils/awaitLoginPopup";
 import { CustomTooltip } from "./CustomToolTip";
+import {
+  CohortBuilderContainer,
+  CohortBuilderSample,
+} from "./CohortBuilderContainer";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
 const PHI_FIELDS = new Set(["sequencingDate"]);
+// Cohorts that can always be edited via the cohort builder regardless of status
+const ALWAYS_EDITABLE_COHORT_IDS = ["MSKWESRP"];
+
+const DEFAULT_TEMPO_COHORT_REQUEST: TempoCohortRequest = {
+  cohortId: "",
+  endUsers: "",
+  pmUsers: "",
+  projectTitle: "",
+  projectSubtitle: "",
+  samples: [],
+  type: "investigator",
+  status: "PROVISIONAL",
+};
 
 interface SamplesModalProps {
   sampleColDefs: Array<ColDef>;
@@ -81,6 +108,31 @@ export function SamplesModal({
   >([]);
   const [isFetchingAllSamples, setIsFetchingAllSamples] = useState(false);
 
+  const [showCohortBuilder, setShowCohortBuilder] = useState(false);
+  const [isOpeningCohortBuilder, setIsOpeningCohortBuilder] = useState(false);
+  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
+    []
+  );
+  const [editableTempoCohortRequest, setEditableTempoCohortRequest] =
+    useState<TempoCohortRequest>(DEFAULT_TEMPO_COHORT_REQUEST);
+
+  const canEditCohort =
+    parentRecordName === "cohorts" &&
+    !!tempoCohortRequest &&
+    (tempoCohortRequest.status === "PROVISIONAL" ||
+      ALWAYS_EDITABLE_COHORT_IDS.includes(tempoCohortRequest.cohortId));
+
+  const editRecordContexts = [...WES_SAMPLE_CONTEXT, ...TUMOR_ONLY_CONTEXT];
+  const baseRecordContexts = [
+    {
+      fieldName: contextFieldName,
+      values: [parentRecordId!],
+    },
+  ];
+  const effectiveRecordContexts = showCohortBuilder
+    ? editRecordContexts
+    : baseRecordContexts;
+
   const {
     refreshData,
     recordCount,
@@ -96,14 +148,61 @@ export function SamplesModal({
     initialSortFieldName: INITIAL_SORT_FIELD_NAME,
     gridRef,
     userSearchVal,
-    recordContexts: [
-      {
-        fieldName: contextFieldName,
-        values: [parentRecordId!],
-      },
-    ],
+    recordContexts: effectiveRecordContexts,
     pollInterval: POLL_INTERVAL,
   });
+
+  useEffect(() => {
+    if (gridRef.current?.columnApi) {
+      gridRef.current.columnApi.setColumnsVisible(
+        ["selected"],
+        showCohortBuilder
+      );
+    }
+    if (gridRef.current?.api) {
+      refreshData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCohortBuilder]);
+
+  async function handleCohortBuilderOpen() {
+    if (!tempoCohortRequest) return;
+    setIsOpeningCohortBuilder(true);
+    try {
+      const { data: allCohortSamplesData } = await fetchMore({
+        variables: {
+          searchVals: [],
+          offset: 0,
+          limit: recordCount,
+        },
+      });
+      const allCohortSamples: DashboardSample[] =
+        allCohortSamplesData?.[QUERY_NAME] ?? [];
+      setSelectedRowIds(
+        allCohortSamples.map((s: DashboardSample) => ({
+          primaryId: s.primaryId ?? "",
+          cmoSampleName: s.cmoSampleName ?? "",
+          mafCompleteStatus: s.mafCompleteStatus ?? "",
+          sampleCohortIds: s.sampleCohortIds ?? "",
+          initialPipelineRunDate: s.initialPipelineRunDate ?? null,
+          embargoDate: s.embargoDate ?? null,
+        }))
+      );
+    } catch (error) {
+      console.error("Failed to fetch all cohort samples for editing:", error);
+    } finally {
+      setIsOpeningCohortBuilder(false);
+    }
+    setEditableTempoCohortRequest(tempoCohortRequest);
+    setShowCohortBuilder(true);
+  }
+
+  function handleCohortBuilderClose() {
+    setShowCohortBuilder(false);
+    setSelectedRowIds([]);
+    gridRef.current?.api?.deselectAll();
+    setEditableTempoCohortRequest(DEFAULT_TEMPO_COHORT_REQUEST);
+  }
 
   const {
     changes,
@@ -219,6 +318,40 @@ export function SamplesModal({
         </Col>
 
         <Col className="text-end d-flex gap-2 justify-content-end align-items-center">
+          {canEditCohort && (
+            <Button
+              style={{
+                marginRight: 5,
+                border: "none",
+                padding: 3,
+                width: 30,
+                height: 30,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onClick={
+                showCohortBuilder
+                  ? handleCohortBuilderClose
+                  : handleCohortBuilderOpen
+              }
+              disabled={
+                isOpeningCohortBuilder || (!showCohortBuilder && isLoading)
+              }
+              title={showCohortBuilder ? "Close cohort builder" : "Edit cohort"}
+              active={showCohortBuilder}
+            >
+              {isOpeningCohortBuilder ? (
+                <CircularProgress
+                  size={16}
+                  thickness={5}
+                  style={{ color: "#fff" }}
+                />
+              ) : (
+                <Edit />
+              )}
+            </Button>
+          )}
           {showForceLabelButton && (
             <CustomTooltip
               icon={
@@ -242,7 +375,8 @@ export function SamplesModal({
           )}
           {parentRecordName === "cohorts" &&
             tempoCohortRequest &&
-            tempoCohortRequest.status === "PROVISIONAL" && (
+            tempoCohortRequest.status === "PROVISIONAL" &&
+            !showCohortBuilder && (
               <CohortBuilderPublishButton
                 tempoCohortRequest={tempoCohortRequest}
                 cohortSamples={(data?.[QUERY_NAME] ?? []).map(
@@ -264,17 +398,46 @@ export function SamplesModal({
         </Col>
       </Toolbar>
 
-      <DataGrid
-        gridRef={gridRef}
-        colDefs={colDefs}
-        refreshData={refreshData}
-        changes={changes}
-        handleCellEditRequest={handleCellEditRequest}
-        handlePaste={handlePaste}
-        selectedRowIds={[]}
-        onSelectionChanged={() => {}}
-        onCellDoubleClicked={handleCellDoubleClicked}
-      />
+      <div className="d-flex flex-row flex-grow-1" style={{ minHeight: 0 }}>
+        <DataGrid
+          gridRef={gridRef}
+          colDefs={colDefs}
+          refreshData={refreshData}
+          changes={changes}
+          handleCellEditRequest={handleCellEditRequest}
+          handlePaste={handlePaste}
+          selectedRowIds={selectedRowIds}
+          onSelectionChanged={setSelectedRowIds}
+          onCellDoubleClicked={handleCellDoubleClicked}
+        />
+        {showCohortBuilder && (
+          <div className="cohort-builder-inline-panel">
+            <div className="cohort-builder-inline-header">
+              <span>Cohort Builder</span>
+              <div className="d-flex gap-2 align-items-center">
+                <button
+                  onClick={handleCohortBuilderClose}
+                  title="Close cohort builder"
+                  className="cohort-builder-close-btn"
+                >
+                  <Close fontSize="small" />
+                </button>
+              </div>
+            </div>
+            <div className="cohort-builder-inline-body">
+              <CohortBuilderContainer
+                gridRef={gridRef}
+                selectedRowIds={selectedRowIds}
+                setSelectedRowIds={setSelectedRowIds}
+                onClose={handleCohortBuilderClose}
+                tempoCohortRequest={editableTempoCohortRequest}
+                setTempoCohortRequest={setEditableTempoCohortRequest}
+                isExistingCohort
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
       {isDownloading && <DownloadModal />}
 

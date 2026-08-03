@@ -28,6 +28,7 @@ interface CohortBuilderContainerProps {
   setTempoCohortRequest: React.Dispatch<
     React.SetStateAction<TempoCohortRequest>
   >;
+  isExistingCohort?: boolean;
 }
 
 export interface CohortBuilderSample {
@@ -46,6 +47,7 @@ export function CohortBuilderContainer({
   onClose,
   tempoCohortRequest,
   setTempoCohortRequest,
+  isExistingCohort = false,
 }: CohortBuilderContainerProps) {
   const { data } = useAllBlockedCohortIdsQuery();
 
@@ -147,6 +149,7 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`Project title (required)`}
                 aria-label="Project title"
+                disabled={isExistingCohort}
                 value={tempoCohortRequest.projectTitle}
                 onChange={(e: { currentTarget: { value: any } }) => {
                   setTempoCohortRequest({
