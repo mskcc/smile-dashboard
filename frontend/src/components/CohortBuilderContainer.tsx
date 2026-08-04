@@ -207,6 +207,7 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`Project Type (required)`}
                 aria-label="Project Type"
+                disabled={isExistingCohort}
                 defaultValue={"investigator"}
                 value={tempoCohortRequest.type}
                 onChange={(e: { currentTarget: { value: any } }) => {
