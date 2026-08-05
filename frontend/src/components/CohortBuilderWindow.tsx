@@ -1,4 +1,5 @@
 import { ReactNode, RefObject, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { Close, FirstPage } from "@material-ui/icons";
 import { Rnd } from "react-rnd";
@@ -33,7 +34,7 @@ export function CohortBuilderWindow({
     }
   }, [containerRef]);
 
-  return (
+  return createPortal(
     <Rnd
       ref={rndRef}
       default={{
@@ -46,7 +47,7 @@ export function CohortBuilderWindow({
       minHeight={400}
       bounds="window"
       dragHandleClassName="cohort-builder-drag-handle"
-      style={{ zIndex: 1050, visibility: visible ? "visible" : "hidden" }}
+      style={{ zIndex: 1060, visibility: visible ? "visible" : "hidden" }}
     >
       <div className="cohort-builder-window">
         <div className="cohort-builder-drag-handle">
@@ -71,6 +72,7 @@ export function CohortBuilderWindow({
 
         <div className="cohort-builder-body">{children}</div>
       </div>
-    </Rnd>
+    </Rnd>,
+    document.body
   );
 }
