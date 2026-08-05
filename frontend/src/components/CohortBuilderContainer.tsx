@@ -16,6 +16,10 @@ import {
   useAllBlockedCohortIdsQuery,
 } from "../generated/graphql";
 import { CohortBuilderPublishButton } from "./CohortBuilderPublishButton";
+import {
+  TUMOR_ONLY_CONTEXT,
+  WES_SAMPLE_CONTEXT,
+} from "../pages/samples/config";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -39,6 +43,34 @@ export interface CohortBuilderSample {
   initialPipelineRunDate: string | null;
   embargoDate: string | null;
 }
+
+// Blank/default form values for a not-yet-published cohort request
+export const DEFAULT_TEMPO_COHORT_REQUEST: TempoCohortRequest = {
+  cohortId: "",
+  endUsers: "",
+  pmUsers: "",
+  projectTitle: "",
+  projectSubtitle: "",
+  samples: [],
+  type: "investigator",
+  status: "PROVISIONAL",
+};
+
+// Cohorts that can always be edited via the cohort builder regardless of status
+const ALWAYS_EDITABLE_COHORT_IDS = ["MSKWESRP"];
+
+export function isCohortEditable(tempoCohortRequest: TempoCohortRequest) {
+  return (
+    tempoCohortRequest.status === "PROVISIONAL" ||
+    ALWAYS_EDITABLE_COHORT_IDS.includes(tempoCohortRequest.cohortId)
+  );
+}
+
+// Record contexts needed for browsing/selecting samples for a cohort (WES + tumor-only)
+export const COHORT_BUILDER_RECORD_CONTEXTS = [
+  ...WES_SAMPLE_CONTEXT,
+  ...TUMOR_ONLY_CONTEXT,
+];
 
 export function CohortBuilderContainer({
   gridRef,
@@ -101,6 +133,7 @@ export function CohortBuilderContainer({
   return (
     <div className="d-flex flex-column" style={{ height: "100%" }}>
       <Container
+        fluid
         className="ag-theme-alpine flex-grow-1"
         style={{
           border: "1px solid #ccc",

@@ -34,6 +34,7 @@ import { POLL_INTERVAL, ROUTE_PARAMS } from "../../configs/shared";
 import {
   CohortBuilderContainer,
   CohortBuilderSample,
+  DEFAULT_TEMPO_COHORT_REQUEST,
 } from "../../components/CohortBuilderContainer";
 import { CohortBuilderWindow } from "../../components/CohortBuilderWindow";
 import { TempoCohortRequest } from "../../generated/graphql";
@@ -65,16 +66,7 @@ export function SamplesPage() {
     "hidden" | "inline" | "window"
   >("hidden");
   const [tempoCohortRequest, setTempoCohortRequest] =
-    useState<TempoCohortRequest>({
-      cohortId: "",
-      endUsers: "",
-      pmUsers: "",
-      projectTitle: "",
-      projectSubtitle: "",
-      samples: [],
-      type: "investigator",
-      status: "PROVISIONAL",
-    });
+    useState<TempoCohortRequest>(DEFAULT_TEMPO_COHORT_REQUEST);
 
   const showCohortBuilder = cohortBuilderMode !== "hidden";
 
@@ -82,16 +74,7 @@ export function SamplesPage() {
     setCohortBuilderMode("hidden");
     setSelectedRowIds([]);
     gridRef.current?.api?.deselectAll();
-    setTempoCohortRequest({
-      cohortId: "",
-      endUsers: "",
-      pmUsers: "",
-      projectTitle: "",
-      projectSubtitle: "",
-      samples: [],
-      type: "investigator",
-      status: "PROVISIONAL",
-    });
+    setTempoCohortRequest(DEFAULT_TEMPO_COHORT_REQUEST);
   }
 
   function handleCohortBuilderPopOut() {
