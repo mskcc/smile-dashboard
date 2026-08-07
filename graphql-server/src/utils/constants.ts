@@ -4,12 +4,20 @@ const properties = new PropertiesReader(
   path.resolve(`${__dirname}`, "../env/application.properties")
 );
 
+// Resolves cert/key paths against SMILE_CONFIG_HOME so that relative paths in
+// application.properties work regardless of the process's current working
+// directory. Absolute paths are returned unchanged.
+function resolveConfigPath(configPath: string): string {
+  if (!configPath) return configPath;
+  return path.resolve(process.env.SMILE_CONFIG_HOME || "", configPath);
+}
+
 export const props = {
   nats_username: properties.get("conn.nats_username"),
   nats_password: properties.get("conn.nats_password"),
-  nats_key_pem: properties.get("conn.nats_key_pem"),
-  nats_cert_pem: properties.get("conn.nats_cert_pem"),
-  nats_ca_pem: properties.get("conn.nats_ca_pem"),
+  nats_key_pem: resolveConfigPath(properties.get("conn.nats_key_pem")),
+  nats_cert_pem: resolveConfigPath(properties.get("conn.nats_cert_pem")),
+  nats_ca_pem: resolveConfigPath(properties.get("conn.nats_ca_pem")),
   nats_url: properties.get("conn.nats_url"),
 
   neo4j_graphql_uri: properties.get("db.neo4j_graphql_uri"),
@@ -38,8 +46,8 @@ export const props = {
 
   log_dir: properties.get("log.log_dir"),
 
-  web_key_pem: properties.get("web.web_key_pem"),
-  web_cert_pem: properties.get("web.web_cert_pem"),
+  web_key_pem: resolveConfigPath(properties.get("web.web_key_pem")),
+  web_cert_pem: resolveConfigPath(properties.get("web.web_cert_pem")),
 
   oncotree_api: properties.get("oncotree.oncotree_api"),
 
