@@ -12,6 +12,14 @@ function resolveConfigPath(configPath: string): string {
   return path.resolve(process.env.SMILE_CONFIG_HOME || "", configPath);
 }
 
+// Resolves paths against SMILE_DATA_HOME so that relative paths in
+// application.properties work regardless of the process's current working
+// directory. Absolute paths are returned unchanged.
+function resolveDataPath(dataPath: string): string {
+  if (!dataPath) return dataPath;
+  return path.resolve(process.env.SMILE_DATA_HOME || "", dataPath);
+}
+
 export const props = {
   nats_username: properties.get("conn.nats_username"),
   nats_password: properties.get("conn.nats_password"),
@@ -44,7 +52,7 @@ export const props = {
   keycloak_server_uri: properties.get("auth.keycloak_server_uri"),
   express_session_secret: properties.get("auth.express_session_secret"),
 
-  log_dir: properties.get("log.log_dir"),
+  log_dir: resolveDataPath(properties.get("log.log_dir")),
 
   web_key_pem: resolveConfigPath(properties.get("web.web_key_pem")),
   web_cert_pem: resolveConfigPath(properties.get("web.web_cert_pem")),

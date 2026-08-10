@@ -34,7 +34,7 @@ keycloak_server_uri=
 express_session_secret=
 
 [log]
-# log_dir: path relative to SMILE_DATA_HOME
+# log_dir: absolute path, or path relative to SMILE_DATA_HOME
 log_dir=
 
 [web]
