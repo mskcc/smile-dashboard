@@ -5,6 +5,7 @@ app.port=
 nats_username=
 nats_password=
 nats_url=
+# nats_key_pem, nats_cert_pem, nats_ca_pem: absolute paths, or paths relative to SMILE_CONFIG_HOME
 nats_key_pem=
 nats_cert_pem=
 nats_ca_pem=
@@ -33,9 +34,11 @@ keycloak_server_uri=
 express_session_secret=
 
 [log]
+# log_dir: absolute path, or path relative to SMILE_DATA_HOME
 log_dir=
 
 [web]
+# web_key_pem, web_cert_pem: absolute paths, or paths relative to SMILE_CONFIG_HOME
 web_key_pem=
 web_cert_pem=
 

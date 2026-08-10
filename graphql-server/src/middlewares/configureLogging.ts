@@ -9,7 +9,7 @@ import { ApolloServerContext } from "../utils/servers";
  * Log only PHI queries from logged in users
  */
 export function configureLogging(app: Express) {
-  const logDir = path.join(process.env.SMILE_DATA_HOME!, props.log_dir);
+  const logDir = props.log_dir;
 
   if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
   const accessLogStream = fs.createWriteStream(path.join(logDir, "event.log"), {
