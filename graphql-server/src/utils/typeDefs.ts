@@ -319,6 +319,7 @@ const MUTATION_TYPEDEFS = gql`
     changelog: String
     _total: Int
     _uniqueSampleCount: Int
+    samples: [TempoCohortSampleInput!]
   }
 
   input TempoCohortSampleInput {

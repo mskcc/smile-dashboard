@@ -1391,6 +1391,7 @@ export type DashboardCohortInput = {
   pmUsers?: InputMaybe<Scalars['String']['input']>;
   projectSubtitle?: InputMaybe<Scalars['String']['input']>;
   projectTitle?: InputMaybe<Scalars['String']['input']>;
+  samples?: InputMaybe<Array<TempoCohortSampleInput>>;
   searchableSampleIds?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   totalSampleCount?: InputMaybe<Scalars['Int']['input']>;

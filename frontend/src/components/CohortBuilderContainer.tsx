@@ -16,6 +16,7 @@ import {
   useAllBlockedCohortIdsQuery,
 } from "../generated/graphql";
 import { CohortBuilderPublishButton } from "./CohortBuilderPublishButton";
+import { CohortBuilderDeliverUpdatesButton } from "./CohortBuilderDeliverUpdatesButton";
 import {
   TUMOR_ONLY_CONTEXT,
   WES_SAMPLE_CONTEXT,
@@ -194,10 +195,17 @@ export function CohortBuilderContainer({
             </label>
           </Col>
           <Col className="text-end">
-            <CohortBuilderPublishButton
-              tempoCohortRequest={tempoCohortRequest}
-              cohortSamples={tempoCohortSamplesData}
-            />
+            {isExistingCohort ? (
+              <CohortBuilderDeliverUpdatesButton
+                tempoCohortRequest={tempoCohortRequest}
+                cohortSamples={tempoCohortSamplesData}
+              />
+            ) : (
+              <CohortBuilderPublishButton
+                tempoCohortRequest={tempoCohortRequest}
+                cohortSamples={tempoCohortSamplesData}
+              />
+            )}
           </Col>
         </Row>
         <Row

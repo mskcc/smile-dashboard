@@ -1,7 +1,6 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext, neo4jDriver } from "../utils/servers";
 import {
-  DashboardCohort,
   DashboardCohortInput,
   DashboardSampleInput,
   PatientIdsTriplet,
@@ -738,7 +737,7 @@ async function updateDbGapPromise(
   });
 }
 
-async function updateTempoCohortPromise(dashboardCohort: DashboardCohort) {
+async function updateTempoCohortPromise(dashboardCohort: DashboardCohortInput) {
   return new Promise((resolve) => {
     const dataForTempoCohortUpdate = {
       cohortId: dashboardCohort.cohortId,
@@ -750,6 +749,7 @@ async function updateTempoCohortPromise(dashboardCohort: DashboardCohort) {
       projectTitle: dashboardCohort.projectTitle,
       projectSubtitle: dashboardCohort.projectSubtitle,
       pipelineVersion: dashboardCohort.pipelineVersion || "",
+      samples: dashboardCohort.samples || [],
     };
     publishNatsMessage(
       props.pub_tempo_cohort_update,
