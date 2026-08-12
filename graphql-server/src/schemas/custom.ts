@@ -749,7 +749,9 @@ async function updateTempoCohortPromise(dashboardCohort: DashboardCohortInput) {
       projectTitle: dashboardCohort.projectTitle,
       projectSubtitle: dashboardCohort.projectSubtitle,
       pipelineVersion: dashboardCohort.pipelineVersion || "",
-      samples: dashboardCohort.samples || [],
+      samples: (dashboardCohort.samples || []).map((sample) => ({
+        primaryId: sample.primaryId,
+      })),
     };
     publishNatsMessage(
       props.pub_tempo_cohort_update,

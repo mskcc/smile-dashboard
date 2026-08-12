@@ -465,7 +465,7 @@ export type CohortComplete = {
   pmUsers: Scalars['String']['output'];
   projectSubtitle: Scalars['String']['output'];
   projectTitle: Scalars['String']['output'];
-  status: Scalars['String']['output'];
+  status?: Maybe<Scalars['String']['output']>;
   type: Scalars['String']['output'];
 };
 
@@ -629,7 +629,7 @@ export type CohortCompleteCreateInput = {
   pmUsers: Scalars['String']['input'];
   projectSubtitle: Scalars['String']['input'];
   projectTitle: Scalars['String']['input'];
-  status: Scalars['String']['input'];
+  status?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
 };
 
@@ -752,7 +752,7 @@ export type CohortCompleteWhere = {
   status?: InputMaybe<Scalars['String']['input']>;
   status_CONTAINS?: InputMaybe<Scalars['String']['input']>;
   status_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  status_IN?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_IN?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   status_MATCHES?: InputMaybe<Scalars['String']['input']>;
   status_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
@@ -1371,6 +1371,7 @@ export type DashboardCohort = {
   pmUsers?: Maybe<Scalars['String']['output']>;
   projectSubtitle?: Maybe<Scalars['String']['output']>;
   projectTitle?: Maybe<Scalars['String']['output']>;
+  samples?: Maybe<Array<TempoCohortSample>>;
   searchableSampleIds?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   totalSampleCount?: Maybe<Scalars['Int']['output']>;
@@ -6296,7 +6297,7 @@ export type Sample = {
   requestsHasSample: Array<Request>;
   requestsHasSampleAggregate?: Maybe<SampleRequestRequestsHasSampleAggregationSelection>;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
-  revisable: Scalars['Boolean']['output'];
+  revisable?: Maybe<Scalars['Boolean']['output']>;
   sampleAliasesIsAlias: Array<SampleAlias>;
   sampleAliasesIsAliasAggregate?: Maybe<SampleSampleAliasSampleAliasesIsAliasAggregationSelection>;
   sampleAliasesIsAliasConnection: SampleSampleAliasesIsAliasConnection;
@@ -6883,7 +6884,7 @@ export type SampleCreateInput = {
   hasTempoTempos?: InputMaybe<SampleHasTempoTemposFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
-  revisable: Scalars['Boolean']['input'];
+  revisable?: InputMaybe<Scalars['Boolean']['input']>;
   sampleAliasesIsAlias?: InputMaybe<SampleSampleAliasesIsAliasFieldInput>;
   sampleCategory: Scalars['String']['input'];
   sampleClass?: InputMaybe<Scalars['String']['input']>;
@@ -11393,7 +11394,7 @@ export type UpdateTempoCohortMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTempoCohortMutation = { __typename?: 'Mutation', updateTempoCohort?: { __typename?: 'DashboardCohort', cohortId: string, totalSampleCount?: number | null, billed?: string | null, initialCohortDeliveryDate?: string | null, importDate?: string | null, endUsers?: string | null, pmUsers?: string | null, projectTitle?: string | null, projectSubtitle?: string | null, status?: string | null, type?: string | null, pipelineVersion?: string | null, searchableSampleIds?: string | null, _total?: number | null, _uniqueSampleCount?: number | null } | null };
+export type UpdateTempoCohortMutation = { __typename?: 'Mutation', updateTempoCohort?: { __typename?: 'DashboardCohort', cohortId: string, totalSampleCount?: number | null, billed?: string | null, initialCohortDeliveryDate?: string | null, importDate?: string | null, endUsers?: string | null, pmUsers?: string | null, projectTitle?: string | null, projectSubtitle?: string | null, status?: string | null, type?: string | null, pipelineVersion?: string | null, searchableSampleIds?: string | null, _total?: number | null, _uniqueSampleCount?: number | null, samples?: Array<{ __typename?: 'TempoCohortSample', primaryId: string }> | null } | null };
 
 export type PublishNewTempoCohortRequestMutationVariables = Exact<{
   tempoCohortRequest: TempoCohortRequestInput;
@@ -12009,6 +12010,9 @@ export const UpdateTempoCohortDocument = gql`
     searchableSampleIds
     _total
     _uniqueSampleCount
+    samples {
+      primaryId
+    }
   }
 }
     `;
