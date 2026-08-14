@@ -32,5 +32,14 @@ export function validateCohortBuilderInput(
     alert("Cohort must contain at least one sample.");
     return false;
   }
+  const samplesMissingCmoId = cohortSamples.filter(
+    (sample) => !sample.cmoSampleName?.trim()
+  );
+  if (samplesMissingCmoId.length > 0) {
+    alert(
+      `Found samples with missing CMO Sample Names: ${samplesMissingCmoId.length}\n\nPlease remove or fix sample metadata before including in cohort.`
+    );
+    return false;
+  }
   return true;
 }

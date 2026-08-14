@@ -190,6 +190,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     searchableSampleIds: String
     _total: Int
     _uniqueSampleCount: Int
+    samples: [TempoCohortSample!]
   }
 
   type DashboardSample {
@@ -319,6 +320,7 @@ const MUTATION_TYPEDEFS = gql`
     changelog: String
     _total: Int
     _uniqueSampleCount: Int
+    samples: [TempoCohortSampleInput!]
   }
 
   input TempoCohortSampleInput {
