@@ -59,7 +59,7 @@ export const TUMOR_ONLY_CONTEXT: Array<DashboardRecordContext> = [
 /**
  * Applies the context in which sample records are filtered for SamplesPage.
  */
-const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
+export const WES_SAMPLE_CONTEXT: Array<DashboardRecordContext> = [
   {
     fieldName: "genePanel",
     values: [

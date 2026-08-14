@@ -31,18 +31,15 @@ import { useCellChanges } from "../../hooks/useCellChanges";
 import { CellChangesContainer } from "../../components/CellChangesContainer";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { POLL_INTERVAL, ROUTE_PARAMS } from "../../configs/shared";
-import {
-  CohortBuilderContainer,
-  CohortBuilderSample,
-} from "../../components/CohortBuilderContainer";
+import { CohortBuilderContainer } from "../../components/CohortBuilderContainer";
 import { CohortBuilderWindow } from "../../components/CohortBuilderWindow";
-import { TempoCohortRequest } from "../../generated/graphql";
 import { Close, NoteAddOutlined, OpenInNew } from "@material-ui/icons";
 import { CustomTooltip } from "../../components/CustomToolTip";
 import { SampleHistoryModal } from "../../components/SamplesModal";
 import { useParams } from "react-router-dom";
 import { useUserEmail } from "../../contexts/UserEmailContext";
 import { useCellDoubleClicked } from "../../hooks/useCellDoubleClicked";
+import { useCohortBuilder } from "../../hooks/useCohortBuilder";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -58,45 +55,18 @@ export function SamplesPage() {
   );
   const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
   const cohortBuilderRef = useRef<HTMLDivElement>(null);
-  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
-    []
-  );
-  const [cohortBuilderMode, setCohortBuilderMode] = useState<
-    "hidden" | "inline" | "window"
-  >("hidden");
-  const [tempoCohortRequest, setTempoCohortRequest] =
-    useState<TempoCohortRequest>({
-      cohortId: "",
-      endUsers: "",
-      pmUsers: "",
-      projectTitle: "",
-      projectSubtitle: "",
-      samples: [],
-      type: "investigator",
-      status: "PROVISIONAL",
-    });
-
-  const showCohortBuilder = cohortBuilderMode !== "hidden";
-
-  function handleCohortBuilderClose() {
-    setCohortBuilderMode("hidden");
-    setSelectedRowIds([]);
-    gridRef.current?.api?.deselectAll();
-    setTempoCohortRequest({
-      cohortId: "",
-      endUsers: "",
-      pmUsers: "",
-      projectTitle: "",
-      projectSubtitle: "",
-      samples: [],
-      type: "investigator",
-      status: "PROVISIONAL",
-    });
-  }
-
-  function handleCohortBuilderPopOut() {
-    setCohortBuilderMode("window");
-  }
+  const {
+    cohortBuilderMode,
+    setCohortBuilderMode,
+    showCohortBuilder,
+    selectedRowIds,
+    setSelectedRowIds,
+    tempoCohortRequest,
+    setTempoCohortRequest,
+    handleCohortBuilderOpen,
+    handleCohortBuilderClose,
+    handleCohortBuilderPopOut,
+  } = useCohortBuilder(gridRef);
 
   const [selectedFilterLabel, setSelectedFilterLabel] = useState(
     filterButtonOptions[0].label
@@ -122,7 +92,7 @@ export function SamplesPage() {
       setCohortBuilderMode("hidden");
     }
     prevIsWesAndLoggedIn.current = isWesAndLoggedIn;
-  }, [isWesAndLoggedIn]);
+  }, [isWesAndLoggedIn, setCohortBuilderMode, setSelectedRowIds]);
 
   const {
     refreshData,
@@ -264,7 +234,7 @@ export function SamplesPage() {
               icon={
                 <Button
                   style={{ marginRight: 5, border: "none", padding: 3 }}
-                  onClick={() => setCohortBuilderMode("inline")}
+                  onClick={handleCohortBuilderOpen}
                   title="Build a new cohort for TEMPO processing"
                   disabled
                 >
@@ -277,7 +247,7 @@ export function SamplesPage() {
           ) : (
             <Button
               style={{ marginRight: 5, border: "none", padding: 3 }}
-              onClick={() => setCohortBuilderMode("inline")}
+              onClick={handleCohortBuilderOpen}
               title="Build a new cohort for TEMPO processing"
             >
               <NoteAddOutlined />

@@ -16,6 +16,11 @@ import {
   useAllBlockedCohortIdsQuery,
 } from "../generated/graphql";
 import { CohortBuilderPublishButton } from "./CohortBuilderPublishButton";
+import { CohortBuilderDeliverUpdatesButton } from "./CohortBuilderDeliverUpdatesButton";
+import {
+  TUMOR_ONLY_CONTEXT,
+  WES_SAMPLE_CONTEXT,
+} from "../pages/samples/config";
 
 interface CohortBuilderContainerProps {
   selectedRowIds: CohortBuilderSample[];
@@ -28,6 +33,7 @@ interface CohortBuilderContainerProps {
   setTempoCohortRequest: React.Dispatch<
     React.SetStateAction<TempoCohortRequest>
   >;
+  isExistingCohort?: boolean;
 }
 
 export interface CohortBuilderSample {
@@ -39,6 +45,34 @@ export interface CohortBuilderSample {
   embargoDate: string | null;
 }
 
+// Blank/default form values for a not-yet-published cohort request
+export const DEFAULT_TEMPO_COHORT_REQUEST: TempoCohortRequest = {
+  cohortId: "",
+  endUsers: "",
+  pmUsers: "",
+  projectTitle: "",
+  projectSubtitle: "",
+  samples: [],
+  type: "investigator",
+  status: "PROVISIONAL",
+};
+
+// Cohorts that can always be edited via the cohort builder regardless of status
+const ALWAYS_EDITABLE_COHORT_IDS = ["MSKWESRP"];
+
+export function isCohortEditable(tempoCohortRequest: TempoCohortRequest) {
+  return (
+    tempoCohortRequest.status === "PROVISIONAL" ||
+    ALWAYS_EDITABLE_COHORT_IDS.includes(tempoCohortRequest.cohortId)
+  );
+}
+
+// Record contexts needed for browsing/selecting samples for a cohort (WES + tumor-only)
+export const COHORT_BUILDER_RECORD_CONTEXTS = [
+  ...WES_SAMPLE_CONTEXT,
+  ...TUMOR_ONLY_CONTEXT,
+];
+
 export function CohortBuilderContainer({
   gridRef,
   selectedRowIds,
@@ -46,6 +80,7 @@ export function CohortBuilderContainer({
   onClose,
   tempoCohortRequest,
   setTempoCohortRequest,
+  isExistingCohort = false,
 }: CohortBuilderContainerProps) {
   const { data } = useAllBlockedCohortIdsQuery();
 
@@ -99,6 +134,7 @@ export function CohortBuilderContainer({
   return (
     <div className="d-flex flex-column" style={{ height: "100%" }}>
       <Container
+        fluid
         className="ag-theme-alpine flex-grow-1"
         style={{
           border: "1px solid #ccc",
@@ -147,6 +183,7 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`Project title (required)`}
                 aria-label="Project title"
+                disabled={isExistingCohort}
                 value={tempoCohortRequest.projectTitle}
                 onChange={(e: { currentTarget: { value: any } }) => {
                   setTempoCohortRequest({
@@ -158,10 +195,17 @@ export function CohortBuilderContainer({
             </label>
           </Col>
           <Col className="text-end">
-            <CohortBuilderPublishButton
-              tempoCohortRequest={tempoCohortRequest}
-              cohortSamples={tempoCohortSamplesData}
-            />
+            {isExistingCohort ? (
+              <CohortBuilderDeliverUpdatesButton
+                tempoCohortRequest={tempoCohortRequest}
+                cohortSamples={tempoCohortSamplesData}
+              />
+            ) : (
+              <CohortBuilderPublishButton
+                tempoCohortRequest={tempoCohortRequest}
+                cohortSamples={tempoCohortSamplesData}
+              />
+            )}
           </Col>
         </Row>
         <Row
@@ -204,6 +248,7 @@ export function CohortBuilderContainer({
                 size="sm"
                 placeholder={`Project Type (required)`}
                 aria-label="Project Type"
+                disabled={isExistingCohort}
                 defaultValue={"investigator"}
                 value={tempoCohortRequest.type}
                 onChange={(e: { currentTarget: { value: any } }) => {

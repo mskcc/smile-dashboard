@@ -330,6 +330,9 @@ mutation UpdateTempoCohort($dashboardCohort: DashboardCohortInput!) {
     searchableSampleIds
     _total
     _uniqueSampleCount
+    samples {
+      primaryId
+    }
   }
 }
 
