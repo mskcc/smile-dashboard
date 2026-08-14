@@ -57,12 +57,11 @@ import { awaitLoginPopup } from "../utils/awaitLoginPopup";
 import { CustomTooltip } from "./CustomToolTip";
 import {
   CohortBuilderContainer,
-  CohortBuilderSample,
   COHORT_BUILDER_RECORD_CONTEXTS,
-  DEFAULT_TEMPO_COHORT_REQUEST,
   isCohortEditable,
 } from "./CohortBuilderContainer";
 import { CohortBuilderWindow } from "./CohortBuilderWindow";
+import { useEditableCohortBuilder } from "../hooks/useEditableCohortBuilder";
 
 const QUERY_NAME = "dashboardSamples";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -97,17 +96,20 @@ export function SamplesModal({
   >([]);
   const [isFetchingAllSamples, setIsFetchingAllSamples] = useState(false);
 
-  const [cohortBuilderMode, setCohortBuilderMode] = useState<
-    "hidden" | "inline" | "window"
-  >("hidden");
-  const showCohortBuilder = cohortBuilderMode !== "hidden";
   const cohortBuilderRef = useRef<HTMLDivElement>(null);
-  const [isOpeningCohortBuilder, setIsOpeningCohortBuilder] = useState(false);
-  const [selectedRowIds, setSelectedRowIds] = useState<CohortBuilderSample[]>(
-    []
-  );
-  const [editableTempoCohortRequest, setEditableTempoCohortRequest] =
-    useState<TempoCohortRequest>(DEFAULT_TEMPO_COHORT_REQUEST);
+  const {
+    cohortBuilderMode,
+    setCohortBuilderMode,
+    showCohortBuilder,
+    selectedRowIds,
+    setSelectedRowIds,
+    editableTempoCohortRequest,
+    setEditableTempoCohortRequest,
+    isOpeningCohortBuilder,
+    handleCohortBuilderOpen: openEditableCohortBuilder,
+    handleCohortBuilderClose,
+    handleCohortBuilderPopOut,
+  } = useEditableCohortBuilder(gridRef);
 
   const canEditCohort =
     parentRecordName === "cohorts" &&
@@ -156,47 +158,13 @@ export function SamplesModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showCohortBuilder]);
 
-  async function handleCohortBuilderOpen() {
-    if (!tempoCohortRequest) return;
-    setIsOpeningCohortBuilder(true);
-    try {
-      const { data: allCohortSamplesData } = await fetchMore({
-        variables: {
-          searchVals: [],
-          offset: 0,
-          limit: recordCount,
-        },
-      });
-      const allCohortSamples: DashboardSample[] =
-        allCohortSamplesData?.[QUERY_NAME] ?? [];
-      setSelectedRowIds(
-        allCohortSamples.map((s: DashboardSample) => ({
-          primaryId: s.primaryId ?? "",
-          cmoSampleName: s.cmoSampleName ?? "",
-          mafCompleteStatus: s.mafCompleteStatus ?? "",
-          sampleCohortIds: s.sampleCohortIds ?? "",
-          initialPipelineRunDate: s.initialPipelineRunDate ?? null,
-          embargoDate: s.embargoDate ?? null,
-        }))
-      );
-    } catch (error) {
-      console.error("Failed to fetch all cohort samples for editing:", error);
-    } finally {
-      setIsOpeningCohortBuilder(false);
-    }
-    setEditableTempoCohortRequest(tempoCohortRequest);
-    setCohortBuilderMode("inline");
-  }
-
-  function handleCohortBuilderClose() {
-    setCohortBuilderMode("hidden");
-    setSelectedRowIds([]);
-    gridRef.current?.api?.deselectAll();
-    setEditableTempoCohortRequest(DEFAULT_TEMPO_COHORT_REQUEST);
-  }
-
-  function handleCohortBuilderPopOut() {
-    setCohortBuilderMode("window");
+  function handleCohortBuilderOpen() {
+    return openEditableCohortBuilder({
+      tempoCohortRequest,
+      recordCount,
+      queryName: QUERY_NAME,
+      fetchMore,
+    });
   }
 
   const {
