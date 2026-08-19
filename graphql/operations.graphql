@@ -104,6 +104,21 @@ query DashboardCohorts(
     searchableSampleIds
     _total
     _uniqueSampleCount
+    cohortValidationStatus {
+      jsonSchemaValidated
+      passesAllChecks
+      invalidPmUsers
+      invalidEndUsers
+      invalidTempoSamples {
+        primaryId
+        cmoId
+        conflictReason
+        unpairedReason
+        tumorNotFound
+        normalCmoId
+        normalPrimaryId
+      }
+    }
   }
 }
 

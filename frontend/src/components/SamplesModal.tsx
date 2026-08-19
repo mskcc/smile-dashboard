@@ -9,6 +9,7 @@ import {
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  DashboardCohortValidationStatus,
   DashboardRecordContext,
   DashboardSample,
   TempoCohortRequest,
@@ -74,6 +75,7 @@ interface SamplesModalProps {
   showPhiModeSwitch?: boolean;
   showForceLabelButton?: boolean;
   tempoCohortRequest?: TempoCohortRequest;
+  cohortValidationStatus?: DashboardCohortValidationStatus | null;
 }
 
 export function SamplesModal({
@@ -83,6 +85,7 @@ export function SamplesModal({
   showPhiModeSwitch = false,
   showForceLabelButton = false,
   tempoCohortRequest,
+  cohortValidationStatus,
 }: SamplesModalProps) {
   const [userSearchVal, setUserSearchVal] = useState("");
   const [colDefs, setColDefs] = useState(sampleColDefs);
@@ -106,10 +109,11 @@ export function SamplesModal({
     editableTempoCohortRequest,
     setEditableTempoCohortRequest,
     isOpeningCohortBuilder,
+    enrichSelectedRow,
     handleCohortBuilderOpen: openEditableCohortBuilder,
     handleCohortBuilderClose,
     handleCohortBuilderPopOut,
-  } = useEditableCohortBuilder(gridRef);
+  } = useEditableCohortBuilder(gridRef, cohortValidationStatus);
 
   const canEditCohort =
     parentRecordName === "cohorts" &&
@@ -376,6 +380,7 @@ export function SamplesModal({
           selectedRowIds={selectedRowIds}
           onSelectionChanged={setSelectedRowIds}
           onCellDoubleClicked={handleCellDoubleClicked}
+          enrichSelectedRow={enrichSelectedRow}
         />
         {cohortBuilderMode === "inline" && (
           <div className="cohort-builder-inline-panel">
@@ -407,6 +412,7 @@ export function SamplesModal({
                 tempoCohortRequest={editableTempoCohortRequest}
                 setTempoCohortRequest={setEditableTempoCohortRequest}
                 isExistingCohort
+                cohortValidationStatus={cohortValidationStatus}
               />
             </div>
           </div>
@@ -427,6 +433,7 @@ export function SamplesModal({
             tempoCohortRequest={editableTempoCohortRequest}
             setTempoCohortRequest={setEditableTempoCohortRequest}
             isExistingCohort
+            cohortValidationStatus={cohortValidationStatus}
           />
         </CohortBuilderWindow>
       )}

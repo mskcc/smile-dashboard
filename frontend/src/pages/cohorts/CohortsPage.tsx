@@ -71,6 +71,7 @@ export function CohortsPage() {
         samples: [],
       }
     : undefined;
+  const cohortValidationStatus = selectedCohort?.cohortValidationStatus;
 
   const {
     refreshData,
@@ -187,6 +188,7 @@ export function CohortsPage() {
           contextFieldName={ROUTE_PARAMS.cohorts}
           parentRecordName={RECORD_NAME}
           tempoCohortRequest={tempoCohortRequest}
+          cohortValidationStatus={cohortValidationStatus}
         />
       )}
 

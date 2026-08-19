@@ -1,8 +1,17 @@
-import { RefObject, useState } from "react";
+import { RefObject, useCallback, useMemo, useState } from "react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
-import { DashboardSample, TempoCohortRequest } from "../generated/graphql";
+import {
+  DashboardCohortValidationStatus,
+  DashboardSample,
+  TempoCohortRequest,
+} from "../generated/graphql";
 import { useCohortBuilder } from "./useCohortBuilder";
 import { QueryResult } from "@apollo/client";
+import {
+  getInvalidTempoSamplesMap,
+  toCohortBuilderSamples,
+} from "../utils/cohortValidation";
+import { CohortBuilderSample } from "../components/CohortBuilderContainer";
 
 interface HandleCohortBuilderOpenParams {
   tempoCohortRequest: TempoCohortRequest | undefined;
@@ -12,7 +21,8 @@ interface HandleCohortBuilderOpenParams {
 }
 
 export function useEditableCohortBuilder(
-  gridRef: RefObject<AgGridReactType<DashboardSample>>
+  gridRef: RefObject<AgGridReactType<DashboardSample>>,
+  cohortValidationStatus?: DashboardCohortValidationStatus | null
 ) {
   const {
     cohortBuilderMode,
@@ -26,6 +36,26 @@ export function useEditableCohortBuilder(
     handleCohortBuilderPopOut,
   } = useCohortBuilder(gridRef);
   const [isOpeningCohortBuilder, setIsOpeningCohortBuilder] = useState(false);
+
+  // lookup of cohort validation issues by primaryId, used to enrich samples re-selected
+  // from the main grid (whose raw row data doesn't carry these validation fields)
+  const invalidTempoSamplesMap = useMemo(
+    () => getInvalidTempoSamplesMap(cohortValidationStatus),
+    [cohortValidationStatus]
+  );
+
+  const enrichSelectedRow = useCallback(
+    (sample: CohortBuilderSample): CohortBuilderSample => {
+      const issue = invalidTempoSamplesMap.get(sample.primaryId);
+      return {
+        ...sample,
+        conflictReason: issue?.conflictReason ?? null,
+        unpairedReason: issue?.unpairedReason ?? null,
+        tumorNotFound: issue?.tumorNotFound ?? null,
+      };
+    },
+    [invalidTempoSamplesMap]
+  );
 
   async function handleCohortBuilderOpen({
     tempoCohortRequest,
@@ -46,14 +76,7 @@ export function useEditableCohortBuilder(
       const allCohortSamples: DashboardSample[] =
         allCohortSamplesData?.[queryName] ?? [];
       setSelectedRowIds(
-        allCohortSamples.map((s: DashboardSample) => ({
-          primaryId: s.primaryId ?? "",
-          cmoSampleName: s.cmoSampleName ?? "",
-          mafCompleteStatus: s.mafCompleteStatus ?? "",
-          sampleCohortIds: s.sampleCohortIds ?? "",
-          initialPipelineRunDate: s.initialPipelineRunDate ?? null,
-          embargoDate: s.embargoDate ?? null,
-        }))
+        toCohortBuilderSamples(allCohortSamples, cohortValidationStatus)
       );
     } catch (error) {
       console.error("Failed to fetch all cohort samples for editing:", error);
@@ -73,6 +96,7 @@ export function useEditableCohortBuilder(
     editableTempoCohortRequest,
     setEditableTempoCohortRequest,
     isOpeningCohortBuilder,
+    enrichSelectedRow,
     handleCohortBuilderOpen,
     handleCohortBuilderClose,
     handleCohortBuilderPopOut,

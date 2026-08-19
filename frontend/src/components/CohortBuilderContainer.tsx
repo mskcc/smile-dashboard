@@ -12,6 +12,7 @@ import { formatCellDate, getAgGridDateColFilterConfigs } from "../utils/agGrid";
 import { MomentInput } from "moment";
 import { DeselectCohortSampleButton } from "./DeselectCohortSampleButton";
 import {
+  DashboardCohortValidationStatus,
   TempoCohortRequest,
   useAllBlockedCohortIdsQuery,
 } from "../generated/graphql";
@@ -34,11 +35,15 @@ interface CohortBuilderContainerProps {
     React.SetStateAction<TempoCohortRequest>
   >;
   isExistingCohort?: boolean;
+  cohortValidationStatus?: DashboardCohortValidationStatus | null;
 }
 
 export interface CohortBuilderSample {
   primaryId: string;
   cmoSampleName: string;
+  conflictReason?: string | null;
+  unpairedReason?: string | null;
+  tumorNotFound?: string | null;
   mafCompleteStatus: string;
   sampleCohortIds: string;
   initialPipelineRunDate: string | null;
@@ -81,6 +86,7 @@ export function CohortBuilderContainer({
   tempoCohortRequest,
   setTempoCohortRequest,
   isExistingCohort = false,
+  cohortValidationStatus,
 }: CohortBuilderContainerProps) {
   const { data } = useAllBlockedCohortIdsQuery();
 
@@ -91,6 +97,9 @@ export function CohortBuilderContainer({
   const tempoCohortSamplesData = selectedRowIds.map((v) => ({
     primaryId: v.primaryId,
     cmoSampleName: v.cmoSampleName,
+    conflictReason: v.conflictReason,
+    unpairedReason: v.unpairedReason,
+    tumorNotFound: v.tumorNotFound,
     mafCompleteStatus: v.mafCompleteStatus,
     sampleCohortIds: v.sampleCohortIds,
     initialPipelineRunDate: v.initialPipelineRunDate,
@@ -269,12 +278,12 @@ export function CohortBuilderContainer({
           style={{ padding: "5px" }}
         >
           <Col>
-            <label className="col-form-label">
-              {"End Users:  "}
+            <label className="col-form-label d-flex align-items-center flex-nowrap">
+              <span className="flex-shrink-0">{"End Users:  "}</span>
               <Form.Control
                 name="inputEndUsers"
                 type="text"
-                className="d-inline-block"
+                className="d-inline-block flex-shrink-0"
                 style={{ width: "300px" }}
                 size="sm"
                 placeholder={`mskuser1,mskuser2,... (required)`}
@@ -287,6 +296,13 @@ export function CohortBuilderContainer({
                   });
                 }}
               />
+              {cohortValidationStatus?.invalidEndUsers?.length && (
+                <span style={{ color: "red" }} className="ms-2">
+                  {`Invalid end user(s): ${cohortValidationStatus.invalidEndUsers.join(
+                    ", "
+                  )}`}
+                </span>
+              )}
             </label>
           </Col>
         </Row>
@@ -295,12 +311,12 @@ export function CohortBuilderContainer({
           style={{ padding: "5px" }}
         >
           <Col>
-            <label className="col-form-label">
-              {"PM Users:  "}
+            <label className="col-form-label d-flex align-items-center flex-nowrap">
+              <span className="flex-shrink-0">{"PM Users:  "}</span>
               <Form.Control
                 name="inputPMUsers"
                 type="text"
-                className="d-inline-block"
+                className="d-inline-block flex-shrink-0"
                 style={{ width: "300px" }}
                 size="sm"
                 placeholder={`mskuser1,mskuser2,... (required)`}
@@ -313,9 +329,16 @@ export function CohortBuilderContainer({
                   });
                 }}
               />
+              {cohortValidationStatus?.invalidPmUsers?.length && (
+                <span style={{ color: "red" }} className="ms-2">
+                  {`Invalid PM user(s): ${cohortValidationStatus.invalidPmUsers.join(
+                    ", "
+                  )}`}
+                </span>
+              )}
             </label>
           </Col>
-          <Col className="text-end">
+          <Col className="text-end col-auto">
             <span>{tempoCohortSamplesData.length} samples selected</span>
           </Col>
         </Row>
@@ -386,6 +409,26 @@ function getCohortBuilderColDefs(
       headerName: "CMO Sample Name",
       field: "cmoSampleName",
       resizable: true,
+    },
+    {
+      headerName: "Conflicts",
+      field: "conflictReason",
+      resizable: true,
+      cellStyle: { color: "red" },
+    },
+    {
+      headerName: "Unpaired",
+      field: "unpairedReason",
+      resizable: true,
+      cellStyle: { color: "red" },
+    },
+    {
+      headerName: "Tumor Not Found",
+      field: "tumorNotFound",
+      resizable: true,
+      cellStyle: { color: "red" },
+      valueFormatter: (params: { value: string | null | undefined }) =>
+        params.value ? "Tumor not found" : "",
     },
     {
       field: "mafCompleteStatus",
