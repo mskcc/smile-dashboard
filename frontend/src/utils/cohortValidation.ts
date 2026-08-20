@@ -15,6 +15,21 @@ export function getInvalidTempoSamplesMap(
   );
 }
 
+export function enrichCohortBuilderSample(
+  sample: CohortBuilderSample,
+  issuesByPrimaryId: Map<string, DashboardCohortValidationSample>
+): CohortBuilderSample {
+  const issue = sample.primaryId
+    ? issuesByPrimaryId.get(sample.primaryId)
+    : undefined;
+  return {
+    ...sample,
+    conflictReason: issue?.conflictReason ?? null,
+    unpairedReason: issue?.unpairedReason ?? null,
+    tumorNotFound: issue?.tumorNotFound ?? null,
+  };
+}
+
 export function toCohortBuilderSamples(
   samples: DashboardSample[],
   cohortValidationStatus?: DashboardCohortValidationStatus | null
@@ -22,17 +37,14 @@ export function toCohortBuilderSamples(
   const issuesByPrimaryId = getInvalidTempoSamplesMap(cohortValidationStatus);
 
   return samples.map((sample) => {
-    const issue = issuesByPrimaryId.get(sample.primaryId ?? "");
-    return {
+    const baseSample: CohortBuilderSample = {
       primaryId: sample.primaryId ?? "",
       cmoSampleName: sample.cmoSampleName ?? "",
       mafCompleteStatus: sample.mafCompleteStatus ?? "",
       sampleCohortIds: sample.sampleCohortIds ?? "",
       initialPipelineRunDate: sample.initialPipelineRunDate ?? null,
       embargoDate: sample.embargoDate ?? null,
-      conflictReason: issue?.conflictReason ?? null,
-      unpairedReason: issue?.unpairedReason ?? null,
-      tumorNotFound: issue?.tumorNotFound ?? null,
     };
+    return enrichCohortBuilderSample(baseSample, issuesByPrimaryId);
   });
 }

@@ -8,6 +8,7 @@ import {
 import { useCohortBuilder } from "./useCohortBuilder";
 import { QueryResult } from "@apollo/client";
 import {
+  enrichCohortBuilderSample,
   getInvalidTempoSamplesMap,
   toCohortBuilderSamples,
 } from "../utils/cohortValidation";
@@ -45,15 +46,8 @@ export function useEditableCohortBuilder(
   );
 
   const enrichSelectedRow = useCallback(
-    (sample: CohortBuilderSample): CohortBuilderSample => {
-      const issue = invalidTempoSamplesMap.get(sample.primaryId);
-      return {
-        ...sample,
-        conflictReason: issue?.conflictReason ?? null,
-        unpairedReason: issue?.unpairedReason ?? null,
-        tumorNotFound: issue?.tumorNotFound ?? null,
-      };
-    },
+    (sample: CohortBuilderSample): CohortBuilderSample =>
+      enrichCohortBuilderSample(sample, invalidTempoSamplesMap),
     [invalidTempoSamplesMap]
   );
 

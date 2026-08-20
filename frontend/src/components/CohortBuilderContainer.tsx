@@ -296,7 +296,7 @@ export function CohortBuilderContainer({
                   });
                 }}
               />
-              {cohortValidationStatus?.invalidEndUsers?.length && (
+              {!!cohortValidationStatus?.invalidEndUsers?.length && (
                 <span style={{ color: "red" }} className="ms-2">
                   {`Invalid end user(s): ${cohortValidationStatus.invalidEndUsers.join(
                     ", "
@@ -329,7 +329,7 @@ export function CohortBuilderContainer({
                   });
                 }}
               />
-              {cohortValidationStatus?.invalidPmUsers?.length && (
+              {!!cohortValidationStatus?.invalidPmUsers?.length && (
                 <span style={{ color: "red" }} className="ms-2">
                   {`Invalid PM user(s): ${cohortValidationStatus.invalidPmUsers.join(
                     ", "
