@@ -86,6 +86,9 @@ interface DataGridPropsBase {
   ) => void;
   onCellDoubleClicked?: (params: CellDoubleClickedEvent) => void;
   rowClassRules?: RowClassRules;
+  // Optional hook for callers to enrich a freshly (re)selected row with data that isn't
+  // part of the underlying grid row (e.g. cohort validation issues).
+  enrichSelectedRow?: (row: CohortBuilderSample) => CohortBuilderSample;
 }
 
 type DataGridProps = DataGridPropsBase &
@@ -103,6 +106,7 @@ export function DataGrid({
   onSelectionChanged,
   onCellDoubleClicked,
   rowClassRules,
+  enrichSelectedRow,
 }: DataGridProps) {
   const navigate = useNavigate();
   const { userEmail } = useUserEmail();
@@ -124,14 +128,17 @@ export function DataGrid({
   // Callback for selection change
   const handleGridSelectionChanged = (event: any) => {
     const selectedNodes = event.api.getSelectedNodes();
-    const visibleSelected = selectedNodes.map((node: any) => ({
-      primaryId: node.data?.primaryId,
-      cmoSampleName: node.data?.cmoSampleName,
-      mafCompleteStatus: node.data?.mafCompleteStatus,
-      sampleCohortIds: node.data?.sampleCohortIds,
-      initialPipelineRunDate: node.data?.initialPipelineRunDate,
-      embargoDate: node.data?.embargoDate,
-    }));
+    const visibleSelected = selectedNodes.map((node: any) => {
+      const rawSample: CohortBuilderSample = {
+        primaryId: node.data?.primaryId,
+        cmoSampleName: node.data?.cmoSampleName,
+        mafCompleteStatus: node.data?.mafCompleteStatus,
+        sampleCohortIds: node.data?.sampleCohortIds,
+        initialPipelineRunDate: node.data?.initialPipelineRunDate,
+        embargoDate: node.data?.embargoDate,
+      };
+      return enrichSelectedRow ? enrichSelectedRow(rawSample) : rawSample;
+    });
 
     // compute set of primaryIds currently visible in the grid (loaded blocks)
     const visiblePrimaryIds: string[] = [];

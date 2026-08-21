@@ -132,11 +132,16 @@ export function buildCohortsQueryBody({
     COLLECT {
       MATCH (c)-[:HAS_COHORT_COMPLETE]->(cc: CohortComplete)
       RETURN cc ORDER BY cc.importDate DESC LIMIT 1
-    } as latestCC
+    } as latestCC,
+    COLLECT {
+      OPTIONAL MATCH (c)-[:HAS_STATUS]->(cvs: CohortValidationStatus)
+      RETURN cvs
+    } as latestValidationStatus
 
     WITH
       tempNode,
-      latestCC[0] as latestCC
+      latestCC[0] as latestCC,
+      latestValidationStatus[0] as latestValidationStatus
 
     WITH
       tempNode{.*,
@@ -147,7 +152,14 @@ export function buildCohortsQueryBody({
         projectSubtitle: latestCC.projectSubtitle,
         status: latestCC.status,
         type: latestCC.type,
-        pipelineVersion: latestCC.pipelineVersion
+        pipelineVersion: latestCC.pipelineVersion,
+        cohortValidationStatus: CASE WHEN latestValidationStatus IS NULL THEN null ELSE {
+          jsonSchemaValidated: latestValidationStatus.jsonSchemaValidated,
+          passesAllChecks: latestValidationStatus.passesAllChecks,
+          invalidPmUsers: latestValidationStatus.invalidPmUsers,
+          invalidEndUsers: latestValidationStatus.invalidEndUsers,
+          invalidTempoSamples: apoc.convert.fromJsonList(latestValidationStatus.invalidTempoSamples)
+        } END
       }
 
     ${cypherWhereClause}

@@ -191,6 +191,25 @@ const QUERY_RESULT_TYPEDEFS = gql`
     _total: Int
     _uniqueSampleCount: Int
     samples: [TempoCohortSample!]
+    cohortValidationStatus: DashboardCohortValidationStatus
+  }
+
+  type DashboardCohortValidationSample {
+    primaryId: String
+    cmoId: String
+    conflictReason: String
+    unpairedReason: String
+    tumorNotFound: String
+    normalCmoId: String
+    normalPrimaryId: String
+  }
+
+  type DashboardCohortValidationStatus {
+    jsonSchemaValidated: Boolean!
+    passesAllChecks: Boolean!
+    invalidPmUsers: [String!]
+    invalidEndUsers: [String!]
+    invalidTempoSamples: [DashboardCohortValidationSample!]
   }
 
   type DashboardSample {
