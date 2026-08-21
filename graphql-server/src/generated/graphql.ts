@@ -1389,12 +1389,6 @@ export type CreatePatientsMutationResponse = {
   patients: Array<Patient>;
 };
 
-export type CreatePooledSamplesMutationResponse = {
-  __typename?: 'CreatePooledSamplesMutationResponse';
-  info: CreateInfo;
-  pooledSamples: Array<PooledSample>;
-};
-
 export type CreateProjectsMutationResponse = {
   __typename?: 'CreateProjectsMutationResponse';
   info: CreateInfo;
@@ -2412,7 +2406,6 @@ export type Mutation = {
   createMafCompletes: CreateMafCompletesMutationResponse;
   createPatientAliases: CreatePatientAliasesMutationResponse;
   createPatients: CreatePatientsMutationResponse;
-  createPooledSamples: CreatePooledSamplesMutationResponse;
   createProjects: CreateProjectsMutationResponse;
   createQcCompletes: CreateQcCompletesMutationResponse;
   createRequestMetadata: CreateRequestMetadataMutationResponse;
@@ -2430,7 +2423,6 @@ export type Mutation = {
   deleteMafCompletes: DeleteInfo;
   deletePatientAliases: DeleteInfo;
   deletePatients: DeleteInfo;
-  deletePooledSamples: DeleteInfo;
   deleteProjects: DeleteInfo;
   deleteQcCompletes: DeleteInfo;
   deleteRequestMetadata: DeleteInfo;
@@ -2450,7 +2442,6 @@ export type Mutation = {
   updateMafCompletes: UpdateMafCompletesMutationResponse;
   updatePatientAliases: UpdatePatientAliasesMutationResponse;
   updatePatients: UpdatePatientsMutationResponse;
-  updatePooledSamples: UpdatePooledSamplesMutationResponse;
   updateProjects: UpdateProjectsMutationResponse;
   updateQcCompletes: UpdateQcCompletesMutationResponse;
   updateRequestMetadata: UpdateRequestMetadataMutationResponse;
@@ -2501,11 +2492,6 @@ export type MutationCreatePatientAliasesArgs = {
 
 export type MutationCreatePatientsArgs = {
   input: Array<PatientCreateInput>;
-};
-
-
-export type MutationCreatePooledSamplesArgs = {
-  input: Array<PooledSampleCreateInput>;
 };
 
 
@@ -2598,12 +2584,6 @@ export type MutationDeletePatientAliasesArgs = {
 export type MutationDeletePatientsArgs = {
   delete?: InputMaybe<PatientDeleteInput>;
   where?: InputMaybe<PatientWhere>;
-};
-
-
-export type MutationDeletePooledSamplesArgs = {
-  delete?: InputMaybe<PooledSampleDeleteInput>;
-  where?: InputMaybe<PooledSampleWhere>;
 };
 
 
@@ -2719,12 +2699,6 @@ export type MutationUpdatePatientsArgs = {
 };
 
 
-export type MutationUpdatePooledSamplesArgs = {
-  update?: InputMaybe<PooledSampleUpdateInput>;
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
 export type MutationUpdateProjectsArgs = {
   update?: InputMaybe<ProjectUpdateInput>;
   where?: InputMaybe<ProjectWhere>;
@@ -2794,9 +2768,6 @@ export type PageInfo = {
 
 export type Patient = {
   __typename?: 'Patient';
-  hasPooledSamplePooledSamples: Array<PooledSample>;
-  hasPooledSamplePooledSamplesAggregate?: Maybe<PatientPooledSampleHasPooledSamplePooledSamplesAggregationSelection>;
-  hasPooledSamplePooledSamplesConnection: PatientHasPooledSamplePooledSamplesConnection;
   hasSampleSamples: Array<Sample>;
   hasSampleSamplesAggregate?: Maybe<PatientSampleHasSampleSamplesAggregationSelection>;
   hasSampleSamplesConnection: PatientHasSampleSamplesConnection;
@@ -2804,28 +2775,6 @@ export type Patient = {
   patientAliasesIsAliasAggregate?: Maybe<PatientPatientAliasPatientAliasesIsAliasAggregationSelection>;
   patientAliasesIsAliasConnection: PatientPatientAliasesIsAliasConnection;
   smilePatientId: Scalars['String']['output'];
-};
-
-
-export type PatientHasPooledSamplePooledSamplesArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  options?: InputMaybe<PooledSampleOptions>;
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
-export type PatientHasPooledSamplePooledSamplesAggregateArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
-export type PatientHasPooledSamplePooledSamplesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sort?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesConnectionSort>>;
-  where?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
 };
 
 
@@ -3117,7 +3066,6 @@ export type PatientAliasesConnection = {
 };
 
 export type PatientConnectInput = {
-  hasPooledSamplePooledSamples?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesConnectFieldInput>>;
   hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesConnectFieldInput>>;
   patientAliasesIsAlias?: InputMaybe<Array<PatientPatientAliasesIsAliasConnectFieldInput>>;
 };
@@ -3127,20 +3075,17 @@ export type PatientConnectWhere = {
 };
 
 export type PatientCreateInput = {
-  hasPooledSamplePooledSamples?: InputMaybe<PatientHasPooledSamplePooledSamplesFieldInput>;
   hasSampleSamples?: InputMaybe<PatientHasSampleSamplesFieldInput>;
   patientAliasesIsAlias?: InputMaybe<PatientPatientAliasesIsAliasFieldInput>;
   smilePatientId: Scalars['String']['input'];
 };
 
 export type PatientDeleteInput = {
-  hasPooledSamplePooledSamples?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesDeleteFieldInput>>;
   hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesDeleteFieldInput>>;
   patientAliasesIsAlias?: InputMaybe<Array<PatientPatientAliasesIsAliasDeleteFieldInput>>;
 };
 
 export type PatientDisconnectInput = {
-  hasPooledSamplePooledSamples?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesDisconnectFieldInput>>;
   hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesDisconnectFieldInput>>;
   patientAliasesIsAlias?: InputMaybe<Array<PatientPatientAliasesIsAliasDisconnectFieldInput>>;
 };
@@ -3149,207 +3094,6 @@ export type PatientEdge = {
   __typename?: 'PatientEdge';
   cursor: Scalars['String']['output'];
   node: Patient;
-};
-
-export type PatientHasPooledSamplePooledSamplesAggregateInput = {
-  AND?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesAggregateInput>>;
-  NOT?: InputMaybe<PatientHasPooledSamplePooledSamplesAggregateInput>;
-  OR?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesAggregateInput>>;
-  count?: InputMaybe<Scalars['Int']['input']>;
-  count_GT?: InputMaybe<Scalars['Int']['input']>;
-  count_GTE?: InputMaybe<Scalars['Int']['input']>;
-  count_LT?: InputMaybe<Scalars['Int']['input']>;
-  count_LTE?: InputMaybe<Scalars['Int']['input']>;
-  node?: InputMaybe<PatientHasPooledSamplePooledSamplesNodeAggregationWhereInput>;
-};
-
-export type PatientHasPooledSamplePooledSamplesConnectFieldInput = {
-  connect?: InputMaybe<Array<PooledSampleConnectInput>>;
-  /** Whether or not to overwrite any matching relationship with the new properties. */
-  overwrite?: Scalars['Boolean']['input'];
-  where?: InputMaybe<PooledSampleConnectWhere>;
-};
-
-export type PatientHasPooledSamplePooledSamplesConnection = {
-  __typename?: 'PatientHasPooledSamplePooledSamplesConnection';
-  edges: Array<PatientHasPooledSamplePooledSamplesRelationship>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PatientHasPooledSamplePooledSamplesConnectionSort = {
-  node?: InputMaybe<PooledSampleSort>;
-};
-
-export type PatientHasPooledSamplePooledSamplesConnectionWhere = {
-  AND?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesConnectionWhere>>;
-  NOT?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-  OR?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesConnectionWhere>>;
-  node?: InputMaybe<PooledSampleWhere>;
-};
-
-export type PatientHasPooledSamplePooledSamplesCreateFieldInput = {
-  node: PooledSampleCreateInput;
-};
-
-export type PatientHasPooledSamplePooledSamplesDeleteFieldInput = {
-  delete?: InputMaybe<PooledSampleDeleteInput>;
-  where?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-};
-
-export type PatientHasPooledSamplePooledSamplesDisconnectFieldInput = {
-  disconnect?: InputMaybe<PooledSampleDisconnectInput>;
-  where?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-};
-
-export type PatientHasPooledSamplePooledSamplesFieldInput = {
-  connect?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesCreateFieldInput>>;
-};
-
-export type PatientHasPooledSamplePooledSamplesNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesNodeAggregationWhereInput>>;
-  NOT?: InputMaybe<PatientHasPooledSamplePooledSamplesNodeAggregationWhereInput>;
-  OR?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesNodeAggregationWhereInput>>;
-  barcodeF_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  poolId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  primerF_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  primerR_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type PatientHasPooledSamplePooledSamplesRelationship = {
-  __typename?: 'PatientHasPooledSamplePooledSamplesRelationship';
-  cursor: Scalars['String']['output'];
-  node: PooledSample;
-};
-
-export type PatientHasPooledSamplePooledSamplesUpdateConnectionInput = {
-  node?: InputMaybe<PooledSampleUpdateInput>;
-};
-
-export type PatientHasPooledSamplePooledSamplesUpdateFieldInput = {
-  connect?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesCreateFieldInput>>;
-  delete?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesDisconnectFieldInput>>;
-  update?: InputMaybe<PatientHasPooledSamplePooledSamplesUpdateConnectionInput>;
-  where?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
 };
 
 export type PatientHasSampleSamplesAggregateInput = {
@@ -3631,26 +3375,7 @@ export type PatientPatientAliasesIsAliasUpdateFieldInput = {
   where?: InputMaybe<PatientPatientAliasesIsAliasConnectionWhere>;
 };
 
-export type PatientPooledSampleHasPooledSamplePooledSamplesAggregationSelection = {
-  __typename?: 'PatientPooledSampleHasPooledSamplePooledSamplesAggregationSelection';
-  count: Scalars['Int']['output'];
-  node?: Maybe<PatientPooledSampleHasPooledSamplePooledSamplesNodeAggregateSelection>;
-};
-
-export type PatientPooledSampleHasPooledSamplePooledSamplesNodeAggregateSelection = {
-  __typename?: 'PatientPooledSampleHasPooledSamplePooledSamplesNodeAggregateSelection';
-  barcodeF: StringAggregateSelection;
-  barcodeR: StringAggregateSelection;
-  poolDataType: StringAggregateSelection;
-  poolId: StringAggregateSelection;
-  primerF: StringAggregateSelection;
-  primerR: StringAggregateSelection;
-  sampleId: StringAggregateSelection;
-  smilePooledSampleId: StringAggregateSelection;
-};
-
 export type PatientRelationInput = {
-  hasPooledSamplePooledSamples?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesCreateFieldInput>>;
   hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesCreateFieldInput>>;
   patientAliasesIsAlias?: InputMaybe<Array<PatientPatientAliasesIsAliasCreateFieldInput>>;
 };
@@ -3675,7 +3400,6 @@ export type PatientSort = {
 };
 
 export type PatientUpdateInput = {
-  hasPooledSamplePooledSamples?: InputMaybe<Array<PatientHasPooledSamplePooledSamplesUpdateFieldInput>>;
   hasSampleSamples?: InputMaybe<Array<PatientHasSampleSamplesUpdateFieldInput>>;
   patientAliasesIsAlias?: InputMaybe<Array<PatientPatientAliasesIsAliasUpdateFieldInput>>;
   smilePatientId?: InputMaybe<Scalars['String']['input']>;
@@ -3685,23 +3409,6 @@ export type PatientWhere = {
   AND?: InputMaybe<Array<PatientWhere>>;
   NOT?: InputMaybe<PatientWhere>;
   OR?: InputMaybe<Array<PatientWhere>>;
-  hasPooledSamplePooledSamplesAggregate?: InputMaybe<PatientHasPooledSamplePooledSamplesAggregateInput>;
-  /** Return Patients where all of the related PatientHasPooledSamplePooledSamplesConnections match this filter */
-  hasPooledSamplePooledSamplesConnection_ALL?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-  /** Return Patients where none of the related PatientHasPooledSamplePooledSamplesConnections match this filter */
-  hasPooledSamplePooledSamplesConnection_NONE?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-  /** Return Patients where one of the related PatientHasPooledSamplePooledSamplesConnections match this filter */
-  hasPooledSamplePooledSamplesConnection_SINGLE?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-  /** Return Patients where some of the related PatientHasPooledSamplePooledSamplesConnections match this filter */
-  hasPooledSamplePooledSamplesConnection_SOME?: InputMaybe<PatientHasPooledSamplePooledSamplesConnectionWhere>;
-  /** Return Patients where all of the related PooledSamples match this filter */
-  hasPooledSamplePooledSamples_ALL?: InputMaybe<PooledSampleWhere>;
-  /** Return Patients where none of the related PooledSamples match this filter */
-  hasPooledSamplePooledSamples_NONE?: InputMaybe<PooledSampleWhere>;
-  /** Return Patients where one of the related PooledSamples match this filter */
-  hasPooledSamplePooledSamples_SINGLE?: InputMaybe<PooledSampleWhere>;
-  /** Return Patients where some of the related PooledSamples match this filter */
-  hasPooledSamplePooledSamples_SOME?: InputMaybe<PooledSampleWhere>;
   hasSampleSamplesAggregate?: InputMaybe<PatientHasSampleSamplesAggregateInput>;
   /** Return Patients where all of the related PatientHasSampleSamplesConnections match this filter */
   hasSampleSamplesConnection_ALL?: InputMaybe<PatientHasSampleSamplesConnectionWhere>;
@@ -3747,513 +3454,6 @@ export type PatientWhere = {
 export type PatientsConnection = {
   __typename?: 'PatientsConnection';
   edges: Array<PatientEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PooledSample = {
-  __typename?: 'PooledSample';
-  barcodeF: Scalars['String']['output'];
-  barcodeR: Scalars['String']['output'];
-  isPooledSampleSamples: Array<Sample>;
-  isPooledSampleSamplesAggregate?: Maybe<PooledSampleSampleIsPooledSampleSamplesAggregationSelection>;
-  isPooledSampleSamplesConnection: PooledSampleIsPooledSampleSamplesConnection;
-  patientsHasPooledSample: Array<Patient>;
-  patientsHasPooledSampleAggregate?: Maybe<PooledSamplePatientPatientsHasPooledSampleAggregationSelection>;
-  patientsHasPooledSampleConnection: PooledSamplePatientsHasPooledSampleConnection;
-  poolDataType: Scalars['String']['output'];
-  poolId: Scalars['String']['output'];
-  primerF: Scalars['String']['output'];
-  primerR: Scalars['String']['output'];
-  sampleId: Scalars['String']['output'];
-  smilePooledSampleId: Scalars['String']['output'];
-};
-
-
-export type PooledSampleIsPooledSampleSamplesArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  options?: InputMaybe<SampleOptions>;
-  where?: InputMaybe<SampleWhere>;
-};
-
-
-export type PooledSampleIsPooledSampleSamplesAggregateArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  where?: InputMaybe<SampleWhere>;
-};
-
-
-export type PooledSampleIsPooledSampleSamplesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sort?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesConnectionSort>>;
-  where?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-};
-
-
-export type PooledSamplePatientsHasPooledSampleArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  options?: InputMaybe<PatientOptions>;
-  where?: InputMaybe<PatientWhere>;
-};
-
-
-export type PooledSamplePatientsHasPooledSampleAggregateArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  where?: InputMaybe<PatientWhere>;
-};
-
-
-export type PooledSamplePatientsHasPooledSampleConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sort?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleConnectionSort>>;
-  where?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-};
-
-export type PooledSampleAggregateSelection = {
-  __typename?: 'PooledSampleAggregateSelection';
-  barcodeF: StringAggregateSelection;
-  barcodeR: StringAggregateSelection;
-  count: Scalars['Int']['output'];
-  poolDataType: StringAggregateSelection;
-  poolId: StringAggregateSelection;
-  primerF: StringAggregateSelection;
-  primerR: StringAggregateSelection;
-  sampleId: StringAggregateSelection;
-  smilePooledSampleId: StringAggregateSelection;
-};
-
-export type PooledSampleConnectInput = {
-  isPooledSampleSamples?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesConnectFieldInput>>;
-  patientsHasPooledSample?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleConnectFieldInput>>;
-};
-
-export type PooledSampleConnectWhere = {
-  node: PooledSampleWhere;
-};
-
-export type PooledSampleCreateInput = {
-  barcodeF: Scalars['String']['input'];
-  barcodeR: Scalars['String']['input'];
-  isPooledSampleSamples?: InputMaybe<PooledSampleIsPooledSampleSamplesFieldInput>;
-  patientsHasPooledSample?: InputMaybe<PooledSamplePatientsHasPooledSampleFieldInput>;
-  poolDataType: Scalars['String']['input'];
-  poolId: Scalars['String']['input'];
-  primerF: Scalars['String']['input'];
-  primerR: Scalars['String']['input'];
-  sampleId: Scalars['String']['input'];
-  smilePooledSampleId: Scalars['String']['input'];
-};
-
-export type PooledSampleDeleteInput = {
-  isPooledSampleSamples?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesDeleteFieldInput>>;
-  patientsHasPooledSample?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleDeleteFieldInput>>;
-};
-
-export type PooledSampleDisconnectInput = {
-  isPooledSampleSamples?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesDisconnectFieldInput>>;
-  patientsHasPooledSample?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleDisconnectFieldInput>>;
-};
-
-export type PooledSampleEdge = {
-  __typename?: 'PooledSampleEdge';
-  cursor: Scalars['String']['output'];
-  node: PooledSample;
-};
-
-export type PooledSampleIsPooledSampleSamplesAggregateInput = {
-  AND?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesAggregateInput>>;
-  NOT?: InputMaybe<PooledSampleIsPooledSampleSamplesAggregateInput>;
-  OR?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesAggregateInput>>;
-  count?: InputMaybe<Scalars['Int']['input']>;
-  count_GT?: InputMaybe<Scalars['Int']['input']>;
-  count_GTE?: InputMaybe<Scalars['Int']['input']>;
-  count_LT?: InputMaybe<Scalars['Int']['input']>;
-  count_LTE?: InputMaybe<Scalars['Int']['input']>;
-  node?: InputMaybe<PooledSampleIsPooledSampleSamplesNodeAggregationWhereInput>;
-};
-
-export type PooledSampleIsPooledSampleSamplesConnectFieldInput = {
-  connect?: InputMaybe<Array<SampleConnectInput>>;
-  /** Whether or not to overwrite any matching relationship with the new properties. */
-  overwrite?: Scalars['Boolean']['input'];
-  where?: InputMaybe<SampleConnectWhere>;
-};
-
-export type PooledSampleIsPooledSampleSamplesConnection = {
-  __typename?: 'PooledSampleIsPooledSampleSamplesConnection';
-  edges: Array<PooledSampleIsPooledSampleSamplesRelationship>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PooledSampleIsPooledSampleSamplesConnectionSort = {
-  node?: InputMaybe<SampleSort>;
-};
-
-export type PooledSampleIsPooledSampleSamplesConnectionWhere = {
-  AND?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesConnectionWhere>>;
-  NOT?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-  OR?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesConnectionWhere>>;
-  node?: InputMaybe<SampleWhere>;
-};
-
-export type PooledSampleIsPooledSampleSamplesCreateFieldInput = {
-  node: SampleCreateInput;
-};
-
-export type PooledSampleIsPooledSampleSamplesDeleteFieldInput = {
-  delete?: InputMaybe<SampleDeleteInput>;
-  where?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-};
-
-export type PooledSampleIsPooledSampleSamplesDisconnectFieldInput = {
-  disconnect?: InputMaybe<SampleDisconnectInput>;
-  where?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-};
-
-export type PooledSampleIsPooledSampleSamplesFieldInput = {
-  connect?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesCreateFieldInput>>;
-};
-
-export type PooledSampleIsPooledSampleSamplesNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesNodeAggregationWhereInput>>;
-  NOT?: InputMaybe<PooledSampleIsPooledSampleSamplesNodeAggregationWhereInput>;
-  OR?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesNodeAggregationWhereInput>>;
-  datasource_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  datasource_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  datasource_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  datasource_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  datasource_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  datasource_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  datasource_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  datasource_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  datasource_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  datasource_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  datasource_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  datasource_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  datasource_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  datasource_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  datasource_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  sampleCategory_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  sampleCategory_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleCategory_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  sampleCategory_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleCategory_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleCategory_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  sampleClass_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  sampleClass_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleClass_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  sampleClass_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleClass_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleClass_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  smileSampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  smileSampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  smileSampleId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  smileSampleId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  smileSampleId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smileSampleId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type PooledSampleIsPooledSampleSamplesRelationship = {
-  __typename?: 'PooledSampleIsPooledSampleSamplesRelationship';
-  cursor: Scalars['String']['output'];
-  node: Sample;
-};
-
-export type PooledSampleIsPooledSampleSamplesUpdateConnectionInput = {
-  node?: InputMaybe<SampleUpdateInput>;
-};
-
-export type PooledSampleIsPooledSampleSamplesUpdateFieldInput = {
-  connect?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesConnectFieldInput>>;
-  create?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesCreateFieldInput>>;
-  delete?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesDisconnectFieldInput>>;
-  update?: InputMaybe<PooledSampleIsPooledSampleSamplesUpdateConnectionInput>;
-  where?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-};
-
-export type PooledSampleOptions = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  /** Specify one or more PooledSampleSort objects to sort PooledSamples by. The sorts will be applied in the order in which they are arranged in the array. */
-  sort?: InputMaybe<Array<PooledSampleSort>>;
-};
-
-export type PooledSamplePatientPatientsHasPooledSampleAggregationSelection = {
-  __typename?: 'PooledSamplePatientPatientsHasPooledSampleAggregationSelection';
-  count: Scalars['Int']['output'];
-  node?: Maybe<PooledSamplePatientPatientsHasPooledSampleNodeAggregateSelection>;
-};
-
-export type PooledSamplePatientPatientsHasPooledSampleNodeAggregateSelection = {
-  __typename?: 'PooledSamplePatientPatientsHasPooledSampleNodeAggregateSelection';
-  smilePatientId: StringAggregateSelection;
-};
-
-export type PooledSamplePatientsHasPooledSampleAggregateInput = {
-  AND?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleAggregateInput>>;
-  NOT?: InputMaybe<PooledSamplePatientsHasPooledSampleAggregateInput>;
-  OR?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleAggregateInput>>;
-  count?: InputMaybe<Scalars['Int']['input']>;
-  count_GT?: InputMaybe<Scalars['Int']['input']>;
-  count_GTE?: InputMaybe<Scalars['Int']['input']>;
-  count_LT?: InputMaybe<Scalars['Int']['input']>;
-  count_LTE?: InputMaybe<Scalars['Int']['input']>;
-  node?: InputMaybe<PooledSamplePatientsHasPooledSampleNodeAggregationWhereInput>;
-};
-
-export type PooledSamplePatientsHasPooledSampleConnectFieldInput = {
-  connect?: InputMaybe<Array<PatientConnectInput>>;
-  /** Whether or not to overwrite any matching relationship with the new properties. */
-  overwrite?: Scalars['Boolean']['input'];
-  where?: InputMaybe<PatientConnectWhere>;
-};
-
-export type PooledSamplePatientsHasPooledSampleConnection = {
-  __typename?: 'PooledSamplePatientsHasPooledSampleConnection';
-  edges: Array<PooledSamplePatientsHasPooledSampleRelationship>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PooledSamplePatientsHasPooledSampleConnectionSort = {
-  node?: InputMaybe<PatientSort>;
-};
-
-export type PooledSamplePatientsHasPooledSampleConnectionWhere = {
-  AND?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleConnectionWhere>>;
-  NOT?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-  OR?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleConnectionWhere>>;
-  node?: InputMaybe<PatientWhere>;
-};
-
-export type PooledSamplePatientsHasPooledSampleCreateFieldInput = {
-  node: PatientCreateInput;
-};
-
-export type PooledSamplePatientsHasPooledSampleDeleteFieldInput = {
-  delete?: InputMaybe<PatientDeleteInput>;
-  where?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-};
-
-export type PooledSamplePatientsHasPooledSampleDisconnectFieldInput = {
-  disconnect?: InputMaybe<PatientDisconnectInput>;
-  where?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-};
-
-export type PooledSamplePatientsHasPooledSampleFieldInput = {
-  connect?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleCreateFieldInput>>;
-};
-
-export type PooledSamplePatientsHasPooledSampleNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleNodeAggregationWhereInput>>;
-  NOT?: InputMaybe<PooledSamplePatientsHasPooledSampleNodeAggregationWhereInput>;
-  OR?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleNodeAggregationWhereInput>>;
-  smilePatientId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  smilePatientId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  smilePatientId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  smilePatientId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  smilePatientId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  smilePatientId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smilePatientId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type PooledSamplePatientsHasPooledSampleRelationship = {
-  __typename?: 'PooledSamplePatientsHasPooledSampleRelationship';
-  cursor: Scalars['String']['output'];
-  node: Patient;
-};
-
-export type PooledSamplePatientsHasPooledSampleUpdateConnectionInput = {
-  node?: InputMaybe<PatientUpdateInput>;
-};
-
-export type PooledSamplePatientsHasPooledSampleUpdateFieldInput = {
-  connect?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleCreateFieldInput>>;
-  delete?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleDisconnectFieldInput>>;
-  update?: InputMaybe<PooledSamplePatientsHasPooledSampleUpdateConnectionInput>;
-  where?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-};
-
-export type PooledSampleRelationInput = {
-  isPooledSampleSamples?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesCreateFieldInput>>;
-  patientsHasPooledSample?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleCreateFieldInput>>;
-};
-
-export type PooledSampleSampleIsPooledSampleSamplesAggregationSelection = {
-  __typename?: 'PooledSampleSampleIsPooledSampleSamplesAggregationSelection';
-  count: Scalars['Int']['output'];
-  node?: Maybe<PooledSampleSampleIsPooledSampleSamplesNodeAggregateSelection>;
-};
-
-export type PooledSampleSampleIsPooledSampleSamplesNodeAggregateSelection = {
-  __typename?: 'PooledSampleSampleIsPooledSampleSamplesNodeAggregateSelection';
-  datasource: StringAggregateSelection;
-  sampleCategory: StringAggregateSelection;
-  sampleClass: StringAggregateSelection;
-  smileSampleId: StringAggregateSelection;
-};
-
-/** Fields to sort PooledSamples by. The order in which sorts are applied is not guaranteed when specifying many fields in one PooledSampleSort object. */
-export type PooledSampleSort = {
-  barcodeF?: InputMaybe<SortDirection>;
-  barcodeR?: InputMaybe<SortDirection>;
-  poolDataType?: InputMaybe<SortDirection>;
-  poolId?: InputMaybe<SortDirection>;
-  primerF?: InputMaybe<SortDirection>;
-  primerR?: InputMaybe<SortDirection>;
-  sampleId?: InputMaybe<SortDirection>;
-  smilePooledSampleId?: InputMaybe<SortDirection>;
-};
-
-export type PooledSampleUpdateInput = {
-  barcodeF?: InputMaybe<Scalars['String']['input']>;
-  barcodeR?: InputMaybe<Scalars['String']['input']>;
-  isPooledSampleSamples?: InputMaybe<Array<PooledSampleIsPooledSampleSamplesUpdateFieldInput>>;
-  patientsHasPooledSample?: InputMaybe<Array<PooledSamplePatientsHasPooledSampleUpdateFieldInput>>;
-  poolDataType?: InputMaybe<Scalars['String']['input']>;
-  poolId?: InputMaybe<Scalars['String']['input']>;
-  primerF?: InputMaybe<Scalars['String']['input']>;
-  primerR?: InputMaybe<Scalars['String']['input']>;
-  sampleId?: InputMaybe<Scalars['String']['input']>;
-  smilePooledSampleId?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type PooledSampleWhere = {
-  AND?: InputMaybe<Array<PooledSampleWhere>>;
-  NOT?: InputMaybe<PooledSampleWhere>;
-  OR?: InputMaybe<Array<PooledSampleWhere>>;
-  barcodeF?: InputMaybe<Scalars['String']['input']>;
-  barcodeF_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  barcodeF_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  barcodeF_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  barcodeF_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  barcodeF_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  barcodeR?: InputMaybe<Scalars['String']['input']>;
-  barcodeR_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  barcodeR_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  barcodeR_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  barcodeR_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  barcodeR_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  isPooledSampleSamplesAggregate?: InputMaybe<PooledSampleIsPooledSampleSamplesAggregateInput>;
-  /** Return PooledSamples where all of the related PooledSampleIsPooledSampleSamplesConnections match this filter */
-  isPooledSampleSamplesConnection_ALL?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-  /** Return PooledSamples where none of the related PooledSampleIsPooledSampleSamplesConnections match this filter */
-  isPooledSampleSamplesConnection_NONE?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-  /** Return PooledSamples where one of the related PooledSampleIsPooledSampleSamplesConnections match this filter */
-  isPooledSampleSamplesConnection_SINGLE?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-  /** Return PooledSamples where some of the related PooledSampleIsPooledSampleSamplesConnections match this filter */
-  isPooledSampleSamplesConnection_SOME?: InputMaybe<PooledSampleIsPooledSampleSamplesConnectionWhere>;
-  /** Return PooledSamples where all of the related Samples match this filter */
-  isPooledSampleSamples_ALL?: InputMaybe<SampleWhere>;
-  /** Return PooledSamples where none of the related Samples match this filter */
-  isPooledSampleSamples_NONE?: InputMaybe<SampleWhere>;
-  /** Return PooledSamples where one of the related Samples match this filter */
-  isPooledSampleSamples_SINGLE?: InputMaybe<SampleWhere>;
-  /** Return PooledSamples where some of the related Samples match this filter */
-  isPooledSampleSamples_SOME?: InputMaybe<SampleWhere>;
-  patientsHasPooledSampleAggregate?: InputMaybe<PooledSamplePatientsHasPooledSampleAggregateInput>;
-  /** Return PooledSamples where all of the related PooledSamplePatientsHasPooledSampleConnections match this filter */
-  patientsHasPooledSampleConnection_ALL?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-  /** Return PooledSamples where none of the related PooledSamplePatientsHasPooledSampleConnections match this filter */
-  patientsHasPooledSampleConnection_NONE?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-  /** Return PooledSamples where one of the related PooledSamplePatientsHasPooledSampleConnections match this filter */
-  patientsHasPooledSampleConnection_SINGLE?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-  /** Return PooledSamples where some of the related PooledSamplePatientsHasPooledSampleConnections match this filter */
-  patientsHasPooledSampleConnection_SOME?: InputMaybe<PooledSamplePatientsHasPooledSampleConnectionWhere>;
-  /** Return PooledSamples where all of the related Patients match this filter */
-  patientsHasPooledSample_ALL?: InputMaybe<PatientWhere>;
-  /** Return PooledSamples where none of the related Patients match this filter */
-  patientsHasPooledSample_NONE?: InputMaybe<PatientWhere>;
-  /** Return PooledSamples where one of the related Patients match this filter */
-  patientsHasPooledSample_SINGLE?: InputMaybe<PatientWhere>;
-  /** Return PooledSamples where some of the related Patients match this filter */
-  patientsHasPooledSample_SOME?: InputMaybe<PatientWhere>;
-  poolDataType?: InputMaybe<Scalars['String']['input']>;
-  poolDataType_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  poolDataType_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  poolDataType_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  poolDataType_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  poolDataType_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  poolId?: InputMaybe<Scalars['String']['input']>;
-  poolId_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  poolId_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  poolId_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  poolId_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  poolId_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  primerF?: InputMaybe<Scalars['String']['input']>;
-  primerF_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  primerF_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  primerF_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  primerF_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  primerF_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  primerR?: InputMaybe<Scalars['String']['input']>;
-  primerR_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  primerR_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  primerR_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  primerR_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  primerR_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  sampleId?: InputMaybe<Scalars['String']['input']>;
-  sampleId_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  sampleId_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  sampleId_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  sampleId_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  sampleId_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-  smilePooledSampleId?: InputMaybe<Scalars['String']['input']>;
-  smilePooledSampleId_CONTAINS?: InputMaybe<Scalars['String']['input']>;
-  smilePooledSampleId_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
-  smilePooledSampleId_IN?: InputMaybe<Array<Scalars['String']['input']>>;
-  smilePooledSampleId_MATCHES?: InputMaybe<Scalars['String']['input']>;
-  smilePooledSampleId_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type PooledSamplesConnection = {
-  __typename?: 'PooledSamplesConnection';
-  edges: Array<PooledSampleEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int']['output'];
 };
@@ -5210,9 +4410,6 @@ export type Query = {
   patients: Array<Patient>;
   patientsAggregate: PatientAggregateSelection;
   patientsConnection: PatientsConnection;
-  pooledSamples: Array<PooledSample>;
-  pooledSamplesAggregate: PooledSampleAggregateSelection;
-  pooledSamplesConnection: PooledSamplesConnection;
   projects: Array<Project>;
   projectsAggregate: ProjectAggregateSelection;
   projectsConnection: ProjectsConnection;
@@ -5445,25 +4642,6 @@ export type QueryPatientsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<Array<InputMaybe<PatientSort>>>;
   where?: InputMaybe<PatientWhere>;
-};
-
-
-export type QueryPooledSamplesArgs = {
-  options?: InputMaybe<PooledSampleOptions>;
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
-export type QueryPooledSamplesAggregateArgs = {
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
-export type QueryPooledSamplesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sort?: InputMaybe<Array<InputMaybe<PooledSampleSort>>>;
-  where?: InputMaybe<PooledSampleWhere>;
 };
 
 
@@ -7466,9 +6644,6 @@ export type Sample = {
   patientsHasSample: Array<Patient>;
   patientsHasSampleAggregate?: Maybe<SamplePatientPatientsHasSampleAggregationSelection>;
   patientsHasSampleConnection: SamplePatientsHasSampleConnection;
-  pooledSamplesIsPooledSample: Array<PooledSample>;
-  pooledSamplesIsPooledSampleAggregate?: Maybe<SamplePooledSamplePooledSamplesIsPooledSampleAggregationSelection>;
-  pooledSamplesIsPooledSampleConnection: SamplePooledSamplesIsPooledSampleConnection;
   requestsHasSample: Array<Request>;
   requestsHasSampleAggregate?: Maybe<SampleRequestRequestsHasSampleAggregationSelection>;
   requestsHasSampleConnection: SampleRequestsHasSampleConnection;
@@ -7592,28 +6767,6 @@ export type SamplePatientsHasSampleConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<Array<SamplePatientsHasSampleConnectionSort>>;
   where?: InputMaybe<SamplePatientsHasSampleConnectionWhere>;
-};
-
-
-export type SamplePooledSamplesIsPooledSampleArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  options?: InputMaybe<PooledSampleOptions>;
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
-export type SamplePooledSamplesIsPooledSampleAggregateArgs = {
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  where?: InputMaybe<PooledSampleWhere>;
-};
-
-
-export type SamplePooledSamplesIsPooledSampleConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  directed?: InputMaybe<Scalars['Boolean']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  sort?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleConnectionSort>>;
-  where?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
 };
 
 
@@ -8090,7 +7243,6 @@ export type SampleConnectInput = {
   hasMetadataSampleMetadata?: InputMaybe<Array<SampleHasMetadataSampleMetadataConnectFieldInput>>;
   hasTempoTempos?: InputMaybe<Array<SampleHasTempoTemposConnectFieldInput>>;
   patientsHasSample?: InputMaybe<Array<SamplePatientsHasSampleConnectFieldInput>>;
-  pooledSamplesIsPooledSample?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleConnectFieldInput>>;
   requestsHasSample?: InputMaybe<Array<SampleRequestsHasSampleConnectFieldInput>>;
   requestshs?: InputMaybe<Array<SampleRequestshsConnectFieldInput>>;
   sampleAliasesIsAlias?: InputMaybe<Array<SampleSampleAliasesIsAliasConnectFieldInput>>;
@@ -8107,7 +7259,6 @@ export type SampleCreateInput = {
   hasMetadataSampleMetadata?: InputMaybe<SampleHasMetadataSampleMetadataFieldInput>;
   hasTempoTempos?: InputMaybe<SampleHasTempoTemposFieldInput>;
   patientsHasSample?: InputMaybe<SamplePatientsHasSampleFieldInput>;
-  pooledSamplesIsPooledSample?: InputMaybe<SamplePooledSamplesIsPooledSampleFieldInput>;
   requestsHasSample?: InputMaybe<SampleRequestsHasSampleFieldInput>;
   requestshs?: InputMaybe<SampleRequestshsFieldInput>;
   revisable?: InputMaybe<Scalars['Boolean']['input']>;
@@ -8139,7 +7290,6 @@ export type SampleDeleteInput = {
   hasMetadataSampleMetadata?: InputMaybe<Array<SampleHasMetadataSampleMetadataDeleteFieldInput>>;
   hasTempoTempos?: InputMaybe<Array<SampleHasTempoTemposDeleteFieldInput>>;
   patientsHasSample?: InputMaybe<Array<SamplePatientsHasSampleDeleteFieldInput>>;
-  pooledSamplesIsPooledSample?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleDeleteFieldInput>>;
   requestsHasSample?: InputMaybe<Array<SampleRequestsHasSampleDeleteFieldInput>>;
   requestshs?: InputMaybe<Array<SampleRequestshsDeleteFieldInput>>;
   sampleAliasesIsAlias?: InputMaybe<Array<SampleSampleAliasesIsAliasDeleteFieldInput>>;
@@ -8151,7 +7301,6 @@ export type SampleDisconnectInput = {
   hasMetadataSampleMetadata?: InputMaybe<Array<SampleHasMetadataSampleMetadataDisconnectFieldInput>>;
   hasTempoTempos?: InputMaybe<Array<SampleHasTempoTemposDisconnectFieldInput>>;
   patientsHasSample?: InputMaybe<Array<SamplePatientsHasSampleDisconnectFieldInput>>;
-  pooledSamplesIsPooledSample?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleDisconnectFieldInput>>;
   requestsHasSample?: InputMaybe<Array<SampleRequestsHasSampleDisconnectFieldInput>>;
   requestshs?: InputMaybe<Array<SampleRequestshsDisconnectFieldInput>>;
   sampleAliasesIsAlias?: InputMaybe<Array<SampleSampleAliasesIsAliasDisconnectFieldInput>>;
@@ -9822,232 +8971,12 @@ export type SamplePatientsHasSampleUpdateFieldInput = {
   where?: InputMaybe<SamplePatientsHasSampleConnectionWhere>;
 };
 
-export type SamplePooledSamplePooledSamplesIsPooledSampleAggregationSelection = {
-  __typename?: 'SamplePooledSamplePooledSamplesIsPooledSampleAggregationSelection';
-  count: Scalars['Int']['output'];
-  node?: Maybe<SamplePooledSamplePooledSamplesIsPooledSampleNodeAggregateSelection>;
-};
-
-export type SamplePooledSamplePooledSamplesIsPooledSampleNodeAggregateSelection = {
-  __typename?: 'SamplePooledSamplePooledSamplesIsPooledSampleNodeAggregateSelection';
-  barcodeF: StringAggregateSelection;
-  barcodeR: StringAggregateSelection;
-  poolDataType: StringAggregateSelection;
-  poolId: StringAggregateSelection;
-  primerF: StringAggregateSelection;
-  primerR: StringAggregateSelection;
-  sampleId: StringAggregateSelection;
-  smilePooledSampleId: StringAggregateSelection;
-};
-
-export type SamplePooledSamplesIsPooledSampleAggregateInput = {
-  AND?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleAggregateInput>>;
-  NOT?: InputMaybe<SamplePooledSamplesIsPooledSampleAggregateInput>;
-  OR?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleAggregateInput>>;
-  count?: InputMaybe<Scalars['Int']['input']>;
-  count_GT?: InputMaybe<Scalars['Int']['input']>;
-  count_GTE?: InputMaybe<Scalars['Int']['input']>;
-  count_LT?: InputMaybe<Scalars['Int']['input']>;
-  count_LTE?: InputMaybe<Scalars['Int']['input']>;
-  node?: InputMaybe<SamplePooledSamplesIsPooledSampleNodeAggregationWhereInput>;
-};
-
-export type SamplePooledSamplesIsPooledSampleConnectFieldInput = {
-  connect?: InputMaybe<Array<PooledSampleConnectInput>>;
-  /** Whether or not to overwrite any matching relationship with the new properties. */
-  overwrite?: Scalars['Boolean']['input'];
-  where?: InputMaybe<PooledSampleConnectWhere>;
-};
-
-export type SamplePooledSamplesIsPooledSampleConnection = {
-  __typename?: 'SamplePooledSamplesIsPooledSampleConnection';
-  edges: Array<SamplePooledSamplesIsPooledSampleRelationship>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type SamplePooledSamplesIsPooledSampleConnectionSort = {
-  node?: InputMaybe<PooledSampleSort>;
-};
-
-export type SamplePooledSamplesIsPooledSampleConnectionWhere = {
-  AND?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleConnectionWhere>>;
-  NOT?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-  OR?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleConnectionWhere>>;
-  node?: InputMaybe<PooledSampleWhere>;
-};
-
-export type SamplePooledSamplesIsPooledSampleCreateFieldInput = {
-  node: PooledSampleCreateInput;
-};
-
-export type SamplePooledSamplesIsPooledSampleDeleteFieldInput = {
-  delete?: InputMaybe<PooledSampleDeleteInput>;
-  where?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-};
-
-export type SamplePooledSamplesIsPooledSampleDisconnectFieldInput = {
-  disconnect?: InputMaybe<PooledSampleDisconnectInput>;
-  where?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-};
-
-export type SamplePooledSamplesIsPooledSampleFieldInput = {
-  connect?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleCreateFieldInput>>;
-};
-
-export type SamplePooledSamplesIsPooledSampleNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleNodeAggregationWhereInput>>;
-  NOT?: InputMaybe<SamplePooledSamplesIsPooledSampleNodeAggregationWhereInput>;
-  OR?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleNodeAggregationWhereInput>>;
-  barcodeF_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeF_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeF_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  barcodeR_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  barcodeR_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  poolDataType_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolDataType_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  poolId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  poolId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  poolId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  primerF_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  primerF_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerF_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  primerR_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  primerR_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  primerR_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  sampleId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  sampleId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
-  smilePooledSampleId_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type SamplePooledSamplesIsPooledSampleRelationship = {
-  __typename?: 'SamplePooledSamplesIsPooledSampleRelationship';
-  cursor: Scalars['String']['output'];
-  node: PooledSample;
-};
-
-export type SamplePooledSamplesIsPooledSampleUpdateConnectionInput = {
-  node?: InputMaybe<PooledSampleUpdateInput>;
-};
-
-export type SamplePooledSamplesIsPooledSampleUpdateFieldInput = {
-  connect?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleConnectFieldInput>>;
-  create?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleCreateFieldInput>>;
-  delete?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleDisconnectFieldInput>>;
-  update?: InputMaybe<SamplePooledSamplesIsPooledSampleUpdateConnectionInput>;
-  where?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-};
-
 export type SampleRelationInput = {
   cohortsHasCohortSample?: InputMaybe<Array<SampleCohortsHasCohortSampleCreateFieldInput>>;
   hasDbgapDbGaps?: InputMaybe<Array<SampleHasDbgapDbGapsCreateFieldInput>>;
   hasMetadataSampleMetadata?: InputMaybe<Array<SampleHasMetadataSampleMetadataCreateFieldInput>>;
   hasTempoTempos?: InputMaybe<Array<SampleHasTempoTemposCreateFieldInput>>;
   patientsHasSample?: InputMaybe<Array<SamplePatientsHasSampleCreateFieldInput>>;
-  pooledSamplesIsPooledSample?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleCreateFieldInput>>;
   requestsHasSample?: InputMaybe<Array<SampleRequestsHasSampleCreateFieldInput>>;
   requestshs?: InputMaybe<Array<SampleRequestshsCreateFieldInput>>;
   sampleAliasesIsAlias?: InputMaybe<Array<SampleSampleAliasesIsAliasCreateFieldInput>>;
@@ -11109,7 +10038,6 @@ export type SampleUpdateInput = {
   hasMetadataSampleMetadata?: InputMaybe<Array<SampleHasMetadataSampleMetadataUpdateFieldInput>>;
   hasTempoTempos?: InputMaybe<Array<SampleHasTempoTemposUpdateFieldInput>>;
   patientsHasSample?: InputMaybe<Array<SamplePatientsHasSampleUpdateFieldInput>>;
-  pooledSamplesIsPooledSample?: InputMaybe<Array<SamplePooledSamplesIsPooledSampleUpdateFieldInput>>;
   requestsHasSample?: InputMaybe<Array<SampleRequestsHasSampleUpdateFieldInput>>;
   requestshs?: InputMaybe<Array<SampleRequestshsUpdateFieldInput>>;
   revisable?: InputMaybe<Scalars['Boolean']['input']>;
@@ -11214,23 +10142,6 @@ export type SampleWhere = {
   patientsHasSample_SINGLE?: InputMaybe<PatientWhere>;
   /** Return Samples where some of the related Patients match this filter */
   patientsHasSample_SOME?: InputMaybe<PatientWhere>;
-  pooledSamplesIsPooledSampleAggregate?: InputMaybe<SamplePooledSamplesIsPooledSampleAggregateInput>;
-  /** Return Samples where all of the related SamplePooledSamplesIsPooledSampleConnections match this filter */
-  pooledSamplesIsPooledSampleConnection_ALL?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-  /** Return Samples where none of the related SamplePooledSamplesIsPooledSampleConnections match this filter */
-  pooledSamplesIsPooledSampleConnection_NONE?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-  /** Return Samples where one of the related SamplePooledSamplesIsPooledSampleConnections match this filter */
-  pooledSamplesIsPooledSampleConnection_SINGLE?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-  /** Return Samples where some of the related SamplePooledSamplesIsPooledSampleConnections match this filter */
-  pooledSamplesIsPooledSampleConnection_SOME?: InputMaybe<SamplePooledSamplesIsPooledSampleConnectionWhere>;
-  /** Return Samples where all of the related PooledSamples match this filter */
-  pooledSamplesIsPooledSample_ALL?: InputMaybe<PooledSampleWhere>;
-  /** Return Samples where none of the related PooledSamples match this filter */
-  pooledSamplesIsPooledSample_NONE?: InputMaybe<PooledSampleWhere>;
-  /** Return Samples where one of the related PooledSamples match this filter */
-  pooledSamplesIsPooledSample_SINGLE?: InputMaybe<PooledSampleWhere>;
-  /** Return Samples where some of the related PooledSamples match this filter */
-  pooledSamplesIsPooledSample_SOME?: InputMaybe<PooledSampleWhere>;
   requestsHasSampleAggregate?: InputMaybe<SampleRequestsHasSampleAggregateInput>;
   /** Return Samples where all of the related SampleRequestsHasSampleConnections match this filter */
   requestsHasSampleConnection_ALL?: InputMaybe<SampleRequestsHasSampleConnectionWhere>;
@@ -13167,12 +12078,6 @@ export type UpdatePatientsMutationResponse = {
   __typename?: 'UpdatePatientsMutationResponse';
   info: UpdateInfo;
   patients: Array<Patient>;
-};
-
-export type UpdatePooledSamplesMutationResponse = {
-  __typename?: 'UpdatePooledSamplesMutationResponse';
-  info: UpdateInfo;
-  pooledSamples: Array<PooledSample>;
 };
 
 export type UpdateProjectsMutationResponse = {
