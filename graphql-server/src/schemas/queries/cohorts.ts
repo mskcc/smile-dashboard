@@ -135,7 +135,7 @@ export function buildCohortsQueryBody({
     } as latestCC,
     COLLECT {
       OPTIONAL MATCH (c)-[:HAS_STATUS]->(cvs: CohortValidationStatus)
-      RETURN cvs LIMIT 1
+      RETURN cvs
     } as latestValidationStatus
 
     WITH
