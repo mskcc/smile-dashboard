@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { DashboardRequest } from "../generated/graphql";
-import { CustomTooltip } from "../components/CustomToolTip";
-import WarningIcon from "@material-ui/icons/Warning";
+import { WarningIconButton } from "./WarningIconButton";
 import { Button, Modal } from "react-bootstrap";
 import { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
@@ -32,7 +31,10 @@ export function RecordValidation({
   const [modalShow, setModalShow] = useState(false);
   return (
     <>
-      <WarningIconButton setModalShow={setModalShow} />
+      <WarningIconButton
+        onClick={() => setModalShow(true)}
+        tooltipText="Click to view validation errors"
+      />
       {modalShow && (
         <ErrorReportModal
           show={modalShow}
@@ -287,23 +289,4 @@ function parseNestedSamplesValidationReport(input: string) {
     }
   }
   return result;
-}
-
-function WarningIconButton({
-  setModalShow,
-}: {
-  setModalShow: Dispatch<SetStateAction<boolean>>;
-}) {
-  return (
-    <div
-      role="button"
-      style={{ display: "contents" }}
-      onClick={() => setModalShow(true)}
-      aria-label="Warning"
-    >
-      <CustomTooltip icon={<WarningIcon className="warning-icon" />}>
-        Click to view validation errors
-      </CustomTooltip>
-    </div>
-  );
 }

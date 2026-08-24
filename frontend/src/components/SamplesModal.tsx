@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   DashboardCohortValidationStatus,
   DashboardRecordContext,
@@ -170,6 +170,33 @@ export function SamplesModal({
       fetchMore,
     });
   }
+
+  // Open the cohort builder editor when navigating from the
+  // cohorts page's "Validation Status" warning icon.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const hasAutoOpenedCohortBuilder = useRef(false);
+
+  useEffect(() => {
+    const shouldAutoOpenCohortBuilder =
+      (location.state as { openCohortBuilder?: boolean } | null)
+        ?.openCohortBuilder === true;
+    if (
+      !shouldAutoOpenCohortBuilder ||
+      hasAutoOpenedCohortBuilder.current ||
+      !canEditCohort ||
+      showCohortBuilder ||
+      isLoading ||
+      recordCount === 0
+    ) {
+      return;
+    }
+    hasAutoOpenedCohortBuilder.current = true;
+    handleCohortBuilderOpen();
+    // Clear the navigation state so it isn't re-triggered on remount/back-forward nav.
+    navigate(location.pathname, { replace: true, state: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, canEditCohort, showCohortBuilder, isLoading, recordCount]);
 
   const {
     changes,
