@@ -90,6 +90,7 @@ export const cohortColDefs: ColDef<DashboardCohort>[] = [
     headerName: "Validation Status",
     headerTooltip:
       "Indicates whether the cohort passes all validation checks. Click the warning icon to edit the cohort and resolve validation errors.",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
     cellRenderer: (params: ICellRendererParams<DashboardCohort>) => {
       if (!params.data) return null;
       const passesAllChecks = params.data.cohortValidationStatus
