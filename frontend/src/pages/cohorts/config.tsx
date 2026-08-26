@@ -22,6 +22,8 @@ import {
   LoadingIcon,
 } from "../../configs/gridIcons";
 import { buildFieldToHeaderName } from "../../utils/fieldToHeaderName";
+import { Check } from "@material-ui/icons";
+import { WarningIconButton } from "../../components/WarningIconButton";
 
 type BuildDownloadOptionsParams = BuildDownloadOptionsParamsBase & {
   // Put additional parameters here if needed
@@ -83,6 +85,36 @@ export const cohortColDefs: ColDef<DashboardCohort>[] = [
       }
       return params.value ?? null;
     },
+  },
+  {
+    headerName: "Validation Status",
+    headerTooltip:
+      "Indicates whether the cohort passes all validation checks. Click the warning icon to edit the cohort and resolve validation errors.",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    cellRenderer: (params: ICellRendererParams<DashboardCohort>) => {
+      if (!params.data) return null;
+      const passesAllChecks = params.data.cohortValidationStatus
+        ? params.data.cohortValidationStatus.passesAllChecks
+        : true;
+
+      if (!passesAllChecks) {
+        return (
+          <WarningIconButton
+            onClick={() => {
+              if (params.data?.cohortId !== undefined) {
+                params.context.navigateFunction(
+                  `/cohorts/${params.data.cohortId}`,
+                  { state: { openCohortBuilder: true } }
+                );
+              }
+            }}
+            tooltipText="Click to edit cohort and resolve validation errors"
+          />
+        );
+      }
+      return <Check />;
+    },
+    sortable: false,
   },
   {
     field: "totalSampleCount",
