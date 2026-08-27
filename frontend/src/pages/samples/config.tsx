@@ -1244,10 +1244,26 @@ type BuildDownloadOptionsParams = BuildDownloadOptionsParamsBase & {
   // Put additional parameters here if needed
 };
 
+async function getUniquePatientLevelData(
+  getCurrentData: () => Promise<Array<DashboardSample>>
+): Promise<Array<DashboardSample>> {
+  const samples = await getCurrentData();
+  const tumorSamples = samples.filter(
+    (sample) => sample.tumorOrNormal?.toUpperCase() !== "NORMAL"
+  );
+  return _.uniqBy(
+    tumorSamples,
+    (sample) => `${sample.cmoPatientId}|${sample.cancerType}`
+  );
+}
+
 export function buildDownloadOptions({
   getCurrentData,
   currentColDefs: currentColumnDefs,
 }: BuildDownloadOptionsParams): Array<DownloadOption> {
+  const getSharedUniquePatientLevelData = () =>
+    getUniquePatientLevelData(getCurrentData);
+
   return [
     {
       buttonLabel: "Download as TSV",
@@ -1268,7 +1284,7 @@ export function buildDownloadOptions({
         {
           fileName: "2a_Subject_Consent_DS_v8_v9_PR_JW",
           columnDefsForDownload: dbGapConsentColumns,
-          dataGetter: getCurrentData,
+          dataGetter: getSharedUniquePatientLevelData,
           fileExtension: "txt",
         },
         {
@@ -1280,7 +1296,7 @@ export function buildDownloadOptions({
         {
           fileName: "5a_Subject_Phenotypes_DS_v8_v9_PR_JW",
           columnDefsForDownload: dbGapSubjectColumns,
-          dataGetter: getCurrentData,
+          dataGetter: getSharedUniquePatientLevelData,
           fileExtension: "txt",
         },
         {
