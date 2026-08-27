@@ -298,6 +298,7 @@ const QUERY_TYPEDEFS = gql`
       offset: Int!
       phiEnabled: Boolean
       includeDemographics: Boolean!
+      prioritizeIdMatches: Boolean
     ): [DashboardSample!]!
 
     dashboardSampleHistory(

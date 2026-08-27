@@ -11,6 +11,8 @@ interface SearchBarProps {
   recordCount: number | null;
   uniqueSampleCount?: number;
   isLoading: boolean;
+  prioritizeIdMatches?: boolean;
+  setPrioritizeIdMatches?: Dispatch<SetStateAction<boolean>>;
 }
 
 export function SearchBar({
@@ -21,6 +23,8 @@ export function SearchBar({
   recordCount,
   uniqueSampleCount,
   isLoading,
+  prioritizeIdMatches,
+  setPrioritizeIdMatches,
 }: SearchBarProps) {
   function handleSearch(userSearchVal: string) {
     if (onBeforeSearch) {
@@ -74,6 +78,18 @@ export function SearchBar({
       >
         Search
       </Button>
+
+      {setPrioritizeIdMatches && (
+        <Form.Check
+          type="checkbox"
+          id="prioritize-ids-checkbox"
+          className="d-flex align-items-center gap-1"
+          label="Prioritize ID matches"
+          title="When checked, prioritizes matches to sample/patient ID fields (much faster). When unchecked, performs a broader search across all fields."
+          checked={!!prioritizeIdMatches}
+          onChange={(e) => setPrioritizeIdMatches(e.currentTarget.checked)}
+        />
+      )}
 
       <span>
         {isLoading ? "Loading" : Number(recordCount).toLocaleString()} matches{" "}
