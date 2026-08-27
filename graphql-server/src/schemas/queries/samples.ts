@@ -13,6 +13,7 @@ import {
   getCypherCustomOrderBy,
   buildCypherPredicatesFromSearchVals,
   isQuotedString,
+  buildCypherPredicatesForSampleIdSearchVals,
 } from "../../utils/cypher";
 import { props } from "../../utils/constants";
 import { queryDatabricks } from "../../utils/databricks";
@@ -68,16 +69,30 @@ const FIELDS_TO_SEARCH = [
   "changelog",
 ];
 
+const SID_FIELDS_TO_SEARCH = [
+  "s.smileSampleId",
+  "latestSm.primaryId",
+  "latestSm.cmoSampleName",
+  "latestSm.cmoPatientId",
+  "latestSm.investigatorSampleId",
+];
+
 export function buildSamplesQueryBody({
   searchVals,
   recordContexts,
   columnFilters,
   addlOncotreeCodes,
+  prioritizeIdMatches = false,
 }: {
   searchVals: QueryDashboardSamplesArgs["searchVals"];
   recordContexts?: QueryDashboardSamplesArgs["recordContexts"];
   columnFilters?: QueryDashboardSamplesArgs["columnFilters"];
   addlOncotreeCodes: string[];
+  /**
+   * When true (set via a user-controlled checkbox in the SearchBar), the query prioritizes ID matches
+   * before applying other search predicates for performance reasons.
+   */
+  prioritizeIdMatches?: boolean;
 }) {
   // Because the samples query is more complex than other queries (e.g. requests), we improve its performance
   // by building WHERE clauses and injecting them into the query as early as possible and when convenient.
@@ -85,7 +100,14 @@ export function buildSamplesQueryBody({
   // WHERE clause and injecting that at the end (right before the RETURN statement).
 
   let searchPredicates = "";
+  let idSearchPredicates = "";
   if (searchVals?.length) {
+    if (prioritizeIdMatches) {
+      idSearchPredicates = buildCypherPredicatesForSampleIdSearchVals({
+        searchVals,
+        fieldsToSearch: SID_FIELDS_TO_SEARCH,
+      });
+    }
     searchPredicates = buildCypherPredicatesFromSearchVals({
       searchVals,
       fieldsToSearch: FIELDS_TO_SEARCH,
@@ -140,7 +162,7 @@ export function buildSamplesQueryBody({
   const importDateColFilter = buildCypherPredicateFromDateColFilter({
     columnFilters,
     colFilterField: "importDate",
-    dateVar: "latestSm.importDate",
+    dateVar: "importDate",
   });
   const igoCompleteFilter = buildCypherPredicateFromBooleanColFilter({
     columnFilters,
@@ -215,6 +237,9 @@ export function buildSamplesQueryBody({
       s,
       latestSm[0] AS latestSm
 
+    // check matches on ids first if id only search mode enabled
+    ${idSearchPredicates && `WHERE ${idSearchPredicates}`}
+
     // Filters for either the WES Samples or Request Samples view, if applicable
     ${genePanelContext && `WHERE ${genePanelContext}`}
     ${baitSetContext && `OR ${baitSetContext}`}
@@ -252,6 +277,7 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
+      apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd') as importDate,
       historicalCmoSampleNames,
       st AS latestSt
     ${importDateColFilter && `WHERE ${importDateColFilter}`}

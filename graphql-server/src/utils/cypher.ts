@@ -24,6 +24,27 @@ function getParsedColFilter(
   return colFilterObj ? JSON.parse(colFilterObj.filter) : null;
 }
 
+export function buildCypherPredicatesForSampleIdSearchVals({
+  searchVals,
+  fieldsToSearch,
+}: {
+  searchVals: QueryDashboardSamplesArgs["searchVals"];
+  fieldsToSearch: string[];
+}) {
+  if (!searchVals || searchVals.length === 0) return "";
+
+  // ID fields always require exact matches, so strip any surrounding quotes
+  // (used elsewhere to denote exact-phrase searches) before comparing.
+  const cleanedVals = searchVals.map((val) =>
+    isQuotedString(val) ? val.slice(1, -1) : val
+  );
+  const valsList = cleanedVals.map((val) => `"${val}"`).join(", ");
+
+  return fieldsToSearch
+    .map((field) => `${field} IN [${valsList}]`)
+    .join(" OR ");
+}
+
 export function buildCypherPredicatesFromSearchVals({
   searchVals,
   fieldsToSearch,

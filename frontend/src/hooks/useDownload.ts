@@ -44,6 +44,7 @@ interface UseDownloadParams {
   recordCount: number;
   queryName: string;
   includeDemographics?: boolean;
+  prioritizeIdMatches?: boolean;
 }
 
 export function useDownload<T>({
@@ -54,6 +55,7 @@ export function useDownload<T>({
   recordCount,
   queryName,
   includeDemographics,
+  prioritizeIdMatches,
 }: UseDownloadParams) {
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -75,6 +77,7 @@ export function useDownload<T>({
         offset: 0,
         limit: recordCount,
         includeDemographics,
+        prioritizeIdMatches,
       },
     });
     return data[queryName];
