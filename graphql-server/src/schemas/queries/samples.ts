@@ -75,6 +75,7 @@ const SID_FIELDS_TO_SEARCH = [
   "latestSm.cmoSampleName",
   "latestSm.cmoPatientId",
   "latestSm.investigatorSampleId",
+  //"historicalCmoSampleNames"
 ];
 
 export function buildSamplesQueryBody({
@@ -237,9 +238,6 @@ export function buildSamplesQueryBody({
       s,
       latestSm[0] AS latestSm
 
-    // check matches on ids first if id only search mode enabled
-    ${idSearchPredicates && `WHERE ${idSearchPredicates}`}
-
     // Filters for either the WES Samples or Request Samples view, if applicable
     ${genePanelContext && `WHERE ${genePanelContext}`}
     ${baitSetContext && `OR ${baitSetContext}`}
@@ -271,6 +269,9 @@ export function buildSamplesQueryBody({
           ]
         ),
       ", ") AS historicalCmoSampleNames
+
+    // check matches on ids first if id only search mode enabled
+    ${idSearchPredicates && `WHERE ${idSearchPredicates}`}
 
     // Get SampleMetadata's Status
     OPTIONAL MATCH (latestSm)-[:HAS_STATUS]->(st:Status)
