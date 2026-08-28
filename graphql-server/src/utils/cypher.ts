@@ -40,9 +40,15 @@ export function buildCypherPredicatesForSampleIdSearchVals({
   );
   const valsList = cleanedVals.map((val) => `"${val}"`).join(", ");
 
-  return fieldsToSearch
+  const partialMatches = `historicalCmoSampleNames =~ '(?i).*(${cleanedVals.join(
+    "|"
+  )}).*'`;
+
+  const exactMatches = fieldsToSearch
     .map((field) => `${field} IN [${valsList}]`)
     .join(" OR ");
+
+  return `${partialMatches} OR ${exactMatches}`;
 }
 
 export function buildCypherPredicatesFromSearchVals({
