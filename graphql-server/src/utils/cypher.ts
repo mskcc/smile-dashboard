@@ -100,6 +100,7 @@ export function buildCypherPredicateFromDateColFilter({
   colFilterField,
   dateVar,
   safelyHandleDateString = false,
+  dateVarIsEpochMs = false,
 }: {
   columnFilters: InputMaybe<DashboardRecordColumnFilter[]> | undefined;
   colFilterField: DashboardRecordColumnFilter["field"];
@@ -111,6 +112,8 @@ export function buildCypherPredicateFromDateColFilter({
    * empty strings, or "FAILED".
    */
   safelyHandleDateString?: boolean;
+  /** Set to True when `dateVar` is a epoch timestamp in milliseconds rather than a date string. */
+  dateVarIsEpochMs?: boolean;
 }) {
   const colFilter = getParsedColFilter(columnFilters, colFilterField);
   if (!colFilter) return "";
@@ -121,6 +124,8 @@ export function buildCypherPredicateFromDateColFilter({
       WHEN size(${dateVar}) >= 10 THEN left(${dateVar}, 10) // trims date formats more granular than yyyy-MM-dd
       ELSE '1900-01-01' // excludes record from the result
     END`
+    : dateVarIsEpochMs
+    ? `apoc.date.format(${dateVar}, 'ms', 'yyyy-MM-dd')`
     : dateVar;
 
   return `

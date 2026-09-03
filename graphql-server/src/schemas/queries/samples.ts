@@ -176,7 +176,9 @@ export function buildSamplesQueryBody({
   const importDateColFilter = buildCypherPredicateFromDateColFilter({
     columnFilters,
     colFilterField: "importDate",
-    dateVar: "importDate",
+    dateVar: "latestSm.importDate",
+    dateVarIsEpochMs: true,
+
   });
   const igoCompleteFilter = buildCypherPredicateFromBooleanColFilter({
     columnFilters,
@@ -184,6 +186,10 @@ export function buildSamplesQueryBody({
     booleanVar: "latestSm.igoComplete",
     noIncludesFalseAndNull: true,
   });
+  const sampleMetadataColFilters = [importDateColFilter, igoCompleteFilter]
+    .filter(Boolean)
+    .map((filter) => `(${filter})`)
+    .join(" AND ");
 
   // Column filters in the Cohort Samples view
   const billedColFilter = buildCypherPredicateFromBooleanColFilter({
@@ -211,6 +217,10 @@ export function buildSamplesQueryBody({
     .filter(Boolean)
     .map((filter) => `(${filter})`)
     .join(" AND ");
+  const cohortSampleColFilters = [billedColFilter, cohortDateColFilters]
+    .filter(Boolean)
+    .map((filter) => `(${filter})`)
+    .join(" AND ");
   const bamCompleteDateColFilter = buildCypherPredicateFromDateColFilter({
     columnFilters,
     colFilterField: "bamCompleteDate",
@@ -229,12 +239,21 @@ export function buildSamplesQueryBody({
     dateVar: "latestQC.date",
     safelyHandleDateString: true,
   });
+  const tempoEventDateColFilters = [
+    bamCompleteDateColFilter,
+    mafCompleteDateColFilter,
+    qcCompleteDateColFilter,
+  ]
+    .filter(Boolean)
+    .map((filter) => `(${filter})`)
+    .join(" AND ");
 
   // igo delivery date (request-level)
   const igoDeliveryDateColFilter = buildCypherPredicateFromDateColFilter({
     columnFilters,
     colFilterField: "igoDeliveryDate",
     dateVar: "igoDeliveryDate",
+    dateVarIsEpochMs: true,
   });
 
   const samplesQueryBody = `
@@ -294,8 +313,7 @@ export function buildSamplesQueryBody({
       apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd') as importDate,
       historicalCmoSampleNames,
       st AS latestSt
-    ${importDateColFilter && `WHERE ${importDateColFilter}`}
-    ${igoCompleteFilter && `WHERE ${igoCompleteFilter}`}
+    ${sampleMetadataColFilters && `WHERE ${sampleMetadataColFilters}`}
 
     // Filters for Patient Samples view, if applicable
     ${
@@ -331,8 +349,7 @@ export function buildSamplesQueryBody({
       latestSt,
       dmpPatientAlias,
       t
-    ${billedColFilter && `WHERE ${billedColFilter}`}
-    ${cohortDateColFilters && `WHERE ${cohortDateColFilters}`}
+    ${cohortSampleColFilters && `WHERE ${cohortSampleColFilters}`}
 
     // Get the most recent Tempo events
     WITH
@@ -378,9 +395,7 @@ export function buildSamplesQueryBody({
       apoc.convert.fromJsonMap(latestSm.additionalProperties).altId AS altId,
       apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus AS igoSampleStatus
 
-      ${bamCompleteDateColFilter && `WHERE ${bamCompleteDateColFilter}`}
-      ${mafCompleteDateColFilter && `WHERE ${mafCompleteDateColFilter}`}
-      ${qcCompleteDateColFilter && `WHERE ${qcCompleteDateColFilter}`}
+      ${tempoEventDateColFilters && `WHERE ${tempoEventDateColFilters}`}
 
     // Get DbGap data
     OPTIONAL MATCH (s)-[:HAS_DBGAP]->(d:DbGap)
