@@ -80,15 +80,26 @@ export function SearchBar({
       </Button>
 
       {setPrioritizeIdMatches && (
-        <Form.Check
-          type="checkbox"
-          id="prioritize-ids-checkbox"
-          className="d-flex align-items-center gap-1"
-          label="Prioritize ID matches"
-          title="When checked, prioritizes matches to sample/patient ID fields (much faster). When unchecked, performs a broader search across all fields."
-          checked={!!prioritizeIdMatches}
-          onChange={(e) => setPrioritizeIdMatches(e.currentTarget.checked)}
-        />
+        <>
+          <div className="vr" style={{ height: "20px" }} />
+          <div className="d-flex align-items-center gap-1">
+            <Form.Check
+              type="switch"
+              id="prioritize-ids-switch"
+              className="mt-1"
+              label="Prioritize ID matches"
+              checked={!!prioritizeIdMatches}
+              onChange={(e) => setPrioritizeIdMatches(e.currentTarget.checked)}
+            />
+            <CustomTooltip
+              icon={<InfoIcon style={{ fontSize: 18, color: "grey" }} />}
+            >
+              When enabled, prioritizes matches to sample/patient ID fields
+              (much faster). When disabled, performs a broader search across all
+              fields.
+            </CustomTooltip>
+          </div>
+        </>
       )}
 
       <span>

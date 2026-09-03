@@ -57,18 +57,19 @@ export function useFetchData({
     [initialSortFieldName]
   );
 
+  // Note: `recordContexts`, `includeDemographics`, and `prioritizeIdMatches` are intentionally
+  // omitted here. Apollo re-fetches using these bare variables whenever one changes after the
+  // first execution, bypassing `buildServerSideDatasource` and flashing `recordCount` to 0. The
+  // correct values are always passed explicitly via `refetch`/`fetchMore` below.
   const [
     ,
     { error, data, fetchMore, refetch, startPolling: poll, stopPolling },
   ] = useRecordsLazyQuery({
     variables: {
       searchVals: [],
-      recordContexts,
       sort: defaultSort,
       limit: CACHE_BLOCK_SIZE,
       offset: 0,
-      includeDemographics,
-      prioritizeIdMatches,
     },
     pollInterval,
   });
