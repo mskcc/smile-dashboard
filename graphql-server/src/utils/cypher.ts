@@ -54,9 +54,16 @@ export function buildCypherPredicatesForSampleIdSearchVals({
 export function buildCypherPredicatesFromSearchVals({
   searchVals,
   fieldsToSearch,
+  getFieldExpression = (field) => `tempNode.${field}`,
 }: {
   searchVals: QueryDashboardSamplesArgs["searchVals"];
   fieldsToSearch: string[];
+  /**
+   * Maps a field name to the Cypher expression to evaluate against it. Defaults to
+   * `tempNode.<field>` (used by most query builders), but callers needing the predicate to run
+   * earlier - before `tempNode` is constructed - can supply their own mapping.
+   */
+  getFieldExpression?: (field: string) => string;
 }) {
   if (!searchVals || searchVals.length === 0) return "";
 
@@ -67,11 +74,12 @@ export function buildCypherPredicatesFromSearchVals({
 
   return fieldsToSearch
     .map((field) => {
+      const fieldExpression = getFieldExpression(field);
       const conditions = [];
       // Generate fuzzy match predicate for unquoted values
       if (unquotedVals.length) {
         conditions.push(
-          `tempNode.${field} =~ '(?i).*(${unquotedVals.join("|")}).*'`
+          `${fieldExpression} =~ '(?i).*(${unquotedVals.join("|")}).*'`
         );
       }
       // Generate exact match predicate for quoted values
@@ -79,7 +87,7 @@ export function buildCypherPredicatesFromSearchVals({
         const quotedValsList = quotedVals
           .map((val) => `"${val.slice(1, -1)}"`)
           .join(", ");
-        conditions.push(`tempNode.${field} IN [${quotedValsList}]`);
+        conditions.push(`${fieldExpression} IN [${quotedValsList}]`);
       }
       return conditions.join(" OR ");
     })
