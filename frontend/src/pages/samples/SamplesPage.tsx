@@ -47,6 +47,7 @@ const RECORD_NAME = "samples";
 
 export function SamplesPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
+  const [prioritizeIdMatches, setPrioritizeIdMatches] = useState(false);
   const hasParams = Object.keys(useParams()).length > 0;
   const smileSampleId = useParams()[ROUTE_PARAMS.samples];
   const [colDefs, setColDefs] = useState(filterButtonOptions[0].colDefs);
@@ -112,6 +113,7 @@ export function SamplesPage() {
     recordContexts: effectiveRecordContexts,
     pollInterval: POLL_INTERVAL,
     includeDemographics,
+    prioritizeIdMatches,
   });
 
   useEffect(() => {
@@ -147,6 +149,7 @@ export function SamplesPage() {
       recordCount,
       queryName: QUERY_NAME,
       includeDemographics,
+      prioritizeIdMatches,
     });
 
   const downloadOptions = buildDownloadOptions({
@@ -208,6 +211,8 @@ export function SamplesPage() {
             onSearch={refreshData}
             recordCount={recordCount}
             isLoading={isLoading}
+            prioritizeIdMatches={prioritizeIdMatches}
+            setPrioritizeIdMatches={setPrioritizeIdMatches}
           />
 
           {/* Only show PHI mode switch on "All" view */}

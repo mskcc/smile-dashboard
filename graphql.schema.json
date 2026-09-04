@@ -43133,6 +43133,18 @@
                 "deprecationReason": null
               },
               {
+                "name": "prioritizeIdMatches",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "recordContexts",
                 "description": null,
                 "type": {

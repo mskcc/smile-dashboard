@@ -24,12 +24,46 @@ function getParsedColFilter(
   return colFilterObj ? JSON.parse(colFilterObj.filter) : null;
 }
 
-export function buildCypherPredicatesFromSearchVals({
+export function buildCypherPredicatesForSampleIdSearchVals({
   searchVals,
   fieldsToSearch,
 }: {
   searchVals: QueryDashboardSamplesArgs["searchVals"];
   fieldsToSearch: string[];
+}) {
+  if (!searchVals || searchVals.length === 0) return "";
+
+  // ID fields always require exact matches, so strip any surrounding quotes
+  // (used elsewhere to denote exact-phrase searches) before comparing.
+  const cleanedVals = searchVals.map((val) =>
+    isQuotedString(val) ? val.slice(1, -1) : val
+  );
+  const valsList = cleanedVals.map((val) => `"${val}"`).join(", ");
+
+  const partialMatches = `historicalCmoSampleNames =~ '(?i).*(${cleanedVals.join(
+    "|"
+  )}).*'`;
+
+  const exactMatches = fieldsToSearch
+    .map((field) => `${field} IN [${valsList}]`)
+    .join(" OR ");
+
+  return `${partialMatches} OR ${exactMatches}`;
+}
+
+export function buildCypherPredicatesFromSearchVals({
+  searchVals,
+  fieldsToSearch,
+  getFieldExpression = (field) => `tempNode.${field}`,
+}: {
+  searchVals: QueryDashboardSamplesArgs["searchVals"];
+  fieldsToSearch: string[];
+  /**
+   * Maps a field name to the Cypher expression to evaluate against it. Defaults to
+   * `tempNode.<field>` (used by most query builders), but callers needing the predicate to run
+   * earlier - before `tempNode` is constructed - can supply their own mapping.
+   */
+  getFieldExpression?: (field: string) => string;
 }) {
   if (!searchVals || searchVals.length === 0) return "";
 
@@ -40,11 +74,12 @@ export function buildCypherPredicatesFromSearchVals({
 
   return fieldsToSearch
     .map((field) => {
+      const fieldExpression = getFieldExpression(field);
       const conditions = [];
       // Generate fuzzy match predicate for unquoted values
       if (unquotedVals.length) {
         conditions.push(
-          `tempNode.${field} =~ '(?i).*(${unquotedVals.join("|")}).*'`
+          `${fieldExpression} =~ '(?i).*(${unquotedVals.join("|")}).*'`
         );
       }
       // Generate exact match predicate for quoted values
@@ -52,7 +87,7 @@ export function buildCypherPredicatesFromSearchVals({
         const quotedValsList = quotedVals
           .map((val) => `"${val.slice(1, -1)}"`)
           .join(", ");
-        conditions.push(`tempNode.${field} IN [${quotedValsList}]`);
+        conditions.push(`${fieldExpression} IN [${quotedValsList}]`);
       }
       return conditions.join(" OR ");
     })
@@ -93,12 +128,35 @@ export function buildCypherPredicateFromDateColFilter({
     ? `apoc.date.format(${dateVar}, 'ms', 'yyyy-MM-dd')`
     : dateVar;
 
-  return `
-      apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        >= apoc.date.parse('${colFilter.dateFrom}', 'ms', 'yyyy-MM-dd HH:mm:ss') // AG Grid's provided date format
-      AND apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        <= apoc.date.parse('${colFilter.dateTo}', 'ms', 'yyyy-MM-dd HH:mm:ss')
-    `;
+  let lowerBoundDate: string | null = null;
+  let upperBoundDate: string | null = null;
+  switch (colFilter.type) {
+    case "before":
+      upperBoundDate = colFilter.dateFrom;
+      break;
+    case "after":
+      lowerBoundDate = colFilter.dateFrom;
+      break;
+    case "on":
+      lowerBoundDate = colFilter.dateFrom;
+      upperBoundDate = colFilter.dateFrom;
+      break;
+    default:
+      // "inRange"
+      lowerBoundDate = colFilter.dateFrom;
+      upperBoundDate = colFilter.dateTo;
+  }
+
+  const dateFromPredicate = lowerBoundDate
+    ? `apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
+        >= apoc.date.parse('${lowerBoundDate}', 'ms', 'yyyy-MM-dd HH:mm:ss')` // AG Grid's provided date format
+    : "";
+  const dateToPredicate = upperBoundDate
+    ? `apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
+        <= apoc.date.parse('${upperBoundDate}', 'ms', 'yyyy-MM-dd HH:mm:ss')`
+    : "";
+
+  return [dateFromPredicate, dateToPredicate].filter(Boolean).join(" AND ");
 }
 
 export function buildCypherPredicateFromBooleanColFilter({

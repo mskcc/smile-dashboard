@@ -4564,6 +4564,7 @@ export type QueryDashboardSamplesArgs = {
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
   phiEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  prioritizeIdMatches?: InputMaybe<Scalars['Boolean']['input']>;
   recordContexts?: InputMaybe<Array<InputMaybe<DashboardRecordContext>>>;
   searchVals?: InputMaybe<Array<Scalars['String']['input']>>;
   sort: DashboardRecordSort;
@@ -12178,6 +12179,7 @@ export type DashboardSamplesQueryVariables = Exact<{
   offset: Scalars['Int']['input'];
   phiEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   includeDemographics?: InputMaybe<Scalars['Boolean']['input']>;
+  prioritizeIdMatches?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
@@ -12585,7 +12587,7 @@ export type DashboardCohortsLazyQueryHookResult = ReturnType<typeof useDashboard
 export type DashboardCohortsSuspenseQueryHookResult = ReturnType<typeof useDashboardCohortsSuspenseQuery>;
 export type DashboardCohortsQueryResult = Apollo.QueryResult<DashboardCohortsQuery, DashboardCohortsQueryVariables>;
 export const DashboardSamplesDocument = gql`
-    query DashboardSamples($searchVals: [String!], $recordContexts: [DashboardRecordContext], $sort: DashboardRecordSort!, $columnFilters: [DashboardRecordColumnFilter!], $limit: Int!, $offset: Int!, $phiEnabled: Boolean = false, $includeDemographics: Boolean = false) {
+    query DashboardSamples($searchVals: [String!], $recordContexts: [DashboardRecordContext], $sort: DashboardRecordSort!, $columnFilters: [DashboardRecordColumnFilter!], $limit: Int!, $offset: Int!, $phiEnabled: Boolean = false, $includeDemographics: Boolean = false, $prioritizeIdMatches: Boolean = false) {
   dashboardSamples(
     searchVals: $searchVals
     recordContexts: $recordContexts
@@ -12595,6 +12597,7 @@ export const DashboardSamplesDocument = gql`
     offset: $offset
     phiEnabled: $phiEnabled
     includeDemographics: $includeDemographics
+    prioritizeIdMatches: $prioritizeIdMatches
   ) {
     ...DashboardSampleParts
     ...DashboardSampleMetadataParts
@@ -12635,6 +12638,7 @@ ${IgoQcReportPartsFragmentDoc}`;
  *      offset: // value for 'offset'
  *      phiEnabled: // value for 'phiEnabled'
  *      includeDemographics: // value for 'includeDemographics'
+ *      prioritizeIdMatches: // value for 'prioritizeIdMatches'
  *   },
  * });
  */

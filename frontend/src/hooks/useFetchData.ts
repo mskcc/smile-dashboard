@@ -30,6 +30,7 @@ interface UseFetchDataParams {
   recordContexts?: Array<DashboardRecordContext>;
   pollInterval?: number;
   includeDemographics?: Boolean;
+  prioritizeIdMatches?: boolean;
 }
 
 export function useFetchData({
@@ -41,6 +42,7 @@ export function useFetchData({
   recordContexts = [],
   pollInterval = 0, // 0 means no polling
   includeDemographics,
+  prioritizeIdMatches,
 }: UseFetchDataParams) {
   // Manage our own loading state becase the lazy query's provided `loading` state
   // does not toggle to `true` as `setServerSideDatasource` is running
@@ -55,17 +57,19 @@ export function useFetchData({
     [initialSortFieldName]
   );
 
+  // Note: `recordContexts`, `includeDemographics`, and `prioritizeIdMatches` are intentionally
+  // omitted here. Apollo re-fetches using these bare variables whenever one changes after the
+  // first execution, bypassing `buildServerSideDatasource` and flashing `recordCount` to 0. The
+  // correct values are always passed explicitly via `refetch`/`fetchMore` below.
   const [
     ,
     { error, data, fetchMore, refetch, startPolling: poll, stopPolling },
   ] = useRecordsLazyQuery({
     variables: {
       searchVals: [],
-      recordContexts,
       sort: defaultSort,
       limit: CACHE_BLOCK_SIZE,
       offset: 0,
-      includeDemographics,
     },
     pollInterval,
   });
@@ -94,6 +98,7 @@ export function useFetchData({
             columnFilters: getColumnFilters(params),
             phiEnabled,
             includeDemographics,
+            prioritizeIdMatches,
           };
 
           const thisFetch =
@@ -118,7 +123,15 @@ export function useFetchData({
         },
       } as IServerSideDatasource;
     },
-    [refetch, fetchMore, defaultSort, queryName, recordContexts, phiEnabled]
+    [
+      refetch,
+      fetchMore,
+      defaultSort,
+      queryName,
+      recordContexts,
+      phiEnabled,
+      prioritizeIdMatches,
+    ]
   );
 
   /**

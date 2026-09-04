@@ -10,62 +10,81 @@ import { neo4jDriver } from "../../utils/servers";
 import {
   buildCypherPredicateFromDateColFilter,
   buildCypherPredicateFromBooleanColFilter,
+  buildCypherWhereClause,
   getCypherCustomOrderBy,
   buildCypherPredicatesFromSearchVals,
   isQuotedString,
+  buildCypherPredicatesForSampleIdSearchVals,
 } from "../../utils/cypher";
 import { props } from "../../utils/constants";
 import { queryDatabricks } from "../../utils/databricks";
 
-const FIELDS_TO_SEARCH = [
-  "smileSampleId",
-  "primaryId",
-  "cmoSampleName",
-  "importDate",
-  "cmoPatientId",
-  "investigatorSampleId",
-  "sampleType",
-  "species",
-  "genePanel",
-  "baitSet",
-  "preservation",
-  "tumorOrNormal",
-  "sampleClass",
-  "oncotreeCode",
-  "collectionYear",
-  "sampleOrigin",
-  "tissueLocation",
-  "sex",
-  "recipe",
-  "altId",
-  "igoSampleStatus",
-  "costCenter",
-  "billedBy",
-  "custodianInformation",
-  "accessLevel",
-  "bamCompleteDate",
-  "bamCompleteStatus",
-  "mafCompleteDate",
-  "mafCompleteNormalPrimaryId",
-  "mafCompleteStatus",
-  "qcCompleteDate",
-  "qcCompleteResult",
-  "qcCompleteReason",
-  "qcCompleteStatus",
-  "historicalCmoSampleNames",
-  "sampleCategory",
-  "dbGapStudy",
-  "irbConsentProtocol",
-  "collectionStudy",
-  "dateOfConsent",
-  "genomicResearchUseStudy",
-  "consentVersion",
-  "cfDNA2dBarcode",
-  "igoComplete",
-  "sampleCohortIds",
-  "igoDeliveryDate",
-  "dmpRecommendedCoverage",
-  "changelog",
+// Maps each searchable field to the Cypher expression it's sourced from (e.g. `latestSm.primaryId`)
+// rather than `tempNode.<field>`, so the search predicate can be evaluated before the costlier
+// `tempNode` map is constructed.
+const SEARCHABLE_FIELD_EXPRESSIONS: Record<string, string> = {
+  smileSampleId: "s.smileSampleId",
+  sampleCategory: "s.sampleCategory",
+  primaryId: "latestSm.primaryId",
+  cmoSampleName: "latestSm.cmoSampleName",
+  // Reuses the `importDate` variable (formatted once, earlier) instead of recomputing it.
+  importDate: "importDate",
+  cmoPatientId: "latestSm.cmoPatientId",
+  investigatorSampleId: "latestSm.investigatorSampleId",
+  sampleType: "latestSm.sampleType",
+  species: "latestSm.species",
+  genePanel: "latestSm.genePanel",
+  baitSet: "latestSm.baitSet",
+  preservation: "latestSm.preservation",
+  tumorOrNormal: "latestSm.tumorOrNormal",
+  sampleClass: "latestSm.sampleClass",
+  oncotreeCode: "latestSm.oncotreeCode",
+  collectionYear: "latestSm.collectionYear",
+  sampleOrigin: "latestSm.sampleOrigin",
+  tissueLocation: "latestSm.tissueLocation",
+  sex: "latestSm.sex",
+  cfDNA2dBarcode: "latestSm.cfDNA2dBarcode",
+  igoComplete: "latestSm.igoComplete",
+  costCenter: "t.costCenter",
+  billedBy: "t.billedBy",
+  custodianInformation: "t.custodianInformation",
+  accessLevel: "t.accessLevel",
+  bamCompleteDate: "latestBC.date",
+  bamCompleteStatus: "latestBC.status",
+  mafCompleteDate: "latestMC.date",
+  mafCompleteNormalPrimaryId: "latestMC.normalPrimaryId",
+  mafCompleteStatus: "latestMC.status",
+  qcCompleteDate: "latestQC.date",
+  qcCompleteResult: "latestQC.result",
+  qcCompleteReason: "latestQC.reason",
+  qcCompleteStatus: "latestQC.status",
+  dbGapStudy: "d.dbGapStudy",
+  irbConsentProtocol: "d.irbConsentProtocol",
+  collectionStudy: "d.collectionStudy",
+  dateOfConsent: "d.dateOfConsent",
+  genomicResearchUseStudy: "d.genomicResearchUseStudy",
+  consentVersion: "d.consentVersion",
+  // Fields below come from a computed/hoisted variable (e.g. parsed JSON, or a COLLECT{}
+  // aggregation) rather than directly from a matched node's property.
+  historicalCmoSampleNames: "historicalCmoSampleNames",
+  sampleCohortIds: "sampleCohortIds",
+  recipe: "cmoSampleIdFields.recipe",
+  altId: "altId",
+  igoSampleStatus: "igoSampleStatus",
+  dmpRecommendedCoverage: "dmpRecommendedCoverage",
+  changelog: "changelog",
+  igoDeliveryDate: "apoc.date.format(igoDeliveryDate, 'ms', 'yyyy-MM-dd')",
+};
+
+const FIELDS_TO_SEARCH = Object.keys(SEARCHABLE_FIELD_EXPRESSIONS);
+
+const SID_FIELDS_TO_SEARCH = [
+  "s.smileSampleId",
+  "latestSm.primaryId",
+  "latestSm.cmoSampleName",
+  "latestSm.cmoPatientId",
+  "latestSm.investigatorSampleId",
+  //"historicalCmoSampleNames"
 ];
 
 export function buildSamplesQueryBody({
@@ -73,11 +92,17 @@ export function buildSamplesQueryBody({
   recordContexts,
   columnFilters,
   addlOncotreeCodes,
+  prioritizeIdMatches = false,
 }: {
   searchVals: QueryDashboardSamplesArgs["searchVals"];
   recordContexts?: QueryDashboardSamplesArgs["recordContexts"];
   columnFilters?: QueryDashboardSamplesArgs["columnFilters"];
   addlOncotreeCodes: string[];
+  /**
+   * When true (set via a user-controlled toggle in the SearchBar), the query prioritizes ID matches
+   * before applying other search predicates for performance reasons.
+   */
+  prioritizeIdMatches?: boolean;
 }) {
   // Because the samples query is more complex than other queries (e.g. requests), we improve its performance
   // by building WHERE clauses and injecting them into the query as early as possible and when convenient.
@@ -85,13 +110,24 @@ export function buildSamplesQueryBody({
   // WHERE clause and injecting that at the end (right before the RETURN statement).
 
   let searchPredicates = "";
+  let idSearchPredicates = "";
   if (searchVals?.length) {
+    if (prioritizeIdMatches) {
+      idSearchPredicates = buildCypherPredicatesForSampleIdSearchVals({
+        searchVals,
+        fieldsToSearch: SID_FIELDS_TO_SEARCH,
+      });
+    }
     searchPredicates = buildCypherPredicatesFromSearchVals({
       searchVals,
       fieldsToSearch: FIELDS_TO_SEARCH,
+      // Resolves each field to its actual source expression (e.g. `latestSm.primaryId`) instead
+      // of `tempNode.<field>`, since all fields are already bound before `tempNode` is built.
+      // This lets non-matching rows be excluded before that costlier map construction runs.
+      getFieldExpression: (field) => SEARCHABLE_FIELD_EXPRESSIONS[field],
     });
     if (addlOncotreeCodes.length) {
-      searchPredicates += ` OR tempNode.oncotreeCode =~ '^(${addlOncotreeCodes.join(
+      searchPredicates += ` OR latestSm.oncotreeCode =~ '^(${addlOncotreeCodes.join(
         "|"
       )})'`;
     }
@@ -265,11 +301,15 @@ export function buildSamplesQueryBody({
         ),
       ", ") AS historicalCmoSampleNames
 
+    // If ID matching is enabled, prioritize ID matches when searching
+    ${idSearchPredicates && `WHERE ${idSearchPredicates}`}
+
     // Get SampleMetadata's Status
     OPTIONAL MATCH (latestSm)-[:HAS_STATUS]->(st:Status)
     WITH
       s,
       latestSm,
+      apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd') as importDate,
       historicalCmoSampleNames,
       st AS latestSt
     ${sampleMetadataColFilters && `WHERE ${sampleMetadataColFilters}`}
@@ -282,15 +322,20 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
+      importDate,
       historicalCmoSampleNames,
       latestSt,
       head([pa IN collect(pa) WHERE pa.namespace = 'dmpId' | pa.value]) AS dmpPatientAlias
 
-    // Filters for Cohort Samples view, if applicable
+    // Filter for Cohort Samples view, if applicable. Uses EXISTS (rather than a plain MATCH) so
+    // that samples in multiple cohorts aren't fanned out into extra rows here, which would
+    // otherwise duplicate every row through the rest of this query (Tempo/event/DbGap lookups,
+    // and the tempNode map construction below) only to be deduplicated at the end via
+    // COLLECT(DISTINCT tempNode). Cohort memberships are gathered separately below as sampleCohortIds.
     ${
-      cohortContext ? "" : "OPTIONAL "
-    }MATCH (s)<-[:HAS_COHORT_SAMPLE]-(c:Cohort)
-    ${cohortContext && `WHERE ${cohortContext}`}
+      cohortContext &&
+      `WHERE EXISTS { MATCH (s)<-[:HAS_COHORT_SAMPLE]-(c:Cohort) WHERE ${cohortContext} }`
+    }
 
     // Get Tempo data
     OPTIONAL MATCH (s)-[:HAS_TEMPO]->(t:Tempo)
@@ -298,6 +343,7 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
+      importDate,
       historicalCmoSampleNames,
       latestSt,
       dmpPatientAlias,
@@ -308,6 +354,7 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
+      importDate,
       historicalCmoSampleNames,
       latestSt,
       dmpPatientAlias,
@@ -332,6 +379,7 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
+      importDate,
       historicalCmoSampleNames,
       latestSt,
       dmpPatientAlias,
@@ -342,7 +390,9 @@ export function buildSamplesQueryBody({
       coalesce(apoc.text.join([id IN sampleCohortIds WHERE id IS NOT NULL], ', '), '') AS sampleCohortIds,
       apoc.convert.fromJsonMap(latestSm.cmoSampleIdFields) AS cmoSampleIdFields,
       apoc.convert.fromJsonMap(latestSm.additionalProperties).recommended_coverage AS dmpRecommendedCoverage,
-      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).changelog AS changelog,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).altId AS altId,
+      apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus AS igoSampleStatus
 
       ${tempoEventDateColFilters && `WHERE ${tempoEventDateColFilters}`}
 
@@ -352,6 +402,7 @@ export function buildSamplesQueryBody({
     WITH
       s,
       latestSm,
+      importDate,
       historicalCmoSampleNames,
       latestSt,
       dmpPatientAlias,
@@ -363,6 +414,8 @@ export function buildSamplesQueryBody({
       cmoSampleIdFields,
       dmpRecommendedCoverage,
       changelog,
+      altId,
+      igoSampleStatus,
       d,
       r,
 
@@ -371,7 +424,7 @@ export function buildSamplesQueryBody({
       ELSE null
     END AS igoDeliveryDate
 
-    ${igoDeliveryDateColFilter && `WHERE ${igoDeliveryDateColFilter}`}
+    ${buildCypherWhereClause([igoDeliveryDateColFilter, searchPredicates])}
 
     WITH
       ({
@@ -383,7 +436,7 @@ export function buildSamplesQueryBody({
 
         primaryId: latestSm.primaryId,
         cmoSampleName: latestSm.cmoSampleName,
-        importDate: apoc.date.format(latestSm.importDate, 'ms', 'yyyy-MM-dd'),
+        importDate: importDate,
         historicalCmoSampleNames: historicalCmoSampleNames,
         cmoPatientId: latestSm.cmoPatientId,
         investigatorSampleId: latestSm.investigatorSampleId,
@@ -405,8 +458,8 @@ export function buildSamplesQueryBody({
         libraries: latestSm.libraries,
         recipe: cmoSampleIdFields.recipe,
         analyteType: cmoSampleIdFields.naToExtract,
-        altId: apoc.convert.fromJsonMap(latestSm.additionalProperties).altId,
-        igoSampleStatus: apoc.convert.fromJsonMap(latestSm.additionalProperties).igoSampleStatus,
+        altId: altId,
+        igoSampleStatus: igoSampleStatus,
         dmpRecommendedCoverage: dmpRecommendedCoverage,
         changelog: changelog,
         validationReport: latestSt.validationReport,
@@ -440,8 +493,6 @@ export function buildSamplesQueryBody({
 
         dmpPatientAlias: dmpPatientAlias
       }) AS tempNode
-
-    ${searchPredicates && `WHERE ${searchPredicates}`}
   `;
 
   return samplesQueryBody;

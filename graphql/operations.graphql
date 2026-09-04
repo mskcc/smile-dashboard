@@ -131,6 +131,7 @@ query DashboardSamples(
   $offset: Int!
   $phiEnabled: Boolean = false
   $includeDemographics: Boolean = false
+  $prioritizeIdMatches: Boolean = false
 ) {
   dashboardSamples(
     searchVals: $searchVals
@@ -141,6 +142,7 @@ query DashboardSamples(
     offset: $offset
     phiEnabled: $phiEnabled
     includeDemographics: $includeDemographics
+    prioritizeIdMatches: $prioritizeIdMatches
   ) {
     ...DashboardSampleParts
     ...DashboardSampleMetadataParts
