@@ -178,7 +178,6 @@ export function buildSamplesQueryBody({
     colFilterField: "importDate",
     dateVar: "latestSm.importDate",
     dateVarIsEpochMs: true,
-
   });
   const igoCompleteFilter = buildCypherPredicateFromBooleanColFilter({
     columnFilters,
