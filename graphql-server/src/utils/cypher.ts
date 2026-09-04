@@ -128,12 +128,35 @@ export function buildCypherPredicateFromDateColFilter({
     ? `apoc.date.format(${dateVar}, 'ms', 'yyyy-MM-dd')`
     : dateVar;
 
-  return `
-      apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        >= apoc.date.parse('${colFilter.dateFrom}', 'ms', 'yyyy-MM-dd HH:mm:ss') // AG Grid's provided date format
-      AND apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
-        <= apoc.date.parse('${colFilter.dateTo}', 'ms', 'yyyy-MM-dd HH:mm:ss')
-    `;
+  let lowerBoundDate: string | null = null;
+  let upperBoundDate: string | null = null;
+  switch (colFilter.type) {
+    case "before":
+      upperBoundDate = colFilter.dateFrom;
+      break;
+    case "after":
+      lowerBoundDate = colFilter.dateFrom;
+      break;
+    case "on":
+      lowerBoundDate = colFilter.dateFrom;
+      upperBoundDate = colFilter.dateFrom;
+      break;
+    default:
+      // "inRange"
+      lowerBoundDate = colFilter.dateFrom;
+      upperBoundDate = colFilter.dateTo;
+  }
+
+  const dateFromPredicate = lowerBoundDate
+    ? `apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
+        >= apoc.date.parse('${lowerBoundDate}', 'ms', 'yyyy-MM-dd HH:mm:ss')` // AG Grid's provided date format
+    : "";
+  const dateToPredicate = upperBoundDate
+    ? `apoc.date.parse(${formattedDateString}, 'ms', 'yyyy-MM-dd')
+        <= apoc.date.parse('${upperBoundDate}', 'ms', 'yyyy-MM-dd HH:mm:ss')`
+    : "";
+
+  return [dateFromPredicate, dateToPredicate].filter(Boolean).join(" AND ");
 }
 
 export function buildCypherPredicateFromBooleanColFilter({

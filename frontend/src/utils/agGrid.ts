@@ -12,7 +12,30 @@ export function getAgGridDateColFilterConfigs({
     filter: "agDateColumnFilter",
     filterParams: {
       buttons: ["apply", "reset"],
-      filterOptions: ["inRange"],
+      // Custom After/Before/On date filter options (in addition to the built-in "In range")
+      // Since filtering happens server-side, predicate is a no-op;
+      // the actual matching logic lives in `buildCypherPredicateFromDateColFilter`.
+      filterOptions: [
+        "inRange",
+        {
+          displayKey: "after",
+          displayName: "After",
+          numberOfInputs: 1,
+          predicate: () => true,
+        },
+        {
+          displayKey: "before",
+          displayName: "Before",
+          numberOfInputs: 1,
+          predicate: () => true,
+        },
+        {
+          displayKey: "on",
+          displayName: "On",
+          numberOfInputs: 1,
+          predicate: () => true,
+        },
+      ],
       inRangeInclusive: true,
       minValidYear: 2016,
       maxValidYear: maxValidYear,

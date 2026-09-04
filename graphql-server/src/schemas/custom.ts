@@ -476,10 +476,10 @@ export async function buildCustomSchema(ogm: OGM) {
           oncotreeCache,
         });
 
-        // Only search on exact sample ID matches when the user has opted into it (via the
-        // SearchBar's "Search Sample IDs Only" checkbox). This is much faster than the general
-        // search, since it filters early in the query, but only returns exact ID matches -
-        // otherwise, fall back to the regular, broader search across all samples.
+        // Prioritize ID matches when searching (via exact matches) when the user has opted into
+        // it via the SearchBar's "Prioritize ID matches" toggle. This is much faster than the
+        // general search, since it filters early in the query - otherwise, fall back to the
+        // regular, broader search across all samples.
         const queryBody = buildSamplesQueryBody({
           searchVals,
           recordContexts,

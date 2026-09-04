@@ -99,7 +99,7 @@ export function buildSamplesQueryBody({
   columnFilters?: QueryDashboardSamplesArgs["columnFilters"];
   addlOncotreeCodes: string[];
   /**
-   * When true (set via a user-controlled checkbox in the SearchBar), the query prioritizes ID matches
+   * When true (set via a user-controlled toggle in the SearchBar), the query prioritizes ID matches
    * before applying other search predicates for performance reasons.
    */
   prioritizeIdMatches?: boolean;
@@ -301,7 +301,7 @@ export function buildSamplesQueryBody({
         ),
       ", ") AS historicalCmoSampleNames
 
-    // check matches on ids first if id only search mode enabled
+    // If ID matching is enabled, prioritize ID matches when searching
     ${idSearchPredicates && `WHERE ${idSearchPredicates}`}
 
     // Get SampleMetadata's Status
