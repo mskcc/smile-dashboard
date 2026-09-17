@@ -188,10 +188,13 @@ const QUERY_RESULT_TYPEDEFS = gql`
     type: String
     pipelineVersion: String
     searchableSampleIds: String
+    searchableProjectsIncluded: String
     _total: Int
     _uniqueSampleCount: Int
     samples: [TempoCohortSample!]
     cohortValidationStatus: DashboardCohortValidationStatus
+    piName: String
+    projectsIncluded: [String!]
   }
 
   type DashboardCohortValidationSample {
@@ -259,6 +262,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     type: String!
     status: String!
     samples: [TempoCohortSample!]!
+    piName: String
   }
 `;
 
@@ -337,10 +341,12 @@ const MUTATION_TYPEDEFS = gql`
     type: String
     pipelineVersion: String
     searchableSampleIds: String
+    searchableProjectsIncluded: String
     changelog: String
     _total: Int
     _uniqueSampleCount: Int
     samples: [TempoCohortSampleInput!]
+    piName: String
   }
 
   input TempoCohortSampleInput {
@@ -358,6 +364,7 @@ const MUTATION_TYPEDEFS = gql`
     type: String!
     status: String!
     samples: [TempoCohortSampleInput!]!
+    piName: String
   }
 
   type Mutation {

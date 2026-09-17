@@ -64,6 +64,7 @@ export function CohortsPage() {
         cohortId: selectedCohort.cohortId,
         endUsers: selectedCohort.endUsers ?? "",
         pmUsers: selectedCohort.pmUsers ?? "",
+        piName: selectedCohort.piName ?? "",
         projectTitle: selectedCohort.projectTitle ?? "",
         projectSubtitle: selectedCohort.projectSubtitle ?? "",
         type: selectedCohort.type ?? "",

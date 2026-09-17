@@ -26,6 +26,7 @@ export function CohortBuilderDownloadButton({
   ): string {
     let contents = `#endUsers:${formatCohortUsersString(data.endUsers)}\n`;
     contents += `#pmUsers:${formatCohortUsersString(data.pmUsers)}\n`;
+    contents += `#piName:${data.piName ?? ""}\n`;
     contents += `#projectTitle:${data.projectTitle}\n`;
     contents += `#projectSubtitle:${data.projectSubtitle}\n`;
     contents += `#TUMOR_ID\n`;
