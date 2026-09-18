@@ -445,6 +445,7 @@ export type CohortCohortCompleteHasCohortCompleteCohortCompletesNodeAggregateSel
   date: StringAggregateSelection;
   endUsers: StringAggregateSelection;
   importDate: BigIntAggregateSelection;
+  piName: StringAggregateSelection;
   pipelineVersion: StringAggregateSelection;
   pmUsers: StringAggregateSelection;
   projectSubtitle: StringAggregateSelection;
@@ -461,6 +462,7 @@ export type CohortComplete = {
   date?: Maybe<Scalars['String']['output']>;
   endUsers: Scalars['String']['output'];
   importDate: Scalars['BigInt']['output'];
+  piName: Scalars['String']['output'];
   pipelineVersion?: Maybe<Scalars['String']['output']>;
   pmUsers: Scalars['String']['output'];
   projectSubtitle: Scalars['String']['output'];
@@ -497,6 +499,7 @@ export type CohortCompleteAggregateSelection = {
   date: StringAggregateSelection;
   endUsers: StringAggregateSelection;
   importDate: BigIntAggregateSelection;
+  piName: StringAggregateSelection;
   pipelineVersion: StringAggregateSelection;
   pmUsers: StringAggregateSelection;
   projectSubtitle: StringAggregateSelection;
@@ -625,6 +628,7 @@ export type CohortCompleteCreateInput = {
   date?: InputMaybe<Scalars['String']['input']>;
   endUsers: Scalars['String']['input'];
   importDate: Scalars['BigInt']['input'];
+  piName: Scalars['String']['input'];
   pipelineVersion?: InputMaybe<Scalars['String']['input']>;
   pmUsers: Scalars['String']['input'];
   projectSubtitle: Scalars['String']['input'];
@@ -663,6 +667,7 @@ export type CohortCompleteSort = {
   date?: InputMaybe<SortDirection>;
   endUsers?: InputMaybe<SortDirection>;
   importDate?: InputMaybe<SortDirection>;
+  piName?: InputMaybe<SortDirection>;
   pipelineVersion?: InputMaybe<SortDirection>;
   pmUsers?: InputMaybe<SortDirection>;
   projectSubtitle?: InputMaybe<SortDirection>;
@@ -678,6 +683,7 @@ export type CohortCompleteUpdateInput = {
   importDate?: InputMaybe<Scalars['BigInt']['input']>;
   importDate_DECREMENT?: InputMaybe<Scalars['BigInt']['input']>;
   importDate_INCREMENT?: InputMaybe<Scalars['BigInt']['input']>;
+  piName?: InputMaybe<Scalars['String']['input']>;
   pipelineVersion?: InputMaybe<Scalars['String']['input']>;
   pmUsers?: InputMaybe<Scalars['String']['input']>;
   projectSubtitle?: InputMaybe<Scalars['String']['input']>;
@@ -725,6 +731,12 @@ export type CohortCompleteWhere = {
   importDate_IN?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   importDate_LT?: InputMaybe<Scalars['BigInt']['input']>;
   importDate_LTE?: InputMaybe<Scalars['BigInt']['input']>;
+  piName?: InputMaybe<Scalars['String']['input']>;
+  piName_CONTAINS?: InputMaybe<Scalars['String']['input']>;
+  piName_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
+  piName_IN?: InputMaybe<Array<Scalars['String']['input']>>;
+  piName_MATCHES?: InputMaybe<Scalars['String']['input']>;
+  piName_STARTS_WITH?: InputMaybe<Scalars['String']['input']>;
   pipelineVersion?: InputMaybe<Scalars['String']['input']>;
   pipelineVersion_CONTAINS?: InputMaybe<Scalars['String']['input']>;
   pipelineVersion_ENDS_WITH?: InputMaybe<Scalars['String']['input']>;
@@ -911,6 +923,21 @@ export type CohortHasCohortCompleteCohortCompletesNodeAggregationWhereInput = {
   importDate_SUM_GTE?: InputMaybe<Scalars['BigInt']['input']>;
   importDate_SUM_LT?: InputMaybe<Scalars['BigInt']['input']>;
   importDate_SUM_LTE?: InputMaybe<Scalars['BigInt']['input']>;
+  piName_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
+  piName_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
+  piName_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
+  piName_AVERAGE_LENGTH_LT?: InputMaybe<Scalars['Float']['input']>;
+  piName_AVERAGE_LENGTH_LTE?: InputMaybe<Scalars['Float']['input']>;
+  piName_LONGEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
+  piName_LONGEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
+  piName_LONGEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
+  piName_LONGEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
+  piName_LONGEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
+  piName_SHORTEST_LENGTH_EQUAL?: InputMaybe<Scalars['Int']['input']>;
+  piName_SHORTEST_LENGTH_GT?: InputMaybe<Scalars['Int']['input']>;
+  piName_SHORTEST_LENGTH_GTE?: InputMaybe<Scalars['Int']['input']>;
+  piName_SHORTEST_LENGTH_LT?: InputMaybe<Scalars['Int']['input']>;
+  piName_SHORTEST_LENGTH_LTE?: InputMaybe<Scalars['Int']['input']>;
   pipelineVersion_AVERAGE_LENGTH_EQUAL?: InputMaybe<Scalars['Float']['input']>;
   pipelineVersion_AVERAGE_LENGTH_GT?: InputMaybe<Scalars['Float']['input']>;
   pipelineVersion_AVERAGE_LENGTH_GTE?: InputMaybe<Scalars['Float']['input']>;
@@ -1454,11 +1481,14 @@ export type DashboardCohort = {
   endUsers?: Maybe<Scalars['String']['output']>;
   importDate?: Maybe<Scalars['String']['output']>;
   initialCohortDeliveryDate?: Maybe<Scalars['String']['output']>;
+  piName?: Maybe<Scalars['String']['output']>;
   pipelineVersion?: Maybe<Scalars['String']['output']>;
   pmUsers?: Maybe<Scalars['String']['output']>;
   projectSubtitle?: Maybe<Scalars['String']['output']>;
   projectTitle?: Maybe<Scalars['String']['output']>;
+  projectsIncluded?: Maybe<Array<Scalars['String']['output']>>;
   samples?: Maybe<Array<TempoCohortSample>>;
+  searchableProjectsIncluded?: Maybe<Scalars['String']['output']>;
   searchableSampleIds?: Maybe<Scalars['String']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   totalSampleCount?: Maybe<Scalars['Int']['output']>;
@@ -1475,11 +1505,13 @@ export type DashboardCohortInput = {
   endUsers?: InputMaybe<Scalars['String']['input']>;
   importDate?: InputMaybe<Scalars['String']['input']>;
   initialCohortDeliveryDate?: InputMaybe<Scalars['String']['input']>;
+  piName?: InputMaybe<Scalars['String']['input']>;
   pipelineVersion?: InputMaybe<Scalars['String']['input']>;
   pmUsers?: InputMaybe<Scalars['String']['input']>;
   projectSubtitle?: InputMaybe<Scalars['String']['input']>;
   projectTitle?: InputMaybe<Scalars['String']['input']>;
   samples?: InputMaybe<Array<TempoCohortSampleInput>>;
+  searchableProjectsIncluded?: InputMaybe<Scalars['String']['input']>;
   searchableSampleIds?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   totalSampleCount?: InputMaybe<Scalars['Int']['input']>;
@@ -11213,6 +11245,7 @@ export type TempoCohortRequest = {
   __typename?: 'TempoCohortRequest';
   cohortId: Scalars['String']['output'];
   endUsers: Scalars['String']['output'];
+  piName?: Maybe<Scalars['String']['output']>;
   pmUsers: Scalars['String']['output'];
   projectSubtitle: Scalars['String']['output'];
   projectTitle: Scalars['String']['output'];
@@ -11224,6 +11257,7 @@ export type TempoCohortRequest = {
 export type TempoCohortRequestInput = {
   cohortId: Scalars['String']['input'];
   endUsers: Array<Scalars['String']['input']>;
+  piName?: InputMaybe<Scalars['String']['input']>;
   pmUsers: Array<Scalars['String']['input']>;
   projectSubtitle: Scalars['String']['input'];
   projectTitle: Scalars['String']['input'];
@@ -12168,7 +12202,7 @@ export type DashboardCohortsQueryVariables = Exact<{
 }>;
 
 
-export type DashboardCohortsQuery = { __typename?: 'Query', dashboardCohorts: Array<{ __typename?: 'DashboardCohort', cohortId: string, totalSampleCount?: number | null, billed?: string | null, initialCohortDeliveryDate?: string | null, importDate?: string | null, endUsers?: string | null, pmUsers?: string | null, projectTitle?: string | null, projectSubtitle?: string | null, status?: string | null, type?: string | null, pipelineVersion?: string | null, searchableSampleIds?: string | null, _total?: number | null, _uniqueSampleCount?: number | null, cohortValidationStatus?: { __typename?: 'DashboardCohortValidationStatus', jsonSchemaValidated: boolean, passesAllChecks: boolean, invalidPmUsers?: Array<string> | null, invalidEndUsers?: Array<string> | null, invalidTempoSamples?: Array<{ __typename?: 'DashboardCohortValidationSample', primaryId?: string | null, cmoId?: string | null, conflictReason?: string | null, unpairedReason?: string | null, tumorNotFound?: string | null, normalCmoId?: string | null, normalPrimaryId?: string | null }> | null } | null }> };
+export type DashboardCohortsQuery = { __typename?: 'Query', dashboardCohorts: Array<{ __typename?: 'DashboardCohort', cohortId: string, totalSampleCount?: number | null, billed?: string | null, initialCohortDeliveryDate?: string | null, importDate?: string | null, endUsers?: string | null, pmUsers?: string | null, projectTitle?: string | null, projectSubtitle?: string | null, status?: string | null, type?: string | null, pipelineVersion?: string | null, searchableSampleIds?: string | null, searchableProjectsIncluded?: string | null, _total?: number | null, _uniqueSampleCount?: number | null, piName?: string | null, projectsIncluded?: Array<string> | null, cohortValidationStatus?: { __typename?: 'DashboardCohortValidationStatus', jsonSchemaValidated: boolean, passesAllChecks: boolean, invalidPmUsers?: Array<string> | null, invalidEndUsers?: Array<string> | null, invalidTempoSamples?: Array<{ __typename?: 'DashboardCohortValidationSample', primaryId?: string | null, cmoId?: string | null, conflictReason?: string | null, unpairedReason?: string | null, tumorNotFound?: string | null, normalCmoId?: string | null, normalPrimaryId?: string | null }> | null } | null }> };
 
 export type DashboardSamplesQueryVariables = Exact<{
   searchVals?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
@@ -12233,14 +12267,14 @@ export type UpdateTempoCohortMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTempoCohortMutation = { __typename?: 'Mutation', updateTempoCohort?: { __typename?: 'DashboardCohort', cohortId: string, totalSampleCount?: number | null, billed?: string | null, initialCohortDeliveryDate?: string | null, importDate?: string | null, endUsers?: string | null, pmUsers?: string | null, projectTitle?: string | null, projectSubtitle?: string | null, status?: string | null, type?: string | null, pipelineVersion?: string | null, searchableSampleIds?: string | null, _total?: number | null, _uniqueSampleCount?: number | null, samples?: Array<{ __typename?: 'TempoCohortSample', primaryId: string }> | null } | null };
+export type UpdateTempoCohortMutation = { __typename?: 'Mutation', updateTempoCohort?: { __typename?: 'DashboardCohort', cohortId: string, totalSampleCount?: number | null, billed?: string | null, initialCohortDeliveryDate?: string | null, importDate?: string | null, endUsers?: string | null, pmUsers?: string | null, projectTitle?: string | null, projectSubtitle?: string | null, status?: string | null, type?: string | null, pipelineVersion?: string | null, searchableSampleIds?: string | null, searchableProjectsIncluded?: string | null, _total?: number | null, _uniqueSampleCount?: number | null, piName?: string | null, samples?: Array<{ __typename?: 'TempoCohortSample', primaryId: string }> | null } | null };
 
 export type PublishNewTempoCohortRequestMutationVariables = Exact<{
   tempoCohortRequest: TempoCohortRequestInput;
 }>;
 
 
-export type PublishNewTempoCohortRequestMutation = { __typename?: 'Mutation', publishNewTempoCohortRequest?: { __typename?: 'TempoCohortRequest', cohortId: string, projectTitle: string, projectSubtitle: string, endUsers: string, pmUsers: string, type: string, status: string, samples: Array<{ __typename?: 'TempoCohortSample', primaryId: string, cmoId?: string | null, embargoDate?: string | null }> } | null };
+export type PublishNewTempoCohortRequestMutation = { __typename?: 'Mutation', publishNewTempoCohortRequest?: { __typename?: 'TempoCohortRequest', cohortId: string, projectTitle: string, projectSubtitle: string, endUsers: string, pmUsers: string, type: string, status: string, piName?: string | null, samples: Array<{ __typename?: 'TempoCohortSample', primaryId: string, cmoId?: string | null, embargoDate?: string | null }> } | null };
 
 export const DashboardSamplePartsFragmentDoc = gql`
     fragment DashboardSampleParts on DashboardSample {
@@ -12526,6 +12560,7 @@ export const DashboardCohortsDocument = gql`
     type
     pipelineVersion
     searchableSampleIds
+    searchableProjectsIncluded
     _total
     _uniqueSampleCount
     cohortValidationStatus {
@@ -12543,6 +12578,8 @@ export const DashboardCohortsDocument = gql`
         normalPrimaryId
       }
     }
+    piName
+    projectsIncluded
   }
 }
     `;
@@ -12864,11 +12901,13 @@ export const UpdateTempoCohortDocument = gql`
     type
     pipelineVersion
     searchableSampleIds
+    searchableProjectsIncluded
     _total
     _uniqueSampleCount
     samples {
       primaryId
     }
+    piName
   }
 }
     `;
@@ -12913,6 +12952,7 @@ export const PublishNewTempoCohortRequestDocument = gql`
       cmoId
       embargoDate
     }
+    piName
   }
 }
     `;

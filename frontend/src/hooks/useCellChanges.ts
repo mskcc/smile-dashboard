@@ -451,6 +451,10 @@ function buildNewDashboardCohorts(
       (cohortData as any)[change.fieldName] = change.newValue;
     }
     delete cohortData.__typename;
+    // These fields are read-only / not part of DashboardCohortInput and must be
+    // stripped before submitting the mutation.
+    delete cohortData.cohortValidationStatus;
+    delete cohortData.projectsIncluded;
     newDashboardCohortsByCohortId.set(cohortId, {
       ...cohortData,
       changedFieldNames: changes.map((c) => c.fieldName),

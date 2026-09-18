@@ -155,6 +155,12 @@ export const cohortColDefs: ColDef<DashboardCohort>[] = [
     headerComponentParams: createCustomHeader(""), // hides the lock icon
   },
   {
+    field: "piName",
+    headerName: "PI Name",
+    editable: true,
+    headerComponentParams: createCustomHeader(""), // hides the lock icon
+  },
+  {
     field: "projectTitle",
     headerName: "Project Title",
   },
@@ -163,12 +169,21 @@ export const cohortColDefs: ColDef<DashboardCohort>[] = [
     headerName: "Project Subtitle",
   },
   {
+    field: "projectsIncluded",
+    headerName: "Projects Included",
+    headerTooltip:
+      "The list of request IDs for the samples included in this cohort",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    valueFormatter: (params) =>
+      Array.isArray(params.value) ? params.value.join(", ") : "",
+  },
+  {
     field: "type",
     headerName: "Type",
   },
 ];
 
-const editableCohortFields = new Set(["endUsers", "pmUsers"]);
+const editableCohortFields = new Set(["endUsers", "pmUsers", "piName"]);
 
 export function setupEditableCohortFields(
   cohortColDefs: Array<ColDef>,

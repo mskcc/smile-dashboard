@@ -55,6 +55,7 @@ export const DEFAULT_TEMPO_COHORT_REQUEST: TempoCohortRequest = {
   cohortId: "",
   endUsers: "",
   pmUsers: "",
+  piName: "",
   projectTitle: "",
   projectSubtitle: "",
   samples: [],
@@ -340,6 +341,32 @@ export function CohortBuilderContainer({
           </Col>
           <Col className="text-end col-auto">
             <span>{tempoCohortSamplesData.length} samples selected</span>
+          </Col>
+        </Row>
+        <Row
+          className="d-flex align-items-center justify-content-left"
+          style={{ padding: "5px" }}
+        >
+          <Col>
+            <label className="col-form-label d-flex align-items-center flex-nowrap">
+              <span className="flex-shrink-0">{"PI Name:  "}</span>
+              <Form.Control
+                name="inputPiName"
+                type="text"
+                className="d-inline-block flex-shrink-0"
+                style={{ width: "300px" }}
+                size="sm"
+                placeholder={`PI name (optional)`}
+                aria-label="PI name"
+                value={tempoCohortRequest.piName ?? ""}
+                onChange={(e: { currentTarget: { value: any } }) => {
+                  setTempoCohortRequest({
+                    ...tempoCohortRequest,
+                    piName: e.currentTarget.value,
+                  });
+                }}
+              />
+            </label>
           </Col>
         </Row>
 

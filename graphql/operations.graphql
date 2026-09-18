@@ -102,6 +102,7 @@ query DashboardCohorts(
     type
     pipelineVersion
     searchableSampleIds
+    searchableProjectsIncluded
     _total
     _uniqueSampleCount
     cohortValidationStatus {
@@ -119,6 +120,8 @@ query DashboardCohorts(
         normalPrimaryId
       }
     }
+    piName
+    projectsIncluded
   }
 }
 
@@ -345,11 +348,13 @@ mutation UpdateTempoCohort($dashboardCohort: DashboardCohortInput!) {
     type
     pipelineVersion
     searchableSampleIds
+    searchableProjectsIncluded
     _total
     _uniqueSampleCount
     samples {
       primaryId
     }
+    piName
   }
 }
 
@@ -369,5 +374,6 @@ mutation PublishNewTempoCohortRequest(
       cmoId
       embargoDate
     }
+    piName
   }
 }

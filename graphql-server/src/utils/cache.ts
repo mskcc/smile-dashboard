@@ -473,7 +473,7 @@ export async function updateCacheWithNewCohortUpdates(
   for (const cohort of cachedCohorts) {
     if (cohort.cohortId === newDashboardCohort.cohortId) {
       // Update the fields of any cohorts in cache that match the updated cohortId
-      for (const field of ["pmUsers", "endUsers"]) {
+      for (const field of ["pmUsers", "endUsers", "piName"]) {
         if (field in cohort && field in newDashboardCohort) {
           (cohort as any)[field] =
             newDashboardCohort[field as keyof DashboardCohort];

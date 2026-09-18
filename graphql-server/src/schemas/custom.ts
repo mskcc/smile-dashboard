@@ -751,6 +751,7 @@ async function updateTempoCohortPromise(dashboardCohort: DashboardCohortInput) {
       type: dashboardCohort.type,
       endUsers: formatUsersString(dashboardCohort.endUsers || ""),
       pmUsers: formatUsersString(dashboardCohort.pmUsers || ""),
+      piName: dashboardCohort.piName || "",
       status: dashboardCohort.status,
       projectTitle: dashboardCohort.projectTitle,
       projectSubtitle: dashboardCohort.projectSubtitle,
