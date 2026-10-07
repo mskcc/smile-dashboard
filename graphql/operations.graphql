@@ -34,6 +34,7 @@ query DashboardRequests(
     bicAnalysis
     isCmoRequest
     otherContactEmails
+    changelog
     _total
     toleratedSampleErrors {
       primaryId
@@ -317,6 +318,37 @@ mutation UpdateDashboardSamples(
     ...DashboardTempoParts
     ...DashboardDbGapParts
     ...IgoQcReportParts
+  }
+}
+
+mutation UpdateDashboardRequests(
+  $newDashboardRequests: [DashboardRequestInput!]!
+) {
+  updateDashboardRequests(newDashboardRequests: $newDashboardRequests) {
+    igoRequestId
+    igoProjectId
+    ilabRequestId
+    igoDeliveryDate
+    validationReport
+    validationStatus
+    importDate
+    totalSampleCount
+    projectManagerName
+    investigatorName
+    investigatorEmail
+    piEmail
+    dataAnalystName
+    dataAnalystEmail
+    genePanel
+    labHeadName
+    labHeadEmail
+    qcAccessEmails
+    dataAccessEmails
+    bicAnalysis
+    isCmoRequest
+    otherContactEmails
+    changelog
+    _total
   }
 }
 

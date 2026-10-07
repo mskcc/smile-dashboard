@@ -7,7 +7,6 @@ import {
   CellClassParams,
   ColDef,
   ICellRendererParams,
-  IHeaderParams,
 } from "ag-grid-community";
 import { RecordValidation } from "../../components/RecordValidation";
 import { SAMPLE_STATUS_MAP } from "../../configs/recordValidationMaps";
@@ -29,13 +28,11 @@ import {
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import { formatCellDate } from "../../utils/agGrid";
-import {
-  BuildDownloadOptionsParamsBase,
-  RecordChange,
-} from "../../types/shared";
+import { BuildDownloadOptionsParamsBase } from "../../types/shared";
 import { DownloadOption } from "../../hooks/useDownload";
 import { Button } from "react-bootstrap";
 import { buildFieldToHeaderName } from "../../utils/fieldToHeaderName";
+import { setupEditableFields } from "../../utils/setupEditableFields";
 
 /**
  * Auth-gated fields.
@@ -1130,7 +1127,7 @@ const editableWesSampleFields = new Set([
   "consentVersion",
 ]);
 
-export const allEditableFields = new Set(
+export const allEditableSampleFields = new Set(
   Array.from(editableSampleFields).concat(Array.from(editableWesSampleFields))
 );
 
@@ -1138,79 +1135,30 @@ export function setupEditableSampleFields(
   samplesColDefs: Array<ColDef>,
   editableFieldsList: Set<string>
 ) {
-  samplesColDefs.forEach((colDef) => {
-    const newClassRule = {
-      unsubmittedChange: (params: CellClassParams) => {
-        const changes: Array<RecordChange> = params.context?.getChanges();
-        const changedValue = changes?.find((change) => {
-          return (
-            change.fieldName === params.colDef.field &&
-            change.recordId === params.data.primaryId
-          );
-        });
-        return changedValue !== undefined;
-      },
-      cursorNotAllowed: (params: CellClassParams) => {
-        return (
-          (!params.context?.userEmail && params.colDef.field !== "billed") ||
-          params.data?.sampleCategory === "clinical" ||
-          !editableFieldsList.has(params.colDef.field!)
-        );
-      },
-    };
-
-    if (colDef.cellClassRules) {
-      colDef.cellClassRules = {
-        ...colDef.cellClassRules,
-        ...newClassRule,
-      };
-    } else {
-      colDef.cellClassRules = newClassRule;
-    }
-
-    if (colDef.valueGetter === undefined) {
-      colDef.valueGetter = (params) => {
-        if (params.data && params.colDef.field) {
-          const changes: Array<RecordChange> = params.context?.getChanges();
-          const changedValue = changes?.find((change) => {
-            return (
-              change.fieldName === params.colDef.field &&
-              change.recordId === params.data.primaryId
-            );
-          });
-          if (changedValue) {
-            return changedValue.newValue;
-          } else {
-            if (params.colDef.field in params.data) {
-              return params.data[params.colDef.field];
-            } else {
-              return "";
-            }
-          }
-        }
-      };
-    }
-
-    colDef.editable = (params) => {
+  setupEditableFields({
+    colDefs: samplesColDefs,
+    editableFieldsList,
+    getRecordId: (data) => data?.primaryId,
+    isCursorNotAllowed: (params) => {
       return (
-        (params.context?.userEmail || params.colDef.field === "billed") &&
-        params.data?.sampleCategory !== "clinical" &&
-        editableFieldsList.has(params.colDef.field!) &&
-        params.data?.revisable === true
+        (!params.context?.userEmail && params.colDef.field !== "billed") ||
+        params.data?.sampleCategory === "clinical" ||
+        !editableFieldsList.has(params.colDef.field!)
       );
-    };
-
-    if (!("headerComponentParams" in colDef)) {
-      colDef.headerComponentParams = (params: IHeaderParams) => {
-        if (!editableFieldsList.has(params.column.getColDef().field!))
-          return createCustomHeader(lockIcon);
-      };
-    }
+    },
+    isEditable: (params) => {
+      return Boolean(
+        (params.context?.userEmail || params.colDef.field === "billed") &&
+          params.data?.sampleCategory !== "clinical" &&
+          editableFieldsList.has(params.colDef.field!) &&
+          params.data?.revisable === true
+      );
+    },
   });
 }
-setupEditableSampleFields(sampleColDefs, allEditableFields);
-setupEditableSampleFields(wesSampleColDefs, allEditableFields);
-setupEditableSampleFields(accessSampleColDefs, allEditableFields);
+setupEditableSampleFields(sampleColDefs, allEditableSampleFields);
+setupEditableSampleFields(wesSampleColDefs, allEditableSampleFields);
+setupEditableSampleFields(accessSampleColDefs, allEditableSampleFields);
 
 const combinedSampleColDefs = _.uniqBy(
   [...sampleColDefs, ...wesSampleColDefs, ...accessSampleColDefs],

@@ -11,6 +11,13 @@ import {
 } from "../../utils/agGrid";
 import { DownloadOption } from "../../hooks/useDownload";
 import { BuildDownloadOptionsParamsBase } from "../../types/shared";
+import {
+  createCustomHeader,
+  lockIcon,
+  toolTipIcon,
+} from "../../configs/gridIcons";
+import { buildFieldToHeaderName } from "../../utils/fieldToHeaderName";
+import { setupEditableFields } from "../../utils/setupEditableFields";
 
 type BuildDownloadOptionsParams = BuildDownloadOptionsParamsBase & {
   // Put additional parameters here if needed
@@ -172,4 +179,34 @@ export const requestColDefs: ColDef<DashboardRequest>[] = [
     field: "dataAnalystEmail",
     headerName: "Data Analyst Email",
   },
+  {
+    field: "changelog",
+    headerName: "Reason for Change",
+    headerTooltip:
+      "Mandatory description of reason for making changes to request metadata (used for auditing purposes).",
+    headerComponentParams: createCustomHeader(lockIcon + toolTipIcon),
+    maxWidth: 600,
+  },
 ];
+
+export const editableRequestFields = new Set([
+  "piEmail",
+  "investigatorName",
+  "investigatorEmail",
+  "genePanel",
+]);
+
+export function setupEditableRequestFields(
+  requestColDefs: Array<ColDef>,
+  editableFieldsList: Set<string>
+) {
+  setupEditableFields({
+    colDefs: requestColDefs,
+    editableFieldsList,
+    getRecordId: (data) => data?.igoRequestId,
+  });
+}
+
+setupEditableRequestFields(requestColDefs, editableRequestFields);
+
+export const fieldToHeaderName = buildFieldToHeaderName(requestColDefs);

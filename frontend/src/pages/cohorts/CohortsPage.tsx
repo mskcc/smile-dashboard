@@ -99,7 +99,7 @@ export function CohortsPage() {
       stopPolling,
       records: data?.[QUERY_NAME],
       refreshData,
-      isSampleLevelChanges: false,
+      recordType: "cohort",
       pinnedRecordIds: PINNED_COHORT_IDS,
     });
 
@@ -157,7 +157,7 @@ export function CohortsPage() {
             <CellChangesContainer
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
-              isSampleLevelChanges={false}
+              recordType="cohort"
               fieldToHeaderName={fieldToHeaderName}
             />
           )}
