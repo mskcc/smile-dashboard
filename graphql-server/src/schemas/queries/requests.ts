@@ -95,6 +95,7 @@ export function buildRequestsQueryBody({
     WITH
       r,
       latestRm[0].st AS latestStatus,
+      latestRm[0].rm AS latestRequestMetadata,
       COUNT(DISTINCT s.smileSampleId) AS totalSampleCount,
       apoc.coll.max(
         COLLECT(latestRm[0].rm.importDate) +
@@ -106,6 +107,7 @@ export function buildRequestsQueryBody({
     WITH
       r,
       latestStatus,
+      latestRequestMetadata,
       totalSampleCount,
       latestImportDate,
       s,
@@ -118,6 +120,7 @@ export function buildRequestsQueryBody({
     WITH
       r,
       latestStatus,
+      latestRequestMetadata,
       totalSampleCount,
       latestImportDate,
       latestSampleData[0] as latestSampleData
@@ -125,6 +128,7 @@ export function buildRequestsQueryBody({
     WITH
       r,
       latestStatus,
+      latestRequestMetadata,
       totalSampleCount,
       latestImportDate,
       COLLECT(latestSampleData) as toleratedSampleErrors
@@ -152,6 +156,7 @@ export function buildRequestsQueryBody({
       bicAnalysis: r.bicAnalysis,
       isCmoRequest: r.isCmoRequest,
       otherContactEmails: r.otherContactEmails,
+      changelog: apoc.convert.fromJsonMap(latestRequestMetadata.additionalProperties).changelog,
       toleratedSampleErrors: toleratedSampleErrors}) as tempNode
     WITH tempNode
 

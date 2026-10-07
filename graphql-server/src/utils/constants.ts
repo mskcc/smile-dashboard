@@ -37,6 +37,9 @@ export const props = {
   pub_validate_sample_update: properties.get(
     "topics.pub_validate_igo_sample_update"
   ),
+  pub_validate_request_update: properties.get(
+    "topics.pub_validate_igo_request_update"
+  ),
   pub_tempo_sample_billing: properties.get("topics.pub_tempo_sample_billing"),
   pub_dbgap_sample_update: properties.get("topics.pub_dbgap_sample_update"),
   pub_tempo_cohort_update: properties.get("topics.pub_tempo_cohort_update"),

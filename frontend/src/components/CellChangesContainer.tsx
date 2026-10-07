@@ -4,6 +4,10 @@ import { RecordChange } from "../types/shared";
 import { Dispatch, SetStateAction, useState } from "react";
 import { NO_CHANGELOG_WARNING } from "../configs/shared";
 import { useUserEmail } from "../contexts/UserEmailContext";
+import {
+  RecordType,
+  recordTypeRequiresChangelog,
+} from "../hooks/useCellChanges";
 
 function buildUpdateModalColumnDefs(fieldToHeaderName?: (f: string) => string) {
   return [
@@ -25,8 +29,14 @@ const autoGroupColumnDef = {
   field: "recordId",
 };
 
+const RECORD_TYPE_HEADER_NAMES: Record<RecordType, string> = {
+  sample: "Primary ID",
+  cohort: "Cohort ID",
+  request: "Request ID",
+};
+
 interface CellChangesContainerProps {
-  isSampleLevelChanges: boolean;
+  recordType: RecordType;
   changes: Array<RecordChange>;
   fieldToHeaderName?: (field: string) => string;
   cellChangesHandlers: {
@@ -47,20 +57,17 @@ export function CellChangesContainer({
     showUpdateModal,
     setShowUpdateModal,
   },
-  isSampleLevelChanges,
+  recordType,
   fieldToHeaderName,
 }: CellChangesContainerProps) {
   const [changelog, setChangelog] = useState("");
   const { userEmail } = useUserEmail();
   const username = userEmail?.split("@")[0];
 
-  if (isSampleLevelChanges) {
-    autoGroupColumnDef.headerName = "Primary ID";
-  } else {
-    autoGroupColumnDef.headerName = "Cohort ID";
-  }
+  autoGroupColumnDef.headerName = RECORD_TYPE_HEADER_NAMES[recordType];
 
-  const disableSubmitUpdates = isSampleLevelChanges && changelog.trim() === "";
+  const requiresChangelog = recordTypeRequiresChangelog(recordType);
+  const disableSubmitUpdates = requiresChangelog && changelog.trim() === "";
 
   function handleUpdateModalHide() {
     setShowUpdateModal(false);
@@ -109,7 +116,7 @@ export function CellChangesContainer({
                 onFirstDataRendered={(e) => e.columnApi.autoSizeAllColumns()}
               />
             </div>
-            {isSampleLevelChanges && (
+            {requiresChangelog && (
               <Form.Group className="d-flex align-items-center mt-3">
                 <Form.Label className="mb-0 me-2 text-nowrap">
                   Reason for Change:

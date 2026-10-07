@@ -75,7 +75,7 @@ export function SamplesPage() {
     filterButtonOptions[0].label
   );
   const { userEmail } = useUserEmail();
-  const { handleCellDoubleClicked } = useCellDoubleClicked();
+  const { handleCellDoubleClicked } = useCellDoubleClicked("sample");
 
   const isWesAndLoggedIn = selectedFilterLabel === "WES" && !!userEmail;
   const disableCohortBuildling = !isWesAndLoggedIn;
@@ -139,7 +139,7 @@ export function SamplesPage() {
       stopPolling,
       records: data?.[QUERY_NAME],
       refreshData,
-      isSampleLevelChanges: true,
+      recordType: "sample",
     });
 
   const { isDownloading, handleDownload, getCurrentData } =
@@ -233,7 +233,7 @@ export function SamplesPage() {
             <CellChangesContainer
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
-              isSampleLevelChanges={true}
+              recordType="sample"
               fieldToHeaderName={fieldToHeaderName}
             />
           )}

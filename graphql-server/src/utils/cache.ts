@@ -16,6 +16,7 @@ import {
   DashboardRecordContext,
   DashboardRecordSort,
   DashboardRequest,
+  DashboardRequestInput,
   DashboardSample,
   DashboardSampleInput,
 } from "../generated/graphql";
@@ -485,6 +486,53 @@ export async function updateCacheWithNewCohortUpdates(
   // Refresh the cohorts cache
   inMemoryCache.set(COHORTS_CACHE_KEY, cohortsCache, HOUR_CACHE_TTL);
   console.info("Updated the cohorts cache with dashboard updates.");
+}
+
+export async function updateCacheWithNewRequestUpdates(
+  newDashboardRequests: DashboardRequestInput[],
+  inMemoryCache: NodeCache
+) {
+  const requestsCache = inMemoryCache.get(REQUESTS_CACHE_KEY) as RequestsCache;
+  if (!requestsCache) return;
+  const cachedRequests = Object.values(requestsCache).flat();
+
+  // Early return if no requests in the cache are receiving updates
+  const cachedRequestIds = new Set(cachedRequests.map((r) => r.igoRequestId));
+  const cacheNeedsUpdate = newDashboardRequests.some((r) =>
+    cachedRequestIds.has(r.igoRequestId)
+  );
+  if (!cacheNeedsUpdate) {
+    console.info(
+      "Skipping cache update because updated dashboard requests are not in cache."
+    );
+    return;
+  }
+
+  const newRequestsByIgoRequestId = newDashboardRequests.reduce(
+    (accumulator, newDashboardRequest) => {
+      accumulator[newDashboardRequest.igoRequestId] = newDashboardRequest;
+      return accumulator;
+    },
+    {} as Record<string, DashboardRequestInput> // key = igoRequestId
+  );
+
+  for (const cachedRequest of cachedRequests) {
+    const newDashboardRequest =
+      newRequestsByIgoRequestId[cachedRequest.igoRequestId];
+    if (newDashboardRequest) {
+      // Update the fields of any requests in cache that were changed in newDashboardRequests
+      for (const field of newDashboardRequest.changedFieldNames) {
+        if (field in cachedRequest && field in newDashboardRequest) {
+          (cachedRequest as any)[field] =
+            newDashboardRequest[field as keyof DashboardRequestInput];
+        }
+      }
+    }
+  }
+
+  // Refresh the requests cache
+  inMemoryCache.set(REQUESTS_CACHE_KEY, requestsCache, HOUR_CACHE_TTL);
+  console.info("Updated the requests cache with dashboard updates.");
 }
 
 export async function updateRequestsCache(inMemoryCache: NodeCache) {
