@@ -721,10 +721,12 @@ async function updateRequestMetadataPromises(
   });
 
   return new Promise(async (resolve) => {
-    publishNatsMessage(
-      props.pub_validate_request_update,
-      JSON.stringify(requestManifests)
-    );
+    for (const requestManifest of requestManifests) {
+      publishNatsMessage(
+        props.pub_validate_request_update,
+        JSON.stringify(requestManifest)
+      );
+    }
     resolve(null);
   });
 }
