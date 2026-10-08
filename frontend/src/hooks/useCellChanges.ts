@@ -9,8 +9,11 @@ import { AgGridReact as AgGridReactType } from "ag-grid-react/lib/agGridReact";
 import {
   DashboardCohort,
   DashboardCohortInput,
+  DashboardRequest,
+  DashboardRequestInput,
   DashboardSample,
   DashboardSampleInput,
+  useUpdateDashboardRequestsMutation,
   useUpdateDashboardSamplesMutation,
   useUpdateTempoCohortMutation,
 } from "../generated/graphql";
@@ -31,13 +34,25 @@ import { formatCohortUsersString } from "../utils/formatCohortUsersString";
 import _ from "lodash";
 import { BILLING_FIELDS } from "../pages/samples/config";
 
+export type RecordType = "sample" | "cohort" | "request";
+
+// Samples and requests both require a mandatory changelog/reason-for-change entry
+// before submitting updates; cohorts do not (they have no changelog field to record it in).
+export function recordTypeRequiresChangelog(recordType: RecordType) {
+  return recordType === "sample" || recordType === "request";
+}
+
 interface UseCellChangesParams {
   gridRef: RefObject<AgGridReactType<any>>;
   startPolling: () => void;
   stopPolling: () => void;
-  records: Array<DashboardSample> | Array<DashboardCohort> | undefined;
+  records:
+    | Array<DashboardSample>
+    | Array<DashboardCohort>
+    | Array<DashboardRequest>
+    | undefined;
   refreshData: () => void;
-  isSampleLevelChanges: boolean;
+  recordType: RecordType;
   pinnedRecordIds?: string[];
 }
 
@@ -47,7 +62,7 @@ export function useCellChanges({
   stopPolling,
   records,
   refreshData,
-  isSampleLevelChanges,
+  recordType,
   pinnedRecordIds = [],
 }: UseCellChangesParams) {
   const [changes, setChanges] = useState<Array<RecordChange>>([]);
@@ -55,7 +70,10 @@ export function useCellChanges({
   const { setWarningModalContent } = useWarningModal();
   const [updateDashboardSamplesMutation] = useUpdateDashboardSamplesMutation();
   const [updateTempoCohortMutation] = useUpdateTempoCohortMutation();
+  const [updateDashboardRequestsMutation] =
+    useUpdateDashboardRequestsMutation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const requiresChangelog = recordTypeRequiresChangelog(recordType);
 
   // Discard unsaved changes when the user logs out.
   // Intentionally excludes `changes` and `handleDiscardChanges` from deps —
@@ -67,9 +85,12 @@ export function useCellChanges({
   }, [userEmail]);
 
   async function handleCellEditRequest(params: CellEditRequestEvent) {
-    const recordId = isSampleLevelChanges
-      ? params.data.primaryId
-      : params.data.cohortId;
+    const recordId =
+      recordType === "sample"
+        ? params.data.primaryId
+        : recordType === "request"
+        ? params.data.igoRequestId
+        : params.data.cohortId;
     const fieldName = params.colDef.field!;
     const { oldValue, newValue, node: rowNode } = params;
 
@@ -212,7 +233,7 @@ export function useCellChanges({
       console.error("User email is unexpectedly empty.");
     }
 
-    if (isSampleLevelChanges) {
+    if (requiresChangelog) {
       const formattedChangelog = username
         ? `${username}: ${reasonForChange}`
         : reasonForChange;
@@ -233,7 +254,7 @@ export function useCellChanges({
     }
 
     const changesByRecordId = groupChangesByRecordId(changesWithReason);
-    if (isSampleLevelChanges) {
+    if (recordType === "sample") {
       const newDashboardSamples = buildNewDashboardSamples(changesByRecordId);
 
       // Send to GraphQL server to publish
@@ -245,39 +266,25 @@ export function useCellChanges({
       // (We can't use GraphQL's optimistic response because it isn't a good fit for
       // AG Grid's Server-Side data model. e.g. GraphQL's optimistic response only returns
       // the updated data, while AG Grid expects the datasource == the entire dataset.)
-      const optimisticSamples = records!.map((s) => {
-        s = s as DashboardSample; // we already know we're dealing with DashboardSample here
-        const changesForSample =
-          s.primaryId != null ? changesByRecordId.get(s.primaryId) : undefined;
-        if (changesForSample) {
-          const changedFields = changesForSample.reduce((acc, change) => {
-            acc[change.fieldName] = change.newValue;
-            return acc;
-          }, {} as Record<string, any>);
-          return {
-            ...s,
-            ...changedFields,
-            revisable: false,
-            importDate: formatCellDate(new Date()) as string,
-          };
-        }
-        return s;
+      const optimisticSamples = buildOptimisticRecords(
+        records as Array<DashboardSample>,
+        changesByRecordId,
+        (s) => s.primaryId
+      );
+      applyOptimisticDatasource(gridRef, optimisticSamples);
+    } else if (recordType === "request") {
+      const newDashboardRequests = buildNewDashboardRequests(changesByRecordId);
+
+      updateDashboardRequestsMutation({
+        variables: { newDashboardRequests },
       });
-      optimisticSamples.sort((a, b) => {
-        return (
-          new Date(b.importDate ?? "").getTime() -
-          new Date(a.importDate ?? "").getTime()
-        );
-      });
-      const optimisticDatasource = {
-        getRows: (params: IServerSideGetRowsParams) => {
-          params.success({
-            rowData: optimisticSamples!,
-            rowCount: optimisticSamples[0]?._total || 0,
-          });
-        },
-      };
-      gridRef.current?.api?.setServerSideDatasource(optimisticDatasource);
+
+      const optimisticRequests = buildOptimisticRecords(
+        records as Array<DashboardRequest>,
+        changesByRecordId,
+        (r) => r.igoRequestId
+      );
+      applyOptimisticDatasource(gridRef, optimisticRequests);
     } else {
       const newDashboardCohorts = buildNewDashboardCohorts(changesByRecordId);
       for (const dashboardCohort of newDashboardCohorts) {
@@ -285,50 +292,13 @@ export function useCellChanges({
       }
 
       // Manually handle optimistic updates for cohorts (same pattern as samples)
-      const optimisticCohorts = records!.map((c) => {
-        c = c as DashboardCohort;
-        const changesForCohort =
-          c.cohortId != null ? changesByRecordId.get(c.cohortId) : undefined;
-        if (changesForCohort) {
-          const changedFields = changesForCohort.reduce((acc, change) => {
-            acc[change.fieldName] = change.newValue;
-            return acc;
-          }, {} as Record<string, any>);
-          return {
-            ...c,
-            ...changedFields,
-            revisable: false, // revisable is not part of the data structure but plays a role in the rendering the "pending updates" animation
-            importDate: formatCellDate(new Date()) as string,
-          };
-        }
-        return c;
-      });
-      optimisticCohorts.sort((a, b) => {
-        const aPinned = pinnedRecordIds.includes(
-          (a as DashboardCohort).cohortId ?? ""
-        )
-          ? 0
-          : 1;
-        const bPinned = pinnedRecordIds.includes(
-          (b as DashboardCohort).cohortId ?? ""
-        )
-          ? 0
-          : 1;
-        if (aPinned !== bPinned) return aPinned - bPinned;
-        return (
-          new Date(b.importDate ?? "").getTime() -
-          new Date(a.importDate ?? "").getTime()
-        );
-      });
-      const optimisticDatasource = {
-        getRows: (params: IServerSideGetRowsParams) => {
-          params.success({
-            rowData: optimisticCohorts!,
-            rowCount: optimisticCohorts[0]?._total || 0,
-          });
-        },
-      };
-      gridRef.current?.api?.setServerSideDatasource(optimisticDatasource);
+      const optimisticCohorts = buildOptimisticRecords(
+        records as Array<DashboardCohort>,
+        changesByRecordId,
+        (c) => c.cohortId,
+        pinnedRecordIds
+      );
+      applyOptimisticDatasource(gridRef, optimisticCohorts);
     }
 
     // "Reset" the grid with the latest data
@@ -415,50 +385,121 @@ function groupChangesByRecordId(changes: RecordChange[]) {
   return changesByRecordId;
 }
 
-function buildNewDashboardSamples(
-  changesByPrimaryId: Map<string, Array<RecordChange>>
-) {
-  const newDashboardSamplesByPrimaryId = new Map<
-    string,
-    DashboardSampleInput
-  >();
-  changesByPrimaryId.forEach((changes, primaryId) => {
-    const sampleData = { ...changes[0].rowNode.data };
-    for (const change of changes) {
-      (sampleData as any)[change.fieldName] = change.newValue;
+function buildOptimisticRecords<T extends { importDate?: string | null }>(
+  records: Array<T>,
+  changesByRecordId: Map<string, Array<RecordChange>>,
+  getRecordId: (record: T) => string | null | undefined,
+  pinnedRecordIds: string[] = []
+): Array<T> {
+  const optimisticRecords = records.map((record) => {
+    const recordId = getRecordId(record);
+    const changesForRecord =
+      recordId != null ? changesByRecordId.get(recordId) : undefined;
+    if (changesForRecord) {
+      const changedFields = changesForRecord.reduce((acc, change) => {
+        acc[change.fieldName] = change.newValue;
+        return acc;
+      }, {} as Record<string, any>);
+      return {
+        ...record,
+        ...changedFields,
+        revisable: false, // revisable is not part of the data structure but plays a role in rendering the "pending updates" animation
+        importDate: formatCellDate(new Date()) as string,
+      };
     }
-    delete sampleData.__typename;
-    delete sampleData.igoQcReports;
-    newDashboardSamplesByPrimaryId.set(primaryId, {
-      ...sampleData,
-      revisable: false,
+    return record;
+  });
+  optimisticRecords.sort((a, b) => {
+    if (pinnedRecordIds.length > 0) {
+      const aPinned = pinnedRecordIds.includes(getRecordId(a) ?? "") ? 0 : 1;
+      const bPinned = pinnedRecordIds.includes(getRecordId(b) ?? "") ? 0 : 1;
+      if (aPinned !== bPinned) return aPinned - bPinned;
+    }
+    return (
+      new Date(b.importDate ?? "").getTime() -
+      new Date(a.importDate ?? "").getTime()
+    );
+  });
+  return optimisticRecords;
+}
+
+function applyOptimisticDatasource(
+  gridRef: RefObject<AgGridReactType<any>>,
+  optimisticRecords: Array<any>
+) {
+  const optimisticDatasource = {
+    getRows: (params: IServerSideGetRowsParams) => {
+      params.success({
+        rowData: optimisticRecords,
+        rowCount: optimisticRecords[0]?._total || 0,
+      });
+    },
+  };
+  gridRef.current?.api?.setServerSideDatasource(optimisticDatasource);
+}
+
+function buildNewDashboardRecords<T>(
+  changesByRecordId: Map<string, Array<RecordChange>>,
+  {
+    fieldsToStrip = [],
+    transformChange,
+    extraFields,
+  }: {
+    fieldsToStrip?: string[];
+    transformChange?: (change: RecordChange) => void;
+    extraFields?: Record<string, any>;
+  } = {}
+): Array<T> {
+  const newRecordsByRecordId = new Map<string, T>();
+  changesByRecordId.forEach((changes, recordId) => {
+    const recordData = { ...changes[0].rowNode.data };
+    for (const change of changes) {
+      transformChange?.(change);
+      (recordData as any)[change.fieldName] = change.newValue;
+    }
+    delete recordData.__typename;
+    for (const field of fieldsToStrip) {
+      delete recordData[field];
+    }
+    newRecordsByRecordId.set(recordId, {
+      ...recordData,
+      ...extraFields,
       changedFieldNames: changes.map((c) => c.fieldName),
     });
   });
-  return Array.from(newDashboardSamplesByPrimaryId.values());
+  return Array.from(newRecordsByRecordId.values());
+}
+
+function buildNewDashboardSamples(
+  changesByPrimaryId: Map<string, Array<RecordChange>>
+) {
+  return buildNewDashboardRecords<DashboardSampleInput>(changesByPrimaryId, {
+    fieldsToStrip: ["igoQcReports"],
+    extraFields: { revisable: false },
+  });
 }
 
 function buildNewDashboardCohorts(
   changesByCohortId: Map<string, Array<RecordChange>>
 ) {
-  const newDashboardCohortsByCohortId = new Map<string, DashboardCohortInput>();
-  changesByCohortId.forEach((changes, cohortId) => {
-    const cohortData = { ...changes[0].rowNode.data };
-    for (const change of changes) {
+  return buildNewDashboardRecords<DashboardCohortInput>(changesByCohortId, {
+    // These fields are read-only / not part of DashboardCohortInput and must be
+    // stripped before submitting the mutation.
+    fieldsToStrip: ["cohortValidationStatus", "projectsIncluded"],
+    transformChange: (change) => {
       if (["pmUsers", "endUsers"].includes(change.fieldName)) {
         change.newValue = formatCohortUsersString(change.newValue);
       }
-      (cohortData as any)[change.fieldName] = change.newValue;
-    }
-    delete cohortData.__typename;
-    // These fields are read-only / not part of DashboardCohortInput and must be
-    // stripped before submitting the mutation.
-    delete cohortData.cohortValidationStatus;
-    delete cohortData.projectsIncluded;
-    newDashboardCohortsByCohortId.set(cohortId, {
-      ...cohortData,
-      changedFieldNames: changes.map((c) => c.fieldName),
-    });
+    },
   });
-  return Array.from(newDashboardCohortsByCohortId.values());
+}
+
+function buildNewDashboardRequests(
+  changesByRequestId: Map<string, Array<RecordChange>>
+) {
+  return buildNewDashboardRecords<DashboardRequestInput>(changesByRequestId, {
+    // These fields are read-only / not part of DashboardRequestInput and must
+    // be stripped before submitting the mutation.
+    fieldsToStrip: ["toleratedSampleErrors"],
+  });
 }

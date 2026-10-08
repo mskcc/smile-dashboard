@@ -1,11 +1,13 @@
 import { CellDoubleClickedEvent } from "ag-grid-community";
 import { useUserEmail } from "../contexts/UserEmailContext";
-import { allEditableFields } from "../pages/samples/config";
+import { allEditableSampleFields } from "../pages/samples/config";
+import { editableRequestFields } from "../pages/requests/config";
 import { awaitLoginPopup } from "../utils/awaitLoginPopup";
+import { RecordType } from "./useCellChanges";
 
 /**
  * Returns a `handleCellDoubleClicked` handler for AG Grid tables that contain
- * auth-gated editable sample cells.
+ * auth-gated editable sample or request cells.
  *
  * When an unauthenticated user double-clicks a cell that would be editable once
  * logged in, a login popup is shown. After a successful login the cell is
@@ -17,9 +19,12 @@ import { awaitLoginPopup } from "../utils/awaitLoginPopup";
  * - "billed" field — it has its own login prompt inside handleCellEditRequest
  * - Clinical samples (never editable)
  * - Non-revisable samples
- * - Columns not in allEditableFields
+ * - Columns not in allEditableSampleFields/editableRequestFields for the
+ *   given recordType (a field name editable on one page, e.g. "genePanel" on
+ *   Requests, is not assumed editable on another page that happens to reuse
+ *   the same field name, e.g. Samples)
  */
-export function useCellDoubleClicked() {
+export function useCellDoubleClicked(recordType: RecordType) {
   const { userEmail, setUserEmail } = useUserEmail();
 
   async function handleCellDoubleClicked(params: CellDoubleClickedEvent) {
@@ -29,13 +34,17 @@ export function useCellDoubleClicked() {
     if (!field) return;
 
     // "billed" has its own login prompt inside handleCellEditRequest
-    const wouldBeEditable =
+    const wouldBeEditableSample =
+      recordType === "sample" &&
       field !== "billed" &&
       params.data?.sampleCategory !== "clinical" &&
-      allEditableFields.has(field) &&
+      allEditableSampleFields.has(field) &&
       params.data?.revisable === true;
 
-    if (!wouldBeEditable) return;
+    const wouldBeEditableRequest =
+      recordType === "request" && editableRequestFields.has(field);
+
+    if (!wouldBeEditableSample && !wouldBeEditableRequest) return;
 
     const loggedInEmail = await awaitLoginPopup();
     if (!loggedInEmail) return;

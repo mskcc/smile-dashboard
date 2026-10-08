@@ -2,6 +2,7 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServerContext, neo4jDriver } from "../utils/servers";
 import {
   DashboardCohortInput,
+  DashboardRequestInput,
   DashboardSampleInput,
   PatientIdsTriplet,
   QueryDashboardCohortsArgs,
@@ -51,6 +52,7 @@ import {
   SAMPLES_CACHE_KEY,
   SamplesCache,
   updateCacheWithNewCohortUpdates,
+  updateCacheWithNewRequestUpdates,
   updateCacheWithNewSampleUpdates,
 } from "../utils/cache";
 import {
@@ -572,6 +574,21 @@ export async function buildCustomSchema(ogm: OGM) {
         // https://www.apollographql.com/docs/react/performance/optimistic-ui/#optimistic-mutation-lifecycle
         return newDashboardSamples;
       },
+      async updateDashboardRequests(
+        _source: undefined,
+        {
+          newDashboardRequests,
+        }: { newDashboardRequests: DashboardRequestInput[] },
+        { inMemoryCache }: ApolloServerContext
+      ) {
+        await updateRequestMetadataPromises(newDashboardRequests);
+        await updateCacheWithNewRequestUpdates(
+          newDashboardRequests,
+          inMemoryCache
+        );
+
+        return newDashboardRequests;
+      },
       async updateTempoCohort(
         _source: undefined,
         {
@@ -675,6 +692,41 @@ async function updateSampleMetadataPromises(
       props.pub_validate_sample_update,
       JSON.stringify(sampleManifests)
     );
+    resolve(null);
+  });
+}
+
+async function updateRequestMetadataPromises(
+  newDashboardRequests: Array<DashboardRequestInput>
+) {
+  const requestManifests = newDashboardRequests.map((newDashboardRequest) => {
+    const {
+      _total,
+      changedFieldNames,
+      totalSampleCount,
+      importDate,
+      changelog,
+      ...requestManifest
+    } = newDashboardRequest as any;
+
+    requestManifest.additionalProperties = {
+      ...(requestManifest.additionalProperties || {}),
+      changelog: changelog || "",
+    };
+
+    delete requestManifest.validationStatus;
+    delete requestManifest.validationReport;
+
+    return requestManifest;
+  });
+
+  return new Promise(async (resolve) => {
+    for (const requestManifest of requestManifests) {
+      publishNatsMessage(
+        props.pub_validate_request_update,
+        JSON.stringify(requestManifest)
+      );
+    }
     resolve(null);
   });
 }
