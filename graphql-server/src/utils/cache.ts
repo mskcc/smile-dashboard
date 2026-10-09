@@ -135,12 +135,17 @@ export async function initializeInMemoryCache() {
   const inMemoryCache = new NodeCache();
 
   // Warm up the cache
-  await updatePatientDemographicsCache(inMemoryCache);
-  await updateOncotreeCache(inMemoryCache);
-  await updateSamplesCache(inMemoryCache);
-  await updateRequestsCache(inMemoryCache);
-  await updateCohortsCache(inMemoryCache);
-  await updatePatientsCache(inMemoryCache);
+  // Updates run concurrently; the samples update must follow the oncotree
+  // update because it reads the oncotree cache.
+  await Promise.all([
+    updatePatientDemographicsCache(inMemoryCache),
+    updateOncotreeCache(inMemoryCache).then(() =>
+      updateSamplesCache(inMemoryCache)
+    ),
+    updateRequestsCache(inMemoryCache),
+    updateCohortsCache(inMemoryCache),
+    updatePatientsCache(inMemoryCache),
+  ]);
   logCacheStats(inMemoryCache);
 
   // Add cache item expiration handlers
