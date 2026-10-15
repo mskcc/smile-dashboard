@@ -9,7 +9,11 @@ import {
 import { Title } from "../../components/Title";
 import { Toolbar } from "../../components/Toolbar";
 import { SearchBar } from "../../components/SearchBar";
-import { buildDownloadOptions, requestColDefs } from "./config";
+import {
+  buildDownloadOptions,
+  fieldToHeaderName,
+  requestColDefs,
+} from "./config";
 import { Col } from "react-bootstrap";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { DownloadButton } from "../../components/DownloadButton";
@@ -20,6 +24,9 @@ import { SamplesModal } from "../../components/SamplesModal";
 import { DataGridLayout } from "../../components/DataGridLayout";
 import { ROUTE_PARAMS } from "../../configs/shared";
 import { sampleColDefs } from "../samples/config";
+import { useCellChanges } from "../../hooks/useCellChanges";
+import { useCellDoubleClicked } from "../../hooks/useCellDoubleClicked";
+import { CellChangesContainer } from "../../components/CellChangesContainer";
 
 const QUERY_NAME = "dashboardRequests";
 const INITIAL_SORT_FIELD_NAME = "importDate";
@@ -29,14 +36,33 @@ export function RequestsPage() {
   const [userSearchVal, setUserSearchVal] = useState("");
   const gridRef = useRef<AgGridReactType<DashboardRequest>>(null);
   const hasParams = Object.keys(useParams()).length > 0;
+  const { handleCellDoubleClicked } = useCellDoubleClicked("request");
 
-  const { refreshData, recordCount, isLoading, error, fetchMore } =
-    useFetchData({
-      useRecordsLazyQuery: useDashboardRequestsLazyQuery,
-      queryName: QUERY_NAME,
-      initialSortFieldName: INITIAL_SORT_FIELD_NAME,
+  const {
+    refreshData,
+    recordCount,
+    isLoading,
+    error,
+    data,
+    fetchMore,
+    startPolling,
+    stopPolling,
+  } = useFetchData({
+    useRecordsLazyQuery: useDashboardRequestsLazyQuery,
+    queryName: QUERY_NAME,
+    initialSortFieldName: INITIAL_SORT_FIELD_NAME,
+    gridRef,
+    userSearchVal,
+  });
+
+  const { changes, cellChangesHandlers, handleCellEditRequest, handlePaste } =
+    useCellChanges({
       gridRef,
-      userSearchVal,
+      startPolling,
+      stopPolling,
+      records: data?.[QUERY_NAME],
+      refreshData,
+      recordType: "request",
     });
 
   const { isDownloading, handleDownload, getCurrentData } =
@@ -73,6 +99,14 @@ export function RequestsPage() {
             recordCount={recordCount}
             isLoading={isLoading}
           />
+          {changes.length > 0 && (
+            <CellChangesContainer
+              changes={changes}
+              cellChangesHandlers={cellChangesHandlers}
+              recordType="request"
+              fieldToHeaderName={fieldToHeaderName}
+            />
+          )}
         </Col>
 
         <Col className="text-end">
@@ -87,6 +121,10 @@ export function RequestsPage() {
         gridRef={gridRef}
         colDefs={requestColDefs}
         refreshData={refreshData}
+        changes={changes}
+        handleCellEditRequest={handleCellEditRequest}
+        handlePaste={handlePaste}
+        onCellDoubleClicked={handleCellDoubleClicked}
         selectedRowIds={[]}
         onSelectionChanged={() => {}}
       />

@@ -148,6 +148,7 @@ const QUERY_RESULT_TYPEDEFS = gql`
     bicAnalysis: Boolean
     isCmoRequest: Boolean
     otherContactEmails: String
+    changelog: String
     _total: Int
     toleratedSampleErrors: [ToleratedSampleValidationError]
   }
@@ -349,6 +350,34 @@ const MUTATION_TYPEDEFS = gql`
     piName: String
   }
 
+  input DashboardRequestInput {
+    changedFieldNames: [String!]!
+    igoRequestId: String!
+    igoProjectId: String
+    ilabRequestId: String
+    igoDeliveryDate: String
+    validationReport: String
+    validationStatus: Boolean
+    importDate: String
+    totalSampleCount: Int
+    projectManagerName: String
+    investigatorName: String
+    investigatorEmail: String
+    piEmail: String
+    dataAnalystName: String
+    dataAnalystEmail: String
+    genePanel: String
+    labHeadName: String
+    labHeadEmail: String
+    qcAccessEmails: String
+    dataAccessEmails: String
+    bicAnalysis: Boolean
+    isCmoRequest: Boolean
+    otherContactEmails: String
+    changelog: String
+    _total: Int
+  }
+
   input TempoCohortSampleInput {
     primaryId: String!
     cmoId: String
@@ -371,6 +400,10 @@ const MUTATION_TYPEDEFS = gql`
     updateDashboardSamples(
       newDashboardSamples: [DashboardSampleInput]
     ): [DashboardSample]
+
+    updateDashboardRequests(
+      newDashboardRequests: [DashboardRequestInput]
+    ): [DashboardRequest]
 
     updateTempoCohort(
       dashboardCohort: DashboardCohortInput

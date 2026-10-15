@@ -12,9 +12,15 @@ import { useNavigate } from "react-router-dom";
 import { createCustomHeader, lockIcon } from "../configs/gridIcons";
 import { RecordChange } from "../types/shared";
 import { CACHE_BLOCK_SIZE } from "../configs/shared";
-import { allEditableFields } from "../pages/samples/config";
+import { allEditableSampleFields } from "../pages/samples/config";
+import { editableRequestFields } from "../pages/requests/config";
 import { CohortBuilderSample } from "./CohortBuilderContainer";
 import { useUserEmail } from "../contexts/UserEmailContext";
+
+const allEditableSampleAndRequestFields = new Set([
+  ...Array.from(allEditableSampleFields),
+  ...Array.from(editableRequestFields),
+]);
 
 function getTooltipValue(params: ITooltipParams) {
   if (!params.colDef || !("field" in params.colDef)) return undefined;
@@ -29,18 +35,21 @@ function getTooltipValue(params: ITooltipParams) {
     );
   }
   if (
-    allEditableFields.has(field!) &&
+    allEditableSampleFields.has(field!) &&
     params.data?.sampleCategory === "clinical"
   ) {
     return "Clinical samples are not editable";
   }
-  if (allEditableFields.has(field!) && !params.context?.userEmail) {
+  if (
+    allEditableSampleAndRequestFields.has(field!) &&
+    !params.context?.userEmail
+  ) {
     if (field === "billed") {
       return "Click to log in and mark sample as billed";
     }
-    return "Must be logged in to make changes to sample data";
+    return "Must be logged in to make changes to this data";
   }
-  if (!allEditableFields.has(field!)) {
+  if (!allEditableSampleAndRequestFields.has(field!)) {
     return "This column is read-only";
   }
 }

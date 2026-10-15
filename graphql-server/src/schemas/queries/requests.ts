@@ -152,6 +152,7 @@ export function buildRequestsQueryBody({
       bicAnalysis: r.bicAnalysis,
       isCmoRequest: r.isCmoRequest,
       otherContactEmails: r.otherContactEmails,
+      changelog: apoc.convert.fromJsonMap(r.additionalProperties).changelog,
       toleratedSampleErrors: toleratedSampleErrors}) as tempNode
     WITH tempNode
 

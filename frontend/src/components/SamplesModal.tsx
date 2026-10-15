@@ -91,7 +91,7 @@ export function SamplesModal({
   const [colDefs, setColDefs] = useState(sampleColDefs);
   const parentRecordId = useParams()[ROUTE_PARAMS[parentRecordName]];
   const gridRef = useRef<AgGridReactType<DashboardSample>>(null);
-  const { handleCellDoubleClicked } = useCellDoubleClicked();
+  const { handleCellDoubleClicked } = useCellDoubleClicked("sample");
   const { userEmail, setUserEmail } = useUserEmail();
   const [showForceLabelModal, setShowForceLabelModal] = useState(false);
   const [allSamplesForForceLabel, setAllSamplesForForceLabel] = useState<
@@ -211,7 +211,7 @@ export function SamplesModal({
     stopPolling,
     records: data?.[QUERY_NAME],
     refreshData,
-    isSampleLevelChanges: true,
+    recordType: "sample",
   });
 
   const { isDownloading, handleDownload, getCurrentData } =
@@ -305,7 +305,7 @@ export function SamplesModal({
             <CellChangesContainer
               changes={changes}
               cellChangesHandlers={cellChangesHandlers}
-              isSampleLevelChanges={true}
+              recordType="sample"
               fieldToHeaderName={fieldToHeaderName}
             />
           )}
